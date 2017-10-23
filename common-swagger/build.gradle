@@ -1,0 +1,4 @@
+dependencies {
+    compile "io.springfox:springfox-swagger2:2.3.0"
+    compile "io.springfox:springfox-swagger-ui:2.3.0"
+}

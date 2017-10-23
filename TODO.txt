@@ -1,0 +1,67 @@
+eventuate client
+
+sync repo ignores interceptor
+error handling ignores options interceptor
+
+tram:
+
+// TODO accidentally returned new Success() and message handler was fine
+* mysql image
+* logging of sending reply
+* in-memory: sending message to channel with no subscribers = error?
+* default channel mapping bean
+* varags publish domain event
+* channel mapping needs to be pushed to lowest-level - messageproducer, messageconsumer
+* trameventspublisherconfiguration.class, // todo  => tramdomaineventpublisherconfiguration?
+
+exceptions during event delivery don't cause rollback of transaction that records duplicate?
+
+sagas
+
+* mysql image
+* logging of sending reply
+* logging of sagas actions
+
+
+--------------------------------
+
+ftgo - big
+
+what functionality:
+
+* Cancel ORder
+* Revise order
+
+CQRS:
+
+* Order events,
+* Other events
+
+API Gateway
+
+* composition
+
+----
+
+* separate schemas for the services
+** tram needs to use an explicit schema
+
+* actual create order request - stupid stuff right now: passing in prices.
+** order request should have menuitemid and pricing - need to ask a service to price the order.
+*** self (duplicate), ros (preparation - not pricing), rs (ok - except we discussed the need to offload), new orderpricingservice
+** do we need to start at the beginning of ordering?? shopping cart?
+
+** saga method throws exception, reported by kafkamessageprocessor, eventuatekafkaconsumer  appears to have processed the record. what is the expected behavior??? who stops processing?
+
+** define constants for channels, ?? restaurantorderservice
+@transactional
+
+
+ftgo - misc
+
+* serialization of money
+* jpa mapping of enum - e.g. orderstate as name rather than integer
+
+misc
+
+* need static checking of serializability

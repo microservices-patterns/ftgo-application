@@ -1,0 +1,6 @@
+dependencies {
+
+    compile "io.eventuate.tram.sagas:eventuate-jpa-sagas-framework:$eventuateTramSagasVersion"
+    compile project(":ftgo-common")
+
+}

@@ -1,0 +1,25 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    }
+}
+
+
+subprojects {
+
+    apply plugin: "java"
+
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven {
+            url "https://dl.bintray.com/eventuateio-oss/eventuate-maven-release"
+        }
+        eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
+    }
+
+}
+
