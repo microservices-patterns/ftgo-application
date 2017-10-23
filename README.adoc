@@ -42,9 +42,9 @@ For example, `ftgo-order-service` implements the `Order Service`
 ** web - Spring MVC controllers (HTTP adapters)
 ** main - the main application
 * The services use the following other frameworks
-** `Eventuate Tram` framework - implements transactional messaging
-** `Eventuate Tram Saga` framework - implements sagas
-** `Eventuate Client framework` - implements event sourcing
+** https://github.com/eventuate-tram/eventuate-tram-core[`Eventuate Tram framework`] - implements transactional messaging
+** https://github.com/eventuate-tram/eventuate-tram-sagas[`Eventuate Tram Saga framework`] - implements sagas
+** https://github.com/eventuate-clients/eventuate-client-java[`Eventuate Client framework`] - implements event sourcing
 
 == Chapter by chapter
 

@@ -6,7 +6,7 @@ dependencies {
 
     compile project(":ftgo-accounting-service-api")
     compile project(":common-swagger")
-    compile "io.eventuate.tram.core:eventuate-tram-sagas-event-sourcing-support:$eventuateTramVersion"
+    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-event-sourcing-support:$eventuateTramSagasVersion"
 
     compile "io.eventuate.tram.core:eventuate-tram-jdbc-kafka:$eventuateTramVersion"
     compile "io.eventuate.tram.core:eventuate-tram-events:$eventuateTramVersion"
