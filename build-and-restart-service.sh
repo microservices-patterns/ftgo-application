@@ -1,7 +1,7 @@
 #! /bin/bash -e
 
 SNX=${1}
-SN=${SNX//-/}
+SN=${SNX?}
 
 
 ./gradlew :${SNX?}:assemble

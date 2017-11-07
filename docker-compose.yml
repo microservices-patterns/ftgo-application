@@ -24,14 +24,13 @@ services:
       - MYSQL_ROOT_PASSWORD=rootpassword
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
-  tramcdcservice:
+  tram-cdc-service:
     image: eventuateio/eventuate-tram-cdc-mysql-service:0.0.1
     ports:
       - "8099:8080"
     depends_on:
       - mysql
       - kafka
-      - zookeeper
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
       SPRING_DATASOURCE_USERNAME: mysqluser
@@ -43,14 +42,13 @@ services:
       EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
       EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 1234567890
       EVENTUATELOCAL_CDC_SOURCE_TABLE_NAME: message
-  eventuatelocalcdcservice:
+  eventuate-local-cdc-service:
     image: eventuateio/eventuateio-local-cdc-service:0.14.0
     ports:
       - "8098:8080"
     depends_on:
       - mysql
       - kafka
-      - zookeeper
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
       SPRING_DATASOURCE_USERNAME: mysqluser
@@ -61,14 +59,14 @@ services:
       EVENTUATELOCAL_CDC_DB_USER_NAME: root
       EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
       EVENTUATELOCAL_CDC_LEADERSHIP_LOCK_PATH: /eventuatelocal/cdc/leader1
-  ftgoconsumerservice:
+  ftgo-consumer-service:
     build: ./ftgo-consumer-service
     ports:
       - "8081:8080"
     depends_on:
       - mysql
       - kafka
-      - zookeeper
+      - tram-cdc-service
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
       SPRING_DATASOURCE_USERNAME: mysqluser
@@ -76,17 +74,15 @@ services:
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-      EVENTUATELOCAL_CDC_DB_USER_NAME: root
-      EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
       JAVA_OPTS: -Xmx256m
-  ftgoorderservice:
+  ftgo-order-service:
     build: ./ftgo-order-service
     ports:
       - "8082:8080"
     depends_on:
       - mysql
       - kafka
-      - zookeeper
+      - tram-cdc-service
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
       SPRING_DATASOURCE_USERNAME: mysqluser
@@ -94,10 +90,8 @@ services:
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-      EVENTUATELOCAL_CDC_DB_USER_NAME: root
-      EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
       JAVA_OPTS: -Xmx256m
-  ftgorestaurantorderservice:
+  ftgo-restaurant-order-service:
       build: ./ftgo-restaurant-order-service
       ports:
         - "8083:8080"
@@ -105,6 +99,7 @@ services:
         - mysql
         - kafka
         - zookeeper
+        - tram-cdc-service
       environment:
         SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
         SPRING_DATASOURCE_USERNAME: mysqluser
@@ -112,10 +107,8 @@ services:
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
         EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-        EVENTUATELOCAL_CDC_DB_USER_NAME: root
-        EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
         JAVA_OPTS: -Xmx256m
-  ftgorestaurantservice:
+  ftgo-restaurant-service:
       build: ./ftgo-restaurant-service
       ports:
         - "8084:8080"
@@ -123,6 +116,7 @@ services:
         - mysql
         - kafka
         - zookeeper
+        - tram-cdc-service
       environment:
         SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
         SPRING_DATASOURCE_USERNAME: mysqluser
@@ -130,10 +124,8 @@ services:
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
         EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-        EVENTUATELOCAL_CDC_DB_USER_NAME: root
-        EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
         JAVA_OPTS: -Xmx256m
-  ftgoaccountingservice:
+  ftgo-accounting-service:
         build: ./ftgo-accounting-service
         ports:
           - "8085:8080"
@@ -141,6 +133,7 @@ services:
           - mysql
           - kafka
           - zookeeper
+          - eventuate-local-cdc-service
         environment:
           SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
           SPRING_DATASOURCE_USERNAME: mysqluser
@@ -148,10 +141,8 @@ services:
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
           EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
           EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-          EVENTUATELOCAL_CDC_DB_USER_NAME: root
-          EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
           JAVA_OPTS: -Xmx256m
-  ftgoorderhistoryservice:
+  ftgo-order-history-service:
         build: ./ftgo-order-history-service
         ports:
           - "8086:8080"
@@ -159,6 +150,7 @@ services:
           - mysql
           - kafka
           - zookeeper
+          - tram-cdc-service
         environment:
           SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
           SPRING_DATASOURCE_USERNAME: mysqluser
@@ -166,16 +158,14 @@ services:
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
           EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
           EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-          EVENTUATELOCAL_CDC_DB_USER_NAME: root
-          EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
           AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
           AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
           JAVA_OPTS: -Xmx256m
-  ftgoapigateway:
+  ftgo-api-gateway:
     build: ./ftgo-api-gateway
     ports:
       - "8087:8080"
     environment:
-      ORDER_DESTINATIONS_ORDERSERVICEURL: http://ftgoorderservice:8080
-      ORDER_DESTINATIONS_ORDERHISTORYSERVICEURL: http://ftgoorderhistoryservice:8080
+      ORDER_DESTINATIONS_ORDERSERVICEURL: http://ftgo-order-service:8080
+      ORDER_DESTINATIONS_ORDERHISTORYSERVICEURL: http://ftgo-order-history-service:8080
       JAVA_OPTS: -Xmx256m
