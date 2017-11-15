@@ -1,0 +1,49 @@
+{
+  "TableName": "ftgo-order-history",
+  "KeySchema": [
+    {
+      "KeyType": "HASH",
+      "AttributeName": "orderId"
+    }
+  ],
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "consumerId",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "creationDate",
+      "AttributeType": "N"
+    },
+    {
+      "AttributeName": "orderId",
+      "AttributeType": "S"
+    }
+  ],
+  "GlobalSecondaryIndexes": [
+    {
+      "IndexName": "ftgo-order-history-by-consumer-id-and-creation-time",
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "WriteCapacityUnits": 3,
+        "ReadCapacityUnits": 3
+      },
+      "KeySchema": [
+        {
+          "KeyType": "HASH",
+          "AttributeName": "consumerId"
+        },
+        {
+          "KeyType": "RANGE",
+          "AttributeName": "creationDate"
+        }
+      ]
+    }
+  ],
+  "ProvisionedThroughput": {
+    "WriteCapacityUnits": 3,
+    "ReadCapacityUnits": 3
+  }
+}
