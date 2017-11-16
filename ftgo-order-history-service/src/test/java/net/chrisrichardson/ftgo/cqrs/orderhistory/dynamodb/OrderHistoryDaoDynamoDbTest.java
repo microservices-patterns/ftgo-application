@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb;
 
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
+import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
@@ -49,10 +49,11 @@ public class OrderHistoryDaoDynamoDbTest {
     eventSource = Optional.of(new SourceEvent("Order", orderId, "11212-34343"));
 
     AmazonDynamoDB client = AmazonDynamoDBClientBuilder
-            .standard()
-            .withRegion("us-west-1")
-            .withCredentials(new EnvironmentVariableCredentialsProvider())
-            .build();
+        .standard()
+        .withEndpointConfiguration(
+            new AwsClientBuilder.EndpointConfiguration("http://172.17.0.1:8000", "us-west-2"))
+        .build();
+
     dao = new OrderHistoryDaoDynamoDb(new DynamoDB(client));
     dao.addOrder(order1, eventSource);
   }
