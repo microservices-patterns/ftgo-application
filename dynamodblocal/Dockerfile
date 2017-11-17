@@ -1,8 +1,5 @@
 FROM openjdk:7-jre
 
-# Create working space
-WORKDIR /var/dynamodb_wd
-
 # Default port for DynamoDB Local
 EXPOSE 8000
 

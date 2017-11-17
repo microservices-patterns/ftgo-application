@@ -1,9 +1,5 @@
 package net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb;
 
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import io.eventuate.javaclient.commonimpl.JSonMapper;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.OrderHistory;
@@ -14,6 +10,12 @@ import net.chrisrichardson.ftgo.orderservice.api.events.OrderState;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,12 +27,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = {OrderHistoryDynamoDBConfiguration.class})
+@EnableAutoConfiguration
+@ComponentScan
 public class OrderHistoryDaoDynamoDbTest {
 
   private String consumerId;
   private Order order1;
   private String orderId;
+  @Autowired
   private OrderHistoryDao dao;
   private String restaurantName;
   private String chickenVindaloo;
@@ -48,13 +54,6 @@ public class OrderHistoryDaoDynamoDbTest {
     order1.setCreationDate(DateTime.now().minusDays(5));
     eventSource = Optional.of(new SourceEvent("Order", orderId, "11212-34343"));
 
-    AmazonDynamoDB client = AmazonDynamoDBClientBuilder
-        .standard()
-        .withEndpointConfiguration(
-            new AwsClientBuilder.EndpointConfiguration("http://172.17.0.1:8000", "us-west-2"))
-        .build();
-
-    dao = new OrderHistoryDaoDynamoDb(new DynamoDB(client));
     dao.addOrder(order1, eventSource);
   }
 

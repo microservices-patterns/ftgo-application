@@ -158,9 +158,10 @@ services:
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
           EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
           EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-          AWS_ACCESS_KEY_ID: id_key
-          AWS_SECRET_ACCESS_KEY: access_key
-          DYNAMO_DB_HOST: dynamodblocal
+          AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+          AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+          AWS_DYNAMODB_ENDPOINT_URL: http://dynamodblocal:8000
+          AWS_REGION: $AWS_REGION
           JAVA_OPTS: -Xmx256m
   ftgo-api-gateway:
     build: ./ftgo-api-gateway

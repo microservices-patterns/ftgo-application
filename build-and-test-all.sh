@@ -3,8 +3,7 @@
 . ./set-env.sh
 
 docker-compose down -v
-docker-compose up -d --build dynamodblocal
-docker-compose up -d --build mysql
+docker-compose up -d --build dynamodblocal mysql
 
 ./wait-for-mysql.sh
 
