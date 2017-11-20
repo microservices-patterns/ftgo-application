@@ -68,7 +68,7 @@ services:
       - kafka
       - tram-cdc-service
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgoconsumerservice
       SPRING_DATASOURCE_USERNAME: mysqluser
       SPRING_DATASOURCE_PASSWORD: mysqlpw
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
@@ -84,7 +84,7 @@ services:
       - kafka
       - tram-cdc-service
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgoorderservice
       SPRING_DATASOURCE_USERNAME: mysqluser
       SPRING_DATASOURCE_PASSWORD: mysqlpw
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
@@ -101,7 +101,7 @@ services:
         - zookeeper
         - tram-cdc-service
       environment:
-        SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
+        SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgorestaurantorderservice
         SPRING_DATASOURCE_USERNAME: mysqluser
         SPRING_DATASOURCE_PASSWORD: mysqlpw
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
@@ -118,7 +118,7 @@ services:
         - zookeeper
         - tram-cdc-service
       environment:
-        SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
+        SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgorestaurantservice
         SPRING_DATASOURCE_USERNAME: mysqluser
         SPRING_DATASOURCE_PASSWORD: mysqlpw
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
@@ -135,7 +135,7 @@ services:
           - zookeeper
           - eventuate-local-cdc-service
         environment:
-          SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
+          SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgoaccountingservice
           SPRING_DATASOURCE_USERNAME: mysqluser
           SPRING_DATASOURCE_PASSWORD: mysqlpw
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
@@ -152,7 +152,7 @@ services:
           - tram-cdc-service
           - dynamodblocal
         environment:
-          SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
+          SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgoorderhistoryservice
           SPRING_DATASOURCE_USERNAME: mysqluser
           SPRING_DATASOURCE_PASSWORD: mysqlpw
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
