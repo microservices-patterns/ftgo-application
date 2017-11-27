@@ -67,9 +67,9 @@ public class AccountingServiceCommandHandlerTest {
     public DataSource dataSource() {
       EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
       return builder.setType(EmbeddedDatabaseType.H2)
-              .addScript("embedded-schema.sql")
+              .addScript("eventuate-tram-embedded-schema.sql")
               .addScript("eventuate-tram-sagas-embedded.sql")
-              .addScript("embedded-event-store-schema.sql")
+              .addScript("eventuate-embedded-schema.sql")
               .build();
     }
 
