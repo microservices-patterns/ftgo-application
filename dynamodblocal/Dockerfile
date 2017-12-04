@@ -1,0 +1,11 @@
+FROM openjdk:7-jre
+
+# Default port for DynamoDB Local
+EXPOSE 8000
+RUN mkdir /var/dynamodb_local
+COPY dynamodb_local_latest.tar.gz /tmp
+
+RUN tar xfz /tmp/dynamodb_local_latest.tar.gz
+
+# Default command for image
+CMD /usr/bin/java -Djava.library.path=. -jar DynamoDBLocal.jar -dbPath /var/dynamodb_local -sharedDb -port 8000

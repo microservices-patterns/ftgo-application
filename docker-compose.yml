@@ -25,7 +25,7 @@ services:
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
   tram-cdc-service:
-    image: eventuateio/eventuate-tram-cdc-mysql-service:0.0.1
+    image: eventuateio/eventuate-tram-cdc-mysql-service:0.4.0.RELEASE
     ports:
       - "8099:8080"
     depends_on:
@@ -43,7 +43,7 @@ services:
       EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 1234567890
       EVENTUATELOCAL_CDC_SOURCE_TABLE_NAME: message
   eventuate-local-cdc-service:
-    image: eventuateio/eventuateio-local-cdc-service:0.14.0
+    image: eventuateio/eventuateio-local-cdc-service:0.16.2.RELEASE
     ports:
       - "8098:8080"
     depends_on:
@@ -68,7 +68,7 @@ services:
       - kafka
       - tram-cdc-service
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgoconsumerservice
       SPRING_DATASOURCE_USERNAME: mysqluser
       SPRING_DATASOURCE_PASSWORD: mysqlpw
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
@@ -84,7 +84,7 @@ services:
       - kafka
       - tram-cdc-service
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgoorderservice
       SPRING_DATASOURCE_USERNAME: mysqluser
       SPRING_DATASOURCE_PASSWORD: mysqlpw
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
@@ -101,7 +101,7 @@ services:
         - zookeeper
         - tram-cdc-service
       environment:
-        SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
+        SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgorestaurantorderservice
         SPRING_DATASOURCE_USERNAME: mysqluser
         SPRING_DATASOURCE_PASSWORD: mysqlpw
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
@@ -118,7 +118,7 @@ services:
         - zookeeper
         - tram-cdc-service
       environment:
-        SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
+        SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgorestaurantservice
         SPRING_DATASOURCE_USERNAME: mysqluser
         SPRING_DATASOURCE_PASSWORD: mysqlpw
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
@@ -135,7 +135,7 @@ services:
           - zookeeper
           - eventuate-local-cdc-service
         environment:
-          SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
+          SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgoaccountingservice
           SPRING_DATASOURCE_USERNAME: mysqluser
           SPRING_DATASOURCE_PASSWORD: mysqlpw
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
@@ -147,12 +147,12 @@ services:
         ports:
           - "8086:8080"
         depends_on:
-          - mysql
           - kafka
           - zookeeper
           - tram-cdc-service
+          - dynamodblocal
         environment:
-          SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
+          SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgoorderhistoryservice
           SPRING_DATASOURCE_USERNAME: mysqluser
           SPRING_DATASOURCE_PASSWORD: mysqlpw
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
@@ -160,6 +160,8 @@ services:
           EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
           AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
           AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+          AWS_DYNAMODB_ENDPOINT_URL: http://dynamodblocal:8000
+          AWS_REGION: $AWS_REGION
           JAVA_OPTS: -Xmx256m
   ftgo-api-gateway:
     build: ./ftgo-api-gateway
@@ -169,3 +171,8 @@ services:
       ORDER_DESTINATIONS_ORDERSERVICEURL: http://ftgo-order-service:8080
       ORDER_DESTINATIONS_ORDERHISTORYSERVICEURL: http://ftgo-order-history-service:8080
       JAVA_OPTS: -Xmx256m
+
+  dynamodblocal:
+       build: ./dynamodblocal
+       ports:
+         - "8000:8000"

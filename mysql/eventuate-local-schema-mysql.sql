@@ -1,3 +1,21 @@
+create database ftgoconsumerservice;
+GRANT ALL PRIVILEGES ON ftgoconsumerservice.* TO 'mysqluser'@'%' WITH GRANT OPTION;
+
+create database ftgoorderservice;
+GRANT ALL PRIVILEGES ON ftgoorderservice.* TO 'mysqluser'@'%' WITH GRANT OPTION;
+
+create database ftgorestaurantorderservice;
+GRANT ALL PRIVILEGES ON ftgorestaurantorderservice.* TO 'mysqluser'@'%' WITH GRANT OPTION;
+
+create database ftgorestaurantservice;
+GRANT ALL PRIVILEGES ON ftgorestaurantservice.* TO 'mysqluser'@'%' WITH GRANT OPTION;
+
+create database ftgoaccountingservice;
+GRANT ALL PRIVILEGES ON ftgoaccountingservice.* TO 'mysqluser'@'%' WITH GRANT OPTION;
+
+create database ftgoorderhistoryservice;
+GRANT ALL PRIVILEGES ON ftgoorderhistoryservice.* TO 'mysqluser'@'%' WITH GRANT OPTION;
+
 USE eventuate;
 DROP table IF EXISTS events;
 DROP table IF EXISTS  entities;
