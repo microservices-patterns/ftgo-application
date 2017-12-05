@@ -28,7 +28,7 @@ public class EndToEndTests {
 
   public static final String CHICKED_VINDALOO_MENU_ITEM_ID = "1";
   private final int revisedQuantityOfChickenVindaloo = 10;
-  private String host = "192.168.99.100";
+  private String host = System.getenv("DOCKER_HOST_IP");
   private int consumerId;
   private int restaurantId;
   private int orderId;
