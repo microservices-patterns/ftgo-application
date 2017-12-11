@@ -1,25 +1,25 @@
-version: 2
+version:               2
 jobs:
   build:
-    machine: true
+    machine:           true
     working_directory: ~/ftgo-application
     steps:
       - checkout
       - restore_cache:
-          key: ftgo-application-{{ checksum "build.gradle" }}
-      - run: TERM=dumb ./gradlew testClasses
+          key:         ftgo-application-{{ checksum "build.gradle" }}
+      - run:           TERM=dumb ./gradlew testClasses
       - save_cache:
           paths:
             - ~/.gradle
-          key: ftgo-application-{{ checksum "build.gradle" }}
-      - run: TERM=dumb ./build-and-test-all.sh
+          key:         ftgo-application-{{ checksum "build.gradle" }}
+      - run:           TERM=dumb ./build-and-test-all.sh
       - run:
-          name: Save test results
-          command: |
+          name:        Save test results
+          command:     |
             mkdir -p ~/junit/
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/junit/ \;
-          when: always
+          when:        always
       - store_test_results:
-          path: ~/junit
+          path:        ~/junit
       - store_artifacts:
-          path: ~/junit
+          path:        ~/junit
