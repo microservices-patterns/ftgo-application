@@ -14,7 +14,7 @@ services:
       - zookeeper
     environment:
       - ADVERTISED_HOST_NAME=${DOCKER_HOST_IP}
-      - KAFKA_HEAP_OPTS=-Xmx320m -Xms320m
+      - KAFKA_HEAP_OPTS=-Xmx192m -Xms192m
       - ZOOKEEPER_SERVERS=zookeeper:2181
   mysql:
     build: ./mysql
@@ -74,7 +74,7 @@ services:
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-      JAVA_OPTS: -Xmx256m
+      JAVA_OPTS: -Xmx192m
   ftgo-order-service:
     build: ./ftgo-order-service
     ports:
@@ -90,7 +90,7 @@ services:
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-      JAVA_OPTS: -Xmx256m
+      JAVA_OPTS: -Xmx192m
   ftgo-restaurant-order-service:
       build: ./ftgo-restaurant-order-service
       ports:
@@ -107,7 +107,7 @@ services:
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
         EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-        JAVA_OPTS: -Xmx256m
+        JAVA_OPTS: -Xmx192m
   ftgo-restaurant-service:
       build: ./ftgo-restaurant-service
       ports:
@@ -124,7 +124,7 @@ services:
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
         EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-        JAVA_OPTS: -Xmx256m
+        JAVA_OPTS: -Xmx192m
   ftgo-accounting-service:
         build: ./ftgo-accounting-service
         ports:
@@ -141,7 +141,7 @@ services:
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
           EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
           EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-          JAVA_OPTS: -Xmx256m
+          JAVA_OPTS: -Xmx192m
   ftgo-order-history-service:
         build: ./ftgo-order-history-service
         ports:
@@ -162,7 +162,7 @@ services:
           AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
           AWS_DYNAMODB_ENDPOINT_URL: http://dynamodblocal:8000
           AWS_REGION: $AWS_REGION
-          JAVA_OPTS: -Xmx256m
+          JAVA_OPTS: -Xmx192m
   ftgo-api-gateway:
     build: ./ftgo-api-gateway
     ports:
@@ -170,9 +170,11 @@ services:
     environment:
       ORDER_DESTINATIONS_ORDERSERVICEURL: http://ftgo-order-service:8080
       ORDER_DESTINATIONS_ORDERHISTORYSERVICEURL: http://ftgo-order-history-service:8080
-      JAVA_OPTS: -Xmx256m
+      JAVA_OPTS: -Xmx192m
 
   dynamodblocal:
-       build: ./dynamodblocal
-       ports:
-         - "8000:8000"
+    build: ./dynamodblocal
+    ports:
+     - "8000:8000"
+    environment:
+      JAVA_OPTS: -Xmx128m
