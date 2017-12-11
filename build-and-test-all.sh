@@ -22,6 +22,8 @@ docker-compose up -d --build eventuate-local-cdc-service tram-cdc-service
 
 docker-compose up -d --build
 
+date
+
 ./wait-for-services.sh
 
 ./gradlew :ftgo-end-to-end-tests:cleanTest :ftgo-end-to-end-tests:test

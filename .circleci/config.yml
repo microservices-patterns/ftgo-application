@@ -12,7 +12,11 @@ jobs:
           paths:
             - ~/.gradle
           key:         ftgo-application-{{ checksum "build.gradle" }}
-      - run:           TERM=dumb ./build-and-test-all.sh
+      - run:
+          command:     |
+            export TERM=dumb
+            . ./setenv-circle-ci.sh
+            ./build-and-test-all.sh
       - run:
           name:        Save test results
           command:     |
