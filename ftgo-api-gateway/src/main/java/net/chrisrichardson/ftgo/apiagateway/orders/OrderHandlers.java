@@ -5,7 +5,7 @@ import net.chrisrichardson.ftgo.apiagateway.proxies.BillInfo;
 import net.chrisrichardson.ftgo.apiagateway.proxies.DeliveryInfo;
 import net.chrisrichardson.ftgo.apiagateway.proxies.DeliveryService;
 import net.chrisrichardson.ftgo.apiagateway.proxies.OrderInfo;
-import net.chrisrichardson.ftgo.apiagateway.proxies.OrderService;
+import net.chrisrichardson.ftgo.apiagateway.proxies.OrderServiceProxy;
 import net.chrisrichardson.ftgo.apiagateway.proxies.RestaurantOrderInfo;
 import net.chrisrichardson.ftgo.apiagateway.proxies.RestaurantOrderService;
 import org.springframework.http.MediaType;
@@ -20,12 +20,12 @@ import static org.springframework.web.reactive.function.BodyInserters.fromObject
 
 public class OrderHandlers {
 
-  private OrderService orderService;
+  private OrderServiceProxy orderService;
   private RestaurantOrderService restaurantOrderService;
   private DeliveryService deliveryService;
   private AccountingService accountingService;
 
-  public OrderHandlers(OrderService orderService,
+  public OrderHandlers(OrderServiceProxy orderService,
                        RestaurantOrderService restaurantOrderService,
                        DeliveryService deliveryService,
                        AccountingService accountingService) {

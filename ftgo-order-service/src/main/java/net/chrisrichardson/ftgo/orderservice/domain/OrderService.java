@@ -14,7 +14,6 @@ import net.chrisrichardson.ftgo.restaurantservice.events.MenuItem;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -27,39 +26,38 @@ public class OrderService {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-  @Autowired
   private OrderRepository orderRepository;
 
-  @Autowired
-  private DomainEventPublisher eventPublisher;
-
-  @Autowired
   private RestaurantRepository restaurantRepository;
 
-  @Autowired
   private SagaManager<CreateOrderSagaData> createOrderSagaManager;
 
-  @Autowired
   private SagaManager<CancelOrderSagaData> cancelOrderSagaManager;
   
-
-  @Autowired
   private SagaManager<ReviseOrderSagaData> reviseOrderSagaManager;
 
+  private OrderAggregateEventPublisher orderAggregateEventPublisher;
+
+  public OrderService(OrderRepository orderRepository, DomainEventPublisher eventPublisher, RestaurantRepository restaurantRepository, SagaManager<CreateOrderSagaData> createOrderSagaManager, SagaManager<CancelOrderSagaData> cancelOrderSagaManager, SagaManager<ReviseOrderSagaData> reviseOrderSagaManager, OrderAggregateEventPublisher orderAggregateEventPublisher) {
+    this.orderRepository = orderRepository;
+    this.restaurantRepository = restaurantRepository;
+    this.createOrderSagaManager = createOrderSagaManager;
+    this.cancelOrderSagaManager = cancelOrderSagaManager;
+    this.reviseOrderSagaManager = reviseOrderSagaManager;
+    this.orderAggregateEventPublisher = orderAggregateEventPublisher;
+  }
 
   public Order createOrder(long consumerId, long restaurantId, List<MenuItemIdAndQuantity> lineItems) {
     Restaurant restaurant = restaurantRepository.findOne(restaurantId);
     if (restaurant == null)
       throw new RuntimeException("Restaurant not found: " + restaurantId);
 
-    System.out.println("restaurant=" + restaurant.getMenuItems());
-
     List<OrderLineItem> orderLineItems = makeOrderLineItems(lineItems, restaurant);
     ResultWithEvents<Order> orderAndEvents = Order.createOrder(consumerId, restaurantId, orderLineItems);
     Order order = orderAndEvents.result;
     orderRepository.save(order);
 
-    eventPublisher.publish(Order.class, order.getId(), orderAndEvents.events);
+    orderAggregateEventPublisher.publish(order, orderAndEvents.events);
 
     OrderDetails orderDetails = new OrderDetails(consumerId, restaurantId, orderLineItems, order.getOrderTotal());
     CreateOrderSagaData data = new CreateOrderSagaData(order.getId(), orderDetails);
@@ -87,7 +85,7 @@ public class OrderService {
   public Order confirmChangeLineItemQuantity(Long orderId, OrderRevision orderRevision)  {
     Order order = orderRepository.findOne(orderId);
     List<DomainEvent> events = order.confirmRevision(orderRevision);
-    eventPublisher.publish(Order.class, Long.toString(order.getId()), events);
+    orderAggregateEventPublisher.publish(order, events);
     return order;
   }
 
@@ -108,7 +106,7 @@ public class OrderService {
 
   Order updateOrder(long orderId, Function<Order, List<DomainEvent>> updater) {
     Order order = orderRepository.findOne(orderId);
-    eventPublisher.publish(Order.class, Long.toString(orderId), updater.apply(order));
+    orderAggregateEventPublisher.publish(order, updater.apply(order));
     return order;
   }
 
@@ -144,10 +142,10 @@ public class OrderService {
   }
 
   public RevisedOrder beginReviseOrder(long orderId, OrderRevision revision) {
-    Order order1 = orderRepository.findOne(orderId);
-    ResultWithEvents<LineItemQuantityChange> result = order1.revise(revision);
-    eventPublisher.publish(Order.class, Long.toString(orderId), result.events);
-    return new RevisedOrder(order1, result.result);
+    Order order = orderRepository.findOne(orderId);
+    ResultWithEvents<LineItemQuantityChange> result = order.revise(revision);
+    orderAggregateEventPublisher.publish(order, result.events);
+    return new RevisedOrder(order, result.result);
   }
 
   public void undoPendingRevision(long orderId) {

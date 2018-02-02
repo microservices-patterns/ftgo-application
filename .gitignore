@@ -3,3 +3,6 @@ build/
 *.idea/
 *.iml
 *.log
+out
+target
+.serverless

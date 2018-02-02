@@ -70,7 +70,7 @@ public class Order {
 
   public static ResultWithEvents<Order> createOrder(long consumerId, long restaurantId, List<OrderLineItem> orderLineItems) {
     Order order = new Order(consumerId, restaurantId, orderLineItems);
-    List<DomainEvent> events = singletonList(new OrderCreatedEvent(OrderState.CREATE_PENDING,
+    List<DomainEvent> events = singletonList(new OrderCreatedEvent(
             new OrderDetails(consumerId, restaurantId, orderLineItems, order.getOrderTotal())));
     return new ResultWithEvents<>(order, events);
   }

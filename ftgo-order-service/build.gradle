@@ -1,12 +1,78 @@
 
-apply plugin: "spring-boot"
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE"
+        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:1.2.0.RELEASE"
+        classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
+    }
+}
+
+apply plugin: 'org.springframework.boot'
+apply plugin: "io.spring.dependency-management"
+apply plugin: 'spring-cloud-contract'
+apply plugin: 'docker-compose'
+
+apply plugin: IntegrationTestsPlugin
+apply plugin: ComponentTestsPlugin
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-contract-dependencies:1.2.0.RELEASE'
+    }
+}
+
+contracts {
+    contractsDslDir = new File("../ftgo-order-service-contracts/src/main/resources/contracts")
+    packageWithBaseClasses = 'net.chrisrichardson.ftgo.orderservice.contract'
+    generatedTestSourcesDir = project.file("${project.buildDir}/generated-integration-test-sources/contracts")
+//    baseClassForTests = 'net.chrisrichardson.ftgo.orderservice.contract.AbstractOrderConsumerContractTest'
+//    baseClassMappings {
+//        baseClassMapping('.*Order.groovy', 'net.chrisrichardson.ftgo.orderservice.contract.AbstractHttpOrderConsumerContractTest')
+//        baseClassMapping('.*/messaging/.*', 'net.chrisrichardson.ftgo.orderservice.contract.AbstractOrderConsumerContractTest')
+//    }
+}
+
+
+compileIntegrationTestGroovy {
+    source =  project.file("${project.buildDir}/generated-integration-test-sources/contracts")
+}
+compileTestGroovy {
+    source =   ['src/groovy']
+}
+
+
+componentTest.dependsOn(assemble)
+
+
+dockerCompose {
+
+    startedServices = [ 'not-used']
+
+    componentTests {
+        startedServices = [ 'ftgo-order-service']
+        stopContainers = false
+    }
+    integrationTests {
+        startedServices = [ 'mysql']
+        stopContainers = false
+    }
+}
+
+componentTest.dependsOn(componentTestsComposeUp)
+integrationTest.dependsOn(integrationTestsComposeUp)
 
 
 dependencies {
 
 
     compile project(":common-swagger")
+    compile project(":ftgo-common-jpa")
     compile "io.eventuate.tram.core:eventuate-tram-jdbc-kafka:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-commands:$eventuateTramVersion"
     compile "io.eventuate.tram.sagas:eventuate-tram-sagas-simple-dsl:$eventuateTramSagasVersion"
 
     compile project(":ftgo-accounting-service-api")
@@ -24,6 +90,22 @@ dependencies {
     testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"
 
     testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-in-memory:$eventuateTramSagasVersion"
-    testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+
+    // Added this stuff
+    
+    testCompile "net.chrisrichardson.ftgo.contracts:common-contracts:1.0-SNAPSHOT:stubs"
+    testCompile "net.chrisrichardson.ftgo.contracts:ftgo-restaurant-order-service-contracts:1.0-SNAPSHOT:stubs"
+    testCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
+    testCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
+    testCompile 'io.rest-assured:rest-assured:3.0.6'
+    testCompile 'io.rest-assured:spring-mock-mvc:3.0.6'
+    testCompile "io.rest-assured:json-path:3.0.6"
+    testCompile project(":eventuate-tram-spring-cloud-contract-support")
+
+    componentTestCompile 'info.cukes:cucumber-java:1.2.5'
+    componentTestCompile 'info.cukes:cucumber-junit:1.2.5'
+    componentTestCompile 'info.cukes:cucumber-spring:1.2.5'
 
 }
+

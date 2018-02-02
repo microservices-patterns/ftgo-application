@@ -2,7 +2,7 @@ package net.chrisrichardson.ftgo.apiagateway.orders;
 
 import net.chrisrichardson.ftgo.apiagateway.proxies.AccountingService;
 import net.chrisrichardson.ftgo.apiagateway.proxies.DeliveryService;
-import net.chrisrichardson.ftgo.apiagateway.proxies.OrderService;
+import net.chrisrichardson.ftgo.apiagateway.proxies.OrderServiceProxy;
 import net.chrisrichardson.ftgo.apiagateway.proxies.RestaurantOrderService;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -42,7 +42,7 @@ public class OrderConfiguration {
   }
 
   @Bean
-  public OrderHandlers orderHandlers(OrderService orderService, RestaurantOrderService restaurantOrderService,
+  public OrderHandlers orderHandlers(OrderServiceProxy orderService, RestaurantOrderService restaurantOrderService,
                                      DeliveryService deliveryService, AccountingService accountingService) {
     return new OrderHandlers(orderService, restaurantOrderService, deliveryService, accountingService);
   }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
+        http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd" version="2.1">
+    <embeddable class="net.chrisrichardson.ftgo.common.Money" access="FIELD">
+        <attributes>
+            <basic name="amount">
+                <column name="amount"/>
+            </basic>
+        </attributes>
+    </embeddable>
+</entity-mappings>

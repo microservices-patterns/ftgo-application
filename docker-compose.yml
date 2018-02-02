@@ -1,13 +1,13 @@
 version: '3'
 services:
   zookeeper:
-    image: eventuateio/eventuateio-local-zookeeper:0.14.0
+    image: eventuateio/eventuateio-local-zookeeper:0.15.0
     ports:
       - 2181:2181
       - 2888:2888
       - 3888:3888
   kafka:
-    image: eventuateio/eventuateio-local-kafka:0.14.0
+    image: eventuateio/eventuateio-local-kafka:0.15.0
     ports:
       - 9092:9092
     links:

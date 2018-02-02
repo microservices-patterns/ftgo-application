@@ -1,5 +1,33 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE"
+        // if using Stub Runner (consumer side) only remove this dependency
+        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:1.2.0.RELEASE"
+    }
+}
 
-apply plugin: "spring-boot"
+apply plugin: "io.spring.dependency-management"
+apply plugin: 'spring-cloud-contract'
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-contract-dependencies:1.2.0.RELEASE'
+    }
+}
+
+dependencies {
+    testCompile 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
+}
+
+contracts {
+    contractsDslDir = new File("../ftgo-restaurant-order-service-contracts/src/main/resources/contracts")
+    baseClassForTests = 'net.chrisrichardson.ftgo.restaurantorderservice.contract.AbstractRestaurantOrderConsumerContractTest'
+}
+
+apply plugin: 'org.springframework.boot'
 
 
 dependencies {
@@ -10,6 +38,7 @@ dependencies {
     compile "io.eventuate.tram.sagas:eventuate-tram-sagas-simple-dsl:$eventuateTramSagasVersion"
 
     compile project(":common-swagger")
+    compile project(":ftgo-common-jpa")
     compile project(":ftgo-restaurant-order-service-api")
     compile project(":ftgo-restaurant-service-api")
 
@@ -22,7 +51,8 @@ dependencies {
     testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"
 
     testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-in-memory:$eventuateTramSagasVersion"
-    testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testCompile 'com.jayway.restassured:rest-assured:2.3.0'
     testCompile "com.jayway.jsonpath:json-path:2.3.0"
+    testCompile project(":eventuate-tram-spring-cloud-contract-support")
 }

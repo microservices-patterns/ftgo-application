@@ -7,7 +7,6 @@ import net.chrisrichardson.ftgo.orderservice.domain.Order;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderRepository;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderRevision;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,11 +23,15 @@ import static java.util.stream.Collectors.toList;
 @RequestMapping(path = "/orders")
 public class OrderController {
 
-  @Autowired
   private OrderService orderService;
 
-  @Autowired
   private OrderRepository orderRepository;
+
+
+  public OrderController(OrderService orderService, OrderRepository orderRepository) {
+    this.orderService = orderService;
+    this.orderRepository = orderRepository;
+  }
 
   @RequestMapping(method = RequestMethod.POST)
   public CreateOrderResponse create(@RequestBody CreateOrderRequest request) {

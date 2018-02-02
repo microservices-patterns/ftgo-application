@@ -7,13 +7,15 @@ import net.chrisrichardson.ftgo.orderservice.domain.OrderService;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenuRevised;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class OrderEventConsumer {
 
-  @Autowired
   private OrderService orderService;
+
+  public OrderEventConsumer(OrderService orderService) {
+    this.orderService = orderService;
+  }
 
   public DomainEventHandlers domainEventHandlers() {
     return DomainEventHandlersBuilder

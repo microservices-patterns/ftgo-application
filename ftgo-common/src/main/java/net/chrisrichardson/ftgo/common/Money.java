@@ -4,13 +4,10 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 
-@Embeddable
-@Access(AccessType.FIELD)
+//@Embeddable
+//@Access(AccessType.FIELD)
 public class Money {
 
   public static Money ZERO = new Money(0);
@@ -22,6 +19,14 @@ public class Money {
 
   public Money(BigDecimal amount) {
     this.amount = amount;
+  }
+
+  public Money(String s) {
+    this.amount = new BigDecimal(s);
+  }
+
+  public Money(int i) {
+    this.amount = new BigDecimal(i);
   }
 
   @Override
@@ -51,13 +56,6 @@ public class Money {
             .toString();
   }
 
-  public Money(String s) {
-    this.amount = new BigDecimal(s);
-  }
-
-  public Money(int i) {
-    this.amount = new BigDecimal(i);
-  }
 
   public Money add(Money delta) {
     return new Money(amount.add(delta.amount));
@@ -74,4 +72,5 @@ public class Money {
   public Money multiply(int x) {
     return new Money(amount.multiply(new BigDecimal(x)));
   }
+
 }

@@ -115,6 +115,12 @@ All the services' business logic is implemented using Domain-Driven design aggre
 
 === Building
 
+Temporary: Build the Spring Cloud Contracts using this command:
+
+```
+./build-contracts.sh
+```
+
 Build the services using this command:
 
 ```

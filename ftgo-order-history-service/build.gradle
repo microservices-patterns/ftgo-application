@@ -1,5 +1,24 @@
 
-apply plugin: "spring-boot"
+buildscript {
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE"
+        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:1.2.0.RELEASE"
+    }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+}
+
+apply plugin: 'org.springframework.boot'
+apply plugin: "io.spring.dependency-management"
+apply plugin: 'spring-cloud-contract'
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-contract-dependencies:1.2.0.RELEASE'
+    }
+}
 
 dependencies {
     compile 'com.amazonaws:aws-java-sdk-dynamodb:1.11.158'
@@ -23,8 +42,16 @@ dependencies {
     testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"
 
     testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-in-memory:$eventuateTramSagasVersion"
-    testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testCompile 'com.jayway.restassured:rest-assured:2.3.0'
     testCompile "com.jayway.jsonpath:json-path:2.3.0"
+
+    // Added this stuff
+
+    testCompile "net.chrisrichardson.ftgo.contracts:ftgo-order-service-contracts:1.0-SNAPSHOT:stubs"
+    testCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
+    testCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
+    testCompile project(":eventuate-tram-spring-cloud-contract-support")
+    
 
 }

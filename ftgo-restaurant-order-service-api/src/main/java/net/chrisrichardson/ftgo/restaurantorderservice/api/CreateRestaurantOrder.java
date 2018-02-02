@@ -2,6 +2,7 @@ package net.chrisrichardson.ftgo.restaurantorderservice.api;
 
 import io.eventuate.tram.commands.CommandDestination;
 import io.eventuate.tram.commands.common.Command;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 @CommandDestination("restaurantService")
 public class CreateRestaurantOrder implements Command {
@@ -9,6 +10,11 @@ public class CreateRestaurantOrder implements Command {
   private Long orderId;
   private RestaurantOrderDetails orderDetails;
   private long restaurantId;
+
+  @Override
+  public String toString() {
+    return ToStringBuilder.reflectionToString(this);
+  }
 
   public Long getOrderId() {
     return orderId;
@@ -26,7 +32,7 @@ public class CreateRestaurantOrder implements Command {
     this.orderDetails = orderDetails;
   }
 
-  public CreateRestaurantOrder() {
+  private CreateRestaurantOrder() {
 
   }
 

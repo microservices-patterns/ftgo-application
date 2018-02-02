@@ -1,0 +1,50 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE"
+        // if using Stub Runner (consumer side) only remove this dependency
+        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:1.1.1.RELEASE"
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+group = "net.chrisrichardson.ftgo.contracts"
+version = "1.0-SNAPSHOT"
+apply plugin: "io.spring.dependency-management"
+apply plugin: 'java'
+apply plugin: 'spring-cloud-contract'
+apply plugin: 'maven'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: deployUrl)
+            pom.withXml {
+                asNode().appendNode('classifier', 'stubs')
+            }
+        }
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-contract-dependencies:1.1.4.RELEASE'
+    }
+}
+
+dependencies {
+    // testCompile 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
+}
+
+/*
+// In this section you define all Spring Cloud Contract Verifier Gradle Plugin properties
+contracts {
+    baseClassForTests = 'com.example.MvcTest'
+    // fully qualified name to a class that will be the base class for your generated test classes
+}
+*/

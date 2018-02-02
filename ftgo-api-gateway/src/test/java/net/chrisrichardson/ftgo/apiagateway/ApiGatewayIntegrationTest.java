@@ -34,78 +34,78 @@ import static org.junit.Assert.assertNotNull;
 //import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes=ApiGatewayIntegrationTestConfiguration.class,
+@SpringBootTest(classes = ApiGatewayIntegrationTestConfiguration.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties={"order.destinations.orderServiceUrl=http://localhost:8082",
+        properties = {"order.destinations.orderServiceUrl=http://localhost:8082",
                 "order.destinations.orderHistoryServiceUrl=http://localhost:8083"})
-public class ApiGatewayIntegrationTest  {
+public class ApiGatewayIntegrationTest {
 
-  @LocalServerPort
-  private int port;
+    @LocalServerPort
+    private int port;
 
-  @Rule
-  public WireMockRule wireMockRule = new WireMockRule(8082); // No-args constructor defaults to port 8080
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(8082); // No-args constructor defaults to port 8080
 
-  @Test
-  public void shouldProxyCreateOrder() {
+    @Test
+    public void shouldProxyCreateOrder() {
 
-    stubFor(post(urlEqualTo("/orders"))
-            .willReturn(aResponse()
-                    .withStatus(200)
-                    .withHeader("Content-Type", "text/xml")
-                    .withBody("<response>Some content</response>")));
-
-
-    WebClient client = WebClient.create("http://localhost:" + port + "/orders");
-
-    ResponseEntity<String> z = client
-            .post()
-            .body(BodyInserters.fromObject("{}"))
-            .exchange()
-            .flatMap(r -> r.toEntity(String.class))
-            .block();
-
-    assertNotNull(z);
-    assertEquals(HttpStatus.OK, z.getStatusCode());
-    assertEquals("<response>Some content</response>", z.getBody());
-
-    verify(postRequestedFor(urlMatching("/orders")));
-
-  }
-
-  @Test
-  public void shouldProxyGetOrderDetails() throws JsonProcessingException {
-
-    String orderId = "1";
-
-    OrderDetails expectedOrderDetails = new OrderDetails(new OrderInfo(orderId, "CREATED"));
-    ObjectMapper objectMapper = new ObjectMapper();
-
-    String body = objectMapper.writeValueAsString(expectedOrderDetails.getOrderInfo());
-
-    String expectedPath = "/orders/" + orderId;
-
-    stubFor(get(urlEqualTo(expectedPath))
-            .willReturn(aResponse()
-                    .withStatus(200)
-                    .withHeader("Content-Type", MediaType.APPLICATION_JSON.toString())
-                    .withBody(body)));
+        stubFor(post(urlEqualTo("/orders"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/xml")
+                        .withBody("<response>Some content</response>")));
 
 
-    WebClient client = WebClient.create("http://localhost:" + port + "/orders/1");
+        WebClient client = WebClient.create("http://localhost:" + port + "/orders");
 
-    ResponseEntity<OrderDetails> z = client
-            .get()
-            .exchange()
-            .flatMap(r -> r.toEntity(OrderDetails.class))
-            .block();
+        ResponseEntity<String> z = client
+                .post()
+                .body(BodyInserters.fromObject("{}"))
+                .exchange()
+                .flatMap(r -> r.toEntity(String.class))
+                .block();
 
-    assertNotNull(z);
-    assertEquals(HttpStatus.OK, z.getStatusCode());
-    assertEquals(body, expectedOrderDetails, z.getBody());
+        assertNotNull(z);
+        assertEquals(HttpStatus.OK, z.getStatusCode());
+        assertEquals("<response>Some content</response>", z.getBody());
 
-    verify(getRequestedFor(urlMatching(expectedPath)));
+        verify(postRequestedFor(urlMatching("/orders")));
 
-  }
+    }
+
+    @Test
+    public void shouldProxyGetOrderDetails() throws JsonProcessingException {
+
+        String orderId = "1";
+
+        OrderDetails expectedOrderDetails = new OrderDetails(new OrderInfo(orderId, "CREATED"));
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String body = objectMapper.writeValueAsString(expectedOrderDetails.getOrderInfo());
+
+        String expectedPath = "/orders/" + orderId;
+
+        stubFor(get(urlEqualTo(expectedPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON.toString())
+                        .withBody(body)));
+
+
+        WebClient client = WebClient.create("http://localhost:" + port + "/orders/1");
+
+        ResponseEntity<OrderDetails> z = client
+                .get()
+                .exchange()
+                .flatMap(r -> r.toEntity(OrderDetails.class))
+                .block();
+
+        assertNotNull(z);
+        assertEquals(HttpStatus.OK, z.getStatusCode());
+        assertEquals(body, expectedOrderDetails, z.getBody());
+
+        verify(getRequestedFor(urlMatching(expectedPath)));
+
+    }
 
 }

@@ -18,7 +18,11 @@ echo data is prepared
 
 docker-compose up -d --build eventuate-local-cdc-service tram-cdc-service
 
-./gradlew -x :ftgo-end-to-end-tests:test build
+# TODO Temporarily
+
+./build-contracts.sh
+
+./gradlew -x :ftgo-end-to-end-tests:test $* build
 
 docker-compose up -d --build
 

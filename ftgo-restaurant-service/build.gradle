@@ -1,5 +1,5 @@
 
-apply plugin: "spring-boot"
+apply plugin: 'org.springframework.boot'
 
 
 dependencies {
@@ -11,6 +11,7 @@ dependencies {
 
     compile project(":common-swagger")
     compile project(":ftgo-restaurant-service-api")
+    compile project(":ftgo-common-jpa")
 
     compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
@@ -22,8 +23,9 @@ dependencies {
     testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"
 
     testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-in-memory:$eventuateTramSagasVersion"
-    testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testCompile 'com.jayway.restassured:rest-assured:2.3.0'
     testCompile "com.jayway.jsonpath:json-path:2.3.0"
+    testCompile project(":eventuate-tram-spring-cloud-contract-support")
 
 }
