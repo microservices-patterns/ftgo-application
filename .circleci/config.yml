@@ -7,7 +7,7 @@ jobs:
       - checkout
       - restore_cache:
           key:         ftgo-application-{{ checksum "build.gradle" }}
-      - run:           TERM=dumb ./build-contract.sh
+      - run:           TERM=dumb ./build-contracts.sh
       - run:           TERM=dumb ./gradlew testClasses
       - save_cache:
           paths:
