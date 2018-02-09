@@ -27,3 +27,4 @@ jobs:
           path:        ~/junit
       - store_artifacts:
           path:        ~/junit
+      - run: ./publish-docker-images.sh
