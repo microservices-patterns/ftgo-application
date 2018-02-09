@@ -3,7 +3,6 @@
 DOCKER_COMPOSE_PREFIX=$(echo ${PWD##*/} | sed -e 's/-//g')_
 
 DOCKER_REPO=msapatterns
-REMOTE_PREFIX=eventuateio-local
 
 $PREFIX docker login -u ${DOCKER_USER_ID?} -p ${DOCKER_PASSWORD?}
 
