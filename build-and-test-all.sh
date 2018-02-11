@@ -10,7 +10,7 @@ docker-compose up -d --build dynamodblocal mysql
 echo mysql is started
 
 echo preparing dynamodblocal table data
-cd ftgo-order-history-service
+cd dynamodblocal-init
 ./create-dynamodb-tables.sh
 cd ..
 
