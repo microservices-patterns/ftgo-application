@@ -32,6 +32,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.sql.DataSource;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,13 +92,13 @@ public class RestaurantOrderServiceInMemoryIntegrationTest {
   @Test
   public void shouldCreateRestaurantOrder() {
 
-    Restaurant restaurant = new Restaurant();
+    long restaurantId = System.currentTimeMillis();
+    Restaurant restaurant = new Restaurant(restaurantId, Collections.emptyList());
 
     restaurantRepository.save(restaurant);
 
     TestMessageConsumer testMessageConsumer = testMessageConsumerFactory.make();
 
-    long restaurantId = restaurant.getId();
     long orderId = 999;
     Money orderTotal = new Money(123);
 
