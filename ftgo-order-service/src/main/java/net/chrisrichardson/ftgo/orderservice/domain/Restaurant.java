@@ -23,7 +23,6 @@ import java.util.Optional;
 public class Restaurant {
 
   @Id
-  @GeneratedValue
   private Long id;
 
   @Embedded
@@ -31,7 +30,7 @@ public class Restaurant {
   @CollectionTable(name = "order_service_restaurant_menu_items")
   private List<MenuItem> menuItems;
 
-  public Restaurant() {
+  private Restaurant() {
   }
 
   public Restaurant(long id, List<MenuItem> menuItems) {
