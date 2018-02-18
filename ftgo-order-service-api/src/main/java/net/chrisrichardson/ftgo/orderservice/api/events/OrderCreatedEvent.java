@@ -1,11 +1,10 @@
 package net.chrisrichardson.ftgo.orderservice.api.events;
 
-import io.eventuate.tram.events.common.DomainEvent;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-public class OrderCreatedEvent implements DomainEvent {
+public class OrderCreatedEvent implements OrderDomainEvent {
   private OrderDetails orderDetails;
 
   private OrderCreatedEvent() {

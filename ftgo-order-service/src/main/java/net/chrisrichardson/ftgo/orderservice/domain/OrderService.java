@@ -1,10 +1,12 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
 import io.eventuate.tram.events.ResultWithEvents;
+import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
 import io.eventuate.tram.events.common.DomainEvent;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.sagas.orchestration.SagaManager;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDetails;
+import net.chrisrichardson.ftgo.orderservice.api.events.OrderDomainEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderLineItem;
 import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSagaData;
 import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSagaData;
@@ -36,9 +38,9 @@ public class OrderService {
   
   private SagaManager<ReviseOrderSagaData> reviseOrderSagaManager;
 
-  private OrderAggregateEventPublisher orderAggregateEventPublisher;
+  private OrderDomainEventPublisher orderAggregateEventPublisher;
 
-  public OrderService(OrderRepository orderRepository, DomainEventPublisher eventPublisher, RestaurantRepository restaurantRepository, SagaManager<CreateOrderSagaData> createOrderSagaManager, SagaManager<CancelOrderSagaData> cancelOrderSagaManager, SagaManager<ReviseOrderSagaData> reviseOrderSagaManager, OrderAggregateEventPublisher orderAggregateEventPublisher) {
+  public OrderService(OrderRepository orderRepository, DomainEventPublisher eventPublisher, RestaurantRepository restaurantRepository, SagaManager<CreateOrderSagaData> createOrderSagaManager, SagaManager<CancelOrderSagaData> cancelOrderSagaManager, SagaManager<ReviseOrderSagaData> reviseOrderSagaManager, OrderDomainEventPublisher orderAggregateEventPublisher) {
     this.orderRepository = orderRepository;
     this.restaurantRepository = restaurantRepository;
     this.createOrderSagaManager = createOrderSagaManager;
@@ -53,7 +55,7 @@ public class OrderService {
       throw new RuntimeException("Restaurant not found: " + restaurantId);
 
     List<OrderLineItem> orderLineItems = makeOrderLineItems(lineItems, restaurant);
-    ResultWithEvents<Order> orderAndEvents = Order.createOrder(consumerId, restaurantId, orderLineItems);
+    ResultWithDomainEvents<Order, OrderDomainEvent> orderAndEvents = Order.createOrder(consumerId, restaurantId, orderLineItems);
     Order order = orderAndEvents.result;
     orderRepository.save(order);
 
@@ -84,7 +86,7 @@ public class OrderService {
 
   public Order confirmChangeLineItemQuantity(Long orderId, OrderRevision orderRevision)  {
     Order order = orderRepository.findOne(orderId);
-    List<DomainEvent> events = order.confirmRevision(orderRevision);
+    List<OrderDomainEvent> events = order.confirmRevision(orderRevision);
     orderAggregateEventPublisher.publish(order, events);
     return order;
   }
@@ -104,7 +106,7 @@ public class OrderService {
     return order;
   }
 
-  Order updateOrder(long orderId, Function<Order, List<DomainEvent>> updater) {
+  Order updateOrder(long orderId, Function<Order, List<OrderDomainEvent>> updater) {
     Order order = orderRepository.findOne(orderId);
     orderAggregateEventPublisher.publish(order, updater.apply(order));
     return order;
@@ -143,7 +145,7 @@ public class OrderService {
 
   public RevisedOrder beginReviseOrder(long orderId, OrderRevision revision) {
     Order order = orderRepository.findOne(orderId);
-    ResultWithEvents<LineItemQuantityChange> result = order.revise(revision);
+    ResultWithDomainEvents<LineItemQuantityChange, OrderDomainEvent> result = order.revise(revision);
     orderAggregateEventPublisher.publish(order, result.events);
     return new RevisedOrder(order, result.result);
   }
@@ -165,7 +167,7 @@ public class OrderService {
 
   public void reviseMenu(long id, RestaurantMenu revisedMenu) {
     Restaurant restaurant = restaurantRepository.findOne(id);
-    List<DomainEvent> events = restaurant.reviseMenu(revisedMenu);
+    List<OrderDomainEvent> events = restaurant.reviseMenu(revisedMenu);
   }
 
 }

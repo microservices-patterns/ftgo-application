@@ -71,6 +71,8 @@ dependencies {
 
     compile project(":common-swagger")
     compile project(":ftgo-common-jpa")
+    compile project(":eventuate-tram-aggregate-domain-events")
+
     compile "io.eventuate.tram.core:eventuate-tram-jdbc-kafka:$eventuateTramVersion"
     compile "io.eventuate.tram.core:eventuate-tram-commands:$eventuateTramVersion"
     compile "io.eventuate.tram.sagas:eventuate-tram-sagas-simple-dsl:$eventuateTramSagasVersion"

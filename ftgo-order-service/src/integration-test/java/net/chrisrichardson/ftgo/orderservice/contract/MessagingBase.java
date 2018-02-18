@@ -7,7 +7,7 @@ import io.eventuate.tram.events.publisher.TramEventsPublisherConfiguration;
 import io.eventuate.tram.inmemory.TramInMemoryConfiguration;
 import io.eventuate.tram.springcloudcontractsupport.EventuateContractVerifierConfiguration;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
-import net.chrisrichardson.ftgo.orderservice.domain.OrderAggregateEventPublisher;
+import net.chrisrichardson.ftgo.orderservice.domain.OrderDomainEventPublisher;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -39,14 +39,14 @@ public abstract class MessagingBase {
     }
 
     @Bean
-    public OrderAggregateEventPublisher orderAggregateEventPublisher(DomainEventPublisher eventPublisher) {
-      return new OrderAggregateEventPublisher(eventPublisher);
+    public OrderDomainEventPublisher orderAggregateEventPublisher(DomainEventPublisher eventPublisher) {
+      return new OrderDomainEventPublisher(eventPublisher);
     }
   }
 
 
   @Autowired
-  private OrderAggregateEventPublisher orderAggregateEventPublisher;
+  private OrderDomainEventPublisher orderAggregateEventPublisher;
 
   protected void orderCreated() {
     orderAggregateEventPublisher.publish(CHICKEN_VINDALOO_ORDER,

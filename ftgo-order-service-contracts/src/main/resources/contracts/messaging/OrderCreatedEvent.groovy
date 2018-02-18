@@ -12,7 +12,7 @@ org.springframework.cloud.contract.spec.Contract.make {
         headers {
             header('event-aggregate-type', 'net.chrisrichardson.ftgo.orderservice.domain.Order')
             header('event-type', 'net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent')
-            header('event-aggregate-id', '1')
+            header('event-aggregate-id', '99') // Matches OrderDetailsMother.ORDER_ID
         }
     }
 }

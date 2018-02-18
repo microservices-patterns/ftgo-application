@@ -46,7 +46,8 @@ public class RestaurantOrderServiceCommandHandler {
 
     try {
       RestaurantOrder restaurantOrder = restaurantOrderService.createRestaurantOrder(restaurantId, restaurantOrderId, restaurantOrderDetails);
-      return withLock(RestaurantOrder.class, restaurantOrder.getId()).withSuccess(new CreateRestaurantOrderReply(restaurantOrder.getId()));
+      CreateRestaurantOrderReply reply = new CreateRestaurantOrderReply(restaurantOrder.getId());
+      return withLock(RestaurantOrder.class, restaurantOrder.getId()).withSuccess(reply);
     } catch (RestaurantDetailsVerificationException e) {
       return withFailure();
     }

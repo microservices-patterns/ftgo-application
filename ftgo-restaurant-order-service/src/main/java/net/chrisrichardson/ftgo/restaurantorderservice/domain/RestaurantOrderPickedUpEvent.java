@@ -1,4 +1,4 @@
 package net.chrisrichardson.ftgo.restaurantorderservice.domain;
 
-public class RestaurantOrderPickedUpEvent {
+public class RestaurantOrderPickedUpEvent implements RestaurantOrderDomainEvent {
 }

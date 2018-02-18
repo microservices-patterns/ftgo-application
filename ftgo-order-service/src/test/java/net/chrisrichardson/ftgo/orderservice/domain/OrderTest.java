@@ -1,8 +1,10 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
 import io.eventuate.tram.events.ResultWithEvents;
+import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
 import io.eventuate.tram.events.common.DomainEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
+import net.chrisrichardson.ftgo.orderservice.api.events.OrderDomainEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderState;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 public class OrderTest {
 
-  private ResultWithEvents<Order> createResult;
+  private ResultWithDomainEvents<Order, OrderDomainEvent> createResult;
   private Order order;
 
   @Before
@@ -43,7 +45,7 @@ public class OrderTest {
 
   @Test
   public void shouldAuthorize() {
-    List<DomainEvent> events = order.noteAuthorized();
+    List<OrderDomainEvent> events = order.noteAuthorized();
     assertEquals(singletonList(new OrderAuthorized()), events);
     assertEquals(OrderState.AUTHORIZED, order.getState());
   }
@@ -55,7 +57,7 @@ public class OrderTest {
 
     OrderRevision orderRevision = new OrderRevision(Optional.empty(), Collections.singletonMap("1", 10));
 
-    ResultWithEvents<LineItemQuantityChange> result = order.revise(orderRevision);
+    ResultWithDomainEvents<LineItemQuantityChange, OrderDomainEvent> result = order.revise(orderRevision);
 
     assertEquals(CHICKEN_VINDALOO_PRICE.multiply(10), result.result.getNewOrderTotal());
 

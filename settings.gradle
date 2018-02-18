@@ -20,3 +20,5 @@ include "ftgo-api-gateway"
 include "ftgo-end-to-end-tests"
 include "eventuate-tram-spring-cloud-contract-support"
 
+include "eventuate-tram-aggregate-domain-events"
+

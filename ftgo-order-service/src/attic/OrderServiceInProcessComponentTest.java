@@ -37,7 +37,7 @@ public class OrderServiceInProcessComponentTest extends AbstractOrderServiceComp
     public DataSource dataSource() {
       EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
       return builder.setType(EmbeddedDatabaseType.H2)
-              .addScript("embedded-schema.sql")
+              .addScript("eventuate-tram-embedded-schema.sql")
               .addScript("eventuate-tram-sagas-embedded.sql")
               .build();
     }

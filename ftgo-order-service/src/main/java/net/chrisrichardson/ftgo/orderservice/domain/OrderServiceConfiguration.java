@@ -7,6 +7,9 @@ import io.eventuate.tram.sagas.orchestration.SagaManager;
 import io.eventuate.tram.sagas.orchestration.SagaManagerImpl;
 import io.eventuate.tram.sagas.orchestration.SagaOrchestratorConfiguration;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
+import net.chrisrichardson.ftgo.orderservice.sagaparticipants.AccountingServiceProxy;
+import net.chrisrichardson.ftgo.orderservice.sagaparticipants.ConsumerServiceProxy;
+import net.chrisrichardson.ftgo.orderservice.sagaparticipants.OrderServiceProxy;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.RestaurantOrderServiceProxy;
 import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSaga;
 import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSagaData;
@@ -31,7 +34,7 @@ public class OrderServiceConfiguration {
   @Bean
   public OrderService orderService(RestaurantRepository restaurantRepository, OrderRepository orderRepository, DomainEventPublisher eventPublisher,
                                    SagaManager<CreateOrderSagaData> createOrderSagaManager,
-                                   SagaManager<CancelOrderSagaData> cancelOrderSagaManager, SagaManager<ReviseOrderSagaData> reviseOrderSagaManager, OrderAggregateEventPublisher orderAggregateEventPublisher) {
+                                   SagaManager<CancelOrderSagaData> cancelOrderSagaManager, SagaManager<ReviseOrderSagaData> reviseOrderSagaManager, OrderDomainEventPublisher orderAggregateEventPublisher) {
     return new OrderService(orderRepository, eventPublisher, restaurantRepository,
             createOrderSagaManager, cancelOrderSagaManager, reviseOrderSagaManager, orderAggregateEventPublisher);
   }
@@ -42,8 +45,8 @@ public class OrderServiceConfiguration {
   }
 
   @Bean
-  public CreateOrderSaga createOrderSaga(RestaurantOrderServiceProxy restaurantOrderServiceProxy) {
-    return new CreateOrderSaga(restaurantOrderServiceProxy);
+  public CreateOrderSaga createOrderSaga(OrderServiceProxy orderService, ConsumerServiceProxy consumerService, RestaurantOrderServiceProxy restaurantOrderServiceProxy, AccountingServiceProxy accountingService) {
+    return new CreateOrderSaga(orderService, consumerService, restaurantOrderServiceProxy, accountingService);
   }
 
   @Bean
@@ -73,7 +76,22 @@ public class OrderServiceConfiguration {
   }
 
   @Bean
-  public OrderAggregateEventPublisher orderAggregateEventPublisher(DomainEventPublisher eventPublisher) {
-    return new OrderAggregateEventPublisher(eventPublisher);
+  public OrderServiceProxy orderServiceProxy() {
+    return new OrderServiceProxy();
+  }
+
+  @Bean
+  public ConsumerServiceProxy consumerServiceProxy() {
+    return new ConsumerServiceProxy();
+  }
+
+  @Bean
+  public AccountingServiceProxy accountingServiceProxy() {
+    return new AccountingServiceProxy();
+  }
+
+  @Bean
+  public OrderDomainEventPublisher orderAggregateEventPublisher(DomainEventPublisher eventPublisher) {
+    return new OrderDomainEventPublisher(eventPublisher);
   }
 }

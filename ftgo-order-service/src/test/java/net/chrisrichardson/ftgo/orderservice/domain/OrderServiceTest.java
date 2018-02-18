@@ -32,7 +32,7 @@ public class OrderServiceTest {
   private SagaManager<CreateOrderSagaData> createOrderSagaManager;
   private SagaManager<CancelOrderSagaData> cancelOrderSagaManager;
   private SagaManager<ReviseOrderSagaData> reviseOrderSagaManager;
-  private OrderAggregateEventPublisher orderAggregateEventPublisher;
+  private OrderDomainEventPublisher orderAggregateEventPublisher;
 
   @Before
   public void setup() {
@@ -43,9 +43,9 @@ public class OrderServiceTest {
     cancelOrderSagaManager = mock(SagaManager.class);
     reviseOrderSagaManager = mock(SagaManager.class);
 
-    // Mock DomainEventPublisher AND use the real OrderAggregateEventPublisher
+    // Mock DomainEventPublisher AND use the real OrderDomainEventPublisher
 
-    orderAggregateEventPublisher = mock(OrderAggregateEventPublisher.class);
+    orderAggregateEventPublisher = mock(OrderDomainEventPublisher.class);
 
     orderService = new OrderService(orderRepository, eventPublisher, restaurantRepository,
             createOrderSagaManager, cancelOrderSagaManager, reviseOrderSagaManager, orderAggregateEventPublisher);

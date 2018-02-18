@@ -24,7 +24,21 @@ docker-compose up -d --build eventuate-local-cdc-service tram-cdc-service
 
 ./gradlew -x :ftgo-end-to-end-tests:test $* build
 
-docker-compose up -d --build
+docker-compose build
+
+./gradlew integrationTest
+
+
+SPRING_DATASOURCE_URL=jdbc:mysql://${DOCKER_HOST_IP?}/ftgoorderservice ./gradlew :ftgo-order-service:componentTest
+
+docker-compose down -v
+docker-compose up -d
+
+echo preparing dynamodblocal table data
+cd ftgo-order-history-service
+./create-dynamodb-tables.sh
+cd ..
+
 
 date
 
