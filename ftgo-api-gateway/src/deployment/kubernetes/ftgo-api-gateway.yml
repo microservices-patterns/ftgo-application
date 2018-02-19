@@ -41,23 +41,25 @@ spec:
         - containerPort: 8080
           name: httpport
         env:
+          - name: JAVA_OPTS
+            value: "-Dsun.net.inetaddr.ttl=30"
           - name: ORDER_DESTINATIONS_ORDERSERVICEURL
             value: http://ftgo-order-service:8080
           - name: ORDER_DESTINATIONS_ORDERHISTORYSERVICEURL
             value: http://ftgo-order-history-service:8080
           - name: CONSUMER_DESTINATIONS_CONSUMERSERVICEURL
             value: http://ftgo-consumer-service:8080
-#        livenessProbe:
-#          httpGet:
-#            path: /health
-#            port: 8080
-#          initialDelaySeconds: 60
-#          periodSeconds: 3
-#        readinessProbe:
-#          httpGet:
-#            path: /health
-#            port: 8080
-#          initialDelaySeconds: 60
-#          periodSeconds: 3
-#
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 20
+
 ---

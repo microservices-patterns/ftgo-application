@@ -29,13 +29,13 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 8000
-          initialDelaySeconds: 60
-          periodSeconds: 3
+          initialDelaySeconds: 30
+          periodSeconds: 20
         readinessProbe:
           tcpSocket:
             port: 8000
-          initialDelaySeconds: 60
-          periodSeconds: 3
+          initialDelaySeconds: 30
+          periodSeconds: 20
         volumeMounts:
           - name: ftgo-dynamodb-persistent-storage
             mountPath: /dynamodb_local_db

@@ -32,7 +32,10 @@ spec:
         ports:
         - containerPort: 8080
           name: httpport
+        command: ["bash", "-c", "java -Dsun.net.inetaddr.ttl=30 -jar *.jar" ]
         env:
+          - name: JAVA_OPTS
+            value: "-Dsun.net.inetaddr.ttl=30"
           - name: SPRING_DATASOURCE_URL
             value: jdbc:mysql://ftgo-mysql/eventuate
           - name: SPRING_DATASOURCE_USERNAME
@@ -64,11 +67,11 @@ spec:
             path: /health
             port: 8080
           initialDelaySeconds: 60
-          periodSeconds: 3
+          periodSeconds: 20
         readinessProbe:
           httpGet:
             path: /health
             port: 8080
           initialDelaySeconds: 60
-          periodSeconds: 3
+          periodSeconds: 20
 ---
