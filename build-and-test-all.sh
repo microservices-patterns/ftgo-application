@@ -29,7 +29,11 @@ docker-compose build
 ./gradlew integrationTest
 
 
+# Component tests need to use the per-service database schema
+
 SPRING_DATASOURCE_URL=jdbc:mysql://${DOCKER_HOST_IP?}/ftgoorderservice ./gradlew :ftgo-order-service:componentTest
+
+# Reset the DB/messages
 
 docker-compose down -v
 docker-compose up -d
@@ -38,7 +42,6 @@ echo preparing dynamodblocal table data
 cd ftgo-order-history-service
 ./create-dynamodb-tables.sh
 cd ..
-
 
 date
 
