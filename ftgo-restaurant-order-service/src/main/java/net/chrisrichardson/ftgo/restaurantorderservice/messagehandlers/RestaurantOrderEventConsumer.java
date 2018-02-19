@@ -32,10 +32,8 @@ public class RestaurantOrderEventConsumer {
 
   public void reviseMenu(DomainEventEnvelope<RestaurantMenuRevised> de) {
 
-    String restaurantIds = de.getAggregateId();
-    long id = Long.parseLong(restaurantIds);
+    long id = Long.parseLong(de.getAggregateId());
     RestaurantMenu revisedMenu = de.getEvent().getRevisedMenu();
-
     restaurantService.reviseMenu(id, revisedMenu);
   }
 

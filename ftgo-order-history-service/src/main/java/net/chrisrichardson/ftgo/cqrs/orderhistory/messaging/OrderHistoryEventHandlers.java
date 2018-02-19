@@ -10,6 +10,7 @@ import net.chrisrichardson.ftgo.cqrs.orderhistory.OrderHistoryDao;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb.Order;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb.SourceEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
+import net.chrisrichardson.ftgo.orderservice.api.events.OrderState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +56,7 @@ public class OrderHistoryEventHandlers {
   private Order makeOrder(String orderId, OrderCreatedEvent event) {
     return new Order(orderId,
             Long.toString(event.getOrderDetails().getConsumerId()),
-            event.getOrderState(),
+            OrderState.CREATE_PENDING,
             event.getOrderDetails().getLineItems(),
             event.getOrderDetails().getOrderTotal(),
             "name-of-" + event.getOrderDetails().getRestaurantId());

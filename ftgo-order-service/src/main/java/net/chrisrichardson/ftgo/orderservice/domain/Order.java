@@ -1,13 +1,10 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
 import io.eventuate.tram.events.ResultWithEvents;
-import io.eventuate.tram.events.common.DomainEvent;
+import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.common.UnsupportedStateTransitionException;
-import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
-import net.chrisrichardson.ftgo.orderservice.api.events.OrderDetails;
-import net.chrisrichardson.ftgo.orderservice.api.events.OrderLineItem;
-import net.chrisrichardson.ftgo.orderservice.api.events.OrderState;
+import net.chrisrichardson.ftgo.orderservice.api.events.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -68,18 +65,18 @@ public class Order {
   }
 
 
-  public static ResultWithEvents<Order> createOrder(long consumerId, long restaurantId, List<OrderLineItem> orderLineItems) {
+  public static ResultWithDomainEvents<Order, OrderDomainEvent> createOrder(long consumerId, long restaurantId, List<OrderLineItem> orderLineItems) {
     Order order = new Order(consumerId, restaurantId, orderLineItems);
-    List<DomainEvent> events = singletonList(new OrderCreatedEvent(OrderState.CREATE_PENDING,
+    List<OrderDomainEvent> events = singletonList(new OrderCreatedEvent(
             new OrderDetails(consumerId, restaurantId, orderLineItems, order.getOrderTotal())));
-    return new ResultWithEvents<>(order, events);
+    return new ResultWithDomainEvents<>(order, events);
   }
 
   public Money getOrderTotal() {
     return orderLineItems.orderTotal();
   }
 
-  public List<DomainEvent> cancel() {
+  public List<OrderDomainEvent> cancel() {
     switch (state) {
       case AUTHORIZED:
         this.state = OrderState.CANCEL_PENDING;
@@ -89,7 +86,7 @@ public class Order {
     }
   }
 
-  public List<DomainEvent> undoPendingCancel() {
+  public List<OrderDomainEvent> undoPendingCancel() {
     switch (state) {
       case CANCEL_PENDING:
         this.state = OrderState.AUTHORIZED;
@@ -99,7 +96,7 @@ public class Order {
     }
   }
 
-  public List<DomainEvent> noteCancelled() {
+  public List<OrderDomainEvent> noteCancelled() {
     switch (state) {
       case CANCEL_PENDING:
         this.state = OrderState.CANCELLED;
@@ -109,7 +106,7 @@ public class Order {
     }
   }
 
-  public List<DomainEvent> noteAuthorized() {
+  public List<OrderDomainEvent> noteAuthorized() {
     switch (state) {
       case CREATE_PENDING:
         this.state = AUTHORIZED;
@@ -120,7 +117,7 @@ public class Order {
 
   }
 
-  public List<DomainEvent> noteRejected() {
+  public List<OrderDomainEvent> noteRejected() {
     switch (state) {
       case CREATE_PENDING:
         this.state = REJECTED;
@@ -133,11 +130,11 @@ public class Order {
   }
 
 
-  public List<DomainEvent> noteReversingAuthorization() {
+  public List<OrderDomainEvent> noteReversingAuthorization() {
     return null;
   }
 
-  public ResultWithEvents<LineItemQuantityChange> revise(OrderRevision orderRevision) {
+  public ResultWithDomainEvents<LineItemQuantityChange, OrderDomainEvent> revise(OrderRevision orderRevision) {
     switch (state) {
 
       case AUTHORIZED:
@@ -146,14 +143,14 @@ public class Order {
           throw new OrderMinimumNotMetException();
         }
         this.state = REVISION_PENDING;
-        return new ResultWithEvents<>(change, singletonList(new OrderRevisionProposed(orderRevision, change.currentOrderTotal, change.newOrderTotal)));
+        return new ResultWithDomainEvents<>(change, singletonList(new OrderRevisionProposed(orderRevision, change.currentOrderTotal, change.newOrderTotal)));
 
       default:
         throw new UnsupportedStateTransitionException(state);
     }
   }
 
-  public List<DomainEvent> rejectRevision() {
+  public List<OrderDomainEvent> rejectRevision() {
     switch (state) {
       case REVISION_PENDING:
         this.state = AUTHORIZED;
@@ -163,7 +160,7 @@ public class Order {
     }
   }
 
-  public List<DomainEvent> confirmRevision(OrderRevision orderRevision) {
+  public List<OrderDomainEvent> confirmRevision(OrderRevision orderRevision) {
     switch (state) {
       case REVISION_PENDING:
         LineItemQuantityChange licd = orderLineItems.lineItemQuantityChange(orderRevision);

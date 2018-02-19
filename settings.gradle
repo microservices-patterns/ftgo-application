@@ -1,8 +1,12 @@
 
 include "common-swagger"
 include "ftgo-common"
+include "ftgo-common-jpa"
+
 include "ftgo-order-service"
 include "ftgo-order-service-api"
+include "ftgo-order-service-contracts"
+
 include "ftgo-restaurant-order-service-api"
 include "ftgo-restaurant-order-service"
 include "ftgo-accounting-service-api"
@@ -14,5 +18,8 @@ include "ftgo-restaurant-service"
 include "ftgo-order-history-service"
 include "ftgo-api-gateway"
 include "ftgo-end-to-end-tests"
+include "eventuate-tram-spring-cloud-contract-support"
+
+include "eventuate-tram-aggregate-domain-events"
 
 include "ftgo-restaurant-service-aws-lambda"

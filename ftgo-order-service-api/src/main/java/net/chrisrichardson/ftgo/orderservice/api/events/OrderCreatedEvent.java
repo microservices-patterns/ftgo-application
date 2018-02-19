@@ -1,10 +1,11 @@
 package net.chrisrichardson.ftgo.orderservice.api.events;
 
-import io.eventuate.tram.events.common.DomainEvent;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
-public class OrderCreatedEvent implements DomainEvent {
+public class OrderCreatedEvent implements OrderDomainEvent {
   private OrderDetails orderDetails;
-  private OrderState orderState;
 
   private OrderCreatedEvent() {
   }
@@ -13,12 +14,7 @@ public class OrderCreatedEvent implements DomainEvent {
     this.orderDetails = orderDetails;
   }
 
-  public void setOrderState(OrderState orderState) {
-    this.orderState = orderState;
-  }
-
-  public OrderCreatedEvent(OrderState orderState, OrderDetails orderDetails) {
-    this.orderState = orderState;
+  public OrderCreatedEvent(OrderDetails orderDetails) {
 
     this.orderDetails = orderDetails;
   }
@@ -27,7 +23,19 @@ public class OrderCreatedEvent implements DomainEvent {
     return orderDetails;
   }
 
-  public OrderState getOrderState() {
-    return orderState;
+  @Override
+  public String toString() {
+    return ToStringBuilder.reflectionToString(this);
   }
+
+  @Override
+  public boolean equals(Object o) {
+    return EqualsBuilder.reflectionEquals(this, o);
+  }
+
+  @Override
+  public int hashCode() {
+    return HashCodeBuilder.reflectionHashCode(this);
+  }
+
 }

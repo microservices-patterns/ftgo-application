@@ -1,6 +1,8 @@
 package net.chrisrichardson.ftgo.orderservice.sagas.createorder;
 
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDetails;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class CreateOrderSagaData  {
 
@@ -19,6 +21,16 @@ public class CreateOrderSagaData  {
   public CreateOrderSagaData(Long orderId, OrderDetails orderDetails) {
     this.orderId = orderId;
     this.orderDetails = orderDetails;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return EqualsBuilder.reflectionEquals(this, o);
+  }
+
+  @Override
+  public int hashCode() {
+    return HashCodeBuilder.reflectionHashCode(this);
   }
 
   public OrderDetails getOrderDetails() {

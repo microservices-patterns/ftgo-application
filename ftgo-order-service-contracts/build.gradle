@@ -1,0 +1,31 @@
+buildscript {
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE"
+        // if using Stub Runner (consumer side) only remove this dependency
+        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:1.2.1.RELEASE"
+    }
+    repositories {
+        mavenCentral()
+    }
+}
+
+apply plugin: "io.spring.dependency-management"
+apply plugin: 'spring-cloud-contract'
+apply plugin: 'maven'
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-contract-dependencies:1.2.1.RELEASE'
+    }
+}
+
+dependencies {
+    testCompile 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
+}
+
+generateContractTests.enabled = false
+

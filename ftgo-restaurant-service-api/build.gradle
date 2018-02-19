@@ -3,9 +3,6 @@ dependencies {
 
 
     compile "io.eventuate.tram.core:eventuate-tram-events:$eventuateTramVersion"
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-simple-dsl:$eventuateTramSagasVersion"
-
-    compile project(":ftgo-consumer-service-api")
-
+    compile project(":ftgo-common")
 
 }

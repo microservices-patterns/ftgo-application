@@ -12,6 +12,9 @@ subprojects {
 
     apply plugin: "java"
 
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+
     repositories {
         mavenCentral()
         jcenter()
@@ -19,6 +22,9 @@ subprojects {
             url "https://dl.bintray.com/eventuateio-oss/eventuate-maven-release"
         }
         eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
+
+        // For the contracts
+        mavenLocal()
     }
 
 }

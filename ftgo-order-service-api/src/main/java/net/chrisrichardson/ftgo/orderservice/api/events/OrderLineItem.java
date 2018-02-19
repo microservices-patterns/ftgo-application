@@ -27,38 +27,17 @@ public class OrderLineItem {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this)
-            .append("quantity", quantity)
-            .append("menuItemId", menuItemId)
-            .append("name", name)
-            .append("price", price)
-            .toString();
+    return ToStringBuilder.reflectionToString(this);
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-
-    if (o == null || getClass() != o.getClass()) return false;
-
-    OrderLineItem that = (OrderLineItem) o;
-
-    return new EqualsBuilder()
-            .append(quantity, that.quantity)
-            .append(menuItemId, that.menuItemId)
-            .append(name, that.name)
-            .append(price, that.price)
-            .isEquals();
+    return EqualsBuilder.reflectionEquals(this, o);
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(17, 37)
-            .append(quantity)
-            .append(menuItemId)
-            .append(name)
-            .append(price)
-            .toHashCode();
+    return HashCodeBuilder.reflectionHashCode(this);
   }
 
   public OrderLineItem(String menuItemId, String name, Money price, int quantity) {

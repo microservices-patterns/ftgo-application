@@ -1,4 +1,10 @@
 dependencies {
-    compile "io.springfox:springfox-swagger2:2.3.0"
-    compile "io.springfox:springfox-swagger-ui:2.3.0"
+    compile ("io.springfox:springfox-swagger2:2.3.0") {
+        exclude group: "org.springframework"
+    }
+    compile ("io.springfox:springfox-swagger-ui:2.3.0"){
+        exclude group: "org.springframework"
+    }
+    compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+
 }

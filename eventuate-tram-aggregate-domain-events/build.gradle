@@ -1,0 +1,3 @@
+dependencies {
+    compile "io.eventuate.tram.core:eventuate-tram-events:$eventuateTramVersion"
+}

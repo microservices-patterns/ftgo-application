@@ -1,7 +1,7 @@
 package net.chrisrichardson.ftgo.restaurantorderservice.domain;
 
 import io.eventuate.tram.events.ResultWithEvents;
-import io.eventuate.tram.events.common.DomainEvent;
+import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
 import net.chrisrichardson.ftgo.common.NotYetImplementedException;
 import net.chrisrichardson.ftgo.common.UnsupportedStateTransitionException;
 import net.chrisrichardson.ftgo.restaurantorderservice.api.RestaurantOrderDetails;
@@ -40,8 +40,8 @@ public class RestaurantOrder {
   private LocalDateTime pickedUpTime;
   private LocalDateTime readyForPickupTime;
 
-  public static ResultWithEvents<RestaurantOrder> create(long restaurantId, Long id, RestaurantOrderDetails details) {
-    return new ResultWithEvents<>(new RestaurantOrder(restaurantId, id, details));
+  public static ResultWithDomainEvents<RestaurantOrder, RestaurantOrderDomainEvent> create(long restaurantId, Long id, RestaurantOrderDetails details) {
+    return new ResultWithDomainEvents<>(new RestaurantOrder(restaurantId, id, details));
   }
 
   private RestaurantOrder() {
@@ -54,7 +54,7 @@ public class RestaurantOrder {
     this.lineItems = details.getLineItems();
   }
 
-  public List<DomainEvent> confirmCreate() {
+  public List<RestaurantOrderDomainEvent> confirmCreate() {
     switch (state) {
       case CREATE_PENDING:
         state = RestaurantOrderState.CREATED;
@@ -64,12 +64,12 @@ public class RestaurantOrder {
     }
   }
 
-  public List<DomainEvent> cancelCreate() {
+  public List<RestaurantOrderDomainEvent> cancelCreate() {
     throw new NotYetImplementedException();
   }
 
 
-  public List<DomainEvent> accept(LocalDateTime readyBy) {
+  public List<RestaurantOrderDomainEvent> accept(LocalDateTime readyBy) {
     switch (state) {
       case CREATED:
         // Verify that readyBy is in the futurestate = RestaurantOrderState.ACCEPTED;
@@ -87,7 +87,7 @@ public class RestaurantOrder {
 
   // TODO cancel()
 
-  public List<RestaurantOrderPreparationStartedEvent> preparing() {
+  public List<RestaurantOrderDomainEvent> preparing() {
     switch (state) {
       case ACCEPTED:
         this.state = RestaurantOrderState.PREPARING;
@@ -98,7 +98,7 @@ public class RestaurantOrder {
     }
   }
 
-  public List<RestaurantOrderPreparationCompletedEvent> readyForPickup() {
+  public List<RestaurantOrderDomainEvent> readyForPickup() {
     switch (state) {
       case PREPARING:
         this.state = RestaurantOrderState.READY_FOR_PICKUP;
@@ -109,7 +109,7 @@ public class RestaurantOrder {
     }
   }
 
-  public List<RestaurantOrderPickedUpEvent> pickedUp() {
+  public List<RestaurantOrderDomainEvent> pickedUp() {
     switch (state) {
       case READY_FOR_PICKUP:
         this.state = RestaurantOrderState.PICKED_UP;
@@ -134,7 +134,7 @@ public class RestaurantOrder {
 
   }
 
-  public List<DomainEvent> cancel() {
+  public List<RestaurantOrderDomainEvent> cancel() {
     switch (state) {
       case CREATED:
       case ACCEPTED:
@@ -150,7 +150,7 @@ public class RestaurantOrder {
     return id;
   }
 
-  public List<DomainEvent> confirmCancel() {
+  public List<RestaurantOrderDomainEvent> confirmCancel() {
     switch (state) {
       case CANCEL_PENDING:
         this.state = RestaurantOrderState.CANCELLED;
@@ -160,7 +160,7 @@ public class RestaurantOrder {
 
     }
   }
-  public List<DomainEvent> undoCancel() {
+  public List<RestaurantOrderDomainEvent> undoCancel() {
     switch (state) {
       case CANCEL_PENDING:
         this.state = this.previousState;
@@ -171,7 +171,7 @@ public class RestaurantOrder {
     }
   }
 
-  public List<DomainEvent> beginReviseOrder(Map<String, Integer> revisedLineItemQuantities) {
+  public List<RestaurantOrderDomainEvent> beginReviseOrder(Map<String, Integer> revisedLineItemQuantities) {
     switch (state) {
       case CREATED:
       case ACCEPTED:
@@ -183,7 +183,7 @@ public class RestaurantOrder {
     }
   }
 
-  public List<DomainEvent> undoBeginReviseOrder() {
+  public List<RestaurantOrderDomainEvent> undoBeginReviseOrder() {
     switch (state) {
       case REVISION_PENDING:
         this.state = this.previousState;
@@ -193,7 +193,7 @@ public class RestaurantOrder {
     }
   }
 
-  public List<DomainEvent> confirmReviseRestaurantOrder(Map<String, Integer> revisedLineItemQuantities) {
+  public List<RestaurantOrderDomainEvent> confirmReviseRestaurantOrder(Map<String, Integer> revisedLineItemQuantities) {
     switch (state) {
       case REVISION_PENDING:
         this.state = this.previousState;

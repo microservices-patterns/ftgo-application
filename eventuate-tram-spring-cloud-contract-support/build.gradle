@@ -1,0 +1,24 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE"
+        // if using Stub Runner (consumer side) only remove this dependency
+        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:1.2.0.RELEASE"
+    }
+}
+
+apply plugin: "io.spring.dependency-management"
+apply plugin: 'spring-cloud-contract'
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-contract-dependencies:1.2.0.RELEASE'
+    }
+}
+
+dependencies {
+    compile 'org.springframework.cloud:spring-cloud-starter-contract-verifier:1.2.0.RELEASE'
+    compile "io.eventuate.tram.core:eventuate-tram-messaging:$eventuateTramVersion"
+}

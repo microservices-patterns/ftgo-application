@@ -1,5 +1,6 @@
 package net.chrisrichardson.ftgo.restaurantorderservice.domain;
 
+import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.events.publisher.TramEventsPublisherConfiguration;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -26,5 +27,10 @@ public class RestaurantOrderDomainConfiguration {
   @Bean
   public RestaurantService restaurantService() {
     return new RestaurantService();
+  }
+
+  @Bean
+  public RestaurantOrderDomainEventPublisher restaurantAggregateEventPublisher(DomainEventPublisher domainEventPublisher) {
+    return new RestaurantOrderDomainEventPublisher(domainEventPublisher);
   }
 }

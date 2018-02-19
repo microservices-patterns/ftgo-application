@@ -19,12 +19,6 @@ import static io.eventuate.tram.commands.consumer.CommandHandlerReplyBuilder.wit
 public class OrderCommandHandlers {
 
   @Autowired
-  private OrderRepository orderRepository;
-
-  @Autowired
-  private DomainEventPublisher eventPublisher;
-
-  @Autowired
   private OrderService orderService;
 
   public CommandHandlers commandHandlers() {

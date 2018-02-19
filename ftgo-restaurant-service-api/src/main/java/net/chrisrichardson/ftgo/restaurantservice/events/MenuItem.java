@@ -1,6 +1,9 @@
 package net.chrisrichardson.ftgo.restaurantservice.events;
 
 import net.chrisrichardson.ftgo.common.Money;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -21,6 +24,21 @@ public class MenuItem {
     this.id = id;
     this.name = name;
     this.price = price;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return EqualsBuilder.reflectionEquals(this, o);
+  }
+
+  @Override
+  public int hashCode() {
+    return HashCodeBuilder.reflectionHashCode(this);
+  }
+
+  @Override
+  public String toString() {
+    return ToStringBuilder.reflectionToString(this);
   }
 
   public String getId() {

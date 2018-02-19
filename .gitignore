@@ -5,3 +5,6 @@ build/
 *.log
 *.pid
 out
+target
+.serverless
+*.pid
