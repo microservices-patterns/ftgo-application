@@ -170,6 +170,7 @@ services:
     environment:
       ORDER_DESTINATIONS_ORDERSERVICEURL: http://ftgo-order-service:8080
       ORDER_DESTINATIONS_ORDERHISTORYSERVICEURL: http://ftgo-order-history-service:8080
+      CONSUMER_DESTINATIONS_CONSUMERSERVICEURL: http://ftgo-consumer-service:8080
       JAVA_OPTS: -Xmx192m
 
   dynamodblocal:

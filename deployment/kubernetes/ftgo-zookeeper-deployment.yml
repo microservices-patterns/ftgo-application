@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ftgo-zookeeper
+  labels:
+    name: ftgo-zookeeper
+spec:
+  ports:
+  - port: 2181
+    targetPort: 2181
+  clusterIP: None
+  selector:
+    role: ftgo-zookeeper
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: ftgo-zookeeper
+spec:
+  serviceName: "zookeeper"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        role: ftgo-zookeeper
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: ftgo-zookeeper
+          image: eventuateio/eventuateio-local-zookeeper:0.14.0
+          ports:
+              - containerPort: 2181
+          volumeMounts:
+            - name: ftgo-zookeeper-persistent-storage
+              mountPath: /usr/local/zookeeper-data
+  volumeClaimTemplates:
+  - metadata:
+      name: ftgo-zookeeper-persistent-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+---

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ftgo-api-gateway
+spec:
+  type: NodePort
+  ports:
+  - nodePort: 30000
+    port: 80
+    targetPort: 8080
+  selector:
+    svc: ftgo-api-gateway
+---

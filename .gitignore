@@ -3,4 +3,5 @@ build/
 *.idea/
 *.iml
 *.log
+*.pid
 out

@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ftgo-kafka
+  labels:
+    name: ftgo-kafka
+spec:
+  ports:
+  - port: 9092
+    targetPort: 9092
+  clusterIP: None
+  selector:
+    role: ftgo-kafka
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: ftgo-kafka
+spec:
+  serviceName: "kafka"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        role: ftgo-kafka
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: ftgo-kafka
+          image: eventuateio/eventuateio-local-kafka:0.14.0
+          env:
+            - name: KAFKA_HEAP_OPTS
+              value: -Xmx320m -Xms320m
+            - name: ZOOKEEPER_SERVERS
+              value: ftgo-zookeeper:2181
+          ports:
+              - containerPort: 9092
+          volumeMounts:
+            - name: ftgo-kafka-persistent-storage
+              mountPath: /usr/local/kafka-data
+            - name: ftgo-kafka-config-volume
+              mountPath: /usr/local/kafka-config
+      volumes:
+      - name: ftgo-kafka-config-volume
+        configMap:
+          name: ftgo-kafka-config
+  volumeClaimTemplates:
+  - metadata:
+      name: ftgo-kafka-persistent-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+---

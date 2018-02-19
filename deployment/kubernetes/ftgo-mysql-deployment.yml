@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ftgo-mysql
+  labels:
+    name: ftgo-mysql
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3306
+  clusterIP: None
+  selector:
+    role: ftgo-mysql
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: ftgo-mysql
+spec:
+  serviceName: "mysql"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        role: ftgo-mysql
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: ftgo-mysql
+          image: msapatterns/mysql:latest
+          imagePullPolicy: Always
+          args:
+              - "--ignore-db-dir=lost+found"
+          ports:
+              - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: rootpassword
+            - name: MYSQL_USER
+              value: mysqluser
+            - name: MYSQL_PASSWORD
+              value: mysqlpw
+          volumeMounts:
+            - name: ftgo-mysql-persistent-storage
+              mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: ftgo-mysql-persistent-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+---

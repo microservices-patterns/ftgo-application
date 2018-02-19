@@ -1,0 +1,63 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ftgo-api-gateway
+  labels:
+    name: ftgo-api-gateway
+    application: ftgo
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    svc: ftgo-api-gateway
+  type: LoadBalancer
+  loadBalancerSourceRanges:
+    - 88.128.82.195/32
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ftgo-api-gateway
+  labels:
+    application: ftgo
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        svc: ftgo-api-gateway
+        application: ftgo
+    spec:
+      containers:
+      - name: ftgo-api-gateway
+        image: msapatterns/ftgo-api-gateway:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: httpport
+        env:
+          - name: ORDER_DESTINATIONS_ORDERSERVICEURL
+            value: http://ftgo-order-service:8080
+          - name: ORDER_DESTINATIONS_ORDERHISTORYSERVICEURL
+            value: http://ftgo-order-history-service:8080
+          - name: CONSUMER_DESTINATIONS_CONSUMERSERVICEURL
+            value: http://ftgo-consumer-service:8080
+#        livenessProbe:
+#          httpGet:
+#            path: /health
+#            port: 8080
+#          initialDelaySeconds: 60
+#          periodSeconds: 3
+#        readinessProbe:
+#          httpGet:
+#            path: /health
+#            port: 8080
+#          initialDelaySeconds: 60
+#          periodSeconds: 3
+#
+---

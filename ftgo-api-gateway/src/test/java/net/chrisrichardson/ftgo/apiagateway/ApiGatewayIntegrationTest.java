@@ -37,7 +37,9 @@ import static org.junit.Assert.assertNotNull;
 @SpringBootTest(classes=ApiGatewayIntegrationTestConfiguration.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties={"order.destinations.orderServiceUrl=http://localhost:8082",
-                "order.destinations.orderHistoryServiceUrl=http://localhost:8083"})
+                "order.destinations.orderHistoryServiceUrl=http://localhost:8083",
+                "consumer.destinations.consumerServiceUrl=http://localhost:9999"
+                  })
 public class ApiGatewayIntegrationTest  {
 
   @LocalServerPort

@@ -15,3 +15,4 @@ include "ftgo-order-history-service"
 include "ftgo-api-gateway"
 include "ftgo-end-to-end-tests"
 
+include "ftgo-restaurant-service-aws-lambda"
