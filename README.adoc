@@ -2,6 +2,8 @@
 
 This is the example code for my book https://www.manning.com/books/microservice-patterns[Microservice patterns].
 
+image::http://microservices.io/i/Microservices-Patterns-Cover.png[width=50%]
+
 == Please note
 
 * The code is still work in progress
