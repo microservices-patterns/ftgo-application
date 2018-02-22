@@ -9,7 +9,7 @@ image::http://microservices.io/i/Microservices-Patterns-Cover.png[width=50%]
 * The code is still work in progress
 * It primarily illustrates the technical aspects of the microservice architecture and so the business logic is minimal
 * The documentation is sparse/non-existent and you will need to look in the book
-* The application consists of many services and so requires a lot of memory. It runs well, for example, on a 16MB Macbook pro.
+* The application consists of many services and so requires a lot of memory. It runs well, for example, on a Macbook pro with 16GB of RAM.
 * The application's services and the infrastructure services, such as MySQL and Apache Kafka, are deployed using Docker containers using either Docker Compose or Kubernetes.
 
 == Got questions
