@@ -27,6 +27,7 @@ import net.chrisrichardson.ftgo.restaurantorderservice.api.ConfirmCreateRestaura
 import net.chrisrichardson.ftgo.restaurantorderservice.api.CreateRestaurantOrder;
 import net.chrisrichardson.ftgo.restaurantorderservice.api.CreateRestaurantOrderReply;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
+import net.chrisrichardson.ftgo.testutil.FtgoTestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -142,7 +143,7 @@ public class OrderServiceComponentTestStepDefinitions /* extends OrderServiceCom
             Collections.singletonList(new RestaurantCreated(RestaurantMother.AJANTA_RESTAURANT_NAME, AJANTA_RESTAURANT_MENU)));
     
     eventually(() -> {
-      assertNotNull(restaurantRepository.findOne(RestaurantMother.AJANTA_ID));
+      FtgoTestUtil.assertPresent(restaurantRepository.findById(RestaurantMother.AJANTA_ID));
     });
 
   }

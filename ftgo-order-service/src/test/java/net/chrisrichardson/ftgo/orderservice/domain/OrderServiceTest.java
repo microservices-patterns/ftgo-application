@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import static net.chrisrichardson.ftgo.orderservice.OrderDetailsMother.CHICKEN_VINDALOO_MENU_ITEMS_AND_QUANTITIES;
 import static net.chrisrichardson.ftgo.orderservice.OrderDetailsMother.CHICKEN_VINDALOO_ORDER_DETAILS;
@@ -54,7 +55,7 @@ public class OrderServiceTest {
 
   @Test
   public void shouldCreateOrder() {
-    when(restaurantRepository.findOne(AJANTA_ID)).thenReturn(AJANTA_RESTAURANT);
+    when(restaurantRepository.findById(AJANTA_ID)).thenReturn(Optional.of(AJANTA_RESTAURANT));
     when(orderRepository.save(any(Order.class))).then(invocation -> {
       Order order = (Order) invocation.getArguments()[0];
       order.setId(ORDER_ID);

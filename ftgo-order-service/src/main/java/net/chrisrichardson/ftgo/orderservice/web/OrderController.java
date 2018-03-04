@@ -45,11 +45,8 @@ public class OrderController {
 
   @RequestMapping(path = "/{orderId}", method = RequestMethod.GET)
   public ResponseEntity<GetOrderResponse> getOrder(@PathVariable long orderId) {
-    Order order = orderRepository.findOne(orderId);
-    if (order == null)
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    else
-      return new ResponseEntity<>(makeGetOrderResponse(order), HttpStatus.OK);
+    Optional<Order> order = orderRepository.findById(orderId);
+    return order.map(o -> new ResponseEntity<>(makeGetOrderResponse(o), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
   private GetOrderResponse makeGetOrderResponse(Order order) {
@@ -58,22 +55,17 @@ public class OrderController {
 
   @RequestMapping(path = "/{orderId}/cancel", method = RequestMethod.POST)
   public ResponseEntity<GetOrderResponse> cancel(@PathVariable long orderId) {
-    Order order = orderService.cancel(orderId);
-    if (order == null)
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    else
-      return new ResponseEntity<>(makeGetOrderResponse(order), HttpStatus.OK);
+    return orderService.cancel(orderId).map(order -> new ResponseEntity<>(makeGetOrderResponse(order), HttpStatus.OK)).orElseGet(() ->
+      new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
   // TODO implement revise order endpoint
 
   @RequestMapping(path = "/{orderId}", method = RequestMethod.PUT)
   public ResponseEntity<GetOrderResponse> revise(@PathVariable long orderId, @RequestBody ReviseOrderRequest request) {
-    Order order = orderService.reviseOrder(orderId, new OrderRevision(Optional.empty(), request.getRevisedLineItemQuantities()));
-    if (order == null)
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    else
-      return new ResponseEntity<>(makeGetOrderResponse(order), HttpStatus.OK);
+    return orderService.reviseOrder(orderId, new OrderRevision(Optional.empty(), request.getRevisedLineItemQuantities()))
+            .map(order -> new ResponseEntity<>(makeGetOrderResponse(order), HttpStatus.OK))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
 }

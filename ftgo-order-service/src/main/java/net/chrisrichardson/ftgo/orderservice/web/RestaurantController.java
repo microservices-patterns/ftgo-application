@@ -20,11 +20,8 @@ public class RestaurantController {
 
   @RequestMapping(path="/{restaurantId}", method= RequestMethod.GET)
   public ResponseEntity<GetRestaurantResponse> getRestaurant(@PathVariable long restaurantId) {
-    Restaurant restaurant = restaurantRepository.findOne(restaurantId);
-    if (restaurant == null)
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    else
-      return new ResponseEntity<>(new GetRestaurantResponse(restaurantId), HttpStatus.OK);
-
+    return restaurantRepository.findById(restaurantId)
+            .map(restaurant -> new ResponseEntity<>(new GetRestaurantResponse(restaurantId), HttpStatus.OK))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 }

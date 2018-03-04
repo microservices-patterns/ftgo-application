@@ -6,6 +6,8 @@ import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.common.PersonName;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Optional;
+
 public class ConsumerService {
 
   @Autowired
@@ -15,10 +17,8 @@ public class ConsumerService {
   private DomainEventPublisher domainEventPublisher;
 
   public void validateOrderForConsumer(long consumerId, Money orderTotal) {
-    Consumer consumer = consumerRepository.findOne(consumerId);
-    if (consumer == null)
-      throw new ConsumerNotFoundException();
-    consumer.validateOrderByConsumer(orderTotal);
+    Optional<Consumer> consumer = consumerRepository.findById(consumerId);
+    consumer.orElseThrow(ConsumerNotFoundException::new).validateOrderByConsumer(orderTotal);
   }
 
   public ResultWithEvents<Consumer> create(PersonName name) {

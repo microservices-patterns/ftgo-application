@@ -1,5 +1,6 @@
 
 include "common-swagger"
+include "ftgo-test-util"
 include "ftgo-common"
 include "ftgo-common-jpa"
 

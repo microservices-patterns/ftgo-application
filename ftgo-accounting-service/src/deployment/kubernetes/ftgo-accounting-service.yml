@@ -56,13 +56,13 @@ spec:
             value: ftgo-zookeeper:2181
         livenessProbe:
           httpGet:
-            path: /health
+            path: /actuator/health
             port: 8080
           initialDelaySeconds: 60
           periodSeconds: 20
         readinessProbe:
           httpGet:
-            path: /health
+            path: /actuator/health
             port: 8080
           initialDelaySeconds: 60
           periodSeconds: 20

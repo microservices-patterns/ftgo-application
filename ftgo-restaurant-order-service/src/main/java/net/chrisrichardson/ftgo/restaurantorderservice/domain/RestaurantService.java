@@ -18,7 +18,7 @@ public class RestaurantService {
   private RestaurantRepository restaurantRepository;
 
   public void reviseMenu(long id, RestaurantMenu revisedMenu) {
-    Restaurant restaurant = restaurantRepository.findOne(id);
+    Restaurant restaurant = restaurantRepository.findById(id).get();
     List<DomainEvent> events = restaurant.reviseMenu(revisedMenu);
     domainEventPublisher.publish(RestaurantOrder.class, id, events);
   }

@@ -96,7 +96,7 @@ public abstract class AbstractOrderServiceComponentTest {
 
 
     Eventually.eventually(() -> {
-      assertNotNull(restaurantRepository.findOne(RestaurantMother.AJANTA_ID));
+      FtgoTestUtil.assertPresent(restaurantRepository.findById(RestaurantMother.AJANTA_ID));
     });
 
     // make HTTP request

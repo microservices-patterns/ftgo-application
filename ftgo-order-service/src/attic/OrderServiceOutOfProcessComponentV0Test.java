@@ -109,7 +109,7 @@ public class OrderServiceOutOfProcessComponentV0Test {
                     new RestaurantMenu(Collections.singletonList(RestaurantMother.CHICKEN_VINDALOO_MENU_ITEM)))));
 
     Eventually.eventually(() -> {
-      assertNotNull(restaurantRepository.findOne(RestaurantMother.AJANTA_ID));
+      FtgoTestUtil.assertPresent(restaurantRepository.findById(RestaurantMother.AJANTA_ID));
     });
 
 
@@ -119,7 +119,7 @@ public class OrderServiceOutOfProcessComponentV0Test {
 
 
     Eventually.eventually(() -> {
-      Order o = orderRepository.findOne(order.getId());
+      Order o = orderRepository.findById(order.getId());
       assertNotNull(o);
       assertEquals(OrderState.AUTHORIZED, o.getState());
     });

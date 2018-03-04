@@ -41,6 +41,10 @@ SPRING_DATASOURCE_URL=jdbc:mysql://${DOCKER_HOST_IP?}/ftgoorderservice ./gradlew
 docker-compose down -v
 docker-compose up -d
 
+./wait-for-mysql.sh
+
+echo mysql is started
+
 initializeDynamoDB
 
 date

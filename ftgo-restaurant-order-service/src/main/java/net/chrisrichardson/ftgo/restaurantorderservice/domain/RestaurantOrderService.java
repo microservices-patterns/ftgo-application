@@ -29,26 +29,26 @@ public class RestaurantOrderService {
   }
 
   public void accept(long orderId, LocalDateTime readyBy) {
-    RestaurantOrder restaurantOrder = restaurantOrderRepository.findOne(orderId);
+    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(orderId).get();
     List<RestaurantOrderDomainEvent> events = restaurantOrder.accept(readyBy);
     domainEventPublisher.publish(restaurantOrder, events);
   }
 
   public void confirmCreateRestaurantOrder(Long restaurantOrderId) {
-    RestaurantOrder ro = restaurantOrderRepository.findOne(restaurantOrderId);
+    RestaurantOrder ro = restaurantOrderRepository.findById(restaurantOrderId).get();
     List<RestaurantOrderDomainEvent> events = ro.confirmCreate();
     domainEventPublisher.publish(ro, events);
   }
 
   public void cancelCreateRestaurantOrder(Long restaurantOrderId) {
-    RestaurantOrder ro = restaurantOrderRepository.findOne(restaurantOrderId);
+    RestaurantOrder ro = restaurantOrderRepository.findById(restaurantOrderId).get();
     List<RestaurantOrderDomainEvent> events = ro.cancelCreate();
     domainEventPublisher.publish(ro, events);
   }
 
 
   public void cancelRestaurantOrder(long restaurantId, long orderId) {
-    RestaurantOrder restaurantOrder = restaurantOrderRepository.findOne(orderId);
+    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(orderId).get();
     // TODO - verify restaurant id
     List<RestaurantOrderDomainEvent> events = restaurantOrder.cancel();
     domainEventPublisher.publish(restaurantOrder, events);
@@ -56,14 +56,14 @@ public class RestaurantOrderService {
 
 
   public void confirmCancelRestaurantOrder(long restaurantId, long orderId) {
-    RestaurantOrder restaurantOrder = restaurantOrderRepository.findOne(orderId);
+    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(orderId).get();
     // TODO - verify restaurant id
     List<RestaurantOrderDomainEvent> events = restaurantOrder.confirmCancel();
     domainEventPublisher.publish(restaurantOrder, events);
   }
 
   public void undoCancel(long restaurantId, long orderId) {
-    RestaurantOrder restaurantOrder = restaurantOrderRepository.findOne(orderId);
+    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(orderId).get();
     // TODO - verify restaurant id
     List<RestaurantOrderDomainEvent> events = restaurantOrder.undoCancel();
     domainEventPublisher.publish(restaurantOrder, events);
@@ -71,7 +71,7 @@ public class RestaurantOrderService {
   }
 
   public void beginReviseOrder(long restaurantId, Long orderId, Map<String, Integer> revisedLineItemQuantities) {
-    RestaurantOrder restaurantOrder = restaurantOrderRepository.findOne(orderId);
+    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(orderId).get();
     // TODO - verify restaurant id
     List<RestaurantOrderDomainEvent> events = restaurantOrder.beginReviseOrder(revisedLineItemQuantities);
     domainEventPublisher.publish(restaurantOrder, events);
@@ -79,14 +79,14 @@ public class RestaurantOrderService {
   }
 
   public void undoBeginReviseOrder(long restaurantId, Long orderId) {
-    RestaurantOrder restaurantOrder = restaurantOrderRepository.findOne(orderId);
+    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(orderId).get();
     // TODO - verify restaurant id
     List<RestaurantOrderDomainEvent> events = restaurantOrder.undoBeginReviseOrder();
     domainEventPublisher.publish(restaurantOrder, events);
   }
 
   public void confirmReviseRestaurantOrder(long restaurantId, long orderId, Map<String, Integer> revisedLineItemQuantities) {
-    RestaurantOrder restaurantOrder = restaurantOrderRepository.findOne(orderId);
+    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(orderId).get();
     // TODO - verify restaurant id
     List<RestaurantOrderDomainEvent> events = restaurantOrder.confirmReviseRestaurantOrder(revisedLineItemQuantities);
     domainEventPublisher.publish(restaurantOrder, events);

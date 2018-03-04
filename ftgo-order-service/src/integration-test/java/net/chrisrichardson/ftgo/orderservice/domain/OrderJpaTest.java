@@ -35,7 +35,7 @@ public class OrderJpaTest {
 
 
     transactionTemplate.execute((ts) -> {
-      Order order = orderRepository.findOne(orderId);
+      Order order = orderRepository.findById(orderId).get();
 
       assertNotNull(order);
       assertEquals(OrderState.CREATE_PENDING, order.getState());

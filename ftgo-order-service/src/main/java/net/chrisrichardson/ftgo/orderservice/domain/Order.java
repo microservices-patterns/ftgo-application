@@ -21,6 +21,15 @@ import static java.util.Collections.singletonList;
 @Access(AccessType.FIELD)
 public class Order {
 
+  public static ResultWithDomainEvents<Order, OrderDomainEvent>
+  createOrder(long consumerId, long restaurantId, List<OrderLineItem> orderLineItems) {
+    Order order = new Order(consumerId, restaurantId, orderLineItems);
+    List<OrderDomainEvent> events = singletonList(new OrderCreatedEvent(
+            new OrderDetails(consumerId, restaurantId, orderLineItems,
+                    order.getOrderTotal())));
+    return new ResultWithDomainEvents<>(order, events);
+  }
+
   @Id
   @GeneratedValue
   private Long id;
@@ -65,12 +74,6 @@ public class Order {
   }
 
 
-  public static ResultWithDomainEvents<Order, OrderDomainEvent> createOrder(long consumerId, long restaurantId, List<OrderLineItem> orderLineItems) {
-    Order order = new Order(consumerId, restaurantId, orderLineItems);
-    List<OrderDomainEvent> events = singletonList(new OrderCreatedEvent(
-            new OrderDetails(consumerId, restaurantId, orderLineItems, order.getOrderTotal())));
-    return new ResultWithDomainEvents<>(order, events);
-  }
 
   public Money getOrderTotal() {
     return orderLineItems.orderTotal();

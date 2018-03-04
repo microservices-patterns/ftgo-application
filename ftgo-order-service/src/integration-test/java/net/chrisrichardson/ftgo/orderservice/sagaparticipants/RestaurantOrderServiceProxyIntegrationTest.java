@@ -41,8 +41,8 @@ import static org.junit.Assert.assertEquals;
 @SpringBootTest(classes= RestaurantOrderServiceProxyIntegrationTest.TestConfiguration.class,
         webEnvironment= SpringBootTest.WebEnvironment.NONE)
 @AutoConfigureStubRunner(ids =
-        {"net.chrisrichardson.ftgo.contracts:ftgo-restaurant-order-service-contracts"},
-        workOffline = false)
+        {"net.chrisrichardson.ftgo.contracts:ftgo-restaurant-order-service-contracts"}
+        )
 @DirtiesContext
 public class RestaurantOrderServiceProxyIntegrationTest {
 
