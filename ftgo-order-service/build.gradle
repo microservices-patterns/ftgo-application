@@ -8,7 +8,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE"
         classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.0.0.M7"
         classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
     }
@@ -32,6 +32,7 @@ apply plugin: ComponentTestsPlugin
 dependencyManagement {
     imports {
         mavenBom 'org.springframework.cloud:spring-cloud-contract-dependencies:2.0.0.M7'
+        mavenBom 'org.springframework.cloud:spring-cloud-sleuth:2.0.0.M8'
     }
 }
 
@@ -75,10 +76,19 @@ dockerCompose {
 componentTest.dependsOn(componentTestsComposeUp)
 integrationTest.dependsOn(integrationTestsComposeUp)
 
+repositories {
+    maven {
+        url 'http://oss.jfrog.org/oss-snapshot-local/'
+    }
 
+}
 
 dependencies {
 
+
+    compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
+    compile 'io.zipkin.brave:brave-bom:4.17.1'
 
     compile project(":common-swagger")
     compile project(":ftgo-common-jpa")
@@ -96,6 +106,7 @@ dependencies {
 
     compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+    compile 'io.micrometer:micrometer-registry-prometheus:1.0.1'
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     compile 'javax.el:javax.el-api:2.2.5'
 

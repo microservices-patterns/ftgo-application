@@ -13,4 +13,5 @@ import org.springframework.context.annotation.Import;
 @ComponentScan
 public class RestaurantOrderWebConfiguration {
 
+
 }

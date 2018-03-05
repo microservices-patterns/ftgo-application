@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ftgo-monitoring
+  namespace: monitoring
+  labels:
+    prometheus: kube-prometheus
+spec:
+  jobLabel: component
+  selector:
+    matchLabels:
+      app: ftgo
+  namespaceSelector:
+    matchNames:
+      - default
+  endpoints:
+    - port: metricsport
+      path: /actuator/prometheus
+      interval: 16s
+      scheme: http
+---

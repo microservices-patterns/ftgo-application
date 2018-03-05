@@ -19,12 +19,11 @@ apply plugin: 'org.springframework.boot'
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-gateway:2.0.0.M2'
+        mavenBom 'org.springframework.cloud:spring-cloud-gateway:2.0.0.M8'
         mavenBom 'org.springframework.cloud:spring-cloud-contract-dependencies:1.2.1.RELEASE'
+        mavenBom 'org.springframework.cloud:spring-cloud-sleuth:2.0.0.M8'
     }
 }
-
-
 
 configurations.all {
     exclude  module: "spring-boot-starter-web"
@@ -35,12 +34,22 @@ repositories {
     maven {
         url 'https://repo.spring.io/libs-milestone'
     }
+    maven {
+        url 'http://oss.jfrog.org/oss-snapshot-local/'
+    }
 }
 
 dependencies {
     compile "org.springframework.boot:spring-boot-starter-webflux"
     compile 'org.springframework.cloud:spring-cloud-starter-gateway'
     compile "org.apache.commons:commons-lang3:3.6"
+
+    compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
+    compile 'io.zipkin.brave:brave-bom:4.17.1'
+
+    compile 'io.micrometer:micrometer-registry-prometheus:1.0.1'
+    compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
 
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion2"
     testCompile "junit:junit:4.12"

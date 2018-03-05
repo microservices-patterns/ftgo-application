@@ -24,3 +24,4 @@ include "eventuate-tram-spring-cloud-contract-support"
 include "eventuate-tram-aggregate-domain-events"
 
 include "ftgo-restaurant-service-aws-lambda"
+

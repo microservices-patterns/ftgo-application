@@ -1,13 +1,6 @@
 package net.chrisrichardson.ftgo.apiagateway.orders;
 
-import net.chrisrichardson.ftgo.apiagateway.proxies.AccountingService;
-import net.chrisrichardson.ftgo.apiagateway.proxies.BillInfo;
-import net.chrisrichardson.ftgo.apiagateway.proxies.DeliveryInfo;
-import net.chrisrichardson.ftgo.apiagateway.proxies.DeliveryService;
-import net.chrisrichardson.ftgo.apiagateway.proxies.OrderInfo;
-import net.chrisrichardson.ftgo.apiagateway.proxies.OrderServiceProxy;
-import net.chrisrichardson.ftgo.apiagateway.proxies.RestaurantOrderInfo;
-import net.chrisrichardson.ftgo.apiagateway.proxies.RestaurantOrderService;
+import net.chrisrichardson.ftgo.apiagateway.proxies.*;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -56,13 +49,14 @@ public class OrderHandlers {
             .onErrorReturn(Optional.empty());
 
     Mono<Tuple4<OrderInfo, Optional<RestaurantOrderInfo>, Optional<DeliveryInfo>, Optional<BillInfo>>> combined =
-            Mono.when(orderInfo, restaurantOrderInfo, deliveryInfo, billInfo);
+            Mono.zip(orderInfo, restaurantOrderInfo, deliveryInfo, billInfo);
 
     Mono<OrderDetails> orderDetails = combined.map(OrderDetails::makeOrderDetails);
 
     return orderDetails.flatMap(od -> ServerResponse.ok()
             .contentType(MediaType.APPLICATION_JSON)
-            .body(fromObject(od)));
+            .body(fromObject(od)))
+            .onErrorResume(OrderNotFoundException.class, e -> ServerResponse.notFound().build());
   }
 
 

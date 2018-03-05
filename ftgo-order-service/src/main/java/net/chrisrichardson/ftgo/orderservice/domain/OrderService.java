@@ -5,6 +5,7 @@ import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
 import io.eventuate.tram.events.common.DomainEvent;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.sagas.orchestration.SagaManager;
+import io.micrometer.core.instrument.MeterRegistry;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDetails;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDomainEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderLineItem;
@@ -16,6 +17,7 @@ import net.chrisrichardson.ftgo.restaurantservice.events.MenuItem;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -46,6 +48,8 @@ public class OrderService {
     CreateOrderSagaData data = new CreateOrderSagaData(order.getId(), orderDetails);
     createOrderSagaManager.create(data, Order.class, order.getId());
 
+    meterRegistry.counter("placed_orders").increment();
+
     return order;
   }
 
@@ -72,6 +76,9 @@ public class OrderService {
     this.reviseOrderSagaManager = reviseOrderSagaManager;
     this.orderAggregateEventPublisher = orderAggregateEventPublisher;
   }
+
+  @Autowired
+  private MeterRegistry meterRegistry;
 
   /*
       if (restaurant == null)
@@ -125,10 +132,12 @@ public class OrderService {
 
   public void approveOrder(long orderId) {
     updateOrder(orderId, Order::noteAuthorized).orElseThrow(RuntimeException::new);
+    meterRegistry.counter("approved_orders").increment();
   }
 
   public void rejectOrder(long orderId) {
     updateOrder(orderId, Order::noteRejected).orElseThrow(RuntimeException::new);
+    meterRegistry.counter("rejected_orders").increment();
   }
 
   public void beginCancel(long orderId) {

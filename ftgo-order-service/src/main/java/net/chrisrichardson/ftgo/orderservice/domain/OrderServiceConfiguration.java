@@ -6,6 +6,8 @@ import io.eventuate.tram.sagas.orchestration.SagaCommandProducer;
 import io.eventuate.tram.sagas.orchestration.SagaManager;
 import io.eventuate.tram.sagas.orchestration.SagaManagerImpl;
 import io.eventuate.tram.sagas.orchestration.SagaOrchestratorConfiguration;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.MeterBinder;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.AccountingServiceProxy;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.ConsumerServiceProxy;
@@ -17,6 +19,8 @@ import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSaga;
 import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSagaData;
 import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSaga;
 import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSagaData;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -93,5 +97,10 @@ public class OrderServiceConfiguration {
   @Bean
   public OrderDomainEventPublisher orderAggregateEventPublisher(DomainEventPublisher eventPublisher) {
     return new OrderDomainEventPublisher(eventPublisher);
+  }
+
+  @Bean
+  public MeterRegistryCustomizer meterRegistryCustomizer(@Value("${spring.application.name}") String serviceName) {
+    return registry -> registry.config().commonTags("service", serviceName);
   }
 }
