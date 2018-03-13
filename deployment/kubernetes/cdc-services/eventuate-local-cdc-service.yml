@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: eventuate-local-cdc-service
-        image: eventuateio/eventuateio-local-cdc-service:0.16.2.RELEASE
+        image: eventuateio/eventuateio-local-cdc-service:0.17.0.RELEASE
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
