@@ -18,13 +18,17 @@ subprojects {
     repositories {
         mavenCentral()
         jcenter()
-        maven {
-            url "https://dl.bintray.com/eventuateio-oss/eventuate-maven-release"
-        }
+//        maven {
+//            url "https://dl.bintray.com/eventuateio-oss/eventuate-maven-release"
+//        }
         eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
 
+        maven {
+            url 'https://repo.spring.io/libs-milestone'
+        }
+
         // For the contracts
-        mavenLocal()
+        //mavenLocal()
     }
 
 }

@@ -45,8 +45,8 @@ import static org.junit.Assert.assertNotNull;
       properties = "customer.service.url=http://localhost:8888/customers/{customerId}")
 @AutoConfigureStubRunner(ids =
         {"net.chrisrichardson.ftgo.contracts:common-contracts",
-                "net.chrisrichardson.ftgo.contracts:ftgo-restaurant-order-service-contracts"},
-        workOffline = false)
+                "net.chrisrichardson.ftgo.contracts:ftgo-restaurant-order-service-contracts"}
+        )
 @DirtiesContext
 public class OrderServiceOutOfProcessComponentV0Test {
 

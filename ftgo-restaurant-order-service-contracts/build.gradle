@@ -33,7 +33,7 @@ uploadArchives {
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-contract-dependencies:1.1.4.RELEASE'
+        mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"
     }
 }
 

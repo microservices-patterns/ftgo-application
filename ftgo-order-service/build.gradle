@@ -17,9 +17,9 @@ buildscript {
 repositories {
     maven {
         url 'https://repo.spring.io/libs-milestone'
+        mavenLocal()
     }
 }
-
 
 apply plugin: 'org.springframework.boot'
 apply plugin: "io.spring.dependency-management"
@@ -31,7 +31,7 @@ apply plugin: ComponentTestsPlugin
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-contract-dependencies:2.0.0.M7'
+        mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"
     }
 }
 

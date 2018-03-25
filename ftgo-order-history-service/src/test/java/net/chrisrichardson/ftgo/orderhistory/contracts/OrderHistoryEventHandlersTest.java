@@ -33,8 +33,8 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(classes = OrderHistoryEventHandlersTest.TestConfiguration.class,
         webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @AutoConfigureStubRunner(ids =
-        {"net.chrisrichardson.ftgo.contracts:ftgo-order-service-contracts"},
-        workOffline = true)   // true - download from .m2/repository, false = error not on classpath
+        {"net.chrisrichardson.ftgo.contracts:ftgo-order-service-contracts"}
+        )
 @DirtiesContext
 public class OrderHistoryEventHandlersTest {
 
