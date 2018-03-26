@@ -40,10 +40,6 @@ repositories {
 
 dependencies {
 
-    // FIXME: gradle was downgrading: 5.0.3.RELEASE -> 5.0.0.M6
-    
-    compile "org.springframework.integration:spring-integration-core:5.0.3.RELEASE"
-
     compile "org.springframework.boot:spring-boot-starter-webflux"
     compile 'org.springframework.cloud:spring-cloud-starter-gateway'
     compile "org.apache.commons:commons-lang3:3.6"
@@ -53,5 +49,8 @@ dependencies {
     testCompile "net.chrisrichardson.ftgo.contracts:ftgo-order-service-contracts:1.0-SNAPSHOT:stubs"
     testCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
     testCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
+
+    // FIXME: gradle was downgrading: 5.0.3.RELEASE -> 5.0.0.M6
+    testCompile "org.springframework.integration:spring-integration-core:5.0.3.RELEASE"
 
 }
