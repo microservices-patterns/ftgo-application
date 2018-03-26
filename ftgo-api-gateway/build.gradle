@@ -35,8 +35,11 @@ repositories {
     maven {
         url 'https://repo.spring.io/libs-milestone'
     }
-    mavenLocal()
+    maven {
+        url "${project.rootDir}/build/repo"
+    }
 }
+
 
 dependencies {
 
@@ -46,7 +49,7 @@ dependencies {
 
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion2"
     testCompile "junit:junit:4.12"
-    testCompile "net.chrisrichardson.ftgo.contracts:ftgo-order-service-contracts:1.0-SNAPSHOT:stubs"
+    testCompile "net.chrisrichardson.ftgo:ftgo-order-service-contracts:unspecified:stubs"
     testCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
     testCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
 

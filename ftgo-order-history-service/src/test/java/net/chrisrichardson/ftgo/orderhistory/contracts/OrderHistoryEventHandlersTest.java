@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(classes = OrderHistoryEventHandlersTest.TestConfiguration.class,
         webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @AutoConfigureStubRunner(ids =
-        {"net.chrisrichardson.ftgo.contracts:ftgo-order-service-contracts"}
+        {"net.chrisrichardson.ftgo:ftgo-order-service-contracts"}
         )
 @DirtiesContext
 public class OrderHistoryEventHandlersTest {

@@ -14,13 +14,6 @@ buildscript {
     }
 }
 
-repositories {
-    maven {
-        url 'https://repo.spring.io/libs-milestone'
-        mavenLocal()
-    }
-}
-
 apply plugin: 'org.springframework.boot'
 apply plugin: "io.spring.dependency-management"
 apply plugin: 'spring-cloud-contract'
@@ -107,8 +100,9 @@ dependencies {
 
     // Added this stuff
     
-    testCompile "net.chrisrichardson.ftgo.contracts:common-contracts:1.0-SNAPSHOT:stubs"
-    testCompile "net.chrisrichardson.ftgo.contracts:ftgo-restaurant-order-service-contracts:1.0-SNAPSHOT:stubs"
+    testCompile "net.chrisrichardson.ftgo:ftgo-accounting-service-contracts:unspecified:stubs"
+    testCompile "net.chrisrichardson.ftgo:ftgo-consumer-service-contracts:unspecified:stubs"
+    testCompile "net.chrisrichardson.ftgo:ftgo-restaurant-order-service-contracts:unspecified:stubs"
     testCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
     testCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
     testCompile 'io.rest-assured:rest-assured:3.0.6'

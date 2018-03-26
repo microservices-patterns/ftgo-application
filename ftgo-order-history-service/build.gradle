@@ -20,9 +20,6 @@ dependencyManagement {
     }
 }
 
-repositories {
-    mavenLocal()
-}
 
 dependencies {
     compile 'com.amazonaws:aws-java-sdk-dynamodb:1.11.158'
@@ -52,7 +49,7 @@ dependencies {
 
     // Added this stuff
 
-    testCompile "net.chrisrichardson.ftgo.contracts:ftgo-order-service-contracts:1.0-SNAPSHOT:stubs"
+    testCompile "net.chrisrichardson.ftgo:ftgo-order-service-contracts:unspecified:stubs"
     testCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
     testCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
     testCompile project(":eventuate-tram-spring-cloud-contract-support")

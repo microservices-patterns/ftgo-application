@@ -15,20 +15,22 @@ subprojects {
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
 
+    group = "net.chrisrichardson.ftgo"
+
     repositories {
         mavenCentral()
         jcenter()
-//        maven {
-//            url "https://dl.bintray.com/eventuateio-oss/eventuate-maven-release"
-//        }
+
         eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
 
         maven {
             url 'https://repo.spring.io/libs-milestone'
         }
 
-        // For the contracts
-        //mavenLocal()
+        maven {
+            url "${project.rootDir}/build/repo"
+        }
+
     }
 
 }

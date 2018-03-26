@@ -4,16 +4,23 @@ include "ftgo-test-util"
 include "ftgo-common"
 include "ftgo-common-jpa"
 
+
 include "ftgo-order-service"
 include "ftgo-order-service-api"
 include "ftgo-order-service-contracts"
 
 include "ftgo-restaurant-order-service-api"
 include "ftgo-restaurant-order-service"
+include "ftgo-restaurant-order-service-contracts"
+
 include "ftgo-accounting-service-api"
 include "ftgo-accounting-service"
+include "ftgo-accounting-service-contracts"
+
 include "ftgo-consumer-service-api"
 include "ftgo-consumer-service"
+include "ftgo-consumer-service-contracts"
+
 include "ftgo-restaurant-service-api"
 include "ftgo-restaurant-service"
 include "ftgo-order-history-service"

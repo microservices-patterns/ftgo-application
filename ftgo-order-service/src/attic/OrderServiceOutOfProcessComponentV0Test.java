@@ -44,8 +44,8 @@ import static org.junit.Assert.assertNotNull;
         webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT,
       properties = "customer.service.url=http://localhost:8888/customers/{customerId}")
 @AutoConfigureStubRunner(ids =
-        {"net.chrisrichardson.ftgo.contracts:common-contracts",
-                "net.chrisrichardson.ftgo.contracts:ftgo-restaurant-order-service-contracts"}
+        {"net.chrisrichardson.ftgo:ftgo-accounting-service-contracts", "net.chrisrichardson.ftgo:ftgo-consumer-service-contracts",
+                "net.chrisrichardson.ftgo:ftgo-restaurant-order-service-contracts"}
         )
 @DirtiesContext
 public class OrderServiceOutOfProcessComponentV0Test {
