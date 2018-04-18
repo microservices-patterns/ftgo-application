@@ -8,3 +8,7 @@ out
 target
 .serverless
 *.pid
+.classpath
+.project
+.settings
+bin
