@@ -13,10 +13,11 @@ import static org.springframework.cloud.gateway.handler.predicate.RoutePredicate
 @EnableConfigurationProperties(ConsumerDestinations.class)
 public class ConsumerConfiguration {
 
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Bean
   public RouteLocator consumerProxyRouting(ConsumerDestinations consumerDestinations) {
     return Routes.locator()
-            .route("orderService")
+            .route("consumerService")
             .uri(consumerDestinations.getConsumerServiceUrl())
             .predicate(path("/consumers").and(method("POST").or(method("PUT"))))
             .and()
