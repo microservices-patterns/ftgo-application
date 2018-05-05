@@ -11,5 +11,5 @@ fi
 echo Using $COMMAND
 
 for dir in $CONTRACT_DIRS ; do
- (cd $dir ; ./mvnw $COMMAND)
+ (cd $dir ; rm -fr {out,build} ; ./mvnw $COMMAND)
  done
