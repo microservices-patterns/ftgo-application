@@ -111,7 +111,7 @@ public class OrderService {
   }
 
   public void approveOrder(long orderId) {
-    updateOrder(orderId, Order::noteAuthorized);
+    updateOrder(orderId, Order::noteApproved);
   }
 
   public void rejectOrder(long orderId) {

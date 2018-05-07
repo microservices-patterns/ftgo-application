@@ -43,7 +43,7 @@ public class OrderServiceProxyIntegrationTest {
   public void shouldVerifyExistingCustomer() {
     OrderInfo result = orderService.findOrderById("99").block();
     assertEquals("99", result.getOrderId());
-    assertEquals("CREATE_PENDING", result.getState());
+    assertEquals("APPROVAL_PENDING", result.getState());
   }
 
   @Test(expected = OrderNotFoundException.class)

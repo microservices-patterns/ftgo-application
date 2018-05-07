@@ -38,7 +38,7 @@ public class OrderJpaTest {
       Order order = orderRepository.findOne(orderId);
 
       assertNotNull(order);
-      assertEquals(OrderState.CREATE_PENDING, order.getState());
+      assertEquals(OrderState.APPROVAL_PENDING, order.getState());
       assertEquals(AJANTA_ID, order.getRestaurantId());
       assertEquals(CONSUMER_ID, order.getConsumerId().longValue());
       assertEquals(chickenVindalooLineItems(), order.getLineItems());

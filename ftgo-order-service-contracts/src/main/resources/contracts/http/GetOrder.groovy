@@ -10,6 +10,6 @@ org.springframework.cloud.contract.spec.Contract.make {
         headers {
             header('Content-Type': 'application/json;charset=UTF-8')
         }
-        body('''{"orderId" : "99", "state" : "CREATE_PENDING"}''')
+        body('''{"orderId" : "99", "state" : "APPROVAL_PENDING"}''')
     }
 }
