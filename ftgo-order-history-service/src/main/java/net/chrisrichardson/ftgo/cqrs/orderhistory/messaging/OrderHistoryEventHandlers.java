@@ -56,7 +56,7 @@ public class OrderHistoryEventHandlers {
   private Order makeOrder(String orderId, OrderCreatedEvent event) {
     return new Order(orderId,
             Long.toString(event.getOrderDetails().getConsumerId()),
-            OrderState.CREATE_PENDING,
+            OrderState.APPROVAL_PENDING,
             event.getOrderDetails().getLineItems(),
             event.getOrderDetails().getOrderTotal(),
             "name-of-" + event.getOrderDetails().getRestaurantId());

@@ -4,7 +4,7 @@ import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.sagas.orchestration.SagaManager;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
 import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSagaData;
-import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSagaData;
+import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSagaState;
 import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSagaData;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class OrderServiceTest {
   private OrderRepository orderRepository;
   private DomainEventPublisher eventPublisher;
   private RestaurantRepository restaurantRepository;
-  private SagaManager<CreateOrderSagaData> createOrderSagaManager;
+  private SagaManager<CreateOrderSagaState> createOrderSagaManager;
   private SagaManager<CancelOrderSagaData> cancelOrderSagaManager;
   private SagaManager<ReviseOrderSagaData> reviseOrderSagaManager;
   private OrderDomainEventPublisher orderAggregateEventPublisher;
@@ -69,7 +69,7 @@ public class OrderServiceTest {
     verify(orderAggregateEventPublisher).publish(order,
             Collections.singletonList(new OrderCreatedEvent(CHICKEN_VINDALOO_ORDER_DETAILS)));
 
-    verify(createOrderSagaManager).create(new CreateOrderSagaData(ORDER_ID, CHICKEN_VINDALOO_ORDER_DETAILS), Order.class, ORDER_ID);
+    verify(createOrderSagaManager).create(new CreateOrderSagaState(ORDER_ID, CHICKEN_VINDALOO_ORDER_DETAILS), Order.class, ORDER_ID);
   }
 
   // TODO write tests for other methods

@@ -132,7 +132,7 @@ public class EndToEndTests {
               statusCode(200)
               .extract().
                       path("orderInfo.state");
-      assertEquals("AUTHORIZED", state);
+      assertEquals("APPROVED", state);
     });
   }
 
@@ -282,7 +282,7 @@ public class EndToEndTests {
               statusCode(200)
               .extract().
                       path("orderInfo.state");
-      assertEquals("AUTHORIZED", state);
+      assertEquals("APPROVED", state);
     });
   }
 

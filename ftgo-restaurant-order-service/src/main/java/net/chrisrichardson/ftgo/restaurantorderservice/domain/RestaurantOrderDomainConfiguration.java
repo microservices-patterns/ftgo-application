@@ -25,11 +25,6 @@ public class RestaurantOrderDomainConfiguration {
   }
 
   @Bean
-  public RestaurantService restaurantService() {
-    return new RestaurantService();
-  }
-
-  @Bean
   public RestaurantOrderDomainEventPublisher restaurantAggregateEventPublisher(DomainEventPublisher domainEventPublisher) {
     return new RestaurantOrderDomainEventPublisher(domainEventPublisher);
   }

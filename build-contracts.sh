@@ -12,4 +12,5 @@ echo Using $COMMAND
 
 for dir in $CONTRACT_DIRS ; do
  (cd $dir ; ../gradlew $COMMAND)
+# (cd $dir ; rm -fr {out,build} ; ./mvnw $COMMAND)
  done

@@ -3,7 +3,9 @@ package net.chrisrichardson.ftgo.restaurantorderservice.domain;
 import io.eventuate.tram.events.ResultWithEvents;
 import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
 import io.eventuate.tram.events.common.DomainEvent;
+import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import net.chrisrichardson.ftgo.restaurantorderservice.api.RestaurantOrderDetails;
+import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,18 @@ public class RestaurantOrderService {
   @Autowired
   private RestaurantOrderDomainEventPublisher domainEventPublisher;
 
+  @Autowired
+  private RestaurantRepository restaurantRepository;
+
+  public void createMenu(long id, RestaurantMenu menu) {
+    Restaurant restaurant = new Restaurant(id, menu.getMenuItems());
+    restaurantRepository.save(restaurant);
+  }
+
+  public void reviseMenu(long id, RestaurantMenu revisedMenu) {
+    Restaurant restaurant = restaurantRepository.findById(id).get();
+    restaurant.reviseMenu(revisedMenu);
+  }
 
   public RestaurantOrder createRestaurantOrder(long restaurantId, Long restaurantOrderId, RestaurantOrderDetails restaurantOrderDetails) {
     ResultWithDomainEvents<RestaurantOrder, RestaurantOrderDomainEvent> rwe = RestaurantOrder.create(restaurantId, restaurantOrderId, restaurantOrderDetails);

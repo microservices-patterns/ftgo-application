@@ -50,7 +50,7 @@ public class OrderHistoryDaoDynamoDbTest {
     restaurantName = "Ajanta" + System.currentTimeMillis();
     chickenVindaloo = "Chicken Vindaloo" + System.currentTimeMillis();
     ;
-    order1 = new Order(orderId, consumerId, OrderState.CREATE_PENDING, singletonList(new OrderLineItem("-1", chickenVindaloo, Money.ZERO, 0)), null, restaurantName);
+    order1 = new Order(orderId, consumerId, OrderState.APPROVAL_PENDING, singletonList(new OrderLineItem("-1", chickenVindaloo, Money.ZERO, 0)), null, restaurantName);
     order1.setCreationDate(DateTime.now().minusDays(5));
     eventSource = Optional.of(new SourceEvent("Order", orderId, "11212-34343"));
 
@@ -92,7 +92,7 @@ public class OrderHistoryDaoDynamoDbTest {
 
   @Test
   public void shouldFindOrdersWithStatus() throws InterruptedException {
-    OrderHistory result = dao.findOrderHistory(consumerId, new OrderHistoryFilter().withStatus(OrderState.CREATE_PENDING));
+    OrderHistory result = dao.findOrderHistory(consumerId, new OrderHistoryFilter().withStatus(OrderState.APPROVAL_PENDING));
     assertNotNull(result);
     List<Order> orders = result.getOrders();
     assertContainsOrderId(orderId, orders);
@@ -139,7 +139,7 @@ public class OrderHistoryDaoDynamoDbTest {
   @Test
   public void shouldReturnOrdersSorted() {
     String orderId2 = "orderId" + System.currentTimeMillis();
-    Order order2 = new Order(orderId2, consumerId, OrderState.CREATE_PENDING, singletonList(new OrderLineItem("-1", "Lamb 65", Money.ZERO, -1)), null, "Dopo");
+    Order order2 = new Order(orderId2, consumerId, OrderState.APPROVAL_PENDING, singletonList(new OrderLineItem("-1", "Lamb 65", Money.ZERO, -1)), null, "Dopo");
     order2.setCreationDate(DateTime.now().minusDays(1));
     dao.addOrder(order2, eventSource);
     OrderHistory result = dao.findOrderHistory(consumerId, new OrderHistoryFilter());
@@ -169,7 +169,7 @@ public class OrderHistoryDaoDynamoDbTest {
   @Test
   public void shouldPaginateResults() {
     String orderId2 = "orderId" + System.currentTimeMillis();
-    Order order2 = new Order(orderId2, consumerId, OrderState.CREATE_PENDING, singletonList(new OrderLineItem("-1", "Lamb 65", Money.ZERO, -1)), null, "Dopo");
+    Order order2 = new Order(orderId2, consumerId, OrderState.APPROVAL_PENDING, singletonList(new OrderLineItem("-1", "Lamb 65", Money.ZERO, -1)), null, "Dopo");
     order2.setCreationDate(DateTime.now().minusDays(1));
     dao.addOrder(order2, eventSource);
 

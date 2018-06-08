@@ -41,7 +41,7 @@ public class CreateOrderSagaTest {
   public void shouldCreateOrder() {
     given()
         .saga(makeCreateOrderSaga(),
-                new CreateOrderSagaData(ORDER_ID, CHICKEN_VINDALOO_ORDER_DETAILS)).
+                new CreateOrderSagaState(ORDER_ID, CHICKEN_VINDALOO_ORDER_DETAILS)).
     expect().
         command(new ValidateOrderByConsumer(CONSUMER_ID, ORDER_ID,
                 CHICKEN_VINDALOO_ORDER_TOTAL)).
@@ -73,7 +73,7 @@ public class CreateOrderSagaTest {
   public void shouldRejectOrderDueToConsumerVerificationFailed() {
     given()
         .saga(makeCreateOrderSaga(),
-                new CreateOrderSagaData(ORDER_ID, CHICKEN_VINDALOO_ORDER_DETAILS)).
+                new CreateOrderSagaState(ORDER_ID, CHICKEN_VINDALOO_ORDER_DETAILS)).
     expect().
         command(new ValidateOrderByConsumer(CONSUMER_ID, ORDER_ID,
                 CHICKEN_VINDALOO_ORDER_TOTAL)).
@@ -89,7 +89,7 @@ public class CreateOrderSagaTest {
   public void shouldRejectDueToFailedAuthorizxation() {
     given()
             .saga(makeCreateOrderSaga(),
-                    new CreateOrderSagaData(ORDER_ID, CHICKEN_VINDALOO_ORDER_DETAILS)).
+                    new CreateOrderSagaState(ORDER_ID, CHICKEN_VINDALOO_ORDER_DETAILS)).
     expect().
       command(new ValidateOrderByConsumer(CONSUMER_ID, ORDER_ID,
               CHICKEN_VINDALOO_ORDER_TOTAL)).

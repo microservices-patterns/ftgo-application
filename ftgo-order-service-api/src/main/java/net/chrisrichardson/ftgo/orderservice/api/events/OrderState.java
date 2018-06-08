@@ -1,8 +1,8 @@
 package net.chrisrichardson.ftgo.orderservice.api.events;
 
 public enum OrderState {
-  CREATE_PENDING,
-  AUTHORIZED,
+  APPROVAL_PENDING,
+  APPROVED,
   REJECTED,
   CANCEL_PENDING,
   CANCELLED,

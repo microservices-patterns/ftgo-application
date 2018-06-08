@@ -3,7 +3,7 @@ package net.chrisrichardson.ftgo.restaurantorderservice.messagehandlers;
 import io.eventuate.tram.events.subscriber.DomainEventEnvelope;
 import io.eventuate.tram.events.subscriber.DomainEventHandlers;
 import io.eventuate.tram.events.subscriber.DomainEventHandlersBuilder;
-import net.chrisrichardson.ftgo.restaurantorderservice.domain.RestaurantService;
+import net.chrisrichardson.ftgo.restaurantorderservice.domain.RestaurantOrderService;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenuRevised;
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class RestaurantOrderEventConsumer {
 
   @Autowired
-  private RestaurantService restaurantService;
+  private RestaurantOrderService restaurantOrderService;
 
   public DomainEventHandlers domainEventHandlers() {
     return DomainEventHandlersBuilder
@@ -27,14 +27,14 @@ public class RestaurantOrderEventConsumer {
     String restaurantIds = de.getAggregateId();
     long id = Long.parseLong(restaurantIds);
     RestaurantMenu menu = de.getEvent().getMenu();
-    restaurantService.createMenu(id, menu);
+    restaurantOrderService.createMenu(id, menu);
   }
 
   public void reviseMenu(DomainEventEnvelope<RestaurantMenuRevised> de) {
 
     long id = Long.parseLong(de.getAggregateId());
     RestaurantMenu revisedMenu = de.getEvent().getRevisedMenu();
-    restaurantService.reviseMenu(id, revisedMenu);
+    restaurantOrderService.reviseMenu(id, revisedMenu);
   }
 
 }
