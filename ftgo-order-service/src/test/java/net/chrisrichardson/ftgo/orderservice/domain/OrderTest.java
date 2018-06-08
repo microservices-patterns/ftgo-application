@@ -1,8 +1,6 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
-import io.eventuate.tram.events.ResultWithEvents;
 import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
-import io.eventuate.tram.events.common.DomainEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDomainEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderState;
@@ -34,7 +32,7 @@ public class OrderTest {
   public void shouldCreateOrder() {
     assertEquals(singletonList(new OrderCreatedEvent(CHICKEN_VINDALOO_ORDER_DETAILS)), createResult.events);
 
-    assertEquals(OrderState.CREATE_PENDING, order.getState());
+    assertEquals(OrderState.APPROVAL_PENDING, order.getState());
     // ...
   }
 
@@ -45,15 +43,15 @@ public class OrderTest {
 
   @Test
   public void shouldAuthorize() {
-    List<OrderDomainEvent> events = order.noteAuthorized();
+    List<OrderDomainEvent> events = order.noteApproved();
     assertEquals(singletonList(new OrderAuthorized()), events);
-    assertEquals(OrderState.AUTHORIZED, order.getState());
+    assertEquals(OrderState.APPROVED, order.getState());
   }
 
   @Test
   public void shouldReviseOrder() {
 
-    order.noteAuthorized();
+    order.noteApproved();
 
     OrderRevision orderRevision = new OrderRevision(Optional.empty(), Collections.singletonMap("1", 10));
 

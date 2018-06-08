@@ -8,7 +8,7 @@ Feature: Create revise and cancel
     Given using a valid credit card
     Given the restaurant is accepting orders
     When I place an order for Chicken Vindaloo at Ajanta
-    Then the order should be AUTHORIZED
+    Then the order should be APPROVED
     And when I revise the order
     Then it should be revised
     And when I cancel the order

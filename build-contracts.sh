@@ -1,15 +1,16 @@
 #! /bin/bash -e
 
-CONTRACT_DIRS="common-contracts ftgo-order-service-contracts ftgo-restaurant-order-service-contracts"
+CONTRACT_DIRS="ftgo-accounting-service-contracts ftgo-consumer-service-contracts ftgo-order-service-contracts ftgo-restaurant-order-service-contracts"
 
 COMMAND=$*
 
 if [[ -z "$COMMAND" ]] ; then
-   COMMAND=install
+   COMMAND=publish
 fi
 
 echo Using $COMMAND
 
 for dir in $CONTRACT_DIRS ; do
- (cd $dir ; ./mvnw $COMMAND)
+ (cd $dir ; ../gradlew $COMMAND)
+# (cd $dir ; rm -fr {out,build} ; ./mvnw $COMMAND)
  done

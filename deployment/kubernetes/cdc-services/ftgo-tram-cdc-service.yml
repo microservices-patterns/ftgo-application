@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: ftgo-tram-cdc-service
-        image: eventuateio/eventuate-tram-cdc-mysql-service:0.4.0.RELEASE
+        image: eventuateio/eventuate-tram-cdc-mysql-service:0.6.0.RELEASE
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

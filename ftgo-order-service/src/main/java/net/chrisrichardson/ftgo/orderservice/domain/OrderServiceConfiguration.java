@@ -16,7 +16,7 @@ import net.chrisrichardson.ftgo.orderservice.sagaparticipants.RestaurantOrderSer
 import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSaga;
 import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSagaData;
 import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSaga;
-import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSagaData;
+import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSagaState;
 import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSaga;
 import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSagaData;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,14 +37,14 @@ public class OrderServiceConfiguration {
 
   @Bean
   public OrderService orderService(RestaurantRepository restaurantRepository, OrderRepository orderRepository, DomainEventPublisher eventPublisher,
-                                   SagaManager<CreateOrderSagaData> createOrderSagaManager,
+                                   SagaManager<CreateOrderSagaState> createOrderSagaManager,
                                    SagaManager<CancelOrderSagaData> cancelOrderSagaManager, SagaManager<ReviseOrderSagaData> reviseOrderSagaManager, OrderDomainEventPublisher orderAggregateEventPublisher) {
     return new OrderService(orderRepository, eventPublisher, restaurantRepository,
             createOrderSagaManager, cancelOrderSagaManager, reviseOrderSagaManager, orderAggregateEventPublisher);
   }
 
   @Bean
-  public SagaManager<CreateOrderSagaData> createOrderSagaManager(CreateOrderSaga saga) {
+  public SagaManager<CreateOrderSagaState> createOrderSagaManager(CreateOrderSaga saga) {
     return new SagaManagerImpl<>(saga);
   }
 
