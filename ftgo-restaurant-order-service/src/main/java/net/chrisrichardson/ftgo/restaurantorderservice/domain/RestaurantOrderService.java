@@ -30,8 +30,9 @@ public class RestaurantOrderService {
     restaurantRepository.save(restaurant);
   }
 
-  public void reviseMenu(long id, RestaurantMenu revisedMenu) {
-    Restaurant restaurant = restaurantRepository.findById(id).get();
+  public void reviseMenu(long restaurantOrderId, RestaurantMenu revisedMenu) {
+    Restaurant restaurant = restaurantRepository.findById(restaurantOrderId)
+            .orElseThrow(() -> new RestaurantOrderNotFoundException(restaurantOrderId));
     restaurant.reviseMenu(revisedMenu);
   }
 
@@ -42,65 +43,74 @@ public class RestaurantOrderService {
     return rwe.result;
   }
 
-  public void accept(long orderId, LocalDateTime readyBy) {
-    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(orderId).get();
+  public void accept(long restaurantOrderId, LocalDateTime readyBy) {
+    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(restaurantOrderId)
+            .orElseThrow(() -> new RestaurantOrderNotFoundException(restaurantOrderId));
     List<RestaurantOrderDomainEvent> events = restaurantOrder.accept(readyBy);
     domainEventPublisher.publish(restaurantOrder, events);
   }
 
   public void confirmCreateRestaurantOrder(Long restaurantOrderId) {
-    RestaurantOrder ro = restaurantOrderRepository.findById(restaurantOrderId).get();
+    RestaurantOrder ro = restaurantOrderRepository.findById(restaurantOrderId)
+            .orElseThrow(() -> new RestaurantOrderNotFoundException(restaurantOrderId));
     List<RestaurantOrderDomainEvent> events = ro.confirmCreate();
     domainEventPublisher.publish(ro, events);
   }
 
   public void cancelCreateRestaurantOrder(Long restaurantOrderId) {
-    RestaurantOrder ro = restaurantOrderRepository.findById(restaurantOrderId).get();
+    RestaurantOrder ro = restaurantOrderRepository.findById(restaurantOrderId)
+            .orElseThrow(() -> new RestaurantOrderNotFoundException(restaurantOrderId));
     List<RestaurantOrderDomainEvent> events = ro.cancelCreate();
     domainEventPublisher.publish(ro, events);
   }
 
 
-  public void cancelRestaurantOrder(long restaurantId, long orderId) {
-    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(orderId).get();
+  public void cancelRestaurantOrder(long restaurantId, long restaurantOrderId) {
+    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(restaurantOrderId)
+            .orElseThrow(() -> new RestaurantOrderNotFoundException(restaurantOrderId));
     // TODO - verify restaurant id
     List<RestaurantOrderDomainEvent> events = restaurantOrder.cancel();
     domainEventPublisher.publish(restaurantOrder, events);
   }
 
 
-  public void confirmCancelRestaurantOrder(long restaurantId, long orderId) {
-    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(orderId).get();
+  public void confirmCancelRestaurantOrder(long restaurantId, long restaurantOrderId) {
+    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(restaurantOrderId)
+            .orElseThrow(() -> new RestaurantOrderNotFoundException(restaurantOrderId));
     // TODO - verify restaurant id
     List<RestaurantOrderDomainEvent> events = restaurantOrder.confirmCancel();
     domainEventPublisher.publish(restaurantOrder, events);
   }
 
-  public void undoCancel(long restaurantId, long orderId) {
-    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(orderId).get();
+  public void undoCancel(long restaurantId, long restaurantOrderId) {
+    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(restaurantOrderId)
+            .orElseThrow(() -> new RestaurantOrderNotFoundException(restaurantOrderId));
     // TODO - verify restaurant id
     List<RestaurantOrderDomainEvent> events = restaurantOrder.undoCancel();
     domainEventPublisher.publish(restaurantOrder, events);
 
   }
 
-  public void beginReviseOrder(long restaurantId, Long orderId, Map<String, Integer> revisedLineItemQuantities) {
-    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(orderId).get();
+  public void beginReviseOrder(long restaurantId, Long restaurantOrderId, Map<String, Integer> revisedLineItemQuantities) {
+    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(restaurantOrderId)
+            .orElseThrow(() -> new RestaurantOrderNotFoundException(restaurantOrderId));
     // TODO - verify restaurant id
     List<RestaurantOrderDomainEvent> events = restaurantOrder.beginReviseOrder(revisedLineItemQuantities);
     domainEventPublisher.publish(restaurantOrder, events);
 
   }
 
-  public void undoBeginReviseOrder(long restaurantId, Long orderId) {
-    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(orderId).get();
+  public void undoBeginReviseOrder(long restaurantId, Long restaurantOrderId) {
+    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(restaurantOrderId)
+            .orElseThrow(() -> new RestaurantOrderNotFoundException(restaurantOrderId));
     // TODO - verify restaurant id
     List<RestaurantOrderDomainEvent> events = restaurantOrder.undoBeginReviseOrder();
     domainEventPublisher.publish(restaurantOrder, events);
   }
 
-  public void confirmReviseRestaurantOrder(long restaurantId, long orderId, Map<String, Integer> revisedLineItemQuantities) {
-    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(orderId).get();
+  public void confirmReviseRestaurantOrder(long restaurantId, long restaurantOrderId, Map<String, Integer> revisedLineItemQuantities) {
+    RestaurantOrder restaurantOrder = restaurantOrderRepository.findById(restaurantOrderId)
+            .orElseThrow(() -> new RestaurantOrderNotFoundException(restaurantOrderId));
     // TODO - verify restaurant id
     List<RestaurantOrderDomainEvent> events = restaurantOrder.confirmReviseRestaurantOrder(revisedLineItemQuantities);
     domainEventPublisher.publish(restaurantOrder, events);

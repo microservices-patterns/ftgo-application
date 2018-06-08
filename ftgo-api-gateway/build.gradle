@@ -19,9 +19,9 @@ apply plugin: 'org.springframework.boot'
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-gateway:2.0.0.M8'
+        mavenBom "org.springframework.cloud:spring-cloud-gateway:$springCloudGatewayVersion"
         mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"
-        mavenBom 'org.springframework.cloud:spring-cloud-sleuth:2.0.0.M8'
+        mavenBom "org.springframework.cloud:spring-cloud-sleuth:$springCloudSleuthVersion"
     }
 }
 
@@ -53,16 +53,16 @@ dependencies {
     compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
     compile 'io.zipkin.brave:brave-bom:4.17.1'
 
-    compile 'io.micrometer:micrometer-registry-prometheus:1.0.1'
-    compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+    compile "io.micrometer:micrometer-registry-prometheus:$micrometerVersion"
+    compile "org.springframework.boot:spring-boot-starter-actuator"
 
-    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion2"
+    testCompile "org.springframework.boot:spring-boot-starter-test"
     testCompile "junit:junit:4.12"
     testCompile "net.chrisrichardson.ftgo:ftgo-order-service-contracts:unspecified:stubs"
     testCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
     testCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
 
     // FIXME: gradle was downgrading: 5.0.3.RELEASE -> 5.0.0.M6
-    testCompile "org.springframework.integration:spring-integration-core:5.0.3.RELEASE"
+    // testCompile "org.springframework.integration:spring-integration-core:5.0.3.RELEASE"
 
 }

@@ -1,10 +1,11 @@
 #! /bin/bash -e
 
-SNX=${1}
-SN=${SNX?}
+for SN in $* ; do
 
+    ./gradlew :${SN?}:assemble
+    docker-compose build ${SN?}
+    docker-compose up -d ${SN?}
+done
 
-./gradlew :${SNX?}:assemble
-docker-compose build ${SN?}
-docker-compose up -d ${SN?}
-docker-compose logs -f ${SN?}
+docker-compose logs -f $*
+

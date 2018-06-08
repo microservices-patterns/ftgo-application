@@ -25,7 +25,7 @@ apply plugin: ComponentTestsPlugin
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"
-        mavenBom 'org.springframework.cloud:spring-cloud-sleuth:2.0.0.M8'
+        mavenBom "org.springframework.cloud:spring-cloud-sleuth:$springCloudSleuthVersion"
     }
 }
 
@@ -99,7 +99,7 @@ dependencies {
 
     compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
-    compile 'io.micrometer:micrometer-registry-prometheus:1.0.1'
+    compile "io.micrometer:micrometer-registry-prometheus:$micrometerVersion"
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     compile 'javax.el:javax.el-api:2.2.5'
 

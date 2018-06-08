@@ -49,7 +49,7 @@ public class OrderServiceTest {
     orderAggregateEventPublisher = mock(OrderDomainEventPublisher.class);
 
     orderService = new OrderService(orderRepository, eventPublisher, restaurantRepository,
-            createOrderSagaManager, cancelOrderSagaManager, reviseOrderSagaManager, orderAggregateEventPublisher);
+            createOrderSagaManager, cancelOrderSagaManager, reviseOrderSagaManager, orderAggregateEventPublisher, Optional.empty());
   }
 
 

@@ -27,9 +27,36 @@ import static java.util.stream.Collectors.toList;
 @Transactional
 public class OrderService {
 
+  private Logger logger = LoggerFactory.getLogger(getClass());
+
+  private OrderRepository orderRepository;
+
+  private RestaurantRepository restaurantRepository;
+
+  private SagaManager<CreateOrderSagaState> createOrderSagaManager;
+
+  private SagaManager<CancelOrderSagaData> cancelOrderSagaManager;
+
+  private SagaManager<ReviseOrderSagaData> reviseOrderSagaManager;
+
+  private OrderDomainEventPublisher orderAggregateEventPublisher;
+
+  private Optional<MeterRegistry> meterRegistry;
+
+  public OrderService(OrderRepository orderRepository, DomainEventPublisher eventPublisher, RestaurantRepository restaurantRepository, SagaManager<CreateOrderSagaState> createOrderSagaManager, SagaManager<CancelOrderSagaData> cancelOrderSagaManager, SagaManager<ReviseOrderSagaData> reviseOrderSagaManager, OrderDomainEventPublisher orderAggregateEventPublisher, Optional<MeterRegistry> meterRegistry) {
+    this.orderRepository = orderRepository;
+    this.restaurantRepository = restaurantRepository;
+    this.createOrderSagaManager = createOrderSagaManager;
+    this.cancelOrderSagaManager = cancelOrderSagaManager;
+    this.reviseOrderSagaManager = reviseOrderSagaManager;
+    this.orderAggregateEventPublisher = orderAggregateEventPublisher;
+    this.meterRegistry = meterRegistry;
+  }
+
   public Order createOrder(long consumerId, long restaurantId,
                            List<MenuItemIdAndQuantity> lineItems) {
-    Restaurant restaurant = restaurantRepository.findById(restaurantId).get();
+    Restaurant restaurant = restaurantRepository.findById(restaurantId)
+            .orElseThrow(() -> new RestaurantNotFoundException(restaurantId));
 
     List<OrderLineItem> orderLineItems = makeOrderLineItems(lineItems, restaurant);
 
@@ -46,37 +73,12 @@ public class OrderService {
     CreateOrderSagaState data = new CreateOrderSagaState(order.getId(), orderDetails);
     createOrderSagaManager.create(data, Order.class, order.getId());
 
-    meterRegistry.counter("placed_orders").increment();
+    meterRegistry.ifPresent( mr -> mr.counter("placed_orders").increment());
 
     return order;
   }
 
 
-  private Logger logger = LoggerFactory.getLogger(getClass());
-
-  private OrderRepository orderRepository;
-
-  private RestaurantRepository restaurantRepository;
-
-  private SagaManager<CreateOrderSagaState> createOrderSagaManager;
-
-  private SagaManager<CancelOrderSagaData> cancelOrderSagaManager;
-  
-  private SagaManager<ReviseOrderSagaData> reviseOrderSagaManager;
-
-  private OrderDomainEventPublisher orderAggregateEventPublisher;
-
-  @Autowired
-  private MeterRegistry meterRegistry;
-
-  public OrderService(OrderRepository orderRepository, DomainEventPublisher eventPublisher, RestaurantRepository restaurantRepository, SagaManager<CreateOrderSagaState> createOrderSagaManager, SagaManager<CancelOrderSagaData> cancelOrderSagaManager, SagaManager<ReviseOrderSagaData> reviseOrderSagaManager, OrderDomainEventPublisher orderAggregateEventPublisher) {
-    this.orderRepository = orderRepository;
-    this.restaurantRepository = restaurantRepository;
-    this.createOrderSagaManager = createOrderSagaManager;
-    this.cancelOrderSagaManager = cancelOrderSagaManager;
-    this.reviseOrderSagaManager = reviseOrderSagaManager;
-    this.orderAggregateEventPublisher = orderAggregateEventPublisher;
-  }
 
   private List<OrderLineItem> makeOrderLineItems(List<MenuItemIdAndQuantity> lineItems, Restaurant restaurant) {
     return lineItems.stream().map(li -> {
@@ -123,12 +125,12 @@ public class OrderService {
 
   public void approveOrder(long orderId) {
     updateOrder(orderId, Order::noteApproved).orElseThrow(RuntimeException::new);
-    meterRegistry.counter("approved_orders").increment();
+    meterRegistry.ifPresent( mr -> mr.counter("approved_orders").increment());
   }
 
   public void rejectOrder(long orderId) {
     updateOrder(orderId, Order::noteRejected).orElseThrow(RuntimeException::new);
-    meterRegistry.counter("rejected_orders").increment();
+    meterRegistry.ifPresent( mr -> mr.counter("rejected_orders").increment());
   }
 
   public void beginCancel(long orderId) {

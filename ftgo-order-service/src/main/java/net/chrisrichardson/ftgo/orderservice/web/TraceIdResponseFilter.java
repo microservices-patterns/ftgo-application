@@ -4,7 +4,7 @@ package net.chrisrichardson.ftgo.orderservice.web;
 
 import brave.Span;
 import brave.Tracer;
-import org.springframework.cloud.sleuth.instrument.web.TraceFilter;
+import org.springframework.cloud.sleuth.instrument.web.TraceWebServletAutoConfiguration;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-@Order(TraceFilter.ORDER + 1)
+@Order(TraceWebServletAutoConfiguration.TRACING_FILTER_ORDER + 1)
 class TraceIdResponseFilter extends GenericFilterBean {
 
   private final Tracer tracer;

@@ -7,7 +7,6 @@ import io.eventuate.tram.sagas.orchestration.SagaManager;
 import io.eventuate.tram.sagas.orchestration.SagaManagerImpl;
 import io.eventuate.tram.sagas.orchestration.SagaOrchestratorConfiguration;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.binder.MeterBinder;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.AccountingServiceProxy;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.ConsumerServiceProxy;
@@ -25,6 +24,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import java.util.Optional;
+
 @Configuration
 @Import({TramEventsPublisherConfiguration.class, SagaOrchestratorConfiguration.class, CommonConfiguration.class})
 public class OrderServiceConfiguration {
@@ -38,9 +39,9 @@ public class OrderServiceConfiguration {
   @Bean
   public OrderService orderService(RestaurantRepository restaurantRepository, OrderRepository orderRepository, DomainEventPublisher eventPublisher,
                                    SagaManager<CreateOrderSagaState> createOrderSagaManager,
-                                   SagaManager<CancelOrderSagaData> cancelOrderSagaManager, SagaManager<ReviseOrderSagaData> reviseOrderSagaManager, OrderDomainEventPublisher orderAggregateEventPublisher) {
+                                   SagaManager<CancelOrderSagaData> cancelOrderSagaManager, SagaManager<ReviseOrderSagaData> reviseOrderSagaManager, OrderDomainEventPublisher orderAggregateEventPublisher, Optional<MeterRegistry> meterRegistry) {
     return new OrderService(orderRepository, eventPublisher, restaurantRepository,
-            createOrderSagaManager, cancelOrderSagaManager, reviseOrderSagaManager, orderAggregateEventPublisher);
+            createOrderSagaManager, cancelOrderSagaManager, reviseOrderSagaManager, orderAggregateEventPublisher, meterRegistry);
   }
 
   @Bean
