@@ -3,10 +3,7 @@ package net.chrisrichardson.ftgo.orderservice.web;
 import net.chrisrichardson.ftgo.orderservice.api.web.CreateOrderRequest;
 import net.chrisrichardson.ftgo.orderservice.api.web.CreateOrderResponse;
 import net.chrisrichardson.ftgo.orderservice.api.web.ReviseOrderRequest;
-import net.chrisrichardson.ftgo.orderservice.domain.Order;
-import net.chrisrichardson.ftgo.orderservice.domain.OrderRepository;
-import net.chrisrichardson.ftgo.orderservice.domain.OrderRevision;
-import net.chrisrichardson.ftgo.orderservice.domain.OrderService;
+import net.chrisrichardson.ftgo.orderservice.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,17 +52,24 @@ public class OrderController {
 
   @RequestMapping(path = "/{orderId}/cancel", method = RequestMethod.POST)
   public ResponseEntity<GetOrderResponse> cancel(@PathVariable long orderId) {
-    return orderService.cancel(orderId).map(order -> new ResponseEntity<>(makeGetOrderResponse(order), HttpStatus.OK)).orElseGet(() ->
-      new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    try {
+      Order order = orderService.cancel(orderId);
+      return new ResponseEntity<>(makeGetOrderResponse(order), HttpStatus.OK);
+    } catch (OrderNotFoundException e) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
   }
 
   // TODO implement revise order endpoint
 
   @RequestMapping(path = "/{orderId}", method = RequestMethod.PUT)
   public ResponseEntity<GetOrderResponse> revise(@PathVariable long orderId, @RequestBody ReviseOrderRequest request) {
-    return orderService.reviseOrder(orderId, new OrderRevision(Optional.empty(), request.getRevisedLineItemQuantities()))
-            .map(order -> new ResponseEntity<>(makeGetOrderResponse(order), HttpStatus.OK))
-            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    try {
+      Order order = orderService.reviseOrder(orderId, new OrderRevision(Optional.empty(), request.getRevisedLineItemQuantities()));
+      return new ResponseEntity<>(makeGetOrderResponse(order), HttpStatus.OK);
+    } catch (OrderNotFoundException e) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
   }
 
 }

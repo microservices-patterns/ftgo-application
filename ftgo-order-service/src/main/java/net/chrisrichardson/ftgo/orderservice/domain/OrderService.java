@@ -15,7 +15,6 @@ import net.chrisrichardson.ftgo.restaurantservice.events.MenuItem;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -73,30 +72,21 @@ public class OrderService {
     CreateOrderSagaState data = new CreateOrderSagaState(order.getId(), orderDetails);
     createOrderSagaManager.create(data, Order.class, order.getId());
 
-    meterRegistry.ifPresent( mr -> mr.counter("placed_orders").increment());
+    meterRegistry.ifPresent(mr -> mr.counter("placed_orders").increment());
 
     return order;
   }
 
 
-
   private List<OrderLineItem> makeOrderLineItems(List<MenuItemIdAndQuantity> lineItems, Restaurant restaurant) {
     return lineItems.stream().map(li -> {
-        MenuItem om = restaurant.findMenuItem(li.getMenuItemId()).orElseThrow(() -> new RuntimeException("MenuItem not found: " + li.getMenuItemId()));
-        return new OrderLineItem(li.getMenuItemId(), om.getName(), om.getPrice(), li.getQuantity());
-      }).collect(toList());
+      MenuItem om = restaurant.findMenuItem(li.getMenuItemId()).orElseThrow(() -> new RuntimeException("MenuItem not found: " + li.getMenuItemId()));
+      return new OrderLineItem(li.getMenuItemId(), om.getName(), om.getPrice(), li.getQuantity());
+    }).collect(toList());
   }
 
 
-//  public Order reviseOrder(Long orderId, Long expectedVersion, OrderRevision orderRevision)  {
-//
-//    ReviseOrderSagaData sagaData = new ReviseOrderSagaData(orderId, expectedVersion, orderRevision);
-//    reviseOrderSagaManager.create(sagaData);
-//
-//    return orderRepository.findById(orderId);
-//  }
-
-  public Optional<Order> confirmChangeLineItemQuantity(Long orderId, OrderRevision orderRevision)  {
+  public Optional<Order> confirmChangeLineItemQuantity(Long orderId, OrderRevision orderRevision) {
     return orderRepository.findById(orderId).map(order -> {
       List<OrderDomainEvent> events = order.confirmRevision(orderRevision);
       orderAggregateEventPublisher.publish(order, events);
@@ -108,33 +98,33 @@ public class OrderService {
     throw new UnsupportedOperationException();
   }
 
-  public Optional<Order> cancel(Long orderId) {
-    return orderRepository.findById(orderId).map(order -> {
-      CancelOrderSagaData sagaData = new CancelOrderSagaData(order.getConsumerId(), orderId, order.getOrderTotal());
-      cancelOrderSagaManager.create(sagaData);
-      return order;
-    });
+  public Order cancel(Long orderId) {
+    Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new OrderNotFoundException(orderId));
+    CancelOrderSagaData sagaData = new CancelOrderSagaData(order.getConsumerId(), orderId, order.getOrderTotal());
+    cancelOrderSagaManager.create(sagaData);
+    return order;
   }
 
-  private Optional<Order> updateOrder(long orderId, Function<Order, List<OrderDomainEvent>> updater) {
+  private Order updateOrder(long orderId, Function<Order, List<OrderDomainEvent>> updater) {
     return orderRepository.findById(orderId).map(order -> {
       orderAggregateEventPublisher.publish(order, updater.apply(order));
       return order;
-    });
+    }).orElseThrow(() -> new OrderNotFoundException(orderId));
   }
 
   public void approveOrder(long orderId) {
-    updateOrder(orderId, Order::noteApproved).orElseThrow(RuntimeException::new);
-    meterRegistry.ifPresent( mr -> mr.counter("approved_orders").increment());
+    updateOrder(orderId, Order::noteApproved);
+    meterRegistry.ifPresent(mr -> mr.counter("approved_orders").increment());
   }
 
   public void rejectOrder(long orderId) {
-    updateOrder(orderId, Order::noteRejected).orElseThrow(RuntimeException::new);
-    meterRegistry.ifPresent( mr -> mr.counter("rejected_orders").increment());
+    updateOrder(orderId, Order::noteRejected);
+    meterRegistry.ifPresent(mr -> mr.counter("rejected_orders").increment());
   }
 
   public void beginCancel(long orderId) {
-    updateOrder(orderId, Order::cancel).orElseThrow(RuntimeException::new);
+    updateOrder(orderId, Order::cancel);
   }
 
   public void undoCancel(long orderId) {
@@ -145,12 +135,11 @@ public class OrderService {
     updateOrder(orderId, Order::noteCancelled);
   }
 
-  public Optional<Order> reviseOrder(long orderId, OrderRevision orderRevision) {
-    return orderRepository.findById(orderId).map(order -> {
-      ReviseOrderSagaData sagaData = new ReviseOrderSagaData(order.getConsumerId(), orderId, null, orderRevision);
-      reviseOrderSagaManager.create(sagaData);
-      return order;
-    });
+  public Order reviseOrder(long orderId, OrderRevision orderRevision) {
+    Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
+    ReviseOrderSagaData sagaData = new ReviseOrderSagaData(order.getConsumerId(), orderId, null, orderRevision);
+    reviseOrderSagaManager.create(sagaData);
+    return order;
   }
 
   public Optional<RevisedOrder> beginReviseOrder(long orderId, OrderRevision revision) {
@@ -170,10 +159,8 @@ public class OrderService {
   }
 
   public void createMenu(long id, RestaurantMenu menu) {
-    System.out.println("menu=" + menu.getMenuItems());
     Restaurant restaurant = new Restaurant(id, menu.getMenuItems());
     restaurantRepository.save(restaurant);
-    System.out.println("menu=" + restaurant.getMenuItems());
   }
 
   public void reviseMenu(long id, RestaurantMenu revisedMenu) {
