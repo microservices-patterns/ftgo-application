@@ -23,7 +23,7 @@ public class CreateOrderSagaState {
   private Long orderId;
 
   private OrderDetails orderDetails;
-  private long restaurantOrderId;
+  private long ticketId;
 
   public Long getOrderId() {
     return orderId;
@@ -55,38 +55,38 @@ public class CreateOrderSagaState {
     this.orderId = orderId;
   }
 
-  public void setRestaurantOrderId(long restaurantOrderId) {
-    this.restaurantOrderId = restaurantOrderId;
+  public void setTicketId(long ticketId) {
+    this.ticketId = ticketId;
   }
 
-  public long getRestaurantOrderId() {
-    return restaurantOrderId;
+  public long getTicketId() {
+    return ticketId;
   }
 
-  CreateRestaurantOrder makeCreateRestaurantOrderCommand() {
-    return new CreateRestaurantOrder(getOrderDetails().getRestaurantId(), getOrderId(), makeRestaurantOrderDetails(getOrderDetails()));
+  CreateTicket makeCreateRestaurantOrderCommand() {
+    return new CreateTicket(getOrderDetails().getRestaurantId(), getOrderId(), makeRestaurantOrderDetails(getOrderDetails()));
   }
 
-  private RestaurantOrderDetails makeRestaurantOrderDetails(OrderDetails orderDetails) {
+  private TicketDetails makeRestaurantOrderDetails(OrderDetails orderDetails) {
     // TODO FIXME
-    return new RestaurantOrderDetails(makeRestaurantOrderLineItems(orderDetails.getLineItems()));
+    return new TicketDetails(makeRestaurantOrderLineItems(orderDetails.getLineItems()));
   }
 
-  private List<RestaurantOrderLineItem> makeRestaurantOrderLineItems(List<OrderLineItem> lineItems) {
+  private List<TicketLineItem> makeRestaurantOrderLineItems(List<OrderLineItem> lineItems) {
     return lineItems.stream().map(this::makeRestaurantOrderLineItem).collect(toList());
   }
 
-  private RestaurantOrderLineItem makeRestaurantOrderLineItem(OrderLineItem orderLineItem) {
-    return new RestaurantOrderLineItem(orderLineItem.getMenuItemId(), orderLineItem.getName(), orderLineItem.getQuantity());
+  private TicketLineItem makeRestaurantOrderLineItem(OrderLineItem orderLineItem) {
+    return new TicketLineItem(orderLineItem.getMenuItemId(), orderLineItem.getName(), orderLineItem.getQuantity());
   }
 
-  void handleCreateRestaurantOrderReply(CreateRestaurantOrderReply reply) {
-    logger.debug("getRestaurantOrderId {}", reply.getRestaurantOrderId());
-    setRestaurantOrderId(reply.getRestaurantOrderId());
+  void handleCreateRestaurantOrderReply(CreateTicketReply reply) {
+    logger.debug("getTicketId {}", reply.getTicketId());
+    setTicketId(reply.getTicketId());
   }
 
-  CancelCreateRestaurantOrder makeCancelCreateRestaurantOrderCommand() {
-    return new CancelCreateRestaurantOrder(getOrderId());
+  CancelCreateTicket makeCancelCreateRestaurantOrderCommand() {
+    return new CancelCreateTicket(getOrderId());
   }
 
   RejectOrderCommand makeRejectOrderCommand() {
@@ -105,8 +105,8 @@ public class CreateOrderSagaState {
     return new ApproveOrderCommand(getOrderId());
   }
 
-  ConfirmCreateRestaurantOrder makeConfirmCreateRestaurantOrderCommand() {
-    return new ConfirmCreateRestaurantOrder(getRestaurantOrderId());
+  ConfirmCreateTicket makeConfirmCreateRestaurantOrderCommand() {
+    return new ConfirmCreateTicket(getTicketId());
 
   }
 }

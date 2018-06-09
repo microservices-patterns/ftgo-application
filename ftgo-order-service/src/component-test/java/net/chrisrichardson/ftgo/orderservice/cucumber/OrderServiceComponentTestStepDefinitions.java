@@ -22,10 +22,10 @@ import net.chrisrichardson.ftgo.orderservice.SagaParticipantStubManager;
 import net.chrisrichardson.ftgo.orderservice.api.web.CreateOrderRequest;
 import net.chrisrichardson.ftgo.orderservice.domain.Order;
 import net.chrisrichardson.ftgo.orderservice.domain.RestaurantRepository;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.CancelCreateRestaurantOrder;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.ConfirmCreateRestaurantOrder;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.CreateRestaurantOrder;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.CreateRestaurantOrderReply;
+import net.chrisrichardson.ftgo.restaurantorderservice.api.CancelCreateTicket;
+import net.chrisrichardson.ftgo.restaurantorderservice.api.ConfirmCreateTicket;
+import net.chrisrichardson.ftgo.restaurantorderservice.api.CreateTicket;
+import net.chrisrichardson.ftgo.restaurantorderservice.api.CreateTicketReply;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
 import net.chrisrichardson.ftgo.testutil.FtgoTestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +77,7 @@ public class OrderServiceComponentTestStepDefinitions /* extends OrderServiceCom
 
     @Bean
     public MessagingStubConfiguration messagingStubConfiguration() {
-      return new MessagingStubConfiguration("consumerService", "restaurantOrderService", "accountingService", "orderService");
+      return new MessagingStubConfiguration("consumerService", "kitchenService", "accountingService", "orderService");
     }
 
     @Bean
@@ -134,10 +134,10 @@ public class OrderServiceComponentTestStepDefinitions /* extends OrderServiceCom
   @Given("the restaurant is accepting orders")
   public void restaurantAcceptsOrder() {
     sagaParticipantStubManager
-            .forChannel("restaurantOrderService")
-            .when(CreateRestaurantOrder.class).replyWith(cm -> withSuccess(new CreateRestaurantOrderReply(cm.getCommand().getOrderId())))
-            .when(ConfirmCreateRestaurantOrder.class).replyWithSuccess()
-            .when(CancelCreateRestaurantOrder.class).replyWithSuccess();
+            .forChannel("kitchenService")
+            .when(CreateTicket.class).replyWith(cm -> withSuccess(new CreateTicketReply(cm.getCommand().getOrderId())))
+            .when(ConfirmCreateTicket.class).replyWithSuccess()
+            .when(CancelCreateTicket.class).replyWithSuccess();
 
     domainEventPublisher.publish("net.chrisrichardson.ftgo.restaurantservice.domain.Restaurant", RestaurantMother.AJANTA_ID,
             Collections.singletonList(new RestaurantCreated(RestaurantMother.AJANTA_RESTAURANT_NAME, AJANTA_RESTAURANT_MENU)));

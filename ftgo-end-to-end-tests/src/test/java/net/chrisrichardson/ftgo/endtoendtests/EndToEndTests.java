@@ -55,7 +55,7 @@ public class EndToEndTests {
   private int orderPort = 8082;
   private int accountingPort = 8085;
   private int restaurantsPort = 8084;
-  private int restaurantOrderPort = 8083;
+  private int ticketPort = 8083;
   private int apiGatewayPort = 8087;
 
 
@@ -71,8 +71,8 @@ public class EndToEndTests {
     return baseUrl(restaurantsPort, "restaurants", pathElements);
   }
 
-  private String restaurantOrderRestaurantBaseUrl(String... pathElements) {
-    return baseUrl(restaurantOrderPort, "restaurants", pathElements);
+  private String ticketRestaurantBaseUrl(String... pathElements) {
+    return baseUrl(ticketPort, "restaurants", pathElements);
   }
 
   private String orderBaseUrl(String... pathElements) {
@@ -243,7 +243,7 @@ public class EndToEndTests {
     Eventually.eventually(String.format("verifyRestaurantCreatedInRestaurantOrderService %s", restaurantId), () ->
             given().
                     when().
-                    get(restaurantOrderRestaurantBaseUrl(Integer.toString(restaurantId))).
+                    get(ticketRestaurantBaseUrl(Integer.toString(restaurantId))).
                     then().
                     statusCode(200));
   }

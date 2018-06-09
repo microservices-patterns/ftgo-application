@@ -6,13 +6,13 @@ import net.chrisrichardson.ftgo.accountservice.api.AccountingServiceChannels;
 import net.chrisrichardson.ftgo.orderservice.api.OrderServiceChannels;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.BeginReviseOrderCommand;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.BeginReviseOrderReply;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.BeginReviseRestaurantOrderCommand;
+import net.chrisrichardson.ftgo.restaurantorderservice.api.BeginReviseTicketCommand;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.ConfirmReviseOrderCommand;
 import net.chrisrichardson.ftgo.accountservice.api.ReviseAuthorization;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.UndoBeginReviseOrderCommand;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.ConfirmReviseRestaurantOrderCommand;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.RestaurantOrderServiceChannels;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.UndoBeginReviseRestaurantOrderCommand;
+import net.chrisrichardson.ftgo.restaurantorderservice.api.ConfirmReviseTicketCommand;
+import net.chrisrichardson.ftgo.restaurantorderservice.api.KitchenServiceChannels;
+import net.chrisrichardson.ftgo.restaurantorderservice.api.UndoBeginReviseTicketCommand;
 import io.eventuate.tram.sagas.orchestration.SagaDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,8 +63,8 @@ public class ReviseOrderSaga implements SimpleSaga<ReviseOrderSagaData> {
   }
 
   private CommandWithDestination confirmRestaurantOrderRevision(ReviseOrderSagaData data) {
-    return send(new ConfirmReviseRestaurantOrderCommand(data.getRestaurantId(), data.getOrderId(), data.getOrderRevision().getRevisedLineItemQuantities()))
-            .to(RestaurantOrderServiceChannels.restaurantOrderServiceChannel)
+    return send(new ConfirmReviseTicketCommand(data.getRestaurantId(), data.getOrderId(), data.getOrderRevision().getRevisedLineItemQuantities()))
+            .to(KitchenServiceChannels.kitchenServiceChannel)
             .build();
 
   }
@@ -77,15 +77,15 @@ public class ReviseOrderSaga implements SimpleSaga<ReviseOrderSagaData> {
   }
 
   private CommandWithDestination undoBeginReviseRestaurantOrder(ReviseOrderSagaData data) {
-    return send(new UndoBeginReviseRestaurantOrderCommand(data.getRestaurantId(), data.getOrderId()))
-            .to(RestaurantOrderServiceChannels.restaurantOrderServiceChannel)
+    return send(new UndoBeginReviseTicketCommand(data.getRestaurantId(), data.getOrderId()))
+            .to(KitchenServiceChannels.kitchenServiceChannel)
             .build();
 
   }
 
   private CommandWithDestination beginReviseRestaurantOrder(ReviseOrderSagaData data) {
-    return send(new BeginReviseRestaurantOrderCommand(data.getRestaurantId(), data.getOrderId(), data.getOrderRevision().getRevisedLineItemQuantities()))
-            .to(RestaurantOrderServiceChannels.restaurantOrderServiceChannel)
+    return send(new BeginReviseTicketCommand(data.getRestaurantId(), data.getOrderId(), data.getOrderRevision().getRevisedLineItemQuantities()))
+            .to(KitchenServiceChannels.kitchenServiceChannel)
             .build();
 
   }

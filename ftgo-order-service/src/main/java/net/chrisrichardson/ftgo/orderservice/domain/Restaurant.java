@@ -1,7 +1,7 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDomainEvent;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.RestaurantOrderDetails;
+import net.chrisrichardson.ftgo.restaurantorderservice.api.TicketDetails;
 import net.chrisrichardson.ftgo.restaurantservice.events.MenuItem;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 
@@ -11,7 +11,6 @@ import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.List;
@@ -42,7 +41,7 @@ public class Restaurant {
     throw new UnsupportedOperationException();
   }
 
-  public void verifyRestaurantDetails(RestaurantOrderDetails restaurantOrderDetails) {
+  public void verifyRestaurantDetails(TicketDetails ticketDetails) {
     // TODO - implement me
   }
 

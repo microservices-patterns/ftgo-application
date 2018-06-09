@@ -24,7 +24,7 @@ dependencies {
 
 contracts {
     contractsDslDir = new File("../ftgo-restaurant-order-service-contracts/src/main/resources/contracts")
-    baseClassForTests = 'net.chrisrichardson.ftgo.restaurantorderservice.contract.AbstractRestaurantOrderConsumerContractTest'
+    baseClassForTests = 'net.chrisrichardson.ftgo.restaurantorderservice.contract.AbstractKitchenServiceConsumerContractTest'
 }
 
 apply plugin: 'org.springframework.boot'

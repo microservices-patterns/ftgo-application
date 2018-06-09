@@ -10,8 +10,8 @@ import io.micrometer.core.instrument.MeterRegistry;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.AccountingServiceProxy;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.ConsumerServiceProxy;
+import net.chrisrichardson.ftgo.orderservice.sagaparticipants.KitchenServiceProxy;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.OrderServiceProxy;
-import net.chrisrichardson.ftgo.orderservice.sagaparticipants.RestaurantOrderServiceProxy;
 import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSaga;
 import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSagaData;
 import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSaga;
@@ -50,8 +50,8 @@ public class OrderServiceConfiguration {
   }
 
   @Bean
-  public CreateOrderSaga createOrderSaga(OrderServiceProxy orderService, ConsumerServiceProxy consumerService, RestaurantOrderServiceProxy restaurantOrderServiceProxy, AccountingServiceProxy accountingService) {
-    return new CreateOrderSaga(orderService, consumerService, restaurantOrderServiceProxy, accountingService);
+  public CreateOrderSaga createOrderSaga(OrderServiceProxy orderService, ConsumerServiceProxy consumerService, KitchenServiceProxy kitchenServiceProxy, AccountingServiceProxy accountingService) {
+    return new CreateOrderSaga(orderService, consumerService, kitchenServiceProxy, accountingService);
   }
 
   @Bean
@@ -76,8 +76,8 @@ public class OrderServiceConfiguration {
 
 
   @Bean
-  public RestaurantOrderServiceProxy restaurantOrderServiceProxy() {
-    return new RestaurantOrderServiceProxy();
+  public KitchenServiceProxy kitchenServiceProxy() {
+    return new KitchenServiceProxy();
   }
 
   @Bean

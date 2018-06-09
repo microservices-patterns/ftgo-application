@@ -46,7 +46,7 @@ public abstract class AbstractOrderServiceComponentTest {
 
     @Bean
     public MessagingStubConfiguration messagingStubConfiguration() {
-      return new MessagingStubConfiguration("consumerService", "restaurantOrderService", "accountingService", "orderService");
+      return new MessagingStubConfiguration("consumerService", "kitchenService", "accountingService", "orderService");
     }
 
     @Bean
@@ -81,7 +81,7 @@ public abstract class AbstractOrderServiceComponentTest {
     sagaParticipantStubManager.
             forChannel("consumerService")
             .when(ValidateOrderByConsumer.class).replyWith(cm -> withSuccess())
-            .forChannel("restaurantOrderService")
+            .forChannel("kitchenService")
             .when(CreateRestaurantOrder.class).replyWith(cm -> withSuccess(new CreateRestaurantOrderReply(cm.getCommand().getOrderId())))
             .when(ConfirmCreateRestaurantOrder.class).replyWithSuccess()
             .forChannel("accountingService")
