@@ -6,7 +6,7 @@ DOCKER_REPO=msapatterns
 
 $PREFIX docker login -u ${DOCKER_USER_ID?} -p ${DOCKER_PASSWORD?}
 
-IMAGES="ftgo-consumer-service ftgo-order-service ftgo-restaurant-order-service ftgo-restaurant-service ftgo-accounting-service ftgo-order-history-service ftgo-api-gateway dynamodblocal-init mysql"
+IMAGES="ftgo-consumer-service ftgo-order-service ftgo-kitchen-service ftgo-restaurant-service ftgo-accounting-service ftgo-order-history-service ftgo-api-gateway dynamodblocal-init mysql"
 
 cd dynamodblocal-init
 $PREFIX ./build-docker.sh

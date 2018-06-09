@@ -9,9 +9,9 @@ include "ftgo-order-service"
 include "ftgo-order-service-api"
 include "ftgo-order-service-contracts"
 
-include "ftgo-restaurant-order-service-api"
-include "ftgo-restaurant-order-service"
-include "ftgo-restaurant-order-service-contracts"
+include "ftgo-kitchen-service-api"
+include "ftgo-kitchen-service"
+include "ftgo-kitchen-service-contracts"
 
 include "ftgo-accounting-service-api"
 include "ftgo-accounting-service"

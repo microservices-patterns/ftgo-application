@@ -3,7 +3,7 @@ package net.chrisrichardson.ftgo.orderservice.sagaparticipants;
 import io.eventuate.tram.commands.common.Success;
 import io.eventuate.tram.sagas.simpledsl.CommandEndpoint;
 import io.eventuate.tram.sagas.simpledsl.CommandEndpointBuilder;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.*;
+import net.chrisrichardson.ftgo.kitchenservice.api.*;
 
 public class KitchenServiceProxy {
 

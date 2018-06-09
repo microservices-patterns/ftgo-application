@@ -7,10 +7,10 @@ import net.chrisrichardson.ftgo.consumerservice.api.ConsumerServiceChannels;
 import net.chrisrichardson.ftgo.consumerservice.api.ValidateOrderByConsumer;
 import net.chrisrichardson.ftgo.orderservice.api.OrderServiceChannels;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.*;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.CancelCreateTicket;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.ConfirmCreateTicket;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.CreateTicket;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.KitchenServiceChannels;
+import net.chrisrichardson.ftgo.kitchenservice.api.CancelCreateTicket;
+import net.chrisrichardson.ftgo.kitchenservice.api.ConfirmCreateTicket;
+import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicket;
+import net.chrisrichardson.ftgo.kitchenservice.api.KitchenServiceChannels;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

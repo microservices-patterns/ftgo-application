@@ -9,10 +9,10 @@ import net.chrisrichardson.ftgo.orderservice.api.OrderServiceChannels;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.BeginCancelCommand;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.ConfirmCancelOrderCommand;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.UndoBeginCancelCommand;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.BeginCancelTicketCommand;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.ConfirmCancelTicketCommand;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.KitchenServiceChannels;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.UndoBeginCancelTicketCommand;
+import net.chrisrichardson.ftgo.kitchenservice.api.BeginCancelTicketCommand;
+import net.chrisrichardson.ftgo.kitchenservice.api.ConfirmCancelTicketCommand;
+import net.chrisrichardson.ftgo.kitchenservice.api.KitchenServiceChannels;
+import net.chrisrichardson.ftgo.kitchenservice.api.UndoBeginCancelTicketCommand;
 import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
@@ -32,12 +32,12 @@ public class CancelOrderSaga implements SimpleSaga<CancelOrderSagaData> {
             .invokeParticipant(this::beginCancel)
             .withCompensation(this::undoBeginCancel)
             .step()
-            .invokeParticipant(this::beginCancelRestaurantOrder)
-            .withCompensation(this::undoBeginCancelRestaurantOrder)
+            .invokeParticipant(this::beginCancelTicket)
+            .withCompensation(this::undoBeginCancelTicket)
             .step()
             .invokeParticipant(this::reverseAuthorization)
             .step()
-            .invokeParticipant(this::confirmRestaurantOrderCancel)
+            .invokeParticipant(this::confirmTicketCancel)
             .step()
             .invokeParticipant(this::confirmOrderCancel)
             .build();
@@ -51,7 +51,7 @@ public class CancelOrderSaga implements SimpleSaga<CancelOrderSagaData> {
 
   }
 
-  private CommandWithDestination confirmRestaurantOrderCancel(CancelOrderSagaData data) {
+  private CommandWithDestination confirmTicketCancel(CancelOrderSagaData data) {
     return send(new ConfirmCancelTicketCommand(data.getRestaurantId(), data.getOrderId()))
             .to(KitchenServiceChannels.kitchenServiceChannel)
             .build();
@@ -65,14 +65,14 @@ public class CancelOrderSaga implements SimpleSaga<CancelOrderSagaData> {
 
   }
 
-  private CommandWithDestination undoBeginCancelRestaurantOrder(CancelOrderSagaData data) {
+  private CommandWithDestination undoBeginCancelTicket(CancelOrderSagaData data) {
     return send(new UndoBeginCancelTicketCommand(data.getRestaurantId(), data.getOrderId()))
             .to(KitchenServiceChannels.kitchenServiceChannel)
             .build();
 
   }
 
-  private CommandWithDestination beginCancelRestaurantOrder(CancelOrderSagaData data) {
+  private CommandWithDestination beginCancelTicket(CancelOrderSagaData data) {
     return send(new BeginCancelTicketCommand(data.getRestaurantId(), (long) data.getOrderId()))
             .to(KitchenServiceChannels.kitchenServiceChannel)
             .build();

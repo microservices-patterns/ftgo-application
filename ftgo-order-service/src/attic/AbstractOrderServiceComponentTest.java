@@ -12,9 +12,9 @@ import net.chrisrichardson.ftgo.orderservice.messaging.OrderServiceMessagingConf
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.ApproveOrderCommand;
 import net.chrisrichardson.ftgo.orderservice.service.OrderCommandHandlersConfiguration;
 import net.chrisrichardson.ftgo.orderservice.web.OrderWebConfiguration;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.ConfirmCreateRestaurantOrder;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.CreateRestaurantOrder;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.CreateRestaurantOrderReply;
+import net.chrisrichardson.ftgo.kitchenservice.api.ConfirmCreateTicket;
+import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicket;
+import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicketReply;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,8 +82,8 @@ public abstract class AbstractOrderServiceComponentTest {
             forChannel("consumerService")
             .when(ValidateOrderByConsumer.class).replyWith(cm -> withSuccess())
             .forChannel("kitchenService")
-            .when(CreateRestaurantOrder.class).replyWith(cm -> withSuccess(new CreateRestaurantOrderReply(cm.getCommand().getOrderId())))
-            .when(ConfirmCreateRestaurantOrder.class).replyWithSuccess()
+            .when(CreateTicket.class).replyWith(cm -> withSuccess(new CreateTicketReply(cm.getCommand().getOrderId())))
+            .when(ConfirmCreateTicket.class).replyWithSuccess()
             .forChannel("accountingService")
             .when(AuthorizeCommand.class).replyWithSuccess()
             .forChannel("orderService")

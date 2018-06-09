@@ -9,10 +9,10 @@ import io.eventuate.tram.springcloudcontractsupport.EventuateContractVerifierCon
 import net.chrisrichardson.ftgo.orderservice.EventuateTramRoutesConfigurer;
 import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
 import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSaga;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.CreateTicket;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.CreateTicketReply;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.TicketDetails;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.TicketLineItem;
+import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicket;
+import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicketReply;
+import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;
+import net.chrisrichardson.ftgo.kitchenservice.api.TicketLineItem;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ import static org.junit.Assert.assertEquals;
 @SpringBootTest(classes= KitchenServiceProxyIntegrationTest.TestConfiguration.class,
         webEnvironment= SpringBootTest.WebEnvironment.NONE)
 @AutoConfigureStubRunner(ids =
-        {"net.chrisrichardson.ftgo:ftgo-restaurant-order-service-contracts"}
+        {"net.chrisrichardson.ftgo:ftgo-kitchen-service-contracts"}
         )
 @DirtiesContext
 public class KitchenServiceProxyIntegrationTest {
@@ -99,7 +99,7 @@ public class KitchenServiceProxyIntegrationTest {
   private KitchenServiceProxy kitchenServiceProxy;
 
   @Test
-  public void shouldSuccessfullyCreateRestaurantOrder() {
+  public void shouldSuccessfullyCreateTicket() {
     CreateTicket command = new CreateTicket(AJANTA_ID, OrderDetailsMother.ORDER_ID,
             new TicketDetails(Collections.singletonList(new TicketLineItem(CHICKEN_VINDALOO_MENU_ITEM_ID, CHICKEN_VINDALOO, CHICKEN_VINDALOO_QUANTITY))));
     CreateTicketReply expectedReply = new CreateTicketReply(OrderDetailsMother.ORDER_ID);

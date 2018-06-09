@@ -360,12 +360,12 @@ public class OrderHistoryDaoDynamoDb implements OrderHistoryDao {
   }
 
   @Override
-  public void noteRestaurantOrderPreparationStarted(String orderId) {
+  public void noteTicketPreparationStarted(String orderId) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public void noteRestaurantOrderPreparationCompleted(String orderId) {
+  public void noteTicketPreparationCompleted(String orderId) {
     throw new UnsupportedOperationException();
 
   }

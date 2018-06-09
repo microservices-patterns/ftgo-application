@@ -76,12 +76,12 @@ public class OrderHistoryEventHandlers {
     orderHistoryDao.cancelOrder(orderId, null);
   }
 
-  public void handleRestaurantOrderPreparationStarted() {
-    orderHistoryDao.noteRestaurantOrderPreparationStarted(orderId);
+  public void handleTicketPreparationStarted() {
+    orderHistoryDao.noteTicketPreparationStarted(orderId);
   }
 
-  public void handleRestaurantOrderPreparationCompleted() {
-    orderHistoryDao.noteRestaurantOrderPreparationCompleted(orderId);
+  public void handleTicketPreparationCompleted() {
+    orderHistoryDao.noteTicketPreparationCompleted(orderId);
   }
 
   public void handleDeliveryLocationUpdated() {

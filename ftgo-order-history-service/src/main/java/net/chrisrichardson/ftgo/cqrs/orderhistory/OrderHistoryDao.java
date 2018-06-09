@@ -14,9 +14,9 @@ public interface OrderHistoryDao {
 
   public boolean cancelOrder(String orderId, Optional<SourceEvent> eventSource);
 
-  void noteRestaurantOrderPreparationStarted(String orderId);
+  void noteTicketPreparationStarted(String orderId);
 
-  void noteRestaurantOrderPreparationCompleted(String orderId);
+  void noteTicketPreparationCompleted(String orderId);
 
   void notePickedUp(String orderId, Optional<SourceEvent> eventSource);
 

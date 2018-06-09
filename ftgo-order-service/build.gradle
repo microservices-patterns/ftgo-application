@@ -93,7 +93,7 @@ dependencies {
 
     compile project(":ftgo-accounting-service-api")
     compile project(":ftgo-consumer-service-api")
-    compile project(":ftgo-restaurant-order-service-api")
+    compile project(":ftgo-kitchen-service-api")
     compile project(":ftgo-restaurant-service-api")
     compile project(":ftgo-order-service-api")
 
@@ -113,7 +113,7 @@ dependencies {
     
     testCompile "net.chrisrichardson.ftgo:ftgo-accounting-service-contracts:unspecified:stubs"
     testCompile "net.chrisrichardson.ftgo:ftgo-consumer-service-contracts:unspecified:stubs"
-    testCompile "net.chrisrichardson.ftgo:ftgo-restaurant-order-service-contracts:unspecified:stubs"
+    testCompile "net.chrisrichardson.ftgo:ftgo-kitchen-service-contracts:unspecified:stubs"
     testCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
     testCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
     testCompile 'io.rest-assured:rest-assured:3.0.6'

@@ -6,7 +6,7 @@ import net.chrisrichardson.ftgo.orderservice.api.events.OrderDetails;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderLineItem;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.ApproveOrderCommand;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.RejectOrderCommand;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.*;
+import net.chrisrichardson.ftgo.kitchenservice.api.*;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.slf4j.Logger;
@@ -63,29 +63,29 @@ public class CreateOrderSagaState {
     return ticketId;
   }
 
-  CreateTicket makeCreateRestaurantOrderCommand() {
-    return new CreateTicket(getOrderDetails().getRestaurantId(), getOrderId(), makeRestaurantOrderDetails(getOrderDetails()));
+  CreateTicket makeCreateTicketCommand() {
+    return new CreateTicket(getOrderDetails().getRestaurantId(), getOrderId(), makeTicketDetails(getOrderDetails()));
   }
 
-  private TicketDetails makeRestaurantOrderDetails(OrderDetails orderDetails) {
+  private TicketDetails makeTicketDetails(OrderDetails orderDetails) {
     // TODO FIXME
-    return new TicketDetails(makeRestaurantOrderLineItems(orderDetails.getLineItems()));
+    return new TicketDetails(makeTicketLineItems(orderDetails.getLineItems()));
   }
 
-  private List<TicketLineItem> makeRestaurantOrderLineItems(List<OrderLineItem> lineItems) {
-    return lineItems.stream().map(this::makeRestaurantOrderLineItem).collect(toList());
+  private List<TicketLineItem> makeTicketLineItems(List<OrderLineItem> lineItems) {
+    return lineItems.stream().map(this::makeTicketLineItem).collect(toList());
   }
 
-  private TicketLineItem makeRestaurantOrderLineItem(OrderLineItem orderLineItem) {
+  private TicketLineItem makeTicketLineItem(OrderLineItem orderLineItem) {
     return new TicketLineItem(orderLineItem.getMenuItemId(), orderLineItem.getName(), orderLineItem.getQuantity());
   }
 
-  void handleCreateRestaurantOrderReply(CreateTicketReply reply) {
+  void handleCreateTicketReply(CreateTicketReply reply) {
     logger.debug("getTicketId {}", reply.getTicketId());
     setTicketId(reply.getTicketId());
   }
 
-  CancelCreateTicket makeCancelCreateRestaurantOrderCommand() {
+  CancelCreateTicket makeCancelCreateTicketCommand() {
     return new CancelCreateTicket(getOrderId());
   }
 
@@ -105,7 +105,7 @@ public class CreateOrderSagaState {
     return new ApproveOrderCommand(getOrderId());
   }
 
-  ConfirmCreateTicket makeConfirmCreateRestaurantOrderCommand() {
+  ConfirmCreateTicket makeConfirmCreateTicketCommand() {
     return new ConfirmCreateTicket(getTicketId());
 
   }
