@@ -21,11 +21,12 @@ import static java.util.Collections.singletonList;
 public class Order {
 
   public static ResultWithDomainEvents<Order, OrderDomainEvent>
-  createOrder(long consumerId, long restaurantId, List<OrderLineItem> orderLineItems) {
-    Order order = new Order(consumerId, restaurantId, orderLineItems);
+  createOrder(long consumerId, Restaurant restaurant, List<OrderLineItem> orderLineItems) {
+    Order order = new Order(consumerId, restaurant.getId(), orderLineItems);
     List<OrderDomainEvent> events = singletonList(new OrderCreatedEvent(
-            new OrderDetails(consumerId, restaurantId, orderLineItems,
-                    order.getOrderTotal())));
+            new OrderDetails(consumerId, restaurant.getId(), orderLineItems,
+                    order.getOrderTotal()),
+            restaurant.getName()));
     return new ResultWithDomainEvents<>(order, events);
   }
 

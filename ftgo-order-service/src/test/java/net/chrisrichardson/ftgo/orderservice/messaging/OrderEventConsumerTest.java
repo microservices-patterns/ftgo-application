@@ -37,7 +37,7 @@ public class OrderEventConsumerTest {
             publishes(new RestaurantCreated(AJANTA_RESTAURANT_NAME, RestaurantMother.AJANTA_RESTAURANT_MENU)).
     then().
        verify(() -> {
-         verify(orderService).createMenu(AJANTA_ID, new RestaurantMenu(RestaurantMother.AJANTA_RESTAURANT_MENU_ITEMS));
+         verify(orderService).createMenu(AJANTA_ID, AJANTA_RESTAURANT_NAME, new RestaurantMenu(RestaurantMother.AJANTA_RESTAURANT_MENU_ITEMS));
        })
     ;
 

@@ -7,9 +7,11 @@ import io.eventuate.tram.inmemory.TramInMemoryConfiguration;
 import io.eventuate.tram.springcloudcontractsupport.EventuateContractVerifierConfiguration;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.OrderHistoryDao;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb.Order;
+import net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb.SourceEvent;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.messaging.OrderHistoryServiceMessagingConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Optional;
 
 import static io.eventuate.util.test.async.Eventually.eventually;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -69,7 +72,14 @@ public class OrderHistoryEventHandlersTest {
     stubFinder.trigger("orderCreatedEvent");
 
     eventually(() -> {
-      verify(orderHistoryDao).addOrder(any(Order.class), any(Optional.class));
+      ArgumentCaptor<Order> orderArg = ArgumentCaptor.forClass(Order.class);
+      ArgumentCaptor<Optional<SourceEvent>> sourceEventArg = ArgumentCaptor.forClass(Optional.class);
+      verify(orderHistoryDao).addOrder(orderArg.capture(), sourceEventArg.capture());
+
+      Order order = orderArg.getValue();
+      Optional<SourceEvent> sourceEvent = sourceEventArg.getValue();
+
+      assertEquals("Ajanta", order.getRestaurantName());
     });
   }
 

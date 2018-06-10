@@ -29,7 +29,7 @@ public class OrderEventConsumer {
     String restaurantIds = de.getAggregateId();
     long id = Long.parseLong(restaurantIds);
     RestaurantMenu menu = de.getEvent().getMenu();
-    orderService.createMenu(id, menu);
+    orderService.createMenu(id, de.getEvent().getName(), menu);
   }
 
   public void reviseMenu(DomainEventEnvelope<RestaurantMenuRevised> de) {

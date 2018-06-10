@@ -46,7 +46,6 @@ public class OrderHistoryDaoDynamoDbTest {
   public void setup() {
     consumerId = "consumerId" + System.currentTimeMillis();
     orderId = "orderId" + System.currentTimeMillis();
-    System.out.println("orderId=" + orderId);
     restaurantName = "Ajanta" + System.currentTimeMillis();
     chickenVindaloo = "Chicken Vindaloo" + System.currentTimeMillis();
     ;

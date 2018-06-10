@@ -28,12 +28,14 @@ public class Restaurant {
   @ElementCollection
   @CollectionTable(name = "order_service_restaurant_menu_items")
   private List<MenuItem> menuItems;
+  private String name;
 
   private Restaurant() {
   }
 
-  public Restaurant(long id, List<MenuItem> menuItems) {
+  public Restaurant(long id, String name, List<MenuItem> menuItems) {
     this.id = id;
+    this.name = name;
     this.menuItems = menuItems;
   }
 
@@ -55,5 +57,9 @@ public class Restaurant {
 
   public List<MenuItem> getMenuItems() {
     return menuItems;
+  }
+
+  public String getName() {
+    return name;
   }
 }

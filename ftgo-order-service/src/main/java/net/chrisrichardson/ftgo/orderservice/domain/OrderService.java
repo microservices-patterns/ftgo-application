@@ -60,7 +60,7 @@ public class OrderService {
     List<OrderLineItem> orderLineItems = makeOrderLineItems(lineItems, restaurant);
 
     ResultWithDomainEvents<Order, OrderDomainEvent> orderAndEvents =
-            Order.createOrder(consumerId, restaurantId, orderLineItems);
+            Order.createOrder(consumerId, restaurant, orderLineItems);
 
     Order order = orderAndEvents.result;
     orderRepository.save(order);
@@ -80,7 +80,7 @@ public class OrderService {
 
   private List<OrderLineItem> makeOrderLineItems(List<MenuItemIdAndQuantity> lineItems, Restaurant restaurant) {
     return lineItems.stream().map(li -> {
-      MenuItem om = restaurant.findMenuItem(li.getMenuItemId()).orElseThrow(() -> new RuntimeException("MenuItem not found: " + li.getMenuItemId()));
+      MenuItem om = restaurant.findMenuItem(li.getMenuItemId()).orElseThrow(() -> new InvalidMenuItemIdException(li.getMenuItemId()));
       return new OrderLineItem(li.getMenuItemId(), om.getName(), om.getPrice(), li.getQuantity());
     }).collect(toList());
   }
@@ -158,8 +158,8 @@ public class OrderService {
     updateOrder(orderId, order -> order.confirmRevision(revision));
   }
 
-  public void createMenu(long id, RestaurantMenu menu) {
-    Restaurant restaurant = new Restaurant(id, menu.getMenuItems());
+  public void createMenu(long id, String name, RestaurantMenu menu) {
+    Restaurant restaurant = new Restaurant(id, name, menu.getMenuItems());
     restaurantRepository.save(restaurant);
   }
 

@@ -2,6 +2,7 @@ package net.chrisrichardson.ftgo.orderservice.domain;
 
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.sagas.orchestration.SagaManager;
+import net.chrisrichardson.ftgo.orderservice.RestaurantMother;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
 import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSagaData;
 import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSagaState;
@@ -67,7 +68,7 @@ public class OrderServiceTest {
     verify(orderRepository).save(same(order));
 
     verify(orderAggregateEventPublisher).publish(order,
-            Collections.singletonList(new OrderCreatedEvent(CHICKEN_VINDALOO_ORDER_DETAILS)));
+            Collections.singletonList(new OrderCreatedEvent(CHICKEN_VINDALOO_ORDER_DETAILS, RestaurantMother.AJANTA_RESTAURANT_NAME)));
 
     verify(createOrderSagaManager).create(new CreateOrderSagaState(ORDER_ID, CHICKEN_VINDALOO_ORDER_DETAILS), Order.class, ORDER_ID);
   }

@@ -5,6 +5,7 @@ import net.chrisrichardson.ftgo.orderservice.api.events.OrderState;
 public class GetOrderResponse {
   private String orderId;
   private OrderState status;
+  private String restaurantName;
 
 
   private GetOrderResponse() {
@@ -18,9 +19,10 @@ public class GetOrderResponse {
     this.status = status;
   }
 
-  public GetOrderResponse(String orderId, OrderState status) {
+  public GetOrderResponse(String orderId, OrderState status, String restaurantName) {
     this.orderId = orderId;
     this.status = status;
+    this.restaurantName = restaurantName;
   }
 
   public String getOrderId() {
@@ -31,4 +33,11 @@ public class GetOrderResponse {
     this.orderId = orderId;
   }
 
+  public String getRestaurantName() {
+    return restaurantName;
+  }
+
+  public void setRestaurantName(String restaurantName) {
+    this.restaurantName = restaurantName;
+  }
 }

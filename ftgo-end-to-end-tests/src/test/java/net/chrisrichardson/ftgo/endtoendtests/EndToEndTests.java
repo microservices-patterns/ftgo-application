@@ -20,13 +20,17 @@ import org.junit.Test;
 import java.util.Collections;
 
 import static com.jayway.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class EndToEndTests {
 
+  // TODO Move to a shared module
 
   public static final String CHICKED_VINDALOO_MENU_ITEM_ID = "1";
+  public static final String RESTAURANT_NAME = "My Restaurant";
+
   private final int revisedQuantityOfChickenVindaloo = 10;
   private String host = System.getenv("DOCKER_HOST_IP");
   private int consumerId;
@@ -225,7 +229,7 @@ public class EndToEndTests {
   private int createRestaurant() {
     Integer restaurantId =
             given().
-                    body(new CreateRestaurantRequest("My Restaurant",
+                    body(new CreateRestaurantRequest(RESTAURANT_NAME,
                             new RestaurantMenu(Collections.singletonList(new MenuItem(CHICKED_VINDALOO_MENU_ITEM_ID, "Chicken Vindaloo", priceOfChickenVindaloo))))).
                     contentType("application/json").
                     when().
@@ -294,6 +298,7 @@ public class EndToEndTests {
               get(orderHistoryBaseUrl() + "?consumerId=" + consumerId).
               then().
               statusCode(200)
+              .body("orders[0].restaurantName", equalTo(RESTAURANT_NAME))
               .extract().
                       path("orders[0].status"); // TODO state?
       assertNotNull(state);
