@@ -10,7 +10,11 @@ fi
 
 echo Using $COMMAND
 
+ARGS=
+
 for dir in $CONTRACT_DIRS ; do
- (cd $dir ; ../gradlew $COMMAND)
-# (cd $dir ; rm -fr {out,build} ; ./mvnw $COMMAND)
- done
+  ARGS="$ARGS :$dir:$COMMAND"
+done
+
+./gradlew $ARGS
+
