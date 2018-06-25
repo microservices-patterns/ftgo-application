@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static java.util.Arrays.asList;
 
-public class AbstractAggregateDomainEventPublisher<A, E extends DomainEvent> {
+public abstract class AbstractAggregateDomainEventPublisher<A, E extends DomainEvent> {
   private Function<A, Object> idSupplier;
   private DomainEventPublisher eventPublisher;
   private Class<A> aggregateType;
