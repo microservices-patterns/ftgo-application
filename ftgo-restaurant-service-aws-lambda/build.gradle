@@ -1,0 +1,37 @@
+
+
+dependencies {
+
+    compile "com.amazonaws:aws-lambda-java-core:1.1.0"
+    compile "com.amazonaws:aws-lambda-java-events:2.0.1"
+
+    compile ("io.eventuate.tram.core:eventuate-tram-producer-jdbc:$eventuateTramVersion") {
+        exclude module: "org.springframework"
+    }
+    compile "io.eventuate.tram.core:eventuate-tram-events:$eventuateTramVersion"
+    compile project(":ftgo-restaurant-service-api")
+    compile project(":ftgo-common-jpa")
+
+    compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
+
+    compile 'javax.el:javax.el-api:2.2.5'
+
+    testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
+    testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"
+
+    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+    testCompile 'com.jayway.restassured:rest-assured:2.3.0'
+    testCompile "com.jayway.jsonpath:json-path:2.3.0"
+
+}
+
+task buildZip(type: Zip) {
+    from compileJava
+    from processResources
+    into('lib') {
+        from configurations.runtime
+    }
+}
+
+build.dependsOn buildZip
+
