@@ -1,7 +1,7 @@
-Feature: Create order
+Feature: Place Order
 
   As a consumer of the Order Service
-  I should be able to create an order
+  I should be able to place an order
 
   Scenario: Order authorized
     Given A valid consumer
