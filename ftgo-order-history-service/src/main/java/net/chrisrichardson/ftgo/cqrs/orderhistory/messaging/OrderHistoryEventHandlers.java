@@ -57,6 +57,7 @@ public class OrderHistoryEventHandlers {
             OrderState.APPROVAL_PENDING,
             event.getOrderDetails().getLineItems(),
             event.getOrderDetails().getOrderTotal(),
+            event.getOrderDetails().getRestaurantId(),
             event.getRestaurantName());
   }
 

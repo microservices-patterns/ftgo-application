@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Transactional
 public class RestaurantService {
@@ -23,5 +24,9 @@ public class RestaurantService {
     restaurantRepository.save(restaurant);
     domainEventPublisher.publish(Restaurant.class, restaurant.getId(), Collections.singletonList(new RestaurantCreated(request.getName(), request.getMenu())));
     return restaurant;
+  }
+
+  public Optional<Restaurant> findById(long restaurantId) {
+    return restaurantRepository.findById(restaurantId);
   }
 }

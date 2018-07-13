@@ -31,7 +31,7 @@ public class OrderHistoryControllerTest {
 
   @Test
   public void testGetOrder() {
-    when(orderHistoryDao.findOrder("1")).thenReturn(Optional.of(new Order("1", null, null, null, null, "Ajanta")));
+    when(orderHistoryDao.findOrder("1")).thenReturn(Optional.of(new Order("1", null, null, null, null, 101L, "Ajanta")));
 
     given().
             standaloneSetup(configureControllers(orderHistoryController)).

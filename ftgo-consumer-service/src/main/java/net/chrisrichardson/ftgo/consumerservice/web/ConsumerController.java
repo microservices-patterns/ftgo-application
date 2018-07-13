@@ -6,10 +6,9 @@ import net.chrisrichardson.ftgo.consumerservice.api.web.CreateConsumerResponse;
 import net.chrisrichardson.ftgo.consumerservice.domain.Consumer;
 import net.chrisrichardson.ftgo.consumerservice.domain.ConsumerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path="/consumers")
@@ -22,5 +21,12 @@ public class ConsumerController {
   public CreateConsumerResponse create(@RequestBody CreateConsumerRequest request) {
     ResultWithEvents<Consumer> result = consumerService.create(request.getName());
     return new CreateConsumerResponse(result.result.getId());
+  }
+
+  @RequestMapping(method= RequestMethod.GET,  path="/{consumerId}")
+  public ResponseEntity<GetConsumerResponse> get(@PathVariable long consumerId) {
+    return consumerService.findById(consumerId)
+            .map(consumer -> new ResponseEntity<>(new GetConsumerResponse(consumer.getName()), HttpStatus.OK))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 }

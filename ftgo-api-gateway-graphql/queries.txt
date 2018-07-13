@@ -1,0 +1,31 @@
+
+
+curl http://localhost:3000/graphql -X POST   -H "Content-Type: application/json"   --data '{ "query": "query { consumer(consumerId:1)  { id, firstName, lastName} } " }'
+curl http://localhost:3000/graphql -X POST   -H "Content-Type: application/json"   --data '{ "query": "query { consumer(consumerId:1)  { id, firstName, lastName  orders { orderId restaurant {id name }} } } " }'
+
+curl http://localhost:3000/graphql -X POST   -H "Content-Type: application/json"   --data '{ "query": "{ orders(consumerId:1)  { orderId, consumer { id, firstName, lastName} } }" }'
+
+curl http://localhost:3000/graphql -X POST   -H "Content-Type: application/json"   --data '{ "query": "{ orders(consumerId:1)  { orderId, restaurant { name } } }" }'
+
+curl http://localhost:3000/graphql -X POST   -H "Content-Type: application/json"   --data '{ "query": "{ consumer(consumerId:1)  { id, firstName, lastName, orders { orderId } } } " }'
+
+
+# doesn't like spaces in query!
+
+curl -v -g 'http://localhost:3000/graphql?query={orders(consumerId:1){orderId,restaurant{id}}}'
+
+
+curl http://localhost:3000/graphql -X POST   -H "Content-Type: application/json"   --data '{ "query": "{ orders(consumerId:1)  { orderId, restaurant { name } } }" }'
+
+
+curl http://localhost:3000/graphql -X POST   -H "Content-Type: application/json"   --data '{
+
+"query": "mutation ($fn : String, $ln : String) { createConsumer(c: {firstName: $fn, lastName: $ln})  { id, orders { orderId } } } ",
+"variables" : { "fn": "Chris", "ln" : "Richardson" }
+
+ }'
+
+curl http://localhost:3000/graphql -X POST   -H "Content-Type: application/json"   --data '{
+
+"query": "{ __schema { types { name } } }"
+ }'

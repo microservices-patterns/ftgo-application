@@ -27,4 +27,8 @@ public class ConsumerService {
     domainEventPublisher.publish(Consumer.class, rwe.result.getId(), rwe.events);
     return rwe;
   }
+
+  public Optional<Consumer> findById(long consumerId) {
+    return consumerRepository.findById(consumerId);
+  }
 }

@@ -2,12 +2,22 @@
 
 . ./set-env.sh
 
+KEEP_RUNNING=
+
+while [ ! -z "$*" ] ; do
+  case $1 in
+    "--keep-running" )
+      KEEP_RUNNING=yes
+      ;;
+    "--help" )
+      echo ./run-end-to-end-tests.sh --keep-running --assemble-only
+      ;;
+  esac
+  shift
+done
+
 initializeDynamoDB() {
-    echo preparing dynamodblocal table data
-    cd dynamodblocal-init
-    ./create-dynamodb-tables.sh
-    cd ..
-    echo data is prepared
+    ./initialize-dynamodb.sh
 }
 
 
@@ -27,5 +37,8 @@ date
 
 ./gradlew :ftgo-end-to-end-tests:cleanTest :ftgo-end-to-end-tests:test
 
-docker-compose down -v
+./run-graphql-api-gateway-tests.sh
 
+if [ -z "$KEEP_RUNNING" ] ; then
+  docker-compose down -v
+fi

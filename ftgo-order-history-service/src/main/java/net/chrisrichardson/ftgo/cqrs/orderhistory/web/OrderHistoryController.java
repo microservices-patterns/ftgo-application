@@ -34,7 +34,7 @@ public class OrderHistoryController {
   }
 
   private GetOrderResponse makeGetOrderResponse(Order order) {
-    return new GetOrderResponse(order.getOrderId(), order.getStatus(), order.getRestaurantName());
+    return new GetOrderResponse(order.getOrderId(), order.getStatus(), order.getRestaurantId(), order.getRestaurantName());
   }
 
   @RequestMapping(path = "/{orderId}", method = RequestMethod.GET)

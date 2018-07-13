@@ -12,3 +12,5 @@ target
 .project
 .settings
 bin
+node_modules
+dist
