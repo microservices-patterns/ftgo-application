@@ -16,7 +16,7 @@ import javax.persistence.Table;
 import java.util.List;
 
 @Entity
-@Table(name = "restaurant_order_service_restaurants")
+@Table(name = "kitchen_service_restaurants")
 @Access(AccessType.FIELD)
 public class Restaurant {
 
@@ -25,7 +25,7 @@ public class Restaurant {
 
   @Embedded
   @ElementCollection
-  @CollectionTable(name = "restaurant_order_service_restaurant_menu_items")
+  @CollectionTable(name = "kitchen_service_restaurant_menu_items")
   private List<MenuItem> menuItems;
 
   private Restaurant() {

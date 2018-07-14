@@ -13,5 +13,6 @@ if [ ! -d node_modules ] ; then
   npm install
 fi
 
+npm run unit-test
 npm run end-to-end-test
 
