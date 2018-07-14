@@ -145,7 +145,7 @@ public class EndToEndTests {
             body(new ReviseOrderRequest(Collections.singletonMap(CHICKED_VINDALOO_MENU_ITEM_ID, revisedQuantityOfChickenVindaloo)))
             .contentType("application/json").
             when().
-            put(orderBaseUrl(Integer.toString(orderId))).
+            post(orderBaseUrl(Integer.toString(orderId), "revise")).
             then().
             statusCode(200);
   }

@@ -11,6 +11,7 @@ buildscript {
         classpath "io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE"
         classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.0.0.M7"
         classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
     }
 }
 
@@ -18,6 +19,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: "io.spring.dependency-management"
 apply plugin: 'spring-cloud-contract'
 apply plugin: 'docker-compose'
+apply plugin: 'com.google.protobuf'
 
 apply plugin: IntegrationTestsPlugin
 apply plugin: ComponentTestsPlugin
@@ -69,12 +71,36 @@ dockerCompose {
 componentTest.dependsOn(componentTestsComposeUp)
 integrationTest.dependsOn(integrationTestsComposeUp)
 
-repositories {
-    maven {
-        url 'http://oss.jfrog.org/oss-snapshot-local/'
+protobuf {
+    protoc {
+        // Download from repositories
+        artifact = 'com.google.protobuf:protoc:3.0.0'
     }
-
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {
+                // To generate deprecated interfaces and static bindService method,
+                // turn the enable_deprecated option to true below:
+                option 'enable_deprecated=false'
+            }
+        }
+    }
 }
+
+apply plugin: 'idea'
+
+idea {
+    module {
+        sourceDirs += file("${projectDir}/build/generated/source/proto/main/java");
+        sourceDirs += file("${projectDir}/build/generated/source/proto/main/grpc");
+    }
+}
+
 
 dependencies {
 
@@ -102,6 +128,10 @@ dependencies {
     compile "io.micrometer:micrometer-registry-prometheus:$micrometerVersion"
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     compile 'javax.el:javax.el-api:2.2.5'
+
+    compile "io.grpc:grpc-netty:${grpcVersion}"
+    compile "io.grpc:grpc-protobuf:${grpcVersion}"
+    compile "io.grpc:grpc-stub:${grpcVersion}"
 
     testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
     testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"

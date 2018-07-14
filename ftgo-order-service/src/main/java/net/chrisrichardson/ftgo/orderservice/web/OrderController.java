@@ -60,9 +60,7 @@ public class OrderController {
     }
   }
 
-  // TODO implement revise order endpoint
-
-  @RequestMapping(path = "/{orderId}", method = RequestMethod.PUT)
+  @RequestMapping(path = "/{orderId}/revise", method = RequestMethod.POST)
   public ResponseEntity<GetOrderResponse> revise(@PathVariable long orderId, @RequestBody ReviseOrderRequest request) {
     try {
       Order order = orderService.reviseOrder(orderId, new OrderRevision(Optional.empty(), request.getRevisedLineItemQuantities()));
