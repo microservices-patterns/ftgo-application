@@ -1,8 +1,8 @@
 
 buildscript {
     dependencies {
-        classpath "io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE"
-        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:1.2.0.RELEASE"
+        classpath "io.spring.gradle:dependency-management-plugin:$springDependencyManagementPluginVersion"
+        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractDependenciesVersion"
     }
     repositories {
         mavenCentral()

@@ -8,8 +8,8 @@ buildscript {
         }
     }
     dependencies {
-        classpath "io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE"
-        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.0.0.M7"
+        classpath "io.spring.gradle:dependency-management-plugin:$springDependencyManagementPluginVersion"
+        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractDependenciesVersion"
         classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
     }

@@ -112,7 +112,7 @@ public class EventuateTramRoutesConfigurer {
       logger.info("Headers don't match {} {} ", groovyDsl.getLabel(), message);
       return false;
     }
-    BodyMatchers matchers = groovyDsl.getInput().getMatchers();
+    BodyMatchers matchers = groovyDsl.getInput().getBodyMatchers();
     Object dslBody = MapConverter.getStubSideValues(groovyDsl.getInput().getMessageBody());
     Object matchingInputMessage = JsonToJsonPathsConverter
             .removeMatchingJsonPaths(dslBody, matchers);
