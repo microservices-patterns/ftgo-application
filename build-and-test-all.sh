@@ -53,7 +53,6 @@ if [ -z "$ASSEMBLE_ONLY" ] ; then
 
   ./gradlew $* integrationTest
 
-
   # Component tests need to use the per-service database schema
 
   SPRING_DATASOURCE_URL=jdbc:mysql://${DOCKER_HOST_IP?}/ftgoorderservice ./gradlew :ftgo-order-service:cleanComponentTest :ftgo-order-service:componentTest
@@ -61,25 +60,33 @@ if [ -z "$ASSEMBLE_ONLY" ] ; then
   # Reset the DB/messages
 
   docker-compose down -v
+
+  docker-compose up -d dynamodblocal mysql
+
+  ./wait-for-mysql.sh
+
+  echo mysql is started
+
+  initializeDynamoDB
+
   docker-compose up -d
 
 
 else
 
   ./gradlew $* assemble
+
+  docker-compose up -d --build dynamodblocal mysql
+
+  ./wait-for-mysql.sh
+
+  echo mysql is started
+
+  initializeDynamoDB
+
   docker-compose up -d --build
 
 fi
-
-./wait-for-mysql.sh
-
-echo mysql is started
-
-initializeDynamoDB
-
-./wait-for-mysql.sh
-
-echo mysql is started
 
 ./wait-for-services.sh
 

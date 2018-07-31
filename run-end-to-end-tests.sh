@@ -23,13 +23,15 @@ initializeDynamoDB() {
 
 ./gradlew assemble
 
-docker-compose up -d --build
+docker-compose up -d --build dynamodblocal mysql
 
 ./wait-for-mysql.sh
 
 echo mysql is started
 
 initializeDynamoDB
+
+docker-compose up -d --build
 
 date
 
