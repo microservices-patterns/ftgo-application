@@ -42,7 +42,7 @@ echo mysql is started
 
 ./gradlew initDynamoDb
 
-${DOCKER_COMPOSE?} up -d --build eventuate-local-cdc-service tram-cdc-service
+${DOCKER_COMPOSE?} up -d --build tram-cdc-service
 
 
 if [ -z "$ASSEMBLE_ONLY" ] ; then

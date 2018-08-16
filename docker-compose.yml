@@ -1,13 +1,13 @@
 version: '3'
 services:
   zookeeper:
-    image: eventuateio/eventuateio-local-zookeeper:0.21.0.RELEASE
+    image: eventuateio/eventuateio-local-zookeeper:0.30.0.M1
     ports:
       - 2181:2181
       - 2888:2888
       - 3888:3888
   kafka:
-    image: eventuateio/eventuateio-local-kafka:0.21.0.RELEASE
+    image: eventuateio/eventuateio-local-kafka:0.30.0.M1
     ports:
       - 9092:9092
     depends_on:
@@ -25,40 +25,37 @@ services:
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
   tram-cdc-service:
-    image: eventuateio/eventuate-tram-cdc-mysql-service:0.10.0.RELEASE
+    image: eventuateio/eventuate-tram-cdc-mysql-service:0.20.0.M1
     ports:
       - "8099:8080"
     depends_on:
       - mysql
       - kafka
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
-      SPRING_DATASOURCE_USERNAME: mysqluser
-      SPRING_DATASOURCE_PASSWORD: mysqlpw
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-      EVENTUATELOCAL_CDC_DB_USER_NAME: root
-      EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
-      EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 1234567890
-      EVENTUATELOCAL_CDC_SOURCE_TABLE_NAME: message
-  eventuate-local-cdc-service:
-    image: eventuateio/eventuateio-local-new-cdc-service:0.21.0.RELEASE
-    ports:
-      - "8098:8080"
-    depends_on:
-      - mysql
-      - kafka
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
-      SPRING_DATASOURCE_USERNAME: mysqluser
-      SPRING_DATASOURCE_PASSWORD: mysqlpw
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
-      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-      EVENTUATELOCAL_CDC_DB_USER_NAME: root
-      EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
-      EVENTUATELOCAL_CDC_LEADERSHIP_LOCK_PATH: /eventuatelocal/cdc/leader1
+      EVENTUATE_CDC_PIPELINE_PROPERTIES: >
+        [{"type":"eventuate-local-mysql-binlog",
+        "dataSourceUrl":"jdbc:mysql://mysql/eventuate",
+        "dataSourceUserName":"mysqluser",
+        "dataSourcePassword":"mysqlpw",
+        "dataSourceDriverClassName":"com.mysql.jdbc.Driver",
+        "leadershipLockPath":"/eventuatelocal/cdc/leader/pipeline/1",
+        "mySqlBinLogClientName":"MySqlBinLog1",
+        "dbHistoryTopicName":"db.history.topic1",
+        "cdcDbUserName":"root",
+        "cdcDbPassword":"rootpassword"},
+        {"type":"eventuate-tram-mysql-binlog",
+        "dataSourceUrl":"jdbc:mysql://mysql/eventuate",
+        "dataSourceUserName":"mysqluser",
+        "dataSourcePassword":"mysqlpw",
+        "dataSourceDriverClassName":"com.mysql.jdbc.Driver",
+        "leadershipLockPath":"/eventuatelocal/cdc/leader/pipeline/2",
+        "mySqlBinLogClientName":"MySqlBinLog2",
+        "dbHistoryTopicName":"db.history.topic2",
+        "cdcDbUserName":"root",
+        "cdcDbPassword":"rootpassword"}]
+
   ftgo-consumer-service:
     build: ./ftgo-consumer-service
     ports:
@@ -137,7 +134,6 @@ services:
           - mysql
           - kafka
           - zookeeper
-          - eventuate-local-cdc-service
         environment:
           SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgoaccountingservice
           SPRING_DATASOURCE_USERNAME: mysqluser
