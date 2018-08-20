@@ -10,7 +10,7 @@ services:
     image: eventuateio/eventuateio-local-kafka:0.20.1.RELEASE
     ports:
       - 9092:9092
-    links:
+    depends_on:
       - zookeeper
     environment:
       - ADVERTISED_HOST_NAME=${DOCKER_HOST_IP}

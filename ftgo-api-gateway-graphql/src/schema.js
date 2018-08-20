@@ -23,12 +23,7 @@ const typeDefs = gql`
     consumerId : Int,
     consumer: Consumer
     restaurant: Restaurant
-
     deliveryInfo : DeliveryInfo
-    
-    # restaurant status
-    # payment status
-
   }
 
   type Restaurant {

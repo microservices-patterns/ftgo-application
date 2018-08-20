@@ -15,6 +15,7 @@ import net.chrisrichardson.ftgo.restaurantservice.events.MenuItem;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -158,11 +159,13 @@ public class OrderService {
     updateOrder(orderId, order -> order.confirmRevision(revision));
   }
 
+  @Transactional(propagation = Propagation.MANDATORY)
   public void createMenu(long id, String name, RestaurantMenu menu) {
     Restaurant restaurant = new Restaurant(id, name, menu.getMenuItems());
     restaurantRepository.save(restaurant);
   }
 
+  @Transactional(propagation = Propagation.MANDATORY)
   public void reviseMenu(long id, RestaurantMenu revisedMenu) {
     restaurantRepository.findById(id).map(restaurant -> {
       List<OrderDomainEvent> events = restaurant.reviseMenu(revisedMenu);

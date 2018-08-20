@@ -19,6 +19,12 @@ dependencyManagement {
 }
 
 dependencies {
-    compile 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
     compile "io.eventuate.tram.core:eventuate-tram-messaging:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-commands:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-events:$eventuateTramVersion"
+
+    compile 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
+    compile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
+
+    compile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
 }
