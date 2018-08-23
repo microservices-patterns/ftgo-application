@@ -6,7 +6,7 @@ import io.eventuate.tram.commands.producer.TramCommandProducerConfiguration;
 import io.eventuate.tram.inmemory.TramInMemoryConfiguration;
 import io.eventuate.tram.sagas.orchestration.SagaCommandProducer;
 import io.eventuate.tram.springcloudcontractsupport.EventuateContractVerifierConfiguration;
-import net.chrisrichardson.ftgo.orderservice.EventuateTramRoutesConfigurer;
+import io.eventuate.tram.springcloudcontractsupport.EventuateTramRoutesConfigurer;
 import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
 import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSaga;
 import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicket;

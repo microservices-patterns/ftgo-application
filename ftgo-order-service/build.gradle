@@ -111,8 +111,8 @@ dependencies {
 
     compile project(":common-swagger")
     compile project(":ftgo-common-jpa")
-    compile project(":eventuate-tram-aggregate-domain-events")
 
+    compile "io.eventuate.tram.core:eventuate-tram-aggregate-domain-events:$eventuateTramVersion"
     compile "io.eventuate.tram.core:eventuate-tram-jdbc-kafka:$eventuateTramVersion"
     compile "io.eventuate.tram.core:eventuate-tram-commands:$eventuateTramVersion"
     compile "io.eventuate.tram.sagas:eventuate-tram-sagas-simple-dsl:$eventuateTramSagasVersion"
@@ -149,7 +149,10 @@ dependencies {
     testCompile 'io.rest-assured:rest-assured:3.0.6'
     testCompile 'io.rest-assured:spring-mock-mvc:3.0.6'
     testCompile "io.rest-assured:json-path:3.0.6"
-    testCompile project(":eventuate-tram-spring-cloud-contract-support")
+
+    testCompile "io.eventuate.tram.core:eventuate-tram-testing-support-spring-cloud-contract:$eventuateTramVersion"
+
+    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-testing-support:$eventuateTramSagasVersion"
 
     componentTestCompile 'info.cukes:cucumber-java:1.2.5'
     componentTestCompile 'info.cukes:cucumber-junit:1.2.5'

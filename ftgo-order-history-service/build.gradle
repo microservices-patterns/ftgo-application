@@ -52,7 +52,7 @@ dependencies {
     testCompile "net.chrisrichardson.ftgo:ftgo-order-service-contracts:unspecified:stubs"
     testCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
     testCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
-    testCompile project(":eventuate-tram-spring-cloud-contract-support")
+    testCompile "io.eventuate.tram.core:eventuate-tram-testing-support-spring-cloud-contract:$eventuateTramVersion"
     
 
 }

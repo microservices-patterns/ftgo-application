@@ -26,9 +26,6 @@ include "ftgo-restaurant-service"
 include "ftgo-order-history-service"
 include "ftgo-api-gateway"
 include "ftgo-end-to-end-tests"
-include "eventuate-tram-spring-cloud-contract-support"
-
-include "eventuate-tram-aggregate-domain-events"
 
 include "ftgo-restaurant-service-aws-lambda"
 

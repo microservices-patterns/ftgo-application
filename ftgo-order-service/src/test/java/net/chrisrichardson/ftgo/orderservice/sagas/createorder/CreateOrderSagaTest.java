@@ -5,21 +5,18 @@ import net.chrisrichardson.ftgo.accountservice.api.AuthorizeCommand;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.consumerservice.api.ConsumerServiceChannels;
 import net.chrisrichardson.ftgo.consumerservice.api.ValidateOrderByConsumer;
-import net.chrisrichardson.ftgo.orderservice.api.OrderServiceChannels;
-import net.chrisrichardson.ftgo.orderservice.sagaparticipants.*;
 import net.chrisrichardson.ftgo.kitchenservice.api.CancelCreateTicket;
 import net.chrisrichardson.ftgo.kitchenservice.api.ConfirmCreateTicket;
 import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicket;
 import net.chrisrichardson.ftgo.kitchenservice.api.KitchenServiceChannels;
+import net.chrisrichardson.ftgo.orderservice.api.OrderServiceChannels;
+import net.chrisrichardson.ftgo.orderservice.sagaparticipants.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static net.chrisrichardson.ftgo.orderservice.OrderDetailsMother.CHICKEN_VINDALOO_ORDER_DETAILS;
-import static net.chrisrichardson.ftgo.orderservice.OrderDetailsMother.CHICKEN_VINDALOO_ORDER_TOTAL;
-import static net.chrisrichardson.ftgo.orderservice.OrderDetailsMother.CONSUMER_ID;
-import static net.chrisrichardson.ftgo.orderservice.OrderDetailsMother.ORDER_ID;
+import static io.eventuate.tram.sagas.testing.SagaUnitTestSupport.given;
+import static net.chrisrichardson.ftgo.orderservice.OrderDetailsMother.*;
 import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.AJANTA_ID;
-import static net.chrisrichardson.ftgo.orderservice.sagas.createorder.MockSagaTest.*;
 
 public class CreateOrderSagaTest {
 
