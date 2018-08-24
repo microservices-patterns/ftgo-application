@@ -148,13 +148,14 @@ public class OrderServiceComponentTestStepDefinitions /* extends OrderServiceCom
             .when(ConfirmCreateTicket.class).replyWithSuccess()
             .when(CancelCreateTicket.class).replyWithSuccess();
 
-    domainEventPublisher.publish("net.chrisrichardson.ftgo.restaurantservice.domain.Restaurant", RestaurantMother.AJANTA_ID,
-            Collections.singletonList(new RestaurantCreated(RestaurantMother.AJANTA_RESTAURANT_NAME, AJANTA_RESTAURANT_MENU)));
-    
-    eventually(() -> {
-      FtgoTestUtil.assertPresent(restaurantRepository.findById(RestaurantMother.AJANTA_ID));
-    });
+    if (!restaurantRepository.findById(RestaurantMother.AJANTA_ID).isPresent()) {
+      domainEventPublisher.publish("net.chrisrichardson.ftgo.restaurantservice.domain.Restaurant", RestaurantMother.AJANTA_ID,
+              Collections.singletonList(new RestaurantCreated(RestaurantMother.AJANTA_RESTAURANT_NAME, AJANTA_RESTAURANT_MENU)));
 
+      eventually(() -> {
+        FtgoTestUtil.assertPresent(restaurantRepository.findById(RestaurantMother.AJANTA_ID));
+      });
+    }
   }
 
   @When("I place an order for Chicken Vindaloo at Ajanta")

@@ -43,7 +43,7 @@ services:
       EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 1234567890
       EVENTUATELOCAL_CDC_SOURCE_TABLE_NAME: message
   eventuate-local-cdc-service:
-    image: eventuateio/eventuateio-local-cdc-service:0.17.0.RELEASE
+    image: eventuateio/eventuateio-local-new-cdc-service:0.20.1.RELEASE
     ports:
       - "8098:8080"
     depends_on:
