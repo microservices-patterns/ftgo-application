@@ -3,6 +3,10 @@
 KEEP_RUNNING=
 ASSEMBLE_ONLY=
 
+if [ -z "$DOCKER_COMPOSE" ] ; then
+    DOCKER_COMPOSE=docker-compose
+fi
+
 while [ ! -z "$*" ] ; do
   case $1 in
     "--keep-running" )
@@ -33,8 +37,8 @@ initializeDynamoDB() {
 
 ./gradlew testClasses
 
-docker-compose down -v
-docker-compose up -d --build dynamodblocal mysql
+${DOCKER_COMPOSE?} down -v
+${DOCKER_COMPOSE?} up -d --build dynamodblocal mysql
 
 ./wait-for-mysql.sh
 
@@ -42,14 +46,14 @@ echo mysql is started
 
 initializeDynamoDB
 
-docker-compose up -d --build eventuate-local-cdc-service tram-cdc-service
+${DOCKER_COMPOSE?} up -d --build eventuate-local-cdc-service tram-cdc-service
 
 
 if [ -z "$ASSEMBLE_ONLY" ] ; then
 
   ./gradlew -x :ftgo-end-to-end-tests:test $* build
 
-  docker-compose build
+  ${DOCKER_COMPOSE?} build
 
   ./gradlew $* integrationTest
 
@@ -60,9 +64,9 @@ if [ -z "$ASSEMBLE_ONLY" ] ; then
 
   # Reset the DB/messages
 
-  docker-compose down -v
+  ${DOCKER_COMPOSE?} down -v
 
-  docker-compose up -d dynamodblocal mysql
+  ${DOCKER_COMPOSE?} up -d dynamodblocal mysql
 
   ./wait-for-mysql.sh
 
@@ -70,14 +74,14 @@ if [ -z "$ASSEMBLE_ONLY" ] ; then
 
   initializeDynamoDB
 
-  docker-compose up -d
+  ${DOCKER_COMPOSE?} up -d
 
 
 else
 
   ./gradlew $* assemble
 
-  docker-compose up -d --build dynamodblocal mysql
+  ${DOCKER_COMPOSE?} up -d --build dynamodblocal mysql
 
   ./wait-for-mysql.sh
 
@@ -85,7 +89,7 @@ else
 
   initializeDynamoDB
 
-  docker-compose up -d --build
+  ${DOCKER_COMPOSE?} up -d --build
 
 fi
 
@@ -96,5 +100,5 @@ fi
 ./run-graphql-api-gateway-tests.sh
 
 if [ -z "$KEEP_RUNNING" ] ; then
-  docker-compose down -v
+  ${DOCKER_COMPOSE?} down -v
 fi
