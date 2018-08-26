@@ -78,8 +78,8 @@ workflows:
     jobs:
       - build
       - build-mariadb
-      - publish
-        requires:
-          - build
-          - build-mariadb
+      - publish:
+          requires:
+            - build
+            - build-mariadb
 
