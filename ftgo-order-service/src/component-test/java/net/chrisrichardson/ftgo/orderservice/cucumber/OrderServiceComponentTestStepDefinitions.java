@@ -163,8 +163,9 @@ public class OrderServiceComponentTestStepDefinitions /* extends OrderServiceCom
 
     response = given().
             body(new CreateOrderRequest(consumerId,
-                    RestaurantMother.AJANTA_ID, Collections.singletonList(new CreateOrderRequest.LineItem(RestaurantMother.CHICKEN_VINDALOO_MENU_ITEM_ID,
-                    OrderDetailsMother.CHICKEN_VINDALOO_QUANTITY)))).
+                    RestaurantMother.AJANTA_ID, Collections.singletonList(
+                            new CreateOrderRequest.LineItem(RestaurantMother.CHICKEN_VINDALOO_MENU_ITEM_ID,
+                                                            OrderDetailsMother.CHICKEN_VINDALOO_QUANTITY)))).
             contentType("application/json").
             when().
             post(baseUrl("/orders"));
