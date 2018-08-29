@@ -33,6 +33,7 @@ public class WaitForMySql extends DefaultTask {
 
   private void waitForConnection() {
     while (true) {
+      Connection connection = null;
       try {
         System.out.println("Trying to connect...");
 
@@ -40,16 +41,19 @@ public class WaitForMySql extends DefaultTask {
         String datasourceUsername = System.getenv("SPRING_DATASOURCE_USERNAME");
         String datasourcePassword = System.getenv("SPRING_DATASOURCE_PASSWORD");
 
-        Connection connection = DriverManager.getConnection(datasourceUrl, datasourceUsername, datasourcePassword);
+        connection = DriverManager.getConnection(datasourceUrl, datasourceUsername, datasourcePassword);
 
         System.out.println("Connection succeed");
 
-        closeConnection(connection);
         break;
       } catch (SQLException e) {
         System.out.println("Connection failed");
 
         sleep();
+      } finally {
+        if (connection != null) {
+          closeConnection(connection);
+        }
       }
     }
   }

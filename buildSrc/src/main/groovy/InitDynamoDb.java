@@ -1,98 +1,119 @@
+import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.model.*;
+import org.apache.commons.lang.StringUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class InitDynamoDb extends DefaultTask {
+
+  private static final String TABLE_NAME = "ftgo-order-history";
+
+  private static final String SECONDARY_INDEX_NAME = "ftgo-order-history-by-consumer-id-and-creation-time";
+
+  private static final String CONSUMER_ID_FIELD_NAME = "consumerId";
+  private static final String ORDER_ID_FIELD_NAME = "orderId";
+  private static final String CREATION_DATE_FIELD_NAME = "creationDate";
+
+  private static final long READ_CAPACITY_UNITS = 3;
+  private static final long WRITE_CAPACITY_UNITS = 3;
 
   @TaskAction
   public void initDynamoDb() {
     System.out.println("Initializing dynamodb...");
 
-    String endPoint = System.getenv("AWS_DYNAMODB_ENDPOINT_URL");
+    DynamoDB dynamoDB = createDynamoDb(createAmazonDynamoDbClient());
+
+    Table table = dynamoDB.getTable(TABLE_NAME);
 
     System.out.println("Checking if table already exists...");
 
-    if (!checkIfTableAlreadyExist(endPoint)) {
-      System.out.println("Table does not exist, creating...");
-      initDb(endPoint);
-    } else {
+    try {
+      table.describe();
       System.out.println("Table already exists, do nothing");
-    }
-  }
-
-  private boolean checkIfTableAlreadyExist(String endPoint) {
-    String cmd = String.format("aws dynamodb --region us-west-1 --endpoint-url %s describe-table --table-name ftgo-order-history", endPoint == null ? "" : endPoint);
-    return exec(cmd);
-  }
-
-  private void initDb(String endPoint) {
-      String cmd = String.format("aws dynamodb create-table --region us-west-2 --endpoint-url %s --cli-input-json file://./dynamodblocal-init/ftgo-order-history.json", endPoint == null ? "" : endPoint);
-      if (exec(cmd)) {
-        System.out.println("Initialization succeed");
-      } else {
-        System.out.println("Initialization failed");
+    } catch (ResourceNotFoundException e) {
+      try {
+        System.out.println("Table doesn't exist, creating...");
+        createTable(dynamoDB);
+        System.out.println("Table created");
+      } catch (InterruptedException ie) {
+        System.out.println("Table creation failed");
+        throw new RuntimeException(ie);
       }
-  }
-
-  private boolean exec(String command) {
-    Process p;
-
-    try {
-      p = Runtime.getRuntime().exec(command);
-    } catch (IOException e) {
-      System.out.println("command execution failed");
-      throw new RuntimeException(e);
-    }
-
-    try {
-      p.waitFor();
-    } catch (InterruptedException e) {
-      System.out.println("Waiting for command failed.");
-    }
-
-    String result;
-    try {
-      result = readFromStream(p.getInputStream());
-    } catch (IOException e) {
-      System.out.println("Result read failed");
-      throw new RuntimeException(e);
     } finally {
-      try {
-        p.getInputStream().close();
-      } catch (IOException ignore) {}
+      dynamoDB.shutdown();
     }
+  }
 
-    if (result.isEmpty()) {
-      try {
-        result = readFromStream(p.getErrorStream());
-        System.out.println(result);
-      } catch (IOException e) {
-        System.out.println("Error read failed");
-      } finally {
-        try {
-          p.getErrorStream().close();
-        } catch (IOException ignore) {}
-      }
-      return false;
+  private void createTable(DynamoDB dynamoDB) throws InterruptedException {
+
+    List<KeySchemaElement> keySchema =
+            Collections.singletonList(new KeySchemaElement().withAttributeName(ORDER_ID_FIELD_NAME).withKeyType(KeyType.HASH));
+
+    List<AttributeDefinition> attributeDefinitions = new ArrayList<>();
+
+    attributeDefinitions
+            .add(new AttributeDefinition().withAttributeName(ORDER_ID_FIELD_NAME).withAttributeType("S"));
+    attributeDefinitions
+            .add(new AttributeDefinition().withAttributeName(CONSUMER_ID_FIELD_NAME).withAttributeType("S"));
+    attributeDefinitions
+            .add(new AttributeDefinition().withAttributeName(CREATION_DATE_FIELD_NAME).withAttributeType("N"));
+
+    List<GlobalSecondaryIndex> globalSecondaryIndexes =
+            Collections.singletonList(new GlobalSecondaryIndex()
+                    .withIndexName(SECONDARY_INDEX_NAME)
+                    .withKeySchema(new KeySchemaElement().withAttributeName(CONSUMER_ID_FIELD_NAME).withKeyType(KeyType.HASH),
+                            new KeySchemaElement().withAttributeName(CREATION_DATE_FIELD_NAME).withKeyType(KeyType.RANGE))
+                    .withProjection(new Projection().withProjectionType(ProjectionType.ALL))
+                    .withProvisionedThroughput(new ProvisionedThroughput()
+                            .withReadCapacityUnits(READ_CAPACITY_UNITS)
+                            .withWriteCapacityUnits(WRITE_CAPACITY_UNITS)));
+
+    CreateTableRequest request =
+            new CreateTableRequest()
+                    .withTableName(TABLE_NAME)
+                    .withKeySchema(keySchema)
+                    .withProvisionedThroughput(new ProvisionedThroughput()
+                            .withReadCapacityUnits(READ_CAPACITY_UNITS)
+                            .withWriteCapacityUnits(WRITE_CAPACITY_UNITS));
+
+    request.setGlobalSecondaryIndexes(globalSecondaryIndexes);
+    request.setAttributeDefinitions(attributeDefinitions);
+
+    Table table = dynamoDB.createTable(request);
+
+    table.waitForActive();
+  }
+
+  private DynamoDB createDynamoDb(AmazonDynamoDB client) {
+    return new DynamoDB(client);
+  }
+
+
+  private AmazonDynamoDB createAmazonDynamoDbClient() {
+    String awsDynamodbEndpointUrl = System.getenv("AWS_DYNAMODB_ENDPOINT_URL");
+    String awsRegion = System.getenv("AWS_REGION");
+
+    if (!StringUtils.isBlank(awsDynamodbEndpointUrl)) {
+      return AmazonDynamoDBClientBuilder
+              .standard()
+              .withEndpointConfiguration(
+                      new AwsClientBuilder.EndpointConfiguration(awsDynamodbEndpointUrl, awsRegion))
+              .build();
     } else {
-      System.out.println(result);
-      return true;
+      return AmazonDynamoDBClientBuilder
+              .standard()
+              .withRegion(awsRegion)
+              .withCredentials(new EnvironmentVariableCredentialsProvider())
+              .build();
     }
   }
-
-  private String readFromStream(InputStream inputStream) throws IOException {
-    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-
-    StringBuilder sb = new StringBuilder();
-    String line = "";
-    while ((line = reader.readLine())!= null) {
-      sb.append(line + "\n");
-    }
-    return sb.toString();
-  }
-
 }
