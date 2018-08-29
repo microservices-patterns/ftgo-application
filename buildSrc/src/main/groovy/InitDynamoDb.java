@@ -60,6 +60,10 @@ public class InitDynamoDb extends DefaultTask {
     } catch (IOException e) {
       System.out.println("Result read failed");
       throw new RuntimeException(e);
+    } finally {
+      try {
+        p.getInputStream().close();
+      } catch (IOException ignore) {}
     }
 
     if (result.isEmpty()) {
@@ -68,6 +72,10 @@ public class InitDynamoDb extends DefaultTask {
         System.out.println(result);
       } catch (IOException e) {
         System.out.println("Error read failed");
+      } finally {
+        try {
+          p.getErrorStream().close();
+        } catch (IOException ignore) {}
       }
       return false;
     } else {
