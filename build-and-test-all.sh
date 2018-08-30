@@ -44,7 +44,6 @@ echo mysql is started
 
 ${DOCKER_COMPOSE?} up -d --build eventuate-local-cdc-service tram-cdc-service
 
-
 if [ -z "$ASSEMBLE_ONLY" ] ; then
 
   ./gradlew -x :ftgo-end-to-end-tests:test $* build
@@ -89,7 +88,7 @@ else
 
 fi
 
-./wait-for-services.sh
+./gradlew waitForServices --host="${DOCKER_HOST_IP}" --ports="8081 8082 8083 8084 8085 8086 8099 8098"
 
 ./gradlew :ftgo-end-to-end-tests:cleanTest :ftgo-end-to-end-tests:test
 

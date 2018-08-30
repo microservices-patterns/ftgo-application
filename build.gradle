@@ -7,6 +7,7 @@ buildscript {
     }
 
     apply plugin: WaitForMySqlPlugin
+    apply plugin: WaitForServicesPlugin
     apply plugin: InitDynamoDbPlugin
 }
 
