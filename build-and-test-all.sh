@@ -33,7 +33,7 @@ echo KEEP_RUNNING=$KEEP_RUNNING
 
 ./gradlew testClasses
 
-${DOCKER_COMPOSE?} down -v
+${DOCKER_COMPOSE?} down --remove-orphans -v
 ${DOCKER_COMPOSE?} up -d --build dynamodblocal mysql
 
 ./gradlew waitForMySql
@@ -60,7 +60,7 @@ if [ -z "$ASSEMBLE_ONLY" ] ; then
 
   # Reset the DB/messages
 
-  ${DOCKER_COMPOSE?} down -v
+  ${DOCKER_COMPOSE?} down --remove-orphans -v
 
   ${DOCKER_COMPOSE?} up -d dynamodblocal mysql
 
@@ -96,5 +96,5 @@ fi
 ./run-graphql-api-gateway-tests.sh
 
 if [ -z "$KEEP_RUNNING" ] ; then
-  ${DOCKER_COMPOSE?} down -v
+  ${DOCKER_COMPOSE?} down --remove-orphans -v
 fi
