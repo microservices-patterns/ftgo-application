@@ -27,10 +27,6 @@ echo KEEP_RUNNING=$KEEP_RUNNING
 
 . ./set-env.sh
 
-initializeDynamoDB() {
-./initialize-dynamodb.sh
-}
-
 # TODO Temporarily
 
 ./build-contracts.sh
@@ -40,11 +36,11 @@ initializeDynamoDB() {
 ${DOCKER_COMPOSE?} down -v
 ${DOCKER_COMPOSE?} up -d --build dynamodblocal mysql
 
-./wait-for-mysql.sh
+./gradlew waitForMySql
 
 echo mysql is started
 
-initializeDynamoDB
+./gradlew initDynamoDb
 
 ${DOCKER_COMPOSE?} up -d --build eventuate-local-cdc-service tram-cdc-service
 
@@ -68,11 +64,11 @@ if [ -z "$ASSEMBLE_ONLY" ] ; then
 
   ${DOCKER_COMPOSE?} up -d dynamodblocal mysql
 
-  ./wait-for-mysql.sh
+  ./gradlew waitForMySql
 
   echo mysql is started
 
-  initializeDynamoDB
+  ./gradlew initDynamoDb
 
   ${DOCKER_COMPOSE?} up -d
 
@@ -83,11 +79,11 @@ else
 
   ${DOCKER_COMPOSE?} up -d --build dynamodblocal mysql
 
-  ./wait-for-mysql.sh
+  ./gradlew waitForMySql
 
   echo mysql is started
 
-  initializeDynamoDB
+  ./gradlew initDynamoDb
 
   ${DOCKER_COMPOSE?} up -d --build
 

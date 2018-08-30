@@ -5,6 +5,9 @@ buildscript {
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     }
+
+    apply plugin: WaitForMySqlPlugin
+    apply plugin: InitDynamoDbPlugin
 }
 
 plugins {
@@ -14,7 +17,6 @@ plugins {
 subprojects {
 
     apply plugin: "java"
-
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
 

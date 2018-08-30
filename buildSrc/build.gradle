@@ -1,1 +1,11 @@
 test.enabled=false
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'mysql:mysql-connector-java:5.1.39'
+    compile 'com.amazonaws:aws-java-sdk-dynamodb:1.11.158'
+    compile 'commons-lang:commons-lang:2.6'
+}
