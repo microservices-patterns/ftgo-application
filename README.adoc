@@ -148,7 +148,13 @@ Run the application using this command:
 docker-compose up -d
 ```
 
-This can take a while
+This can take a while.
+
+You also need to initialize the locally running DynamoDB by running:
+
+```
+  ./gradlew initDynamoDb
+```
 
 === Using the application
 
