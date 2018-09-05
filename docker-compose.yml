@@ -1,13 +1,13 @@
 version: '3'
 services:
   zookeeper:
-    image: eventuateio/eventuateio-local-zookeeper:0.21.0.RELEASE
+    image: eventuateio/eventuateio-local-zookeeper:0.22.0.RELEASE
     ports:
       - 2181:2181
       - 2888:2888
       - 3888:3888
   kafka:
-    image: eventuateio/eventuateio-local-kafka:0.21.0.RELEASE
+    image: eventuateio/eventuateio-local-kafka:0.22.0.RELEASE
     ports:
       - 9092:9092
     depends_on:
@@ -25,7 +25,7 @@ services:
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
   tram-cdc-service:
-    image: eventuateio/eventuate-tram-cdc-mysql-service:0.10.0.RELEASE
+    image: eventuateio/eventuate-tram-cdc-mysql-service:0.11.0.RELEASE
     ports:
       - "8099:8080"
     depends_on:
@@ -43,7 +43,7 @@ services:
       EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 1234567890
       EVENTUATELOCAL_CDC_SOURCE_TABLE_NAME: message
   eventuate-local-cdc-service:
-    image: eventuateio/eventuateio-local-new-cdc-service:0.21.0.RELEASE
+    image: eventuateio/eventuateio-local-new-cdc-service:0.22.0.RELEASE
     ports:
       - "8098:8080"
     depends_on:
@@ -195,9 +195,21 @@ services:
        - "9411:9411"
       environment:
         JAVA_OPTS: -Xmx128m
+
   dynamodblocal:
     build: ./dynamodblocal
     ports:
      - "8000:8000"
     environment:
       JAVA_OPTS: -Xmx128m
+
+  dynamodblocal-init:
+    build: ./dynamodblocal-init
+    depends_on:
+      - dynamodblocal
+    restart: on-failure
+    environment:
+      AWS_DYNAMODB_ENDPOINT_URL: http://dynamodblocal:8000
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+      AWS_REGION: $AWS_REGION

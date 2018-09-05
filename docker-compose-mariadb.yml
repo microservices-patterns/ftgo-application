@@ -9,7 +9,7 @@ services:
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
   tram-cdc-service:
-    image: eventuateio/eventuate-tram-cdc-mysql-service:0.10.0.RELEASE
+    image: eventuateio/eventuate-tram-cdc-mysql-service:0.11.0.RELEASE
     ports:
       - "8099:8080"
     depends_on:
@@ -26,9 +26,8 @@ services:
       EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
       EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 1234567890
       EVENTUATELOCAL_CDC_SOURCE_TABLE_NAME: message
-      SPRING_PROFILES_ACTIVE: EventuatePolling
   eventuate-local-cdc-service:
-    image: eventuateio/eventuateio-local-new-cdc-service:0.21.0.RELEASE
+    image: eventuateio/eventuateio-local-new-cdc-service:0.22.0.RELEASE
     ports:
       - "8098:8080"
     depends_on:
