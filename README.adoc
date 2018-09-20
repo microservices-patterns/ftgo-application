@@ -110,10 +110,9 @@ All the services' business logic is implemented using Domain-Driven design aggre
 
 === Pre-requisites
 
-* Java 8
+* Java 8+
 * Docker and Docker Compose
 * Internet access so that Gradle and Docker can download dependencies and container images
-* The link:./ftgo-order-history-service[ftgo-order-history-service] uses AWS DynamoDB and so requires an access key and secret.
 
 === Building
 
@@ -149,12 +148,6 @@ docker-compose up -d
 ```
 
 This can take a while.
-
-You also need to initialize the locally running DynamoDB by running:
-
-```
-  ./gradlew initDynamoDb
-```
 
 === Using the application
 

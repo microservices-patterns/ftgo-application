@@ -155,6 +155,7 @@ services:
           - zookeeper
           - tram-cdc-service
           - dynamodblocal
+          - dynamodblocal-init
         environment:
           SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgoorderhistoryservice
           SPRING_DATASOURCE_USERNAME: mysqluser
