@@ -130,6 +130,13 @@ Build the services using this command:
 
 === Setting environment variables
 
+
+==== Quick way
+
+A quick way to set the environment variables is to run the script `./set-env.sh`
+
+==== Long way
+
 To run the application you must set the `DOCKER_HOST_IP` environment variable to the IP address of where the Docker containers are running:
 
 * Docker toolbox/Virtual machine - IP address of the virtual machine
@@ -138,6 +145,7 @@ To run the application you must set the `DOCKER_HOST_IP` environment variable to
 Please do NOT set it to the (unresolvable) hostname of your machine, `localhost` or `127.0.0.1`.
 
 You must also set the AWS environment variables.
+
 
 === Running the application
 
