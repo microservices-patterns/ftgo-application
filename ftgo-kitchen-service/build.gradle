@@ -1,0 +1,59 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:$springDependencyManagementPluginVersion"
+        // if using Stub Runner (consumer side) only remove this dependency
+        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractDependenciesVersion"
+    }
+}
+
+apply plugin: "io.spring.dependency-management"
+apply plugin: 'spring-cloud-contract'
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"
+    }
+}
+
+dependencies {
+    testCompile 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
+}
+
+contracts {
+    contractsDslDir = new File("../ftgo-kitchen-service-contracts/src/main/resources/contracts")
+    baseClassForTests = 'net.chrisrichardson.ftgo.kitchenservice.contract.AbstractKitchenServiceConsumerContractTest'
+}
+
+apply plugin: 'org.springframework.boot'
+
+
+dependencies {
+
+
+    compile "io.eventuate.tram.core:eventuate-tram-jdbc-kafka:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-events:$eventuateTramVersion"
+    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-simple-dsl:$eventuateTramSagasVersion"
+
+    compile project(":common-swagger")
+    compile project(":ftgo-common-jpa")
+    compile project(":ftgo-kitchen-service-api")
+    compile project(":ftgo-restaurant-service-api")
+    compile "io.eventuate.tram.core:eventuate-tram-aggregate-domain-events:$eventuateTramVersion"
+
+    compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
+    compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+    compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    compile 'javax.el:javax.el-api:2.2.5'
+
+    testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
+    testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"
+
+    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-in-memory:$eventuateTramSagasVersion"
+    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+    testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
+    testCompile "com.jayway.jsonpath:json-path:2.3.0"
+    testCompile "io.eventuate.tram.core:eventuate-tram-testing-support-spring-cloud-contract:$eventuateTramVersion"
+}

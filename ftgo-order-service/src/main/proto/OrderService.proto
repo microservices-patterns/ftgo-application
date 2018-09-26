@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "net.chrisrichardson.ftgo.orderservice.grpc";
+option java_outer_classname = "OrderServiceProto";
+option objc_class_prefix = "OS";
+
+package orderservice;
+
+service OrderService {
+  rpc createOrder(CreateOrderRequest) returns (CreateOrderReply) {}
+  rpc cancelOrder(CancelOrderRequest) returns (CancelOrderReply) {}
+  rpc reviseOrder(ReviseOrderRequest) returns (ReviseOrderReply) {}
+}
+
+message CreateOrderRequest {
+  int64 restaurantId = 1;
+  int64 consumerId = 2;
+  repeated LineItem lineItems = 3;
+}
+
+message LineItem {
+    string menuItemId = 1;
+    int32 quantity = 2;
+}
+
+
+message CreateOrderReply {
+  int64 orderId = 1;
+}
+
+message CancelOrderRequest {
+  string name = 1;
+}
+
+message CancelOrderReply {
+  string message = 1;
+}
+
+message ReviseOrderRequest {
+  string name = 1;
+}
+
+message ReviseOrderReply {
+  string message = 1;
+}

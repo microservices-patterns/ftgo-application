@@ -3,11 +3,15 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
+        maven {
+            url 'https://repo.spring.io/libs-milestone'
+        }
     }
     dependencies {
-        classpath "io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE"
-        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:1.2.0.RELEASE"
+        classpath "io.spring.gradle:dependency-management-plugin:$springDependencyManagementPluginVersion"
+        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractDependenciesVersion"
         classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
     }
 }
 
@@ -15,13 +19,15 @@ apply plugin: 'org.springframework.boot'
 apply plugin: "io.spring.dependency-management"
 apply plugin: 'spring-cloud-contract'
 apply plugin: 'docker-compose'
+apply plugin: 'com.google.protobuf'
 
 apply plugin: IntegrationTestsPlugin
 apply plugin: ComponentTestsPlugin
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-contract-dependencies:1.2.0.RELEASE'
+        mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"
+        mavenBom "org.springframework.cloud:spring-cloud-sleuth:$springCloudSleuthVersion"
     }
 }
 
@@ -53,10 +59,16 @@ dockerCompose {
     startedServices = [ 'not-used']
 
     componentTests {
+        if (System.getenv("FTGO_DOCKER_COMPOSE_FILES") != null)
+            useComposeFiles = System.getenv("FTGO_DOCKER_COMPOSE_FILES").split(",").collect { "../" + it }
         startedServices = [ 'ftgo-order-service']
         stopContainers = false
     }
+
     integrationTests {
+        if (System.getenv("FTGO_DOCKER_COMPOSE_FILES") != null)
+            useComposeFiles = System.getenv("FTGO_DOCKER_COMPOSE_FILES").split(",").collect { "../" + it }
+
         startedServices = [ 'mysql']
         stopContainers = false
     }
@@ -65,28 +77,67 @@ dockerCompose {
 componentTest.dependsOn(componentTestsComposeUp)
 integrationTest.dependsOn(integrationTestsComposeUp)
 
+protobuf {
+    protoc {
+        // Download from repositories
+        artifact = 'com.google.protobuf:protoc:3.0.0'
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {
+                // To generate deprecated interfaces and static bindService method,
+                // turn the enable_deprecated option to true below:
+                option 'enable_deprecated=false'
+            }
+        }
+    }
+}
+
+apply plugin: 'idea'
+
+idea {
+    module {
+        sourceDirs += file("${projectDir}/build/generated/source/proto/main/java");
+        sourceDirs += file("${projectDir}/build/generated/source/proto/main/grpc");
+    }
+}
+
 
 dependencies {
 
 
+    compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
+    compile 'io.zipkin.brave:brave-bom:4.17.1'
+
     compile project(":common-swagger")
     compile project(":ftgo-common-jpa")
-    compile project(":eventuate-tram-aggregate-domain-events")
 
+    compile "io.eventuate.tram.core:eventuate-tram-aggregate-domain-events:$eventuateTramVersion"
     compile "io.eventuate.tram.core:eventuate-tram-jdbc-kafka:$eventuateTramVersion"
     compile "io.eventuate.tram.core:eventuate-tram-commands:$eventuateTramVersion"
     compile "io.eventuate.tram.sagas:eventuate-tram-sagas-simple-dsl:$eventuateTramSagasVersion"
 
     compile project(":ftgo-accounting-service-api")
     compile project(":ftgo-consumer-service-api")
-    compile project(":ftgo-restaurant-order-service-api")
+    compile project(":ftgo-kitchen-service-api")
     compile project(":ftgo-restaurant-service-api")
     compile project(":ftgo-order-service-api")
 
     compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+    compile "io.micrometer:micrometer-registry-prometheus:$micrometerVersion"
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     compile 'javax.el:javax.el-api:2.2.5'
+
+    compile "io.grpc:grpc-netty:${grpcVersion}"
+    compile "io.grpc:grpc-protobuf:${grpcVersion}"
+    compile "io.grpc:grpc-stub:${grpcVersion}"
 
     testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
     testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"
@@ -96,18 +147,23 @@ dependencies {
 
     // Added this stuff
     
-    testCompile "net.chrisrichardson.ftgo.contracts:common-contracts:1.0-SNAPSHOT:stubs"
-    testCompile "net.chrisrichardson.ftgo.contracts:ftgo-restaurant-order-service-contracts:1.0-SNAPSHOT:stubs"
+    testCompile "net.chrisrichardson.ftgo:ftgo-accounting-service-contracts:unspecified:stubs"
+    testCompile "net.chrisrichardson.ftgo:ftgo-consumer-service-contracts:unspecified:stubs"
+    testCompile "net.chrisrichardson.ftgo:ftgo-kitchen-service-contracts:unspecified:stubs"
     testCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
     testCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
     testCompile 'io.rest-assured:rest-assured:3.0.6'
     testCompile 'io.rest-assured:spring-mock-mvc:3.0.6'
     testCompile "io.rest-assured:json-path:3.0.6"
-    testCompile project(":eventuate-tram-spring-cloud-contract-support")
+
+    testCompile "io.eventuate.tram.core:eventuate-tram-testing-support-spring-cloud-contract:$eventuateTramVersion"
+
+    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-testing-support:$eventuateTramSagasVersion"
 
     componentTestCompile 'info.cukes:cucumber-java:1.2.5'
     componentTestCompile 'info.cukes:cucumber-junit:1.2.5'
     componentTestCompile 'info.cukes:cucumber-spring:1.2.5'
+    testCompile project(":ftgo-test-util")
 
 }
 

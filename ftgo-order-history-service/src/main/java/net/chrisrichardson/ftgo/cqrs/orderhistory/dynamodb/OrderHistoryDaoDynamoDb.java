@@ -73,14 +73,16 @@ public class OrderHistoryDaoDynamoDb implements OrderHistoryDao {
             .withPrimaryKey("orderId", order.getOrderId())
             .withUpdateExpression("SET orderStatus = :orderStatus, " +
                     "creationDate = :creationDate, consumerId = :consumerId, lineItems =" +
-                    " :lineItems, keywords = :keywords, restaurantName = " +
-                    ":restaurantName")
+                    " :lineItems, keywords = :keywords, restaurantId = :restaurantId, " +
+                    " restaurantName = :restaurantName"
+            )
             .withValueMap(new Maps()
                     .add(":orderStatus", order.getStatus().toString())
                     .add(":consumerId", order.getConsumerId())
                     .add(":creationDate", order.getCreationDate().getMillis())
                     .add(":lineItems", mapLineItems(order.getLineItems()))
                     .add(":keywords", mapKeywords(order))
+                    .add(":restaurantId", order.getRestaurantId())
                     .add(":restaurantName", order.getRestaurantName())
                     .map())
             .withReturnValues(ReturnValue.NONE);
@@ -110,7 +112,7 @@ public class OrderHistoryDaoDynamoDb implements OrderHistoryDao {
 //            .add(":consumerId", order.getConsumerId())
 //            .add(":lineItems", mapLineItems(order.getLineItems()))
 //            .add(":keywords", mapKeywords(order))
-//            .add(":restaurantName", order.getRestaurantName())
+//            .add(":restaurantName", order.getRestaurantId())
 //            ;
 //
 //
@@ -360,12 +362,12 @@ public class OrderHistoryDaoDynamoDb implements OrderHistoryDao {
   }
 
   @Override
-  public void noteRestaurantOrderPreparationStarted(String orderId) {
+  public void noteTicketPreparationStarted(String orderId) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public void noteRestaurantOrderPreparationCompleted(String orderId) {
+  public void noteTicketPreparationCompleted(String orderId) {
     throw new UnsupportedOperationException();
 
   }
@@ -409,6 +411,7 @@ public class OrderHistoryDaoDynamoDb implements OrderHistoryDao {
             OrderState.valueOf(avs.getString("orderStatus")),
             toLineItems2(avs.getList("lineItems")),
             null,
+            avs.getLong("restaurantId"),
             avs.getString("restaurantName"));
     if (avs.hasAttribute("creationDate"))
       order.setCreationDate(new DateTime(avs.getLong("creationDate")));

@@ -25,7 +25,7 @@ There are the following services:
 * link:./ftgo-consumer-service[ftgo-consumer-service] - the `Consumer Service`
 * link:./ftgo-restaurant-service[ftgo-restaurant-service] - the `Restaurant Service`
 * link:./ftgo-order-service[ftgo-order-service] - the `Order Service`
-* link:./ftgo-restaurant-order-service[ftgo-restaurant-order-service] - the `Restaurant Order Service`
+* link:./ftgo-kitchen-service[ftgo-kitchen-service] - the `Kitchen Service`
 * link:./ftgo-accounting-service[ftgo-accounting-service] - the `Accounting Service`
 * link:./ftgo-order-history-service[ftgo-order-history-service] - a `Order History Service`, which is a CQRS view
 * link:./ftgo-api-gateway[ftgo-api-gateway] - the API gateway
@@ -69,7 +69,7 @@ The services that participate in these sagas define the following command handle
 
 * `Accounting Service` link:./ftgo-accounting-service/src/main/java/net/chrisrichardson/ftgo/accountingservice/messaging/AccountingServiceCommandHandler.java[AccountingServiceCommandHandler]
 * `Consumer Service` link:./ftgo-consumer-service/src/main/java/net/chrisrichardson/ftgo/consumerservice/domain/ConsumerServiceCommandHandlers.java[ConsumerServiceCommandHandlers]
-* `Restaurant Order Service` link:./ftgo-restaurant-order-service/src/main/java/net/chrisrichardson/ftgo/restaurantorderservice/messagehandlers/RestaurantOrderServiceCommandHandler.java[RestaurantOrderServiceCommandHandler]
+* `Kitchen Service` link:./ftgo-kitchen-service/src/main/java/net/chrisrichardson/ftgo/kitchenservice/messagehandlers/KitchenServiceCommandHandler.java[KitchenServiceCommandHandler]
 * `Order Service` link:./ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/service/OrderCommandHandlers.java[OrderCommandHandlers]
 
 
@@ -85,9 +85,9 @@ All the services' business logic is implemented using Domain-Driven design aggre
 * `Order Service`
 ** link:./ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/domain/Order.java[Order]
 ** link:./ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/domain/Restaurant.java[Restaurant]
-* `Restaurant Order Service`
-**  link:./ftgo-restaurant-order-service/src/main/java/net/chrisrichardson/ftgo/restaurantorderservice/domain/Restaurant.java[Restaurant]
-** link:./ftgo-restaurant-order-service/src/main/java/net/chrisrichardson/ftgo/restaurantorderservice/domain/RestaurantOrder.java[RestaurantOrder]
+* `Kitchen Service`
+**  link:./ftgo-kitchen-service/src/main/java/net/chrisrichardson/ftgo/kitchenservice/domain/Restaurant.java[Restaurant]
+** link:./ftgo-kitchen-service/src/main/java/net/chrisrichardson/ftgo/kitchenservice/domain/Ticket.java[Ticket]
 * `Restaurant Service`
 ** link:./ftgo-restaurant-service/src/main/java/net/chrisrichardson/ftgo/restaurantservice/domain/Restaurant.java[Restaurant]
 
@@ -110,10 +110,9 @@ All the services' business logic is implemented using Domain-Driven design aggre
 
 === Pre-requisites
 
-* Java 8
+* Java 8+
 * Docker and Docker Compose
 * Internet access so that Gradle and Docker can download dependencies and container images
-* The link:./ftgo-order-history-service[ftgo-order-history-service] uses AWS DynamoDB and so requires an access key and secret.
 
 === Building
 
@@ -131,6 +130,13 @@ Build the services using this command:
 
 === Setting environment variables
 
+
+==== Quick way
+
+A quick way to set the environment variables is to run the script `./set-env.sh`
+
+==== Long way
+
 To run the application you must set the `DOCKER_HOST_IP` environment variable to the IP address of where the Docker containers are running:
 
 * Docker toolbox/Virtual machine - IP address of the virtual machine
@@ -140,6 +146,7 @@ Please do NOT set it to the (unresolvable) hostname of your machine, `localhost`
 
 You must also set the AWS environment variables.
 
+
 === Running the application
 
 Run the application using this command:
@@ -148,7 +155,7 @@ Run the application using this command:
 docker-compose up -d
 ```
 
-This can take a while
+This can take a while.
 
 === Using the application
 

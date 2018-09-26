@@ -12,6 +12,9 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder;
 
+import java.util.Optional;
+
+import static java.util.Optional.empty;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -29,8 +32,8 @@ public abstract class HttpBase {
     OrderRepository orderRepository = mock(OrderRepository.class);
     OrderController orderController = new OrderController(orderService, orderRepository);
 
-    when(orderRepository.findOne(OrderDetailsMother.ORDER_ID)).thenReturn(OrderDetailsMother.CHICKEN_VINDALOO_ORDER);
-    when(orderRepository.findOne(555L)).thenReturn(null);
+    when(orderRepository.findById(OrderDetailsMother.ORDER_ID)).thenReturn(Optional.of(OrderDetailsMother.CHICKEN_VINDALOO_ORDER));
+    when(orderRepository.findById(555L)).thenReturn(empty());
     RestAssuredMockMvc.standaloneSetup(controllers(orderController));
 
   }

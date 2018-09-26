@@ -20,7 +20,7 @@ doforward 'ftgo-consumer-service' 8081 8080
 doforward 'ftgo-api-gateway' 8087 8080
 doforward 'ftgo-order-service' 8082 8080
 doforward 'ftgo-restaurant-service' 8084 8080
-doforward 'ftgo-restaurant-order-service' 8083 8080
+doforward 'ftgo-kitchen-service' 8083 8080
 
 exit 0
 

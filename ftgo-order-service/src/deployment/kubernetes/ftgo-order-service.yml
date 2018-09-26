@@ -2,10 +2,18 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ftgo-order-service
+  labels:
+    application: ftgo
+    app: ftgo
 spec:
   ports:
-  - port: 8080
+  - name: httpport
+    port: 8080
     targetPort: 8080
+  - name: metricsport
+    port: 8081
+    targetPort: 8080
+    protocol: TCP
   selector:
     svc: ftgo-order-service
 ---
@@ -56,13 +64,13 @@ spec:
             value: ftgo-zookeeper:2181
         livenessProbe:
           httpGet:
-            path: /health
+            path: /actuator/health
             port: 8080
           initialDelaySeconds: 60
           periodSeconds: 20
         readinessProbe:
           httpGet:
-            path: /health
+            path: /actuator/health
             port: 8080
           initialDelaySeconds: 60
           periodSeconds: 20

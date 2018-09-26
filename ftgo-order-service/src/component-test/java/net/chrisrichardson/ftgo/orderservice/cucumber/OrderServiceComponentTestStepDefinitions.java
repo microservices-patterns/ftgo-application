@@ -6,27 +6,30 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.eventuate.jdbckafka.TramJdbcKafkaConfiguration;
+import io.eventuate.tram.commands.common.ChannelMapping;
+import io.eventuate.tram.commands.common.DefaultChannelMapping;
 import io.eventuate.tram.events.common.DomainEvent;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
+import io.eventuate.tram.messaging.consumer.MessageConsumer;
+import io.eventuate.tram.sagas.testing.SagaParticipantStubManagerConfiguration;
+import io.eventuate.tram.sagas.testing.SagaParticipantStubManager;
+import io.eventuate.tram.testing.MessageTracker;
+import io.eventuate.tram.sagas.testing.SagaParticipantChannels;
 import io.restassured.response.Response;
 import net.chrisrichardson.ftgo.accountservice.api.AuthorizeCommand;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.consumerservice.api.ValidateOrderByConsumer;
-import net.chrisrichardson.ftgo.orderservice.MessageTracker;
-import net.chrisrichardson.ftgo.orderservice.MessageTrackerConfiguration;
-import net.chrisrichardson.ftgo.orderservice.MessagingStubConfiguration;
 import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
 import net.chrisrichardson.ftgo.orderservice.RestaurantMother;
-import net.chrisrichardson.ftgo.orderservice.SagaParticipantStubConfiguration;
-import net.chrisrichardson.ftgo.orderservice.SagaParticipantStubManager;
 import net.chrisrichardson.ftgo.orderservice.api.web.CreateOrderRequest;
 import net.chrisrichardson.ftgo.orderservice.domain.Order;
 import net.chrisrichardson.ftgo.orderservice.domain.RestaurantRepository;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.CancelCreateRestaurantOrder;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.ConfirmCreateRestaurantOrder;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.CreateRestaurantOrder;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.CreateRestaurantOrderReply;
+import net.chrisrichardson.ftgo.kitchenservice.api.CancelCreateTicket;
+import net.chrisrichardson.ftgo.kitchenservice.api.ConfirmCreateTicket;
+import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicket;
+import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicketReply;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
+import net.chrisrichardson.ftgo.testutil.FtgoTestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -41,6 +44,7 @@ import java.util.Collections;
 import static io.eventuate.tram.commands.consumer.CommandHandlerReplyBuilder.withSuccess;
 import static io.eventuate.util.test.async.Eventually.eventually;
 import static io.restassured.RestAssured.given;
+import static java.util.Collections.singleton;
 import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.AJANTA_RESTAURANT_MENU;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -69,20 +73,26 @@ public class OrderServiceComponentTestStepDefinitions /* extends OrderServiceCom
 
   @Configuration
   @EnableAutoConfiguration
-  @Import({TramJdbcKafkaConfiguration.class, SagaParticipantStubConfiguration.class})
+  @Import({TramJdbcKafkaConfiguration.class, SagaParticipantStubManagerConfiguration.class})
   @EnableJpaRepositories(basePackageClasses = RestaurantRepository.class) // Need to verify that the restaurant has been created. Replace with verifyRestaurantCreatedInOrderService
   @EntityScan(basePackageClasses = Order.class)
   public static class TestConfiguration {
 
     @Bean
-    public MessagingStubConfiguration messagingStubConfiguration() {
-      return new MessagingStubConfiguration("consumerService", "restaurantOrderService", "accountingService", "orderService");
+    public SagaParticipantChannels sagaParticipantChannels() {
+      return new SagaParticipantChannels("consumerService", "kitchenService", "accountingService", "orderService");
     }
 
     @Bean
-    public MessageTrackerConfiguration messageTrackerConfiguration() {
-      return new MessageTrackerConfiguration("net.chrisrichardson.ftgo.orderservice.domain.Order");
+    public MessageTracker messageTracker(MessageConsumer messageConsumer) {
+      return new MessageTracker(singleton("net.chrisrichardson.ftgo.orderservice.domain.Order"), messageConsumer) ;
     }
+
+    @Bean
+    public ChannelMapping channelMapping() {
+      return new DefaultChannelMapping.DefaultChannelMappingBuilder().build();
+    }
+
   }
 
   @Autowired
@@ -99,7 +109,7 @@ public class OrderServiceComponentTestStepDefinitions /* extends OrderServiceCom
 
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     sagaParticipantStubManager.reset();
   }
 
@@ -133,18 +143,19 @@ public class OrderServiceComponentTestStepDefinitions /* extends OrderServiceCom
   @Given("the restaurant is accepting orders")
   public void restaurantAcceptsOrder() {
     sagaParticipantStubManager
-            .forChannel("restaurantOrderService")
-            .when(CreateRestaurantOrder.class).replyWith(cm -> withSuccess(new CreateRestaurantOrderReply(cm.getCommand().getOrderId())))
-            .when(ConfirmCreateRestaurantOrder.class).replyWithSuccess()
-            .when(CancelCreateRestaurantOrder.class).replyWithSuccess();
+            .forChannel("kitchenService")
+            .when(CreateTicket.class).replyWith(cm -> withSuccess(new CreateTicketReply(cm.getCommand().getOrderId())))
+            .when(ConfirmCreateTicket.class).replyWithSuccess()
+            .when(CancelCreateTicket.class).replyWithSuccess();
 
-    domainEventPublisher.publish("net.chrisrichardson.ftgo.restaurantservice.domain.Restaurant", RestaurantMother.AJANTA_ID,
-            Collections.singletonList(new RestaurantCreated(RestaurantMother.AJANTA_RESTAURANT_NAME, AJANTA_RESTAURANT_MENU)));
-    
-    eventually(() -> {
-      assertNotNull(restaurantRepository.findOne(RestaurantMother.AJANTA_ID));
-    });
+    if (!restaurantRepository.findById(RestaurantMother.AJANTA_ID).isPresent()) {
+      domainEventPublisher.publish("net.chrisrichardson.ftgo.restaurantservice.domain.Restaurant", RestaurantMother.AJANTA_ID,
+              Collections.singletonList(new RestaurantCreated(RestaurantMother.AJANTA_RESTAURANT_NAME, AJANTA_RESTAURANT_MENU)));
 
+      eventually(() -> {
+        FtgoTestUtil.assertPresent(restaurantRepository.findById(RestaurantMother.AJANTA_ID));
+      });
+    }
   }
 
   @When("I place an order for Chicken Vindaloo at Ajanta")
@@ -152,8 +163,9 @@ public class OrderServiceComponentTestStepDefinitions /* extends OrderServiceCom
 
     response = given().
             body(new CreateOrderRequest(consumerId,
-                    RestaurantMother.AJANTA_ID, Collections.singletonList(new CreateOrderRequest.LineItem(RestaurantMother.CHICKEN_VINDALOO_MENU_ITEM_ID,
-                    OrderDetailsMother.CHICKEN_VINDALOO_QUANTITY)))).
+                    RestaurantMother.AJANTA_ID, Collections.singletonList(
+                            new CreateOrderRequest.LineItem(RestaurantMother.CHICKEN_VINDALOO_MENU_ITEM_ID,
+                                                            OrderDetailsMother.CHICKEN_VINDALOO_QUANTITY)))).
             contentType("application/json").
             when().
             post(baseUrl("/orders"));
@@ -188,12 +200,14 @@ public class OrderServiceComponentTestStepDefinitions /* extends OrderServiceCom
       assertEquals(desiredOrderState, state);
     });
 
+    sagaParticipantStubManager.verifyCommandReceived("kitchenService", CreateTicket.class);
+
   }
 
   @And("an (.*) event should be published")
-  public void verifyEventPublished(String expectedEventClass) throws ClassNotFoundException {
+  public void verifyEventPublished(String expectedEventClass) {
     messageTracker.assertDomainEventPublished("net.chrisrichardson.ftgo.orderservice.domain.Order",
-            (Class<DomainEvent>)Class.forName("net.chrisrichardson.ftgo.orderservice.domain." + expectedEventClass));
+            "net.chrisrichardson.ftgo.orderservice.domain." + expectedEventClass);
   }
 
 }

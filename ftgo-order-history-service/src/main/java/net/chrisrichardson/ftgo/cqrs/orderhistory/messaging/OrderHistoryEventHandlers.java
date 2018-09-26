@@ -41,10 +41,8 @@ public class OrderHistoryEventHandlers {
   }
 
   private Optional<SourceEvent> makeSourceEvent(DomainEventEnvelope<?> dee) {
-    Message message = dee.getMessage();
-    return Optional.of(new SourceEvent(dee.getAggregateType(), dee
-            .getAggregateId
-                    (), dee.getEventId()));
+    return Optional.of(new SourceEvent(dee.getAggregateType(),
+            dee.getAggregateId(), dee.getEventId()));
   }
 
   public void handleOrderCreated(DomainEventEnvelope<OrderCreatedEvent> dee) {
@@ -59,7 +57,8 @@ public class OrderHistoryEventHandlers {
             OrderState.APPROVAL_PENDING,
             event.getOrderDetails().getLineItems(),
             event.getOrderDetails().getOrderTotal(),
-            "name-of-" + event.getOrderDetails().getRestaurantId());
+            event.getOrderDetails().getRestaurantId(),
+            event.getRestaurantName());
   }
 
   public void handleDeliveryPickedUp(DomainEventEnvelope<DeliveryPickedUp>
@@ -76,12 +75,12 @@ public class OrderHistoryEventHandlers {
     orderHistoryDao.cancelOrder(orderId, null);
   }
 
-  public void handleRestaurantOrderPreparationStarted() {
-    orderHistoryDao.noteRestaurantOrderPreparationStarted(orderId);
+  public void handleTicketPreparationStarted() {
+    orderHistoryDao.noteTicketPreparationStarted(orderId);
   }
 
-  public void handleRestaurantOrderPreparationCompleted() {
-    orderHistoryDao.noteRestaurantOrderPreparationCompleted(orderId);
+  public void handleTicketPreparationCompleted() {
+    orderHistoryDao.noteTicketPreparationCompleted(orderId);
   }
 
   public void handleDeliveryLocationUpdated() {

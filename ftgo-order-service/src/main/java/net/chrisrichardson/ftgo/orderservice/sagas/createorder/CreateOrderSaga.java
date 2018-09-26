@@ -3,7 +3,7 @@ package net.chrisrichardson.ftgo.orderservice.sagas.createorder;
 import io.eventuate.tram.sagas.orchestration.SagaDefinition;
 import io.eventuate.tram.sagas.simpledsl.SimpleSaga;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.*;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.CreateRestaurantOrderReply;
+import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicketReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +14,7 @@ public class CreateOrderSaga implements SimpleSaga<CreateOrderSagaState> {
 
   private SagaDefinition<CreateOrderSagaState> sagaDefinition;
 
-  public CreateOrderSaga(OrderServiceProxy orderService, ConsumerServiceProxy consumerService, RestaurantOrderServiceProxy restaurantOrderService,
+  public CreateOrderSaga(OrderServiceProxy orderService, ConsumerServiceProxy consumerService, KitchenServiceProxy kitchenService,
                          AccountingServiceProxy accountingService) {
     this.sagaDefinition =
              step()
@@ -22,13 +22,13 @@ public class CreateOrderSaga implements SimpleSaga<CreateOrderSagaState> {
             .step()
               .invokeParticipant(consumerService.validateOrder, CreateOrderSagaState::makeValidateOrderByConsumerCommand)
             .step()
-              .invokeParticipant(restaurantOrderService.create, CreateOrderSagaState::makeCreateRestaurantOrderCommand)
-              .onReply(CreateRestaurantOrderReply.class, CreateOrderSagaState::handleCreateRestaurantOrderReply)
-              .withCompensation(restaurantOrderService.cancel, CreateOrderSagaState::makeCancelCreateRestaurantOrderCommand)
+              .invokeParticipant(kitchenService.create, CreateOrderSagaState::makeCreateTicketCommand)
+              .onReply(CreateTicketReply.class, CreateOrderSagaState::handleCreateTicketReply)
+              .withCompensation(kitchenService.cancel, CreateOrderSagaState::makeCancelCreateTicketCommand)
             .step()
               .invokeParticipant(accountingService.authorize, CreateOrderSagaState::makeAuthorizeCommand)
             .step()
-              .invokeParticipant(restaurantOrderService.confirmCreate, CreateOrderSagaState::makeConfirmCreateRestaurantOrderCommand)
+              .invokeParticipant(kitchenService.confirmCreate, CreateOrderSagaState::makeConfirmCreateTicketCommand)
             .step()
               .invokeParticipant(orderService.approve, CreateOrderSagaState::makeApproveOrderCommand)
             .build();

@@ -20,13 +20,17 @@ import org.junit.Test;
 import java.util.Collections;
 
 import static com.jayway.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class EndToEndTests {
 
+  // TODO Move to a shared module
 
   public static final String CHICKED_VINDALOO_MENU_ITEM_ID = "1";
+  public static final String RESTAURANT_NAME = "My Restaurant";
+
   private final int revisedQuantityOfChickenVindaloo = 10;
   private String host = System.getenv("DOCKER_HOST_IP");
   private int consumerId;
@@ -55,7 +59,7 @@ public class EndToEndTests {
   private int orderPort = 8082;
   private int accountingPort = 8085;
   private int restaurantsPort = 8084;
-  private int restaurantOrderPort = 8083;
+  private int kitchenPort = 8083;
   private int apiGatewayPort = 8087;
 
 
@@ -71,8 +75,8 @@ public class EndToEndTests {
     return baseUrl(restaurantsPort, "restaurants", pathElements);
   }
 
-  private String restaurantOrderRestaurantBaseUrl(String... pathElements) {
-    return baseUrl(restaurantOrderPort, "restaurants", pathElements);
+  private String kitchenRestaurantBaseUrl(String... pathElements) {
+    return baseUrl(kitchenPort, "restaurants", pathElements);
   }
 
   private String orderBaseUrl(String... pathElements) {
@@ -141,7 +145,7 @@ public class EndToEndTests {
             body(new ReviseOrderRequest(Collections.singletonMap(CHICKED_VINDALOO_MENU_ITEM_ID, revisedQuantityOfChickenVindaloo)))
             .contentType("application/json").
             when().
-            put(orderBaseUrl(Integer.toString(orderId))).
+            post(orderBaseUrl(Integer.toString(orderId), "revise")).
             then().
             statusCode(200);
   }
@@ -154,7 +158,7 @@ public class EndToEndTests {
 
     restaurantId = createRestaurant();
 
-    verifyRestaurantCreatedInRestaurantOrderService(restaurantId);
+    verifyRestaurantCreatedInKitchenService(restaurantId);
 
     verifyRestaurantCreatedInOrderService(restaurantId);
 
@@ -225,7 +229,7 @@ public class EndToEndTests {
   private int createRestaurant() {
     Integer restaurantId =
             given().
-                    body(new CreateRestaurantRequest("My Restaurant",
+                    body(new CreateRestaurantRequest(RESTAURANT_NAME,
                             new RestaurantMenu(Collections.singletonList(new MenuItem(CHICKED_VINDALOO_MENU_ITEM_ID, "Chicken Vindaloo", priceOfChickenVindaloo))))).
                     contentType("application/json").
                     when().
@@ -239,11 +243,11 @@ public class EndToEndTests {
     return restaurantId;
   }
 
-  private void verifyRestaurantCreatedInRestaurantOrderService(int restaurantId) {
-    Eventually.eventually(String.format("verifyRestaurantCreatedInRestaurantOrderService %s", restaurantId), () ->
+  private void verifyRestaurantCreatedInKitchenService(int restaurantId) {
+    Eventually.eventually(String.format("verifyRestaurantCreatedInKitchenService %s", restaurantId), () ->
             given().
                     when().
-                    get(restaurantOrderRestaurantBaseUrl(Integer.toString(restaurantId))).
+                    get(kitchenRestaurantBaseUrl(Integer.toString(restaurantId))).
                     then().
                     statusCode(200));
   }
@@ -294,6 +298,7 @@ public class EndToEndTests {
               get(orderHistoryBaseUrl() + "?consumerId=" + consumerId).
               then().
               statusCode(200)
+              .body("orders[0].restaurantName", equalTo(RESTAURANT_NAME))
               .extract().
                       path("orders[0].status"); // TODO state?
       assertNotNull(state);

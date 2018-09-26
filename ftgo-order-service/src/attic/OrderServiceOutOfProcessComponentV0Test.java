@@ -44,9 +44,9 @@ import static org.junit.Assert.assertNotNull;
         webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT,
       properties = "customer.service.url=http://localhost:8888/customers/{customerId}")
 @AutoConfigureStubRunner(ids =
-        {"net.chrisrichardson.ftgo.contracts:common-contracts",
-                "net.chrisrichardson.ftgo.contracts:ftgo-restaurant-order-service-contracts"},
-        workOffline = false)
+        {"net.chrisrichardson.ftgo:ftgo-accounting-service-contracts", "net.chrisrichardson.ftgo:ftgo-consumer-service-contracts",
+                "net.chrisrichardson.ftgo:ftgo-kitchen-service-contracts"}
+        )
 @DirtiesContext
 public class OrderServiceOutOfProcessComponentV0Test {
 
@@ -109,7 +109,7 @@ public class OrderServiceOutOfProcessComponentV0Test {
                     new RestaurantMenu(Collections.singletonList(RestaurantMother.CHICKEN_VINDALOO_MENU_ITEM)))));
 
     Eventually.eventually(() -> {
-      assertNotNull(restaurantRepository.findOne(RestaurantMother.AJANTA_ID));
+      FtgoTestUtil.assertPresent(restaurantRepository.findById(RestaurantMother.AJANTA_ID));
     });
 
 
@@ -119,7 +119,7 @@ public class OrderServiceOutOfProcessComponentV0Test {
 
 
     Eventually.eventually(() -> {
-      Order o = orderRepository.findOne(order.getId());
+      Order o = orderRepository.findById(order.getId());
       assertNotNull(o);
       assertEquals(OrderState.AUTHORIZED, o.getState());
     });

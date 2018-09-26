@@ -1,7 +1,7 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDomainEvent;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.RestaurantOrderDetails;
+import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;
 import net.chrisrichardson.ftgo.restaurantservice.events.MenuItem;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 
@@ -11,7 +11,6 @@ import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.List;
@@ -29,12 +28,14 @@ public class Restaurant {
   @ElementCollection
   @CollectionTable(name = "order_service_restaurant_menu_items")
   private List<MenuItem> menuItems;
+  private String name;
 
   private Restaurant() {
   }
 
-  public Restaurant(long id, List<MenuItem> menuItems) {
+  public Restaurant(long id, String name, List<MenuItem> menuItems) {
     this.id = id;
+    this.name = name;
     this.menuItems = menuItems;
   }
 
@@ -42,7 +43,7 @@ public class Restaurant {
     throw new UnsupportedOperationException();
   }
 
-  public void verifyRestaurantDetails(RestaurantOrderDetails restaurantOrderDetails) {
+  public void verifyRestaurantDetails(TicketDetails ticketDetails) {
     // TODO - implement me
   }
 
@@ -56,5 +57,9 @@ public class Restaurant {
 
   public List<MenuItem> getMenuItems() {
     return menuItems;
+  }
+
+  public String getName() {
+    return name;
   }
 }

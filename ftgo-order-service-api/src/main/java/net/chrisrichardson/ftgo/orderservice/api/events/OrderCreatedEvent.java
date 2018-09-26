@@ -6,21 +6,31 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class OrderCreatedEvent implements OrderDomainEvent {
   private OrderDetails orderDetails;
+  private String restaurantName;
 
   private OrderCreatedEvent() {
+  }
+
+  public OrderCreatedEvent(OrderDetails orderDetails, String restaurantName) {
+
+    this.orderDetails = orderDetails;
+    this.restaurantName = restaurantName;
+  }
+
+  public OrderDetails getOrderDetails() {
+    return orderDetails;
   }
 
   public void setOrderDetails(OrderDetails orderDetails) {
     this.orderDetails = orderDetails;
   }
 
-  public OrderCreatedEvent(OrderDetails orderDetails) {
-
-    this.orderDetails = orderDetails;
+  public String getRestaurantName() {
+    return restaurantName;
   }
 
-  public OrderDetails getOrderDetails() {
-    return orderDetails;
+  public void setRestaurantName(String restaurantName) {
+    this.restaurantName = restaurantName;
   }
 
   @Override

@@ -53,7 +53,7 @@ API Gateway
 
 ** saga method throws exception, reported by kafkamessageprocessor, eventuatekafkaconsumer  appears to have processed the record. what is the expected behavior??? who stops processing?
 
-** define constants for channels, ?? restaurantorderservice
+** define constants for channels, ?? kitchenservice
 @transactional
 
 

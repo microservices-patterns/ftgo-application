@@ -7,6 +7,8 @@ import net.chrisrichardson.ftgo.orderservice.domain.OrderService;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenuRevised;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 
 public class OrderEventConsumer {
@@ -29,7 +31,7 @@ public class OrderEventConsumer {
     String restaurantIds = de.getAggregateId();
     long id = Long.parseLong(restaurantIds);
     RestaurantMenu menu = de.getEvent().getMenu();
-    orderService.createMenu(id, menu);
+    orderService.createMenu(id, de.getEvent().getName(), menu);
   }
 
   public void reviseMenu(DomainEventEnvelope<RestaurantMenuRevised> de) {

@@ -4,8 +4,8 @@ GRANT ALL PRIVILEGES ON ftgoconsumerservice.* TO 'mysqluser'@'%' WITH GRANT OPTI
 create database ftgoorderservice;
 GRANT ALL PRIVILEGES ON ftgoorderservice.* TO 'mysqluser'@'%' WITH GRANT OPTION;
 
-create database ftgorestaurantorderservice;
-GRANT ALL PRIVILEGES ON ftgorestaurantorderservice.* TO 'mysqluser'@'%' WITH GRANT OPTION;
+create database ftgokitchenservice;
+GRANT ALL PRIVILEGES ON ftgokitchenservice.* TO 'mysqluser'@'%' WITH GRANT OPTION;
 
 create database ftgorestaurantservice;
 GRANT ALL PRIVILEGES ON ftgorestaurantservice.* TO 'mysqluser'@'%' WITH GRANT OPTION;

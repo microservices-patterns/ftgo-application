@@ -12,9 +12,9 @@ spec:
     targetPort: 8080
   selector:
     svc: ftgo-api-gateway
-  type: LoadBalancer
-  loadBalancerSourceRanges:
-    - 88.128.82.195/32
+#  type: LoadBalancer
+#  loadBalancerSourceRanges:
+#    - 88.128.82.195/32
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -51,13 +51,13 @@ spec:
             value: http://ftgo-consumer-service:8080
         livenessProbe:
           httpGet:
-            path: /health
+            path: /actuator/health
             port: 8080
           initialDelaySeconds: 30
           periodSeconds: 20
         readinessProbe:
           httpGet:
-            path: /health
+            path: /actuator/health
             port: 8080
           initialDelaySeconds: 30
           periodSeconds: 20

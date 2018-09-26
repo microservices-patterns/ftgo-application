@@ -60,15 +60,17 @@ spec:
             value: FOO_ID
           - name: AWS_SECRET_ACCESS_KEY
             value: FOO_SECRET
+          - name: AWS_REGION
+            value: us-west-1
         livenessProbe:
           httpGet:
-            path: /health
+            path: /actuator/health
             port: 8080
           initialDelaySeconds: 30
           periodSeconds: 20
         readinessProbe:
           httpGet:
-            path: /health
+            path: /actuator/health
             port: 8080
           initialDelaySeconds: 30
           periodSeconds: 20

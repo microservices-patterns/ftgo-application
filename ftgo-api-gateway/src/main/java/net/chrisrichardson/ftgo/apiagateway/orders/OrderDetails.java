@@ -3,7 +3,7 @@ package net.chrisrichardson.ftgo.apiagateway.orders;
 import net.chrisrichardson.ftgo.apiagateway.proxies.BillInfo;
 import net.chrisrichardson.ftgo.apiagateway.proxies.DeliveryInfo;
 import net.chrisrichardson.ftgo.apiagateway.proxies.OrderInfo;
-import net.chrisrichardson.ftgo.apiagateway.proxies.RestaurantOrderInfo;
+import net.chrisrichardson.ftgo.apiagateway.proxies.TicketInfo;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -23,7 +23,7 @@ public class OrderDetails {
   }
 
   public OrderDetails(OrderInfo orderInfo,
-                      Optional<RestaurantOrderInfo> restaurantOrderInfo,
+                      Optional<TicketInfo> ticketInfo,
                       Optional<DeliveryInfo> deliveryInfo,
                       Optional<BillInfo> billInfo) {
     this(orderInfo);
@@ -55,7 +55,7 @@ public class OrderDetails {
   }
 
 
-  public static OrderDetails makeOrderDetails(Tuple4<OrderInfo, Optional<RestaurantOrderInfo>, Optional<DeliveryInfo>, Optional<BillInfo>> info) {
+  public static OrderDetails makeOrderDetails(Tuple4<OrderInfo, Optional<TicketInfo>, Optional<DeliveryInfo>, Optional<BillInfo>> info) {
     return new OrderDetails(info.getT1(), info.getT2(), info.getT3(), info.getT4());
   }
 }

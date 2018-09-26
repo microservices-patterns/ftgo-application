@@ -1,5 +1,6 @@
 package net.chrisrichardson.ftgo.orderservice.service;
 
+import io.eventuate.tram.commands.consumer.CommandHandlerReplyBuilder;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderRepository;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderRevision;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderService;
@@ -12,6 +13,8 @@ import io.eventuate.tram.messaging.common.Message;
 import io.eventuate.tram.sagas.participant.SagaCommandHandlersBuilder;
 import net.chrisrichardson.ftgo.common.UnsupportedStateTransitionException;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
 
 import static io.eventuate.tram.commands.consumer.CommandHandlerReplyBuilder.withFailure;
 import static io.eventuate.tram.commands.consumer.CommandHandlerReplyBuilder.withSuccess;
@@ -80,8 +83,7 @@ public class OrderCommandHandlers {
     long orderId = cm.getCommand().getOrderId();
     OrderRevision revision = cm.getCommand().getRevision();
     try {
-      RevisedOrder result = orderService.beginReviseOrder(orderId, revision);
-      return withSuccess(new BeginReviseOrderReply(result.getChange().getNewOrderTotal()));
+      return orderService.beginReviseOrder(orderId, revision).map(result -> withSuccess(new BeginReviseOrderReply(result.getChange().getNewOrderTotal()))).orElseGet(CommandHandlerReplyBuilder::withFailure);
     } catch (UnsupportedStateTransitionException e) {
       return withFailure();
     }

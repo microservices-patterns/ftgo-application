@@ -1,3 +1,3 @@
 kubectl create secret generic ftgo-db-secret \
-  --from-file=username=./dbuser.txt \
-  --from-file=password=./dbpassword.txt
+  --from-literal=username=mysqluser \
+  --from-literal=password=mysqlpw

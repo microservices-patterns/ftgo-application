@@ -4,6 +4,7 @@ import io.eventuate.jdbckafka.TramJdbcKafkaConfiguration;
 import io.eventuate.tram.commands.common.ChannelMapping;
 import io.eventuate.tram.commands.common.DefaultChannelMapping;
 import net.chrisrichardson.eventstore.examples.customersandorders.commonswagger.CommonSwaggerConfiguration;
+import net.chrisrichardson.ftgo.orderservice.grpc.GrpcConfiguration;
 import net.chrisrichardson.ftgo.orderservice.messaging.OrderServiceMessagingConfiguration;
 import net.chrisrichardson.ftgo.orderservice.service.OrderCommandHandlersConfiguration;
 import net.chrisrichardson.ftgo.orderservice.web.OrderWebConfiguration;
@@ -14,7 +15,7 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @Import({OrderWebConfiguration.class, OrderCommandHandlersConfiguration.class,  OrderServiceMessagingConfiguration.class,
-        TramJdbcKafkaConfiguration.class, CommonSwaggerConfiguration.class})
+        TramJdbcKafkaConfiguration.class, CommonSwaggerConfiguration.class, GrpcConfiguration.class})
 public class OrderServiceMain {
 
   @Bean

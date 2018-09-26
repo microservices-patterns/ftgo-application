@@ -6,13 +6,13 @@ import net.chrisrichardson.ftgo.accountservice.api.AccountingServiceChannels;
 import net.chrisrichardson.ftgo.orderservice.api.OrderServiceChannels;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.BeginReviseOrderCommand;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.BeginReviseOrderReply;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.BeginReviseRestaurantOrderCommand;
+import net.chrisrichardson.ftgo.kitchenservice.api.BeginReviseTicketCommand;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.ConfirmReviseOrderCommand;
 import net.chrisrichardson.ftgo.accountservice.api.ReviseAuthorization;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.UndoBeginReviseOrderCommand;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.ConfirmReviseRestaurantOrderCommand;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.RestaurantOrderServiceChannels;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.UndoBeginReviseRestaurantOrderCommand;
+import net.chrisrichardson.ftgo.kitchenservice.api.ConfirmReviseTicketCommand;
+import net.chrisrichardson.ftgo.kitchenservice.api.KitchenServiceChannels;
+import net.chrisrichardson.ftgo.kitchenservice.api.UndoBeginReviseTicketCommand;
 import io.eventuate.tram.sagas.orchestration.SagaDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,12 +34,12 @@ public class ReviseOrderSaga implements SimpleSaga<ReviseOrderSagaData> {
             .onReply(BeginReviseOrderReply.class, this::handleBeginReviseOrderReply)
             .withCompensation(this::undoBeginReviseOrder)
             .step()
-            .invokeParticipant(this::beginReviseRestaurantOrder)
-            .withCompensation(this::undoBeginReviseRestaurantOrder)
+            .invokeParticipant(this::beginReviseTicket)
+            .withCompensation(this::undoBeginReviseTicket)
             .step()
             .invokeParticipant(this::reviseAuthorization)
             .step()
-            .invokeParticipant(this::confirmRestaurantOrderRevision)
+            .invokeParticipant(this::confirmTicketRevision)
             .step()
             .invokeParticipant(this::confirmOrderRevision)
             .build();
@@ -62,9 +62,9 @@ public class ReviseOrderSaga implements SimpleSaga<ReviseOrderSagaData> {
 
   }
 
-  private CommandWithDestination confirmRestaurantOrderRevision(ReviseOrderSagaData data) {
-    return send(new ConfirmReviseRestaurantOrderCommand(data.getRestaurantId(), data.getOrderId(), data.getOrderRevision().getRevisedLineItemQuantities()))
-            .to(RestaurantOrderServiceChannels.restaurantOrderServiceChannel)
+  private CommandWithDestination confirmTicketRevision(ReviseOrderSagaData data) {
+    return send(new ConfirmReviseTicketCommand(data.getRestaurantId(), data.getOrderId(), data.getOrderRevision().getRevisedLineItemQuantities()))
+            .to(KitchenServiceChannels.kitchenServiceChannel)
             .build();
 
   }
@@ -76,16 +76,16 @@ public class ReviseOrderSaga implements SimpleSaga<ReviseOrderSagaData> {
 
   }
 
-  private CommandWithDestination undoBeginReviseRestaurantOrder(ReviseOrderSagaData data) {
-    return send(new UndoBeginReviseRestaurantOrderCommand(data.getRestaurantId(), data.getOrderId()))
-            .to(RestaurantOrderServiceChannels.restaurantOrderServiceChannel)
+  private CommandWithDestination undoBeginReviseTicket(ReviseOrderSagaData data) {
+    return send(new UndoBeginReviseTicketCommand(data.getRestaurantId(), data.getOrderId()))
+            .to(KitchenServiceChannels.kitchenServiceChannel)
             .build();
 
   }
 
-  private CommandWithDestination beginReviseRestaurantOrder(ReviseOrderSagaData data) {
-    return send(new BeginReviseRestaurantOrderCommand(data.getRestaurantId(), data.getOrderId(), data.getOrderRevision().getRevisedLineItemQuantities()))
-            .to(RestaurantOrderServiceChannels.restaurantOrderServiceChannel)
+  private CommandWithDestination beginReviseTicket(ReviseOrderSagaData data) {
+    return send(new BeginReviseTicketCommand(data.getRestaurantId(), data.getOrderId(), data.getOrderRevision().getRevisedLineItemQuantities()))
+            .to(KitchenServiceChannels.kitchenServiceChannel)
             .build();
 
   }

@@ -1,52 +1,95 @@
 #! /bin/bash -e
 
+KEEP_RUNNING=
+ASSEMBLE_ONLY=
+DATABASE_SERVICES="dynamodblocal mysql dynamodblocal-init"
+
+if [ -z "$DOCKER_COMPOSE" ] ; then
+    DOCKER_COMPOSE=docker-compose
+fi
+
+while [ ! -z "$*" ] ; do
+  case $1 in
+    "--keep-running" )
+      KEEP_RUNNING=yes
+      ;;
+    "--assemble-only" )
+      ASSEMBLE_ONLY=yes
+      ;;
+    "--help" )
+      echo ./build-and-test-all.sh --keep-running --assemble-only
+      exit 0
+      ;;
+  esac
+  shift
+done
+
+echo KEEP_RUNNING=$KEEP_RUNNING
+
 . ./set-env.sh
-
-initializeDynamoDB() {
-    echo preparing dynamodblocal table data
-    cd dynamodblocal-init
-    ./create-dynamodb-tables.sh
-    cd ..
-    echo data is prepared
-}
-
-docker-compose down -v
-docker-compose up -d --build dynamodblocal mysql
-
-./wait-for-mysql.sh
-
-echo mysql is started
-
-initializeDynamoDB
-
-docker-compose up -d --build eventuate-local-cdc-service tram-cdc-service
 
 # TODO Temporarily
 
 ./build-contracts.sh
 
-./gradlew -x :ftgo-end-to-end-tests:test $* build
+./gradlew testClasses
 
-docker-compose build
+${DOCKER_COMPOSE?} down --remove-orphans -v
+${DOCKER_COMPOSE?} up -d --build ${DATABASE_SERVICES?}
 
-./gradlew $* integrationTest
+./gradlew waitForMySql
+
+echo mysql is started
+
+${DOCKER_COMPOSE?} up -d --build eventuate-local-cdc-service tram-cdc-service
 
 
-# Component tests need to use the per-service database schema
+if [ -z "$ASSEMBLE_ONLY" ] ; then
 
-SPRING_DATASOURCE_URL=jdbc:mysql://${DOCKER_HOST_IP?}/ftgoorderservice ./gradlew :ftgo-order-service:cleanComponentTest :ftgo-order-service:componentTest
+  ./gradlew -x :ftgo-end-to-end-tests:test $* build
 
-# Reset the DB/messages
+  ${DOCKER_COMPOSE?} build
 
-docker-compose down -v
-docker-compose up -d
+  ./gradlew $* integrationTest
 
-initializeDynamoDB
+  # Component tests need to use the per-service database schema
 
-date
+
+  SPRING_DATASOURCE_URL=jdbc:mysql://${DOCKER_HOST_IP?}/ftgoorderservice ./gradlew :ftgo-order-service:cleanComponentTest :ftgo-order-service:componentTest
+
+  # Reset the DB/messages
+
+  ${DOCKER_COMPOSE?} down --remove-orphans -v
+
+  ${DOCKER_COMPOSE?} up -d ${DATABASE_SERVICES?}
+
+  ./gradlew waitForMySql
+
+  echo mysql is started
+
+  ${DOCKER_COMPOSE?} up -d
+
+
+else
+
+  ./gradlew $* assemble
+
+  ${DOCKER_COMPOSE?} up -d --build ${DATABASE_SERVICES?}
+
+  ./gradlew waitForMySql
+
+  echo mysql is started
+
+  ${DOCKER_COMPOSE?} up -d --build
+
+fi
 
 ./wait-for-services.sh
 
 ./gradlew :ftgo-end-to-end-tests:cleanTest :ftgo-end-to-end-tests:test
 
-docker-compose down -v
+./run-graphql-api-gateway-tests.sh
+
+if [ -z "$KEEP_RUNNING" ] ; then
+  ${DOCKER_COMPOSE?} down --remove-orphans -v
+fi

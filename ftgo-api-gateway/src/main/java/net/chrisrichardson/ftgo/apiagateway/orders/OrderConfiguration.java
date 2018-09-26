@@ -3,10 +3,10 @@ package net.chrisrichardson.ftgo.apiagateway.orders;
 import net.chrisrichardson.ftgo.apiagateway.proxies.AccountingService;
 import net.chrisrichardson.ftgo.apiagateway.proxies.DeliveryService;
 import net.chrisrichardson.ftgo.apiagateway.proxies.OrderServiceProxy;
-import net.chrisrichardson.ftgo.apiagateway.proxies.RestaurantOrderService;
+import net.chrisrichardson.ftgo.apiagateway.proxies.KitchenService;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.Routes;
+import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,8 +14,6 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static org.springframework.cloud.gateway.handler.predicate.RoutePredicates.method;
-import static org.springframework.cloud.gateway.handler.predicate.RoutePredicates.path;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 
 @Configuration
@@ -23,16 +21,13 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 public class OrderConfiguration {
 
   @Bean
-  public RouteLocator orderProxyRouting(OrderDestinations orderDestinations) {
-    return Routes.locator()
-            .route("orderService")
-            .uri(orderDestinations.getOrderServiceUrl())
-            .predicate((path("/orders").and(method("POST").or(method("PUT")))).or(path("/orders/**").and(method("POST").or(method("PUT")))))
-            .and()
-            .route("orderHistoryService")
-            .uri(orderDestinations.getOrderHistoryServiceUrl())
-            .predicate(path("/orders").and(method("GET")))
-            .and()
+  public RouteLocator orderProxyRouting(RouteLocatorBuilder builder, OrderDestinations orderDestinations) {
+    return builder.routes()
+            .route(r -> r.path("/orders").and().method("POST").uri(orderDestinations.getOrderServiceUrl()))
+            .route(r -> r.path("/orders").and().method("PUT").uri(orderDestinations.getOrderServiceUrl()))
+            .route(r -> r.path("/orders/**").and().method("POST").uri(orderDestinations.getOrderServiceUrl()))
+            .route(r -> r.path("/orders/**").and().method("PUT").uri(orderDestinations.getOrderServiceUrl()))
+            .route(r -> r.path("/orders").and().method("GET").uri(orderDestinations.getOrderHistoryServiceUrl()))
             .build();
   }
 
@@ -42,9 +37,9 @@ public class OrderConfiguration {
   }
 
   @Bean
-  public OrderHandlers orderHandlers(OrderServiceProxy orderService, RestaurantOrderService restaurantOrderService,
+  public OrderHandlers orderHandlers(OrderServiceProxy orderService, KitchenService kitchenService,
                                      DeliveryService deliveryService, AccountingService accountingService) {
-    return new OrderHandlers(orderService, restaurantOrderService, deliveryService, accountingService);
+    return new OrderHandlers(orderService, kitchenService, deliveryService, accountingService);
   }
 
   @Bean

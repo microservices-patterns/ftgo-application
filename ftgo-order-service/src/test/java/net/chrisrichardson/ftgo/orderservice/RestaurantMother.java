@@ -21,5 +21,5 @@ public class RestaurantMother {
   public static final List<MenuItem> AJANTA_RESTAURANT_MENU_ITEMS = Collections.singletonList(new MenuItem(CHICKEN_VINDALOO_MENU_ITEM_ID, CHICKEN_VINDALOO, CHICKEN_VINDALOO_PRICE));
   public static final RestaurantMenu AJANTA_RESTAURANT_MENU = new RestaurantMenu(AJANTA_RESTAURANT_MENU_ITEMS);
   public static final Restaurant AJANTA_RESTAURANT =
-          new Restaurant(AJANTA_ID, AJANTA_RESTAURANT_MENU_ITEMS);
+          new Restaurant(AJANTA_ID, AJANTA_RESTAURANT_NAME, AJANTA_RESTAURANT_MENU_ITEMS);
 }

@@ -1,0 +1,33 @@
+buildscript {
+    dependencies {
+        // if using Stub Runner (consumer side) only remove this dependency
+        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractDependenciesVersion"
+    }
+    repositories {
+        mavenCentral()
+        maven {
+            url 'https://repo.spring.io/libs-milestone'
+        }
+    }
+}
+
+apply plugin: 'spring-cloud-contract'
+apply plugin: 'maven-publish'
+
+
+publishing {
+    repositories {
+        maven {
+            url "${project.rootDir}/build/repo"
+        }
+    }
+}
+
+contracts {
+    contractsDslDir = file("${projectDir}/src/main/resources/contracts")
+}
+
+generateContractTests.enabled = false
+
+
+build.finalizedBy(publish)

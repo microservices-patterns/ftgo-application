@@ -12,3 +12,6 @@ target
 .project
 .settings
 bin
+node_modules
+dist
+ftgo-api-gateway-graphql/jest_0

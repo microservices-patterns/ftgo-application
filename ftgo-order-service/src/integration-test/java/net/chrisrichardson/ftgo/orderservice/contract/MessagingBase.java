@@ -22,6 +22,7 @@ import java.util.Collections;
 
 import static net.chrisrichardson.ftgo.orderservice.OrderDetailsMother.CHICKEN_VINDALOO_ORDER;
 import static net.chrisrichardson.ftgo.orderservice.OrderDetailsMother.CHICKEN_VINDALOO_ORDER_DETAILS;
+import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.AJANTA_RESTAURANT_NAME;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MessagingBase.TestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -50,7 +51,7 @@ public abstract class MessagingBase {
 
   protected void orderCreated() {
     orderAggregateEventPublisher.publish(CHICKEN_VINDALOO_ORDER,
-            Collections.singletonList(new OrderCreatedEvent(CHICKEN_VINDALOO_ORDER_DETAILS)));
+            Collections.singletonList(new OrderCreatedEvent(CHICKEN_VINDALOO_ORDER_DETAILS, AJANTA_RESTAURANT_NAME)));
   }
 
 }

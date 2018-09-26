@@ -20,6 +20,7 @@ import net.chrisrichardson.ftgo.orderservice.web.OrderWebConfiguration;
 import net.chrisrichardson.ftgo.restaurantservice.events.MenuItem;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
+import net.chrisrichardson.ftgo.testutil.FtgoTestUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,14 +114,14 @@ public class OrderServiceIntegrationTest {
                     new RestaurantMenu(Collections.singletonList(new MenuItem(CHICKED_VINDALOO_MENU_ITEM_ID, "Chicken Vindaloo", new Money("12.34")))))));
 
     Eventually.eventually(() -> {
-      assertNotNull(restaurantRepository.findOne(Long.parseLong(RESTAURANT_ID)));
+      FtgoTestUtil.assertPresent(restaurantRepository.findById(Long.parseLong(RESTAURANT_ID)));
     });
 
     long consumerId = 1511300065921L;
 
     Order order = orderService.createOrder(consumerId, Long.parseLong(RESTAURANT_ID), Collections.singletonList(new MenuItemIdAndQuantity(CHICKED_VINDALOO_MENU_ITEM_ID, 5)));
 
-    assertNotNull(orderRepository.findOne(order.getId()));
+    FtgoTestUtil.assertPresent(orderRepository.findById(order.getId()));
 
     String expectedPayload = "{\"consumerId\":1511300065921,\"orderId\":1,\"orderTotal\":\"61.70\"}";
 

@@ -12,9 +12,9 @@ import net.chrisrichardson.ftgo.orderservice.messaging.OrderServiceMessagingConf
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.ApproveOrderCommand;
 import net.chrisrichardson.ftgo.orderservice.service.OrderCommandHandlersConfiguration;
 import net.chrisrichardson.ftgo.orderservice.web.OrderWebConfiguration;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.ConfirmCreateRestaurantOrder;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.CreateRestaurantOrder;
-import net.chrisrichardson.ftgo.restaurantorderservice.api.CreateRestaurantOrderReply;
+import net.chrisrichardson.ftgo.kitchenservice.api.ConfirmCreateTicket;
+import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicket;
+import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicketReply;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +46,7 @@ public abstract class AbstractOrderServiceComponentTest {
 
     @Bean
     public MessagingStubConfiguration messagingStubConfiguration() {
-      return new MessagingStubConfiguration("consumerService", "restaurantOrderService", "accountingService", "orderService");
+      return new MessagingStubConfiguration("consumerService", "kitchenService", "accountingService", "orderService");
     }
 
     @Bean
@@ -81,9 +81,9 @@ public abstract class AbstractOrderServiceComponentTest {
     sagaParticipantStubManager.
             forChannel("consumerService")
             .when(ValidateOrderByConsumer.class).replyWith(cm -> withSuccess())
-            .forChannel("restaurantOrderService")
-            .when(CreateRestaurantOrder.class).replyWith(cm -> withSuccess(new CreateRestaurantOrderReply(cm.getCommand().getOrderId())))
-            .when(ConfirmCreateRestaurantOrder.class).replyWithSuccess()
+            .forChannel("kitchenService")
+            .when(CreateTicket.class).replyWith(cm -> withSuccess(new CreateTicketReply(cm.getCommand().getOrderId())))
+            .when(ConfirmCreateTicket.class).replyWithSuccess()
             .forChannel("accountingService")
             .when(AuthorizeCommand.class).replyWithSuccess()
             .forChannel("orderService")
@@ -96,7 +96,7 @@ public abstract class AbstractOrderServiceComponentTest {
 
 
     Eventually.eventually(() -> {
-      assertNotNull(restaurantRepository.findOne(RestaurantMother.AJANTA_ID));
+      FtgoTestUtil.assertPresent(restaurantRepository.findById(RestaurantMother.AJANTA_ID));
     });
 
     // make HTTP request

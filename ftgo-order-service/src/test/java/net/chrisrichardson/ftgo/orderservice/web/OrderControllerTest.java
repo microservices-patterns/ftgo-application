@@ -11,6 +11,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder;
 
+import java.util.Optional;
+
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static net.chrisrichardson.ftgo.orderservice.OrderDetailsMother.CHICKEN_VINDALOO_ORDER;
 import static net.chrisrichardson.ftgo.orderservice.OrderDetailsMother.CHICKEN_VINDALOO_ORDER_TOTAL;
@@ -35,7 +37,7 @@ public class OrderControllerTest {
   @Test
   public void shouldFindOrder() {
 
-    when(orderRepository.findOne(1L)).thenReturn(CHICKEN_VINDALOO_ORDER);
+    when(orderRepository.findById(1L)).thenReturn(Optional.of(CHICKEN_VINDALOO_ORDER));
 
     given().
             standaloneSetup(configureControllers(orderController)).
@@ -51,7 +53,7 @@ public class OrderControllerTest {
 
   @Test
   public void shouldFindNotOrder() {
-    when(orderRepository.findOne(1L)).thenReturn(null);
+    when(orderRepository.findById(1L)).thenReturn(Optional.empty());
 
     given().
             standaloneSetup(configureControllers(new OrderController(orderService, orderRepository))).
