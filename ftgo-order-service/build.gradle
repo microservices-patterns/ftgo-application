@@ -35,21 +35,18 @@ contracts {
     contractsDslDir = new File("../ftgo-order-service-contracts/src/main/resources/contracts")
     packageWithBaseClasses = 'net.chrisrichardson.ftgo.orderservice.contract'
     generatedTestSourcesDir = project.file("${project.buildDir}/generated-integration-test-sources/contracts")
-//    baseClassForTests = 'net.chrisrichardson.ftgo.orderservice.contract.AbstractOrderConsumerContractTest'
-//    baseClassMappings {
-//        baseClassMapping('.*Order.groovy', 'net.chrisrichardson.ftgo.orderservice.contract.AbstractHttpOrderConsumerContractTest')
-//        baseClassMapping('.*/messaging/.*', 'net.chrisrichardson.ftgo.orderservice.contract.AbstractOrderConsumerContractTest')
-//    }
 }
 
 
-compileIntegrationTestGroovy {
-    source =  project.file("${project.buildDir}/generated-integration-test-sources/contracts")
-}
-compileTestGroovy {
-    source =   ['src/groovy']
+sourceSets {
+    integrationTest {
+        java {
+            srcDir project.file("${project.buildDir}/generated-integration-test-sources/contracts")
+        }
+    }
 }
 
+compileTestGroovy.enabled=false
 
 componentTest.dependsOn(assemble)
 
