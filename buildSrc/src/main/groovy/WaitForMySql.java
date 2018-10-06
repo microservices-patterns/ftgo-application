@@ -4,6 +4,8 @@ import org.gradle.api.tasks.TaskAction;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class WaitForMySql extends DefaultTask {
 
@@ -16,11 +18,18 @@ public class WaitForMySql extends DefaultTask {
     waitForConnection();
   }
 
+  private String getenv(String name, String defaultValue) {
+    return Optional.ofNullable(System.getenv(name)).orElse(defaultValue);
+  }
+  private String getenv(String name, Supplier<String> defaultValue) {
+    return Optional.ofNullable(System.getenv(name)).orElseGet(defaultValue);
+  }
+
   private void loadDriver() {
     try {
       System.out.println("Trying to initialize driver");
 
-      String datasourceDriverClassName = System.getenv("SPRING_DATASOURCE_DRIVER_CLASS_NAME");
+      String datasourceDriverClassName = getenv("SPRING_DATASOURCE_DRIVER_CLASS_NAME", "com.mysql.jdbc.Driver");
       Class.forName(datasourceDriverClassName);
 
       System.out.println("Initialization succeed");
@@ -37,9 +46,9 @@ public class WaitForMySql extends DefaultTask {
       try {
         System.out.println("Trying to connect...");
 
-        String datasourceUrl = System.getenv("SPRING_DATASOURCE_URL");
-        String datasourceUsername = System.getenv("SPRING_DATASOURCE_USERNAME");
-        String datasourcePassword = System.getenv("SPRING_DATASOURCE_PASSWORD");
+        String datasourceUrl = getenv("SPRING_DATASOURCE_URL", () -> String.format("jdbc:mysql://%s/eventuate", getenv("DOCKER_HOST_IP", "localhost")));
+        String datasourceUsername = getenv("SPRING_DATASOURCE_USERNAME", "mysqluser");
+        String datasourcePassword = getenv("SPRING_DATASOURCE_PASSWORD", "mysqlpw");
 
         connection = DriverManager.getConnection(datasourceUrl, datasourceUsername, datasourcePassword);
 

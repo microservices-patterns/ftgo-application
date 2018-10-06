@@ -13,7 +13,7 @@ services:
     depends_on:
       - zookeeper
     environment:
-      - ADVERTISED_HOST_NAME=${DOCKER_HOST_IP}
+      - ADVERTISED_HOST_NAME=${DOCKER_HOST_IP?DOCKER_HOST_IP must be set}
       - KAFKA_HEAP_OPTS=-Xmx192m -Xms192m
       - ZOOKEEPER_SERVERS=zookeeper:2181
   mysql:
@@ -163,10 +163,10 @@ services:
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
           EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
           EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-          AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-          AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+          AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-id_key}
+          AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-access_key}
           AWS_DYNAMODB_ENDPOINT_URL: http://dynamodblocal:8000
-          AWS_REGION: $AWS_REGION
+          AWS_REGION: ${AWS_REGION:-us-west-2}
           JAVA_OPTS: -Xmx192m
   ftgo-api-gateway:
     build: ./ftgo-api-gateway
@@ -211,6 +211,6 @@ services:
     restart: on-failure
     environment:
       AWS_DYNAMODB_ENDPOINT_URL: http://dynamodblocal:8000
-      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-      AWS_REGION: $AWS_REGION
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-id_key}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-access_key}
+      AWS_REGION: ${AWS_REGION:-us-west-2}
