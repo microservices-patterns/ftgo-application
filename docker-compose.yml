@@ -1,13 +1,13 @@
 version: '3'
 services:
   zookeeper:
-    image: eventuateio/eventuateio-local-zookeeper:0.30.0.M1
+    image: eventuateio/eventuateio-local-zookeeper:0.30.0.M4
     ports:
       - 2181:2181
       - 2888:2888
       - 3888:3888
   kafka:
-    image: eventuateio/eventuateio-local-kafka:0.30.0.M1
+    image: eventuateio/eventuateio-local-kafka:0.30.0.M4
     ports:
       - 9092:9092
     depends_on:
@@ -25,7 +25,7 @@ services:
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
   tram-cdc-service:
-    image: eventuateio/eventuate-tram-cdc-mysql-service:0.20.0.M1
+    image: eventuateio/eventuate-tram-cdc-mysql-service:0.20.0.M3
     ports:
       - "8099:8080"
     depends_on:
@@ -35,24 +35,19 @@ services:
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
       EVENTUATE_CDC_PIPELINE_PROPERTIES: >
-        [{"type":"eventuate-local-mysql-binlog",
+        [{"type":"eventuate-local",
+        "sourceTableName":"events",
+        "reader":"reader1"},
+        {"type":"eventuate-tram",
+        "reader":"reader1"}]
+      EVENTUATE_CDC_PIPELINE_READER_PROPERTIES: >
+        [{"type":"mysql-binlog",
+        "name":"reader1",
         "dataSourceUrl":"jdbc:mysql://mysql/eventuate",
         "dataSourceUserName":"mysqluser",
         "dataSourcePassword":"mysqlpw",
         "dataSourceDriverClassName":"com.mysql.jdbc.Driver",
-        "leadershipLockPath":"/eventuatelocal/cdc/leader/pipeline/1",
-        "mySqlBinLogClientName":"MySqlBinLog1",
-        "dbHistoryTopicName":"db.history.topic1",
-        "cdcDbUserName":"root",
-        "cdcDbPassword":"rootpassword"},
-        {"type":"eventuate-tram-mysql-binlog",
-        "dataSourceUrl":"jdbc:mysql://mysql/eventuate",
-        "dataSourceUserName":"mysqluser",
-        "dataSourcePassword":"mysqlpw",
-        "dataSourceDriverClassName":"com.mysql.jdbc.Driver",
-        "leadershipLockPath":"/eventuatelocal/cdc/leader/pipeline/2",
-        "mySqlBinLogClientName":"MySqlBinLog2",
-        "dbHistoryTopicName":"db.history.topic2",
+        "leadershipLockPath":"/ftgo/cdc/leader/reader/1",
         "cdcDbUserName":"root",
         "cdcDbPassword":"rootpassword"}]
 
