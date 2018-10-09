@@ -146,6 +146,7 @@ services:
           - zookeeper
           - tram-cdc-service
           - dynamodblocal
+          - dynamodblocal-init
         environment:
           SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgoorderhistoryservice
           SPRING_DATASOURCE_USERNAME: mysqluser
@@ -153,10 +154,10 @@ services:
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
           EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
           EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-          AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-          AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+          AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-id_key}
+          AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-access_key}
           AWS_DYNAMODB_ENDPOINT_URL: http://dynamodblocal:8000
-          AWS_REGION: $AWS_REGION
+          AWS_REGION: ${AWS_REGION:-us-west-2}
           JAVA_OPTS: -Xmx192m
   ftgo-api-gateway:
     build: ./ftgo-api-gateway
@@ -186,9 +187,21 @@ services:
        - "9411:9411"
       environment:
         JAVA_OPTS: -Xmx128m
+
   dynamodblocal:
     build: ./dynamodblocal
     ports:
      - "8000:8000"
     environment:
       JAVA_OPTS: -Xmx128m
+
+  dynamodblocal-init:
+    build: ./dynamodblocal-init
+    depends_on:
+      - dynamodblocal
+    restart: on-failure
+    environment:
+      AWS_DYNAMODB_ENDPOINT_URL: http://dynamodblocal:8000
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-id_key}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-access_key}
+      AWS_REGION: ${AWS_REGION:-us-west-2}

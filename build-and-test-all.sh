@@ -2,6 +2,7 @@
 
 KEEP_RUNNING=
 ASSEMBLE_ONLY=
+DATABASE_SERVICES="dynamodblocal mysql dynamodblocal-init"
 
 if [ -z "$DOCKER_COMPOSE" ] ; then
     DOCKER_COMPOSE=docker-compose
@@ -34,16 +35,13 @@ echo KEEP_RUNNING=$KEEP_RUNNING
 ./gradlew testClasses
 
 ${DOCKER_COMPOSE?} down --remove-orphans -v
-${DOCKER_COMPOSE?} up -d --build dynamodblocal mysql
+${DOCKER_COMPOSE?} up -d --build ${DATABASE_SERVICES?}
 
 ./gradlew waitForMySql
 
 echo mysql is started
 
-./gradlew initDynamoDb
-
 ${DOCKER_COMPOSE?} up -d --build tram-cdc-service
-
 
 if [ -z "$ASSEMBLE_ONLY" ] ; then
 
@@ -62,13 +60,11 @@ if [ -z "$ASSEMBLE_ONLY" ] ; then
 
   ${DOCKER_COMPOSE?} down --remove-orphans -v
 
-  ${DOCKER_COMPOSE?} up -d dynamodblocal mysql
+  ${DOCKER_COMPOSE?} up -d ${DATABASE_SERVICES?}
 
   ./gradlew waitForMySql
 
   echo mysql is started
-
-  ./gradlew initDynamoDb
 
   ${DOCKER_COMPOSE?} up -d
 
@@ -77,13 +73,11 @@ else
 
   ./gradlew $* assemble
 
-  ${DOCKER_COMPOSE?} up -d --build dynamodblocal mysql
+  ${DOCKER_COMPOSE?} up -d --build ${DATABASE_SERVICES?}
 
   ./gradlew waitForMySql
 
   echo mysql is started
-
-  ./gradlew initDynamoDb
 
   ${DOCKER_COMPOSE?} up -d --build
 

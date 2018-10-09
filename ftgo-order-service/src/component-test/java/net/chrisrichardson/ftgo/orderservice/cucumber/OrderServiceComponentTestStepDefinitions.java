@@ -33,6 +33,7 @@ import net.chrisrichardson.ftgo.testutil.FtgoTestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -51,9 +52,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ContextConfiguration(classes = OrderServiceComponentTestStepDefinitions.TestConfiguration.class)
-public class OrderServiceComponentTestStepDefinitions /* extends OrderServiceComponentTestSpringContextConfiguration */  {
+@SpringBootTest(classes = OrderServiceComponentTestStepDefinitions.TestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ContextConfiguration
+public class OrderServiceComponentTestStepDefinitions {
 
 
 

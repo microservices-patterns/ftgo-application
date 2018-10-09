@@ -16,7 +16,7 @@ jobs:
           key:         ftgo-application-{{ checksum "gradle.properties" }}
       - run:
           command:     |
-            export TERM=dumb
+            ./.circleci/upgrade-docker-compose.sh
             . ./setenv-circle-ci.sh
             ./build-and-test-all.sh
       - run:
@@ -45,7 +45,7 @@ jobs:
           key:         ftgo-application-{{ checksum "gradle.properties" }}
       - run:
           command:     |
-            export TERM=dumb
+            ./.circleci/upgrade-docker-compose.sh
             . ./setenv-circle-ci.sh
             ./build-and-test-all-mariadb.sh
       - run:
@@ -67,11 +67,11 @@ jobs:
           key:         ftgo-application-{{ checksum "gradle.properties" }}
       - run:
           command:     |
-            export TERM=dumb
+            ./.circleci/upgrade-docker-compose.sh
             . ./setenv-circle-ci.sh
             ./gradlew assemble
-      - run: TERM=dumb  docker-compose build
-      - run: TERM=dumb ./publish-docker-images.sh
+            docker-compose build
+            ./publish-docker-images.sh
 workflows:
   version: 2
   build-test-and-deploy:
