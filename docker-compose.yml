@@ -13,7 +13,7 @@ services:
     depends_on:
       - zookeeper
     environment:
-      - ADVERTISED_HOST_NAME=${DOCKER_HOST_IP}
+      - ADVERTISED_HOST_NAME=${DOCKER_HOST_IP?DOCKER_HOST_IP must be set}
       - KAFKA_HEAP_OPTS=-Xmx192m -Xms192m
       - ZOOKEEPER_SERVERS=zookeeper:2181
   mysql:
