@@ -3,7 +3,7 @@
 done=false
 
 host=$DOCKER_HOST_IP
-ports="8081 8082 8083 8084 8085 8086 8099 8098"
+ports="8081 8082 8083 8084 8085 8086 8099"
 
 while [[ "$done" = false ]]; do
 	for port in $ports; do

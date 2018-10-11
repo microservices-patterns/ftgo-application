@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.cqrs.orderhistory.messaging;
 
-import io.eventuate.tram.consumer.kafka.DuplicateMessageDetector;
+import io.eventuate.tram.consumer.common.DuplicateMessageDetector;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcher;
 import io.eventuate.tram.messaging.consumer.MessageConsumer;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
