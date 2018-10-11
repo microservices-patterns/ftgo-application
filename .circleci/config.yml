@@ -107,8 +107,10 @@ workflows:
     jobs:
       - build
       - build-mariadb
+      - build-schema-per-table
       - publish:
           requires:
             - build
             - build-mariadb
+            - build-schema-per-table
 
