@@ -1,2 +1,2 @@
-FROM eventuateio/eventuate-tram-sagas-mysql:0.6.0.RELEASE
+FROM eventuateio/eventuate-tram-sagas-mysql:0.10.0.M1
 COPY eventuate-local-schema-mysql.sql /docker-entrypoint-initdb.d/z-eventuate-local-schema-mysql.sql
