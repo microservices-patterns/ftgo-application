@@ -86,7 +86,8 @@ fi
 
 ./wait-for-services.sh
 
-./gradlew :ftgo-end-to-end-tests:cleanTest :ftgo-end-to-end-tests:test
+./run-end-to-end-tests.sh
+
 
 ./run-graphql-api-gateway-tests.sh
 
