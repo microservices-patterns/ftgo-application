@@ -1,13 +1,13 @@
 version: '3'
 services:
   zookeeper:
-    image: eventuateio/eventuateio-local-zookeeper:0.22.0.RELEASE
+    image: eventuateio/eventuateio-local-zookeeper:0.30.0.M7
     ports:
       - 2181:2181
       - 2888:2888
       - 3888:3888
   kafka:
-    image: eventuateio/eventuateio-local-kafka:0.22.0.RELEASE
+    image: eventuateio/eventuateio-local-kafka:0.30.0.M7
     ports:
       - 9092:9092
     depends_on:
@@ -25,7 +25,7 @@ services:
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
   tram-cdc-service:
-    image: eventuateio/eventuate-tram-cdc-mysql-service:0.11.1.RELEASE
+    image: eventuateio/eventuate-tram-cdc-mysql-service:0.20.0.M6
     ports:
       - "8099:8080"
     depends_on:
@@ -42,8 +42,10 @@ services:
       EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
       EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 1234567890
       EVENTUATELOCAL_CDC_SOURCE_TABLE_NAME: message
+      EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 2
+      EVENTUATELOCAL_CDC_OLD_DEBEZIUM_DB_HISTORY_TOPIC_NAME: none
   eventuate-local-cdc-service:
-    image: eventuateio/eventuateio-local-new-cdc-service:0.22.1.RELEASE
+    image: eventuateio/eventuateio-local-new-cdc-service:0.30.0.M7
     ports:
       - "8098:8080"
     depends_on:
@@ -59,6 +61,8 @@ services:
       EVENTUATELOCAL_CDC_DB_USER_NAME: root
       EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
       EVENTUATELOCAL_CDC_LEADERSHIP_LOCK_PATH: /eventuatelocal/cdc/leader1
+      EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 1
+      EVENTUATELOCAL_CDC_OLD_DEBEZIUM_DB_HISTORY_TOPIC_NAME: none
   ftgo-consumer-service:
     build: ./ftgo-consumer-service
     ports:
