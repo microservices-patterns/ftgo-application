@@ -2,7 +2,7 @@ package net.chrisrichardson.ftgo.accountingservice.messaging;
 
 import io.eventuate.javaclient.spring.EnableEventHandlers;
 import io.eventuate.tram.commands.consumer.CommandDispatcher;
-import io.eventuate.tram.consumer.kafka.DuplicateMessageDetector;
+import io.eventuate.tram.consumer.common.DuplicateMessageDetector;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcher;
 import io.eventuate.tram.messaging.consumer.MessageConsumer;
 import io.eventuate.tram.sagas.eventsourcingsupport.SagaReplyRequestedEventSubscriber;
