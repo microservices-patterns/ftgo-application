@@ -27,7 +27,7 @@ contracts {
     baseClassForTests = 'net.chrisrichardson.ftgo.kitchenservice.contract.AbstractKitchenServiceConsumerContractTest'
 }
 
-apply plugin: 'org.springframework.boot'
+apply plugin: FtgoServicePlugin
 
 
 dependencies {

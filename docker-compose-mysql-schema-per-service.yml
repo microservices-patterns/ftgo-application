@@ -1,13 +1,13 @@
 version: '3'
 services:
   zookeeper:
-    image: eventuateio/eventuateio-local-zookeeper:0.30.0.M6
+    image: eventuateio/eventuateio-local-zookeeper:0.30.0.M7
     ports:
       - 2181:2181
       - 2888:2888
       - 3888:3888
   kafka:
-    image: eventuateio/eventuateio-local-kafka:0.30.0.M6
+    image: eventuateio/eventuateio-local-kafka:0.30.0.M7
     ports:
       - 9092:9092
     depends_on:
@@ -32,7 +32,6 @@ services:
       - mysql
       - kafka
     environment:
-      EVENTUATE_CURRENT_TIME_IN_MILLISECONDS_SQL: ${EVENTUATE_CURRENT_TIME_IN_MILLISECONDS_SQL}
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
       EVENTUATE_CDC_PIPELINE_PROPERTIES: >
@@ -67,7 +66,9 @@ services:
         "dataSourceDriverClassName":"com.mysql.jdbc.Driver",
         "leadershipLockPath":"/ftgo/cdc/leader/reader/1",
         "cdcDbUserName":"root",
-        "cdcDbPassword":"rootpassword"}]
+        "cdcDbPassword":"rootpassword",
+        "oldDebeziumDbHistoryTopicName":"none",
+        "binlogClientId": 1}]
 
   ftgo-consumer-service:
     build: ./ftgo-consumer-service
