@@ -1,9 +1,9 @@
 
-apply plugin: 'org.springframework.boot'
+
+apply plugin: FtgoServicePlugin
 
 
 dependencies {
-
 
     compile "io.eventuate.tram.core:eventuate-tram-jdbc-kafka:$eventuateTramVersion"
     compile "io.eventuate.tram.core:eventuate-tram-events:$eventuateTramVersion"

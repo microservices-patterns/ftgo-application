@@ -119,7 +119,6 @@ public class AccountingServiceCommandHandlerTest {
     Map<String, String> result = new HashMap<>();
     result.put(SagaCommandHeaders.SAGA_TYPE, "MySagaType");
     result.put(SagaCommandHeaders.SAGA_ID, "MySagaId");
-    result.put(SagaCommandHeaders.SAGA_REQUEST_ID, "MySagaRequestId");
     return result;
   }
 
