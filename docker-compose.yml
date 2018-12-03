@@ -44,6 +44,7 @@ services:
       EVENTUATELOCAL_CDC_SOURCE_TABLE_NAME: message
       EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 2
       EVENTUATELOCAL_CDC_OLD_DEBEZIUM_DB_HISTORY_TOPIC_NAME: none
+      EVENTUATELOCAL_CDC_MY_SQL_BIN_LOG_CLIENT_NAME: MySqlBinLog
   eventuate-local-cdc-service:
     image: eventuateio/eventuateio-local-new-cdc-service:0.30.0.M7
     ports:
@@ -63,6 +64,7 @@ services:
       EVENTUATELOCAL_CDC_LEADERSHIP_LOCK_PATH: /eventuatelocal/cdc/leader1
       EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 1
       EVENTUATELOCAL_CDC_OLD_DEBEZIUM_DB_HISTORY_TOPIC_NAME: none
+      EVENTUATELOCAL_CDC_MY_SQL_BIN_LOG_CLIENT_NAME: MySqlBinLog
   ftgo-consumer-service:
     build: ./ftgo-consumer-service
     ports:
