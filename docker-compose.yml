@@ -51,7 +51,8 @@ services:
         "cdcDbUserName":"root",
         "cdcDbPassword":"rootpassword",
         "oldDebeziumDbHistoryTopicName":"none",
-        "binlogClientId": 1}]
+        "binlogClientId": 1,
+        "mySqlBinLogClientName": "MySqlBinLog"}]
 
   ftgo-consumer-service:
     build: ./ftgo-consumer-service
