@@ -12,8 +12,7 @@ class FtgoServicePlugin implements Plugin<Project> {
 
         project.dependencyManagement {
             imports {
-                mavenBom "org.springframework" +
-                        ".cloud:spring-cloud-contract-dependencies:${project.ext.springCloudContractDependenciesVersion}"
+                mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:${project.ext.springCloudContractDependenciesVersion}"
                 mavenBom "org.springframework.cloud:spring-cloud-sleuth:${project.ext.springCloudSleuthVersion}"
             }
         }
