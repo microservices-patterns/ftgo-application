@@ -18,6 +18,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -118,7 +119,7 @@ public class EndToEndTests {
   }
 
   private void verifyOrderRevised(int orderId) {
-    Eventually.eventually(String.format("verifyOrderRevised state %s", orderId), () -> {
+    Eventually.eventually(String.format("verifyOrderRevised state %s", orderId), 60, 1000, TimeUnit.MILLISECONDS, () -> {
       String orderTotal = given().
               when().
               get(baseUrl(orderPort, "orders", Integer.toString(orderId))).
@@ -128,7 +129,7 @@ public class EndToEndTests {
                       path("orderTotal");
       assertEquals(priceOfChickenVindaloo.multiply(revisedQuantityOfChickenVindaloo).asString(), orderTotal);
     });
-    Eventually.eventually(String.format("verifyOrderRevised state %s", orderId), () -> {
+    Eventually.eventually(String.format("verifyOrderRevised state %s", 60, 1000, TimeUnit.MILLISECONDS, orderId), () -> {
       String state = given().
               when().
               get(orderBaseUrl(Integer.toString(orderId))).
@@ -176,7 +177,7 @@ public class EndToEndTests {
   }
 
   private void verifyOrderCancelled(int orderId) {
-    Eventually.eventually(String.format("verifyOrderCancelled %s", orderId), () -> {
+    Eventually.eventually(String.format("verifyOrderCancelled %s", orderId), 60, 1000, TimeUnit.MILLISECONDS, () -> {
       String state = given().
               when().
               get(orderBaseUrl(Integer.toString(orderId))).
@@ -217,7 +218,7 @@ public class EndToEndTests {
   }
 
   private void verifyAccountCreatedForConsumer(int consumerId) {
-    Eventually.eventually(() ->
+    Eventually.eventually( 60, 1000, TimeUnit.MILLISECONDS,() ->
             given().
                     when().
                     get(accountingBaseUrl(Integer.toString(consumerId))).
@@ -244,7 +245,7 @@ public class EndToEndTests {
   }
 
   private void verifyRestaurantCreatedInKitchenService(int restaurantId) {
-    Eventually.eventually(String.format("verifyRestaurantCreatedInKitchenService %s", restaurantId), () ->
+    Eventually.eventually(String.format("verifyRestaurantCreatedInKitchenService %s", restaurantId), 60, 1000, TimeUnit.MILLISECONDS, () ->
             given().
                     when().
                     get(kitchenRestaurantBaseUrl(Integer.toString(restaurantId))).
@@ -253,7 +254,7 @@ public class EndToEndTests {
   }
 
   private void verifyRestaurantCreatedInOrderService(int restaurantId) {
-    Eventually.eventually(String.format("verifyRestaurantCreatedInOrderService %s", restaurantId), () ->
+    Eventually.eventually(String.format("verifyRestaurantCreatedInOrderService %s", 60, 1000, TimeUnit.MILLISECONDS, restaurantId), () ->
             given().
                     when().
                     get(orderRestaurantBaseUrl(Integer.toString(restaurantId))).
@@ -278,7 +279,7 @@ public class EndToEndTests {
   }
 
   private void verifyOrderAuthorized(int orderId) {
-    Eventually.eventually(String.format("verifyOrderApproved %s", orderId), () -> {
+    Eventually.eventually(String.format("verifyOrderApproved %s", orderId), 60, 1000, TimeUnit.MILLISECONDS, () -> {
       String state = given().
               when().
               get(orderBaseUrl(Integer.toString(orderId))).
@@ -292,7 +293,7 @@ public class EndToEndTests {
 
 
   private void verifyOrderHistoryUpdated(int orderId, int consumerId) {
-    Eventually.eventually(String.format("verifyOrderHistoryUpdated %s", orderId), () -> {
+    Eventually.eventually(String.format("verifyOrderHistoryUpdated %s", orderId), 60, 1000, TimeUnit.MILLISECONDS, () -> {
       String state = given().
               when().
               get(orderHistoryBaseUrl() + "?consumerId=" + consumerId).

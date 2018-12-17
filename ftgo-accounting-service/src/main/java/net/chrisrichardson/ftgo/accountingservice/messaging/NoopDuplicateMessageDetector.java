@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.accountingservice.messaging;
 
-import io.eventuate.tram.consumer.common.DuplicateMessageDetector;
+import io.eventuate.tram.consumer.kafka.DuplicateMessageDetector;
 
 public class NoopDuplicateMessageDetector implements DuplicateMessageDetector {
 

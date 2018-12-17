@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.cqrs.orderhistory.messaging;
 
-import io.eventuate.tram.consumer.common.DuplicateMessageDetector;
+import io.eventuate.tram.consumer.kafka.DuplicateMessageDetector;
 
 // TODO Duplicate
 public class NoopDuplicateMessageDetector implements DuplicateMessageDetector {

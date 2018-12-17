@@ -27,10 +27,9 @@ public class SagaMessagingTestHelper {
     // TODO verify that replyClass is allowed
 
     String sagaId = idGenerator.genId().asString();
-    String requestId = idGenerator.genId().asString();
 
     String replyTo = sagaType + "-reply";
-    sagaCommandProducer.sendCommand(sagaType, sagaId, commandEndpoint.getCommandChannel(), null, requestId, command, replyTo);
+    sagaCommandProducer.sendCommand(sagaType, sagaId, commandEndpoint.getCommandChannel(), null, command, replyTo);
 
     ContractVerifierMessage response = contractVerifierMessaging.receive(replyTo);
 
