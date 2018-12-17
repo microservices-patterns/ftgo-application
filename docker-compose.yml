@@ -40,8 +40,11 @@ services:
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
       EVENTUATELOCAL_CDC_DB_USER_NAME: root
       EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
-      EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 1234567890
+      EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 67890
       EVENTUATELOCAL_CDC_SOURCE_TABLE_NAME: message
+      EVENTUATELOCAL_CDC_LEADERSHIP_LOCK_PATH: /eventuatelocal/cdc/leader2
+      EVENTUATELOCAL_CDC_MY_SQL_BIN_LOG_CLIENT_NAME: Client2
+      EVENTUATELOCAL_CDC_DB_HISTORY_TOPIC_NAME: db.history.topic2
   eventuate-local-cdc-service:
     image: eventuateio/eventuateio-local-new-cdc-service:0.22.1.RELEASE
     ports:
@@ -58,7 +61,10 @@ services:
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
       EVENTUATELOCAL_CDC_DB_USER_NAME: root
       EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
+      EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 12345
       EVENTUATELOCAL_CDC_LEADERSHIP_LOCK_PATH: /eventuatelocal/cdc/leader1
+      EVENTUATELOCAL_CDC_MY_SQL_BIN_LOG_CLIENT_NAME: Client1
+      EVENTUATELOCAL_CDC_DB_HISTORY_TOPIC_NAME: db.history.topic1
   ftgo-consumer-service:
     build: ./ftgo-consumer-service
     ports:
