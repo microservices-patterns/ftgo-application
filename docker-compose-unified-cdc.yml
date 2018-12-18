@@ -18,10 +18,10 @@ services:
       EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
       EVENTUATELOCAL_CDC_SOURCE_TABLE_NAME: message
       EVENTUATELOCAL_CDC_OLD_DEBEZIUM_DB_HISTORY_TOPIC_NAME: none
-      EVENTUATELOCAL_CDC_LEADERSHIP_LOCK_PATH: /eventuatelocal/cdc/leader2
+      EVENTUATELOCAL_CDC_LEADERSHIP_LOCK_PATH: /eventuate/cdc/leader/eventuatetram
       EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 2
-      EVENTUATELOCAL_CDC_MY_SQL_BIN_LOG_CLIENT_NAME: Client2
-      EVENTUATELOCAL_CDC_DB_HISTORY_TOPIC_NAME: db.history.topic2
+      EVENTUATELOCAL_CDC_MY_SQL_BIN_LOG_CLIENT_NAME: ClientEventuateTram
+      EVENTUATELOCAL_CDC_DB_HISTORY_TOPIC_NAME: db.history.eventuate.tram
   eventuate-local-cdc-service:
     image: eventuateio/eventuateio-local-new-cdc-service:0.30.0.M7
     ports:
@@ -39,7 +39,7 @@ services:
       EVENTUATELOCAL_CDC_DB_USER_NAME: root
       EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
       EVENTUATELOCAL_CDC_OLD_DEBEZIUM_DB_HISTORY_TOPIC_NAME: none
-      EVENTUATELOCAL_CDC_LEADERSHIP_LOCK_PATH: /eventuatelocal/cdc/leader1
+      EVENTUATELOCAL_CDC_LEADERSHIP_LOCK_PATH: /eventuate/cdc/leader/eventuatelocal
       EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 1
-      EVENTUATELOCAL_CDC_MY_SQL_BIN_LOG_CLIENT_NAME: Client1
-      EVENTUATELOCAL_CDC_DB_HISTORY_TOPIC_NAME: db.history.topic1
+      EVENTUATELOCAL_CDC_MY_SQL_BIN_LOG_CLIENT_NAME: ClientEventuateLocal
+      EVENTUATELOCAL_CDC_DB_HISTORY_TOPIC_NAME: db.history.eventuate.local
