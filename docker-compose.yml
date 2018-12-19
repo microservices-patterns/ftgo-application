@@ -45,7 +45,6 @@ services:
       EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 2
       EVENTUATELOCAL_CDC_MY_SQL_BIN_LOG_CLIENT_NAME: ClientEventuateTram
       EVENTUATELOCAL_CDC_DB_HISTORY_TOPIC_NAME: db.history.eventuate.tram
-
   eventuate-local-cdc-service:
     image: eventuateio/eventuateio-local-new-cdc-service:0.22.1.RELEASE
     ports:
