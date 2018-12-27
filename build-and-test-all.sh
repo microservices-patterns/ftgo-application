@@ -41,8 +41,7 @@ ${DOCKER_COMPOSE?} up -d --build ${DATABASE_SERVICES?}
 
 echo mysql is started
 
-${DOCKER_COMPOSE?} up -d --build eventuate-local-cdc-service tram-cdc-service
-
+${DOCKER_COMPOSE?} up -d --build tram-cdc-service
 
 if [ -z "$ASSEMBLE_ONLY" ] ; then
 
@@ -55,7 +54,7 @@ if [ -z "$ASSEMBLE_ONLY" ] ; then
   # Component tests need to use the per-service database schema
 
 
-  SPRING_DATASOURCE_URL=jdbc:mysql://${DOCKER_HOST_IP?}/ftgoorderservice ./gradlew :ftgo-order-service:cleanComponentTest :ftgo-order-service:componentTest
+  EVENTUATE_DATABASE_SCHEMA=${ORDER_SERVICE_COMPONENT_TEST_EVENTUATE_DATABASE_SCHEMA:-eventuate}  SPRING_DATASOURCE_URL=jdbc:mysql://${DOCKER_HOST_IP?}/ftgoorderservice ./gradlew :ftgo-order-service:cleanComponentTest :ftgo-order-service:componentTest
 
   # Reset the DB/messages
 

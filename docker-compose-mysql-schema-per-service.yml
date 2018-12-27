@@ -17,7 +17,7 @@ services:
       - KAFKA_HEAP_OPTS=-Xmx192m -Xms192m
       - ZOOKEEPER_SERVERS=zookeeper:2181
   mysql:
-    build: ./mysql
+    build: ./mysql-schema-per-service
     ports:
       - 3306:3306
     environment:
@@ -35,10 +35,27 @@ services:
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
       EVENTUATE_CDC_PIPELINE_PROPERTIES: >
-        [{"type":"eventuate-local",
-        "sourceTableName":"events",
+        [{"type":"eventuate-tram",
+        "eventuateDatabaseSchema":"ftgoconsumerservice",
         "reader":"reader1"},
         {"type":"eventuate-tram",
+        "eventuateDatabaseSchema":"ftgoorderservice",
+        "reader":"reader1"},
+        {"type":"eventuate-tram",
+        "eventuateDatabaseSchema":"ftgokitchenservice",
+        "reader":"reader1"},
+        {"type":"eventuate-tram",
+        "eventuateDatabaseSchema":"ftgorestaurantservice",
+        "reader":"reader1"},
+        {"type":"eventuate-tram",
+        "eventuateDatabaseSchema":"ftgoaccountingservice",
+        "reader":"reader1"},
+        {"type":"eventuate-local",
+        "sourceTableName":"events",
+        "eventuateDatabaseSchema":"ftgoaccountingservice",
+        "reader":"reader1"},
+        {"type":"eventuate-tram",
+        "eventuateDatabaseSchema":"ftgoorderhistoryservice",
         "reader":"reader1"}]
       EVENTUATE_CDC_PIPELINE_READER_PROPERTIES: >
         [{"type":"mysql-binlog",
@@ -70,10 +87,8 @@ services:
       EVENTUATE_CURRENT_TIME_IN_MILLISECONDS_SQL: ${EVENTUATE_CURRENT_TIME_IN_MILLISECONDS_SQL}
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
+      EVENTUATE_DATABASE_SCHEMA: ftgoconsumerservice
       JAVA_OPTS: -Xmx192m
-      SPRING_SLEUTH_ENABLED: "true"
-      SPRING_SLEUTH_SAMPLER_PROBABILITY: 1
-      SPRING_ZIPKIN_BASE_URL: http://zipkin:9411/
   ftgo-order-service:
     build: ./ftgo-order-service
     ports:
@@ -95,6 +110,7 @@ services:
       SPRING_SLEUTH_ENABLED: "true"
       SPRING_SLEUTH_SAMPLER_PROBABILITY: 1
       SPRING_ZIPKIN_BASE_URL: http://zipkin:9411/
+      EVENTUATE_DATABASE_SCHEMA: ftgoorderservice
   ftgo-kitchen-service:
       build: ./ftgo-kitchen-service
       ports:
@@ -113,9 +129,7 @@ services:
         EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
         JAVA_OPTS: -Xmx192m
-        SPRING_SLEUTH_ENABLED: "true"
-        SPRING_SLEUTH_SAMPLER_PROBABILITY: 1
-        SPRING_ZIPKIN_BASE_URL: http://zipkin:9411/
+        EVENTUATE_DATABASE_SCHEMA: ftgokitchenservice
   ftgo-restaurant-service:
       build: ./ftgo-restaurant-service
       ports:
@@ -134,9 +148,7 @@ services:
         EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
         JAVA_OPTS: -Xmx192m
-        SPRING_SLEUTH_ENABLED: "true"
-        SPRING_SLEUTH_SAMPLER_PROBABILITY: 1
-        SPRING_ZIPKIN_BASE_URL: http://zipkin:9411/
+        EVENTUATE_DATABASE_SCHEMA: ftgorestaurantservice
   ftgo-accounting-service:
         build: ./ftgo-accounting-service
         ports:
@@ -154,9 +166,7 @@ services:
           EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
           EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
           JAVA_OPTS: -Xmx192m
-          SPRING_SLEUTH_ENABLED: "true"
-          SPRING_SLEUTH_SAMPLER_PROBABILITY: 1
-          SPRING_ZIPKIN_BASE_URL: http://zipkin:9411/
+          EVENTUATE_DATABASE_SCHEMA: ftgoaccountingservice
   ftgo-order-history-service:
         build: ./ftgo-order-history-service
         ports:
@@ -180,9 +190,7 @@ services:
           AWS_DYNAMODB_ENDPOINT_URL: http://dynamodblocal:8000
           AWS_REGION: ${AWS_REGION:-us-west-2}
           JAVA_OPTS: -Xmx192m
-          SPRING_SLEUTH_ENABLED: "true"
-          SPRING_SLEUTH_SAMPLER_PROBABILITY: 1
-          SPRING_ZIPKIN_BASE_URL: http://zipkin:9411/
+          EVENTUATE_DATABASE_SCHEMA: ftgoorderhistoryservice
   ftgo-api-gateway:
     build: ./ftgo-api-gateway
     ports:
