@@ -1,19 +1,19 @@
 version: '3'
 services:
   zookeeper:
-    image: eventuateio/eventuateio-local-zookeeper:0.21.0.RELEASE
+    image: eventuateio/eventuateio-local-zookeeper:0.22.0.RELEASE
     ports:
       - 2181:2181
       - 2888:2888
       - 3888:3888
   kafka:
-    image: eventuateio/eventuateio-local-kafka:0.21.0.RELEASE
+    image: eventuateio/eventuateio-local-kafka:0.22.0.RELEASE
     ports:
       - 9092:9092
     depends_on:
       - zookeeper
     environment:
-      - ADVERTISED_HOST_NAME=${DOCKER_HOST_IP}
+      - ADVERTISED_HOST_NAME=${DOCKER_HOST_IP?DOCKER_HOST_IP must be set}
       - KAFKA_HEAP_OPTS=-Xmx192m -Xms192m
       - ZOOKEEPER_SERVERS=zookeeper:2181
   mysql:
@@ -25,7 +25,7 @@ services:
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
   tram-cdc-service:
-    image: eventuateio/eventuate-tram-cdc-mysql-service:0.10.0.RELEASE
+    image: eventuateio/eventuate-tram-cdc-mysql-service:0.11.1.RELEASE
     ports:
       - "8099:8080"
     depends_on:
@@ -40,10 +40,13 @@ services:
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
       EVENTUATELOCAL_CDC_DB_USER_NAME: root
       EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
-      EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 1234567890
       EVENTUATELOCAL_CDC_SOURCE_TABLE_NAME: message
+      EVENTUATELOCAL_CDC_LEADERSHIP_LOCK_PATH: /eventuate/cdc/leader/eventuatetram
+      EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 2
+      EVENTUATELOCAL_CDC_MY_SQL_BIN_LOG_CLIENT_NAME: ClientEventuateTram
+      EVENTUATELOCAL_CDC_DB_HISTORY_TOPIC_NAME: db.history.eventuate.tram
   eventuate-local-cdc-service:
-    image: eventuateio/eventuateio-local-new-cdc-service:0.21.0.RELEASE
+    image: eventuateio/eventuateio-local-new-cdc-service:0.22.1.RELEASE
     ports:
       - "8098:8080"
     depends_on:
@@ -58,7 +61,10 @@ services:
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
       EVENTUATELOCAL_CDC_DB_USER_NAME: root
       EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
-      EVENTUATELOCAL_CDC_LEADERSHIP_LOCK_PATH: /eventuatelocal/cdc/leader1
+      EVENTUATELOCAL_CDC_LEADERSHIP_LOCK_PATH: /eventuate/cdc/leader/eventuatelocal
+      EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 1
+      EVENTUATELOCAL_CDC_MY_SQL_BIN_LOG_CLIENT_NAME: ClientEventuateLocal
+      EVENTUATELOCAL_CDC_DB_HISTORY_TOPIC_NAME: db.history.eventuate.local
   ftgo-consumer-service:
     build: ./ftgo-consumer-service
     ports:
@@ -75,6 +81,9 @@ services:
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
       JAVA_OPTS: -Xmx192m
+      SPRING_SLEUTH_ENABLED: "true"
+      SPRING_SLEUTH_SAMPLER_PROBABILITY: 1
+      SPRING_ZIPKIN_BASE_URL: http://zipkin:9411/
   ftgo-order-service:
     build: ./ftgo-order-service
     ports:
@@ -112,6 +121,9 @@ services:
         EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
         JAVA_OPTS: -Xmx192m
+        SPRING_SLEUTH_ENABLED: "true"
+        SPRING_SLEUTH_SAMPLER_PROBABILITY: 1
+        SPRING_ZIPKIN_BASE_URL: http://zipkin:9411/
   ftgo-restaurant-service:
       build: ./ftgo-restaurant-service
       ports:
@@ -129,6 +141,9 @@ services:
         EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
         JAVA_OPTS: -Xmx192m
+        SPRING_SLEUTH_ENABLED: "true"
+        SPRING_SLEUTH_SAMPLER_PROBABILITY: 1
+        SPRING_ZIPKIN_BASE_URL: http://zipkin:9411/
   ftgo-accounting-service:
         build: ./ftgo-accounting-service
         ports:
@@ -146,6 +161,9 @@ services:
           EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
           EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
           JAVA_OPTS: -Xmx192m
+          SPRING_SLEUTH_ENABLED: "true"
+          SPRING_SLEUTH_SAMPLER_PROBABILITY: 1
+          SPRING_ZIPKIN_BASE_URL: http://zipkin:9411/
   ftgo-order-history-service:
         build: ./ftgo-order-history-service
         ports:
@@ -155,6 +173,7 @@ services:
           - zookeeper
           - tram-cdc-service
           - dynamodblocal
+          - dynamodblocal-init
         environment:
           SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgoorderhistoryservice
           SPRING_DATASOURCE_USERNAME: mysqluser
@@ -162,11 +181,14 @@ services:
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
           EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
           EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-          AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-          AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+          AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-id_key}
+          AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-access_key}
           AWS_DYNAMODB_ENDPOINT_URL: http://dynamodblocal:8000
-          AWS_REGION: $AWS_REGION
+          AWS_REGION: ${AWS_REGION:-us-west-2}
           JAVA_OPTS: -Xmx192m
+          SPRING_SLEUTH_ENABLED: "true"
+          SPRING_SLEUTH_SAMPLER_PROBABILITY: 1
+          SPRING_ZIPKIN_BASE_URL: http://zipkin:9411/
   ftgo-api-gateway:
     build: ./ftgo-api-gateway
     ports:
@@ -195,9 +217,21 @@ services:
        - "9411:9411"
       environment:
         JAVA_OPTS: -Xmx128m
+
   dynamodblocal:
     build: ./dynamodblocal
     ports:
      - "8000:8000"
     environment:
       JAVA_OPTS: -Xmx128m
+
+  dynamodblocal-init:
+    build: ./dynamodblocal-init
+    depends_on:
+      - dynamodblocal
+    restart: on-failure
+    environment:
+      AWS_DYNAMODB_ENDPOINT_URL: http://dynamodblocal:8000
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-id_key}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-access_key}
+      AWS_REGION: ${AWS_REGION:-us-west-2}

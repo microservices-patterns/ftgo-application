@@ -1,5 +1,8 @@
 package net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
@@ -21,6 +24,12 @@ public class OrderHistoryDynamoDBConfiguration {
   @Value("${aws.region}")
   private String awsRegion;
 
+  @Value("${aws.access.key_id:null}")
+  private String accessKey;
+
+  @Value("${aws.secret.access.key:null}")
+  private String secretKey;
+
   @Bean
   public AmazonDynamoDB amazonDynamoDB() {
 
@@ -29,12 +38,13 @@ public class OrderHistoryDynamoDBConfiguration {
           .standard()
           .withEndpointConfiguration(
               new AwsClientBuilder.EndpointConfiguration(awsDynamodbEndpointUrl, awsRegion))
+          .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
           .build();
     } else {
       return AmazonDynamoDBClientBuilder
               .standard()
               .withRegion(awsRegion)
-              .withCredentials(new EnvironmentVariableCredentialsProvider())
+              .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
               .build();
     }
   }

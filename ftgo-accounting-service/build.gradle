@@ -1,5 +1,5 @@
 
-apply plugin: 'org.springframework.boot'
+apply plugin: FtgoServicePlugin
 
 
 dependencies {

@@ -29,7 +29,7 @@ public class SagaMessagingTestHelper {
     String sagaId = idGenerator.genId().asString();
 
     String replyTo = sagaType + "-reply";
-    sagaCommandProducer.sendCommand(sagaType, sagaId, commandEndpoint.getCommandChannel(), null, "XXX", command, replyTo);
+    sagaCommandProducer.sendCommand(sagaType, sagaId, commandEndpoint.getCommandChannel(), null, command, replyTo);
 
     ContractVerifierMessage response = contractVerifierMessaging.receive(replyTo);
 

@@ -2,6 +2,7 @@
 
 KEEP_RUNNING=
 ASSEMBLE_ONLY=
+DATABASE_SERVICES="dynamodblocal mysql dynamodblocal-init"
 
 if [ -z "$DOCKER_COMPOSE" ] ; then
     DOCKER_COMPOSE=docker-compose
@@ -33,14 +34,12 @@ echo KEEP_RUNNING=$KEEP_RUNNING
 
 ./gradlew testClasses
 
-${DOCKER_COMPOSE?} down -v
-${DOCKER_COMPOSE?} up -d --build dynamodblocal mysql
+${DOCKER_COMPOSE?} down --remove-orphans -v
+${DOCKER_COMPOSE?} up -d --build ${DATABASE_SERVICES?}
 
 ./gradlew waitForMySql
 
 echo mysql is started
-
-./gradlew initDynamoDb
 
 ${DOCKER_COMPOSE?} up -d --build eventuate-local-cdc-service tram-cdc-service
 
@@ -59,15 +58,13 @@ if [ -z "$ASSEMBLE_ONLY" ] ; then
 
   # Reset the DB/messages
 
-  ${DOCKER_COMPOSE?} down -v
+  ${DOCKER_COMPOSE?} down --remove-orphans -v
 
-  ${DOCKER_COMPOSE?} up -d dynamodblocal mysql
+  ${DOCKER_COMPOSE?} up -d ${DATABASE_SERVICES?}
 
   ./gradlew waitForMySql
 
   echo mysql is started
-
-  ./gradlew initDynamoDb
 
   ${DOCKER_COMPOSE?} up -d
 
@@ -76,13 +73,11 @@ else
 
   ./gradlew $* assemble
 
-  ${DOCKER_COMPOSE?} up -d --build dynamodblocal mysql
+  ${DOCKER_COMPOSE?} up -d --build ${DATABASE_SERVICES?}
 
   ./gradlew waitForMySql
 
   echo mysql is started
-
-  ./gradlew initDynamoDb
 
   ${DOCKER_COMPOSE?} up -d --build
 
@@ -90,10 +85,11 @@ fi
 
 ./gradlew waitForServices --host="${DOCKER_HOST_IP}" --ports="8081 8082 8083 8084 8085 8086 8099 8098"
 
-./gradlew :ftgo-end-to-end-tests:cleanTest :ftgo-end-to-end-tests:test
+./run-end-to-end-tests.sh
+
 
 ./run-graphql-api-gateway-tests.sh
 
 if [ -z "$KEEP_RUNNING" ] ; then
-  ${DOCKER_COMPOSE?} down -v
+  ${DOCKER_COMPOSE?} down --remove-orphans -v
 fi
