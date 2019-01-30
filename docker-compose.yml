@@ -1,13 +1,13 @@
 version: '3'
 services:
   zookeeper:
-    image: eventuateio/eventuateio-local-zookeeper:0.30.0.M8
+    image: eventuateio/eventuateio-local-zookeeper:0.30.0.M12
     ports:
       - 2181:2181
       - 2888:2888
       - 3888:3888
   kafka:
-    image: eventuateio/eventuateio-local-kafka:0.30.0.M8
+    image: eventuateio/eventuateio-local-kafka:0.30.0.M12
     ports:
       - 9092:9092
     depends_on:
@@ -25,7 +25,7 @@ services:
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
   tram-cdc-service:
-    image: test-eventuate-tram-cdc-mysql-service
+    image: eventuateio/eventuate-tram-cdc-mysql-service:0.20.0.M9
     ports:
       - "8099:8080"
     depends_on:
@@ -42,7 +42,6 @@ services:
       EVENTUATE_CDC_PIPELINE_PIPELINE2_READER: reader2
 
       EVENTUATE_CDC_READER_READER1_TYPE: mysql-binlog
-      EVENTUATE_CDC_READER_READER1_NAME: reader1
       EVENTUATE_CDC_READER_READER1_DATASOURCEURL: jdbc:mysql://${DOCKER_HOST_IP}:3306/eventuate
       EVENTUATE_CDC_READER_READER1_DATASOURCEUSERNAME: mysqluser
       EVENTUATE_CDC_READER_READER1_DATASOURCEPASSWORD: mysqlpw
@@ -56,7 +55,6 @@ services:
       EVENTUATE_CDC_READER_READER1_OFFSETSTORAGETOPICNAME: db.history.eventuate.local
 
       EVENTUATE_CDC_READER_READER2_TYPE: mysql-binlog
-      EVENTUATE_CDC_READER_READER2_NAME: reader2
       EVENTUATE_CDC_READER_READER2_DATASOURCEURL: jdbc:mysql://${DOCKER_HOST_IP}:3306/eventuate
       EVENTUATE_CDC_READER_READER2_DATASOURCEUSERNAME: mysqluser
       EVENTUATE_CDC_READER_READER2_DATASOURCEPASSWORD: mysqlpw
