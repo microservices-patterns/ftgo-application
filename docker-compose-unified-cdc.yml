@@ -1,7 +1,7 @@
 version: '3'
 services:
   tram-cdc-service:
-    image: test-eventuate-tram-cdc-mysql-service
+    image: eventuateio/eventuate-tram-cdc-mysql-service:0.20.0.M9
     ports:
       - "8099:8080"
     depends_on:
@@ -23,7 +23,7 @@ services:
       EVENTUATELOCAL_CDC_MY_SQL_BIN_LOG_CLIENT_NAME: ClientEventuateTram
       EVENTUATELOCAL_CDC_OFFSET_STORAGE_TOPIC_NAME: db.history.eventuate.tram
   eventuate-local-cdc-service:
-    image: test-eventuate-local-java-new-cdc-mysql-service
+    image: eventuateio/eventuateio-local-new-cdc-service:0.30.0.M12
     ports:
       - "8098:8080"
     depends_on:
