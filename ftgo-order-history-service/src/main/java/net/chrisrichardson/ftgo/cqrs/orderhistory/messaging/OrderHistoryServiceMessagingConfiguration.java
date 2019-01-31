@@ -5,7 +5,6 @@ import io.eventuate.tram.events.subscriber.DomainEventDispatcher;
 import io.eventuate.tram.messaging.consumer.MessageConsumer;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.OrderHistoryDao;
-import net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb.OrderHistoryDynamoDBConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
