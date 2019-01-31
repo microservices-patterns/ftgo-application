@@ -1,13 +1,13 @@
 version: '3'
 services:
   zookeeper:
-    image: eventuateio/eventuateio-local-zookeeper:0.30.0.M8
+    image: eventuateio/eventuateio-local-zookeeper:0.30.0.M12
     ports:
       - 2181:2181
       - 2888:2888
       - 3888:3888
   kafka:
-    image: eventuateio/eventuateio-local-kafka:0.30.0.M8
+    image: eventuateio/eventuateio-local-kafka:0.30.0.M12
     ports:
       - 9092:9092
     depends_on:
@@ -25,7 +25,7 @@ services:
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
   tram-cdc-service:
-    image: eventuateio/eventuate-tram-cdc-mysql-service:0.20.0.M7
+    image: eventuateio/eventuate-tram-cdc-mysql-service:0.20.0.M9
     ports:
       - "8099:8080"
     depends_on:
@@ -34,25 +34,38 @@ services:
     environment:
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-      EVENTUATE_CDC_PIPELINE_PROPERTIES: >
-        [{"type":"eventuate-local",
-        "sourceTableName":"events",
-        "reader":"reader1"},
-        {"type":"eventuate-tram",
-        "reader":"reader1"}]
-      EVENTUATE_CDC_PIPELINE_READER_PROPERTIES: >
-        [{"type":"mysql-binlog",
-        "name":"reader1",
-        "dataSourceUrl":"jdbc:mysql://mysql/eventuate",
-        "dataSourceUserName":"mysqluser",
-        "dataSourcePassword":"mysqlpw",
-        "dataSourceDriverClassName":"com.mysql.jdbc.Driver",
-        "leadershipLockPath":"/ftgo/cdc/leader/reader/1",
-        "cdcDbUserName":"root",
-        "cdcDbPassword":"rootpassword",
-        "oldDebeziumDbHistoryTopicName":"none",
-        "binlogClientId": 1,
-        "mySqlBinLogClientName": "MySqlBinLog"}]
+
+      EVENTUATE_CDC_PIPELINE_PIPELINE1_TYPE: eventuate-local
+      EVENTUATE_CDC_PIPELINE_PIPELINE1_READER: reader1
+
+      EVENTUATE_CDC_PIPELINE_PIPELINE2_TYPE: eventuate-tram
+      EVENTUATE_CDC_PIPELINE_PIPELINE2_READER: reader2
+
+      EVENTUATE_CDC_READER_READER1_TYPE: mysql-binlog
+      EVENTUATE_CDC_READER_READER1_DATASOURCEURL: jdbc:mysql://${DOCKER_HOST_IP}:3306/eventuate
+      EVENTUATE_CDC_READER_READER1_DATASOURCEUSERNAME: mysqluser
+      EVENTUATE_CDC_READER_READER1_DATASOURCEPASSWORD: mysqlpw
+      EVENTUATE_CDC_READER_READER1_DATASOURCEDRIVERCLASSNAME: com.mysql.jdbc.Driver
+      EVENTUATE_CDC_READER_READER1_LEADERSHIPLOCKPATH: /eventuate/cdc/leader/eventuatelocal
+      EVENTUATE_CDC_READER_READER1_BINLOGCLIENTID: 1
+      EVENTUATE_CDC_READER_READER1_CDCDBUSERNAME: root
+      EVENTUATE_CDC_READER_READER1_CDCDBPASSWORD: rootpassword
+      EVENTUATE_CDC_READER_READER1_OLDDEBEZIUMDBOFFSETSTORAGETOPICNAME: none
+      EVENTUATE_CDC_READER_READER1_MYSQLBINLOGCLIENTNAME: ClientEventuateLocal
+      EVENTUATE_CDC_READER_READER1_OFFSETSTORAGETOPICNAME: db.history.eventuate.local
+
+      EVENTUATE_CDC_READER_READER2_TYPE: mysql-binlog
+      EVENTUATE_CDC_READER_READER2_DATASOURCEURL: jdbc:mysql://${DOCKER_HOST_IP}:3306/eventuate
+      EVENTUATE_CDC_READER_READER2_DATASOURCEUSERNAME: mysqluser
+      EVENTUATE_CDC_READER_READER2_DATASOURCEPASSWORD: mysqlpw
+      EVENTUATE_CDC_READER_READER2_DATASOURCEDRIVERCLASSNAME: com.mysql.jdbc.Driver
+      EVENTUATE_CDC_READER_READER2_LEADERSHIPLOCKPATH: /eventuate/cdc/leader/eventuatetram
+      EVENTUATE_CDC_READER_READER2_BINLOGCLIENTID: 2
+      EVENTUATE_CDC_READER_READER2_CDCDBUSERNAME: root
+      EVENTUATE_CDC_READER_READER2_CDCDBPASSWORD: rootpassword
+      EVENTUATE_CDC_READER_READER2_OLDDEBEZIUMDBOFFSETSTORAGETOPICNAME: none
+      EVENTUATE_CDC_READER_READER2_MYSQLBINLOGCLIENTNAME: ClientEventuateTram
+      EVENTUATE_CDC_READER_READER2_OFFSETSTORAGETOPICNAME: db.history.eventuate.tram
 
   ftgo-consumer-service:
     build: ./ftgo-consumer-service
@@ -67,7 +80,6 @@ services:
       SPRING_DATASOURCE_USERNAME: mysqluser
       SPRING_DATASOURCE_PASSWORD: mysqlpw
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
-      EVENTUATE_CURRENT_TIME_IN_MILLISECONDS_SQL: ${EVENTUATE_CURRENT_TIME_IN_MILLISECONDS_SQL}
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
       JAVA_OPTS: -Xmx192m
@@ -88,7 +100,6 @@ services:
       SPRING_DATASOURCE_USERNAME: mysqluser
       SPRING_DATASOURCE_PASSWORD: mysqlpw
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
-      EVENTUATE_CURRENT_TIME_IN_MILLISECONDS_SQL: ${EVENTUATE_CURRENT_TIME_IN_MILLISECONDS_SQL}
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
       JAVA_OPTS: -Xmx192m
@@ -109,7 +120,6 @@ services:
         SPRING_DATASOURCE_USERNAME: mysqluser
         SPRING_DATASOURCE_PASSWORD: mysqlpw
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
-        EVENTUATE_CURRENT_TIME_IN_MILLISECONDS_SQL: ${EVENTUATE_CURRENT_TIME_IN_MILLISECONDS_SQL}
         EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
         JAVA_OPTS: -Xmx192m
@@ -130,7 +140,6 @@ services:
         SPRING_DATASOURCE_USERNAME: mysqluser
         SPRING_DATASOURCE_PASSWORD: mysqlpw
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
-        EVENTUATE_CURRENT_TIME_IN_MILLISECONDS_SQL: ${EVENTUATE_CURRENT_TIME_IN_MILLISECONDS_SQL}
         EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
         JAVA_OPTS: -Xmx192m
@@ -150,7 +159,6 @@ services:
           SPRING_DATASOURCE_USERNAME: mysqluser
           SPRING_DATASOURCE_PASSWORD: mysqlpw
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
-          EVENTUATE_CURRENT_TIME_IN_MILLISECONDS_SQL: ${EVENTUATE_CURRENT_TIME_IN_MILLISECONDS_SQL}
           EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
           EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
           JAVA_OPTS: -Xmx192m
@@ -172,7 +180,6 @@ services:
           SPRING_DATASOURCE_USERNAME: mysqluser
           SPRING_DATASOURCE_PASSWORD: mysqlpw
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
-          EVENTUATE_CURRENT_TIME_IN_MILLISECONDS_SQL: ${EVENTUATE_CURRENT_TIME_IN_MILLISECONDS_SQL}
           EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
           EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
           AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-id_key}

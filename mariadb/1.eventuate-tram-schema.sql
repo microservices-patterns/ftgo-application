@@ -21,3 +21,7 @@ CREATE TABLE received_messages (
   PRIMARY KEY(consumer_id, message_id)
 );
 
+CREATE TABLE eventuate.offset_store(
+  client_name VARCHAR(255) NOT NULL PRIMARY KEY,
+  serialized_offset VARCHAR(255)
+);
