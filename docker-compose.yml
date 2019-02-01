@@ -1,13 +1,13 @@
 version: '3'
 services:
   zookeeper:
-    image: eventuateio/eventuateio-local-zookeeper:0.30.0.M12
+    image: eventuateio/eventuateio-local-zookeeper:0.30.0.M14
     ports:
       - 2181:2181
       - 2888:2888
       - 3888:3888
   kafka:
-    image: eventuateio/eventuateio-local-kafka:0.30.0.M12
+    image: eventuateio/eventuateio-local-kafka:0.30.0.M14
     ports:
       - 9092:9092
     depends_on:
@@ -25,7 +25,7 @@ services:
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
   tram-cdc-service:
-    image: eventuateio/eventuate-tram-cdc-mysql-service:0.20.0.M9
+    image: eventuateio/eventuate-tram-cdc-mysql-service:0.20.0.M11
     ports:
       - "8099:8080"
     depends_on:
@@ -50,7 +50,7 @@ services:
       EVENTUATE_CDC_READER_READER1_BINLOGCLIENTID: 1
       EVENTUATE_CDC_READER_READER1_CDCDBUSERNAME: root
       EVENTUATE_CDC_READER_READER1_CDCDBPASSWORD: rootpassword
-      EVENTUATE_CDC_READER_READER1_OLDDEBEZIUMDBOFFSETSTORAGETOPICNAME: none
+      EVENTUATE_CDC_READER_READER1_READOLDDEBEZIUMDBOFFSETSTORAGETOPIC: "false"
       EVENTUATE_CDC_READER_READER1_MYSQLBINLOGCLIENTNAME: ClientEventuateLocal
       EVENTUATE_CDC_READER_READER1_OFFSETSTORAGETOPICNAME: db.history.eventuate.local
 
@@ -63,7 +63,7 @@ services:
       EVENTUATE_CDC_READER_READER2_BINLOGCLIENTID: 2
       EVENTUATE_CDC_READER_READER2_CDCDBUSERNAME: root
       EVENTUATE_CDC_READER_READER2_CDCDBPASSWORD: rootpassword
-      EVENTUATE_CDC_READER_READER2_OLDDEBEZIUMDBOFFSETSTORAGETOPICNAME: none
+      EVENTUATE_CDC_READER_READER2_READOLDDEBEZIUMDBOFFSETSTORAGETOPIC: "false"
       EVENTUATE_CDC_READER_READER2_MYSQLBINLOGCLIENTNAME: ClientEventuateTram
       EVENTUATE_CDC_READER_READER2_OFFSETSTORAGETOPICNAME: db.history.eventuate.tram
 

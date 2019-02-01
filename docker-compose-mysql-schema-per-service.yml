@@ -25,7 +25,7 @@ services:
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
   tram-cdc-service:
-    image: eventuateio/eventuate-tram-cdc-mysql-service:0.20.0.M10
+    image: eventuateio/eventuate-tram-cdc-mysql-service:0.20.0.M11
     ports:
       - "8099:8080"
     depends_on:
