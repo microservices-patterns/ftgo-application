@@ -1,6 +1,7 @@
 package net.chrisrichardson.ftgo.kitchenservice.api;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class CreateTicketReply {
@@ -22,6 +23,11 @@ public class CreateTicketReply {
   @Override
   public boolean equals(Object o) {
     return EqualsBuilder.reflectionEquals(this, o);
+  }
+
+  @Override
+  public int hashCode() {
+    return HashCodeBuilder.reflectionHashCode(this);
   }
 
   public void setTicketId(long ticketId) {
