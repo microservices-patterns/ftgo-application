@@ -1,7 +1,7 @@
 version: '3'
 services:
   tram-cdc-service:
-    image: eventuateio/eventuate-tram-cdc-mysql-service:0.20.0.M10
+    image: eventuateio/eventuate-tram-cdc-mysql-service:0.20.0.RC1
     ports:
       - "8099:8080"
     depends_on:
@@ -19,11 +19,11 @@ services:
       EVENTUATELOCAL_CDC_SOURCE_TABLE_NAME: message
       EVENTUATELOCAL_CDC_READ_OLD_DEBEZIUM_DB_OFFSET_STORAGE_TOPIC: "false"
       EVENTUATELOCAL_CDC_LEADERSHIP_LOCK_PATH: /eventuate/cdc/leader/eventuatetram
-      EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 2
-      EVENTUATELOCAL_CDC_MYSQL_BINLOG_CLIENT_NAME: ClientEventuateTram
+      EVENTUATELOCAL_CDC_MYSQL_BINLOG_CLIENT_UNIQUE_ID: 2
+      EVENTUATELOCAL_CDC_READER_NAME: ClientEventuateTram
       EVENTUATELOCAL_CDC_OFFSET_STORAGE_TOPIC_NAME: db.history.eventuate.tram
   eventuate-local-cdc-service:
-    image: eventuateio/eventuateio-local-cdc-service:0.30.0.M14
+    image: eventuateio/eventuateio-local-cdc-service:0.30.0.RC4
     ports:
       - "8098:8080"
     depends_on:
@@ -40,6 +40,6 @@ services:
       EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
       EVENTUATELOCAL_CDC_READ_OLD_DEBEZIUM_DB_OFFSET_STORAGE_TOPIC: "false"
       EVENTUATELOCAL_CDC_LEADERSHIP_LOCK_PATH: /eventuate/cdc/leader/eventuatelocal
-      EVENTUATELOCAL_CDC_BINLOG_CLIENT_ID: 1
-      EVENTUATELOCAL_CDC_MYSQL_BINLOG_CLIENT_NAME: ClientEventuateLocal
+      EVENTUATELOCAL_CDC_MYSQL_BINLOG_CLIENT_UNIQUE_ID: 1
+      EVENTUATELOCAL_CDC_READER_NAME: ClientEventuateLocal
       EVENTUATELOCAL_CDC_OFFSET_STORAGE_TOPIC_NAME: db.history.eventuate.local
