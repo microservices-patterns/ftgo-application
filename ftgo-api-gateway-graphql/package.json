@@ -33,6 +33,7 @@
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
     "jest": "^23.0.1",
-    "ts-jest": "^22.4.6"
+    "ts-jest": "^22.4.6",
+    "typescript": "^3.3.3333"
   }
 }
