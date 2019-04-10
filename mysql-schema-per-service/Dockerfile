@@ -1,4 +1,4 @@
-FROM eventuateio/eventuate-tram-sagas-mysql:0.10.0.M1
+FROM eventuateio/eventuate-tram-sagas-mysql:0.10.0.RC2
 
 COPY common-schema.sql /docker-entrypoint-initdb.d/1.common-schema.sql
 COPY compile-schema-per-service.sh /docker-entrypoint-initdb.d/2.compile-schema-per-service.sh
