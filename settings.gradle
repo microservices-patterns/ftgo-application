@@ -6,6 +6,7 @@ include "ftgo-common-jpa"
 
 
 include "ftgo-order-service"
+
 include "ftgo-order-service-api"
 include "ftgo-order-service-contracts"
 
@@ -28,4 +29,3 @@ include "ftgo-api-gateway"
 include "ftgo-end-to-end-tests"
 
 include "ftgo-restaurant-service-aws-lambda"
-

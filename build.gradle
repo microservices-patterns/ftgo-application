@@ -25,10 +25,10 @@ subprojects {
     group = "net.chrisrichardson.ftgo"
 
     repositories {
+        eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
+
         mavenCentral()
         jcenter()
-
-        eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
 
         maven {
             url 'https://repo.spring.io/libs-milestone'
