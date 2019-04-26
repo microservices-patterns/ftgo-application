@@ -2,7 +2,7 @@
 
 set -o pipefail
 
-SCRIPTS=" build-and-test-all.sh build-and-test-all-mariadb.sh build-and-test-all-schema-per-table.sh "
+SCRIPTS=" build-and-test-all.sh build-and-test-all-mariadb.sh build-and-test-all-schema-per-service.sh "
 
 export LOGFILE=build/build-and-test-everything.log
 

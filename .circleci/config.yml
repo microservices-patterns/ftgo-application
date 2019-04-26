@@ -58,7 +58,7 @@ jobs:
           path:        ~/junit
       - store_artifacts:
           path:        ~/junit
-  build-schema-per-table:
+  build-schema-per-service:
     machine:           true
     working_directory: ~/ftgo-application
     steps:
@@ -76,7 +76,7 @@ jobs:
           command:     |
             ./.circleci/upgrade-docker-compose.sh
             . ./setenv-circle-ci.sh
-            ./build-and-test-all-schema-per-table.sh
+            ./build-and-test-all-schema-per-service.sh
       - run:
           name:        Save test results
           command:     |
@@ -107,10 +107,9 @@ workflows:
     jobs:
       - build
       - build-mariadb
-      - build-schema-per-table
+      - build-schema-per-service
       - publish:
           requires:
             - build
             - build-mariadb
-            - build-schema-per-table
-
+            - build-schema-per-service
