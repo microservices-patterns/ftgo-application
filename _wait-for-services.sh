@@ -14,12 +14,13 @@ done=false
 
 while [[ "$done" = false ]]; do
 	for port in $ports; do
-		curl --fail http://${host}:${port}$path >& /dev/null
+		url=http://${host}:${port}$path
+		curl --fail $url >& /dev/null
 		if [[ "$?" -eq "0" ]]; then
 			done=true
 		else
 			done=false
-			echo http://${host}:${port}/health
+			echo $url
 			break
 		fi
 	done

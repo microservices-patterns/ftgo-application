@@ -53,24 +53,35 @@ dockerCompose {
 
     startedServices = [ 'not-used']
 
-    componentTests {
-        if (System.getenv("FTGO_DOCKER_COMPOSE_FILES") != null)
-            useComposeFiles = System.getenv("FTGO_DOCKER_COMPOSE_FILES").split(",").collect { "../" + it }
-        startedServices = [ 'ftgo-order-service']
-        stopContainers = false
-    }
-
     integrationTests {
         if (System.getenv("FTGO_DOCKER_COMPOSE_FILES") != null)
             useComposeFiles = System.getenv("FTGO_DOCKER_COMPOSE_FILES").split(",").collect { "../" + it }
 
         startedServices = [ 'mysql']
-        stopContainers = false
+        stopContainers = true
     }
+
+    componentTests {
+        if (System.getenv("FTGO_DOCKER_COMPOSE_FILES") != null)
+            useComposeFiles = System.getenv("FTGO_DOCKER_COMPOSE_FILES").split(",").collect { "../" + it }
+        startedServices = [ 'ftgo-order-service']
+        //forceRecreate = true
+	stopContainers = true
+    }
+
 }
 
-componentTest.dependsOn(componentTestsComposeUp)
 integrationTest.dependsOn(integrationTestsComposeUp)
+
+componentTest.dependsOn(componentTestsComposeUp)
+
+componentTest {
+
+    environment "EVENTUATE_DATABASE_SCHEMA", (System.getenv("ORDER_SERVICE_COMPONENT_TEST_EVENTUATE_DATABASE_SCHEMA") ?: "eventuate")
+    environment "SPRING_DATASOURCE_URL", "jdbc:mysql://${System.getenv("DOCKER_HOST_IP")}/ftgoorderservice"
+    environment "DOCKER_HOST_IP", System.getenv("DOCKER_HOST_IP")
+
+}
 
 protobuf {
     protoc {

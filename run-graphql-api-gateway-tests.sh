@@ -13,6 +13,12 @@ if [ ! -d node_modules ] ; then
   npm install
 fi
 
+if which tsc ; then
+    echo tsc installed
+else
+    npm install -g typescript
+fi
+
 npm run unit-test
 npm run end-to-end-test
 

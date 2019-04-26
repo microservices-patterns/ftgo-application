@@ -9,3 +9,4 @@ if [ -z "$DOCKER_HOST_IP" ] ; then
 fi
 
 echo DOCKER_HOST_IP is $DOCKER_HOST_IP
+export COMPOSE_HTTP_TIMEOUT=240

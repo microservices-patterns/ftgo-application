@@ -58,6 +58,35 @@ jobs:
           path:        ~/junit
       - store_artifacts:
           path:        ~/junit
+  build-schema-per-service:
+    machine:           true
+    working_directory: ~/ftgo-application
+    steps:
+      - checkout
+      - restore_cache:
+          key:         ftgo-application-{{ checksum "gradle.properties" }}
+      - run:           TERM=dumb ./build-contracts.sh
+      - run:           TERM=dumb ./gradlew testClasses :ftgo-order-service:compileComponentTestJava
+      - save_cache:
+          paths:
+            - ~/.gradle
+            - ~/.m2
+          key:         ftgo-application-{{ checksum "gradle.properties" }}
+      - run:
+          command:     |
+            ./.circleci/upgrade-docker-compose.sh
+            . ./setenv-circle-ci.sh
+            ./build-and-test-all-schema-per-service.sh
+      - run:
+          name:        Save test results
+          command:     |
+            mkdir -p ~/junit/
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/junit/ \;
+          when:        always
+      - store_test_results:
+          path:        ~/junit
+      - store_artifacts:
+          path:        ~/junit
   publish:
     machine:           true
     working_directory: ~/ftgo-application
@@ -78,8 +107,9 @@ workflows:
     jobs:
       - build
       - build-mariadb
+      - build-schema-per-service
       - publish:
           requires:
             - build
             - build-mariadb
-
+            - build-schema-per-service
