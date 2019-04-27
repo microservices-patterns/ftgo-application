@@ -1,6 +1,7 @@
 package net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb;
 
 import io.eventuate.javaclient.commonimpl.JSonMapper;
+import io.eventuate.tram.inmemory.TramInMemoryConfiguration;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.OrderHistory;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.OrderHistoryDao;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
@@ -28,10 +31,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = {OrderHistoryDynamoDBConfiguration.class})
-@EnableAutoConfiguration
-@ComponentScan
+@SpringBootTest(classes = {OrderHistoryDaoDynamoDbTest.OrderHistoryDaoDynamoDbTestConfiguration.class})
 public class OrderHistoryDaoDynamoDbTest {
+
+  @Configuration
+  @EnableAutoConfiguration
+  @ComponentScan
+  @Import({OrderHistoryDynamoDBConfiguration.class, TramInMemoryConfiguration.class})
+  static public class OrderHistoryDaoDynamoDbTestConfiguration {
+
+  }
 
   private String consumerId;
   private Order order1;

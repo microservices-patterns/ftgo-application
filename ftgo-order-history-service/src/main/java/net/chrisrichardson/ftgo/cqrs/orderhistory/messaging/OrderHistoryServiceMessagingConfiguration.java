@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.cqrs.orderhistory.messaging;
 
-import io.eventuate.tram.consumer.common.DuplicateMessageDetector;
+import io.eventuate.tram.consumer.common.TramNoopDuplicateMessageDetectorConfiguration;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcher;
 import io.eventuate.tram.messaging.consumer.MessageConsumer;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import(CommonConfiguration.class)
+@Import({CommonConfiguration.class, TramNoopDuplicateMessageDetectorConfiguration.class})
 public class OrderHistoryServiceMessagingConfiguration {
 
   @Bean
@@ -23,8 +23,4 @@ public class OrderHistoryServiceMessagingConfiguration {
     return new DomainEventDispatcher("orderHistoryDomainEventDispatcher", orderHistoryEventHandlers.domainEventHandlers(), messageConsumer);
   }
 
-  @Bean
-  public DuplicateMessageDetector duplicateMessageDetector() {
-    return new NoopDuplicateMessageDetector();
-  }
 }
