@@ -1,7 +1,5 @@
 package net.chrisrichardson.ftgo.orderhistory.contracts;
 
-import io.eventuate.tram.commands.common.ChannelMapping;
-import io.eventuate.tram.commands.common.DefaultChannelMapping;
 import io.eventuate.tram.commands.producer.TramCommandProducerConfiguration;
 import io.eventuate.tram.inmemory.TramInMemoryConfiguration;
 import io.eventuate.tram.springcloudcontractsupport.EventuateContractVerifierConfiguration;
@@ -47,11 +45,6 @@ public class OrderHistoryEventHandlersTest {
           TramCommandProducerConfiguration.class,
           TramInMemoryConfiguration.class, EventuateContractVerifierConfiguration.class})
   public static class TestConfiguration {
-
-    @Bean
-    public ChannelMapping channelMapping() {
-      return new DefaultChannelMapping.DefaultChannelMappingBuilder().build();
-    }
 
     @Bean
     public OrderHistoryDao orderHistoryDao() {

@@ -6,28 +6,25 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.eventuate.jdbckafka.TramJdbcKafkaConfiguration;
-import io.eventuate.tram.commands.common.ChannelMapping;
-import io.eventuate.tram.commands.common.DefaultChannelMapping;
-import io.eventuate.tram.events.common.DomainEvent;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.messaging.consumer.MessageConsumer;
-import io.eventuate.tram.sagas.testing.SagaParticipantStubManagerConfiguration;
-import io.eventuate.tram.sagas.testing.SagaParticipantStubManager;
-import io.eventuate.tram.testing.MessageTracker;
 import io.eventuate.tram.sagas.testing.SagaParticipantChannels;
+import io.eventuate.tram.sagas.testing.SagaParticipantStubManager;
+import io.eventuate.tram.sagas.testing.SagaParticipantStubManagerConfiguration;
+import io.eventuate.tram.testing.MessageTracker;
 import io.restassured.response.Response;
 import net.chrisrichardson.ftgo.accountservice.api.AuthorizeCommand;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.consumerservice.api.ValidateOrderByConsumer;
+import net.chrisrichardson.ftgo.kitchenservice.api.CancelCreateTicket;
+import net.chrisrichardson.ftgo.kitchenservice.api.ConfirmCreateTicket;
+import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicket;
+import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicketReply;
 import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
 import net.chrisrichardson.ftgo.orderservice.RestaurantMother;
 import net.chrisrichardson.ftgo.orderservice.api.web.CreateOrderRequest;
 import net.chrisrichardson.ftgo.orderservice.domain.Order;
 import net.chrisrichardson.ftgo.orderservice.domain.RestaurantRepository;
-import net.chrisrichardson.ftgo.kitchenservice.api.CancelCreateTicket;
-import net.chrisrichardson.ftgo.kitchenservice.api.ConfirmCreateTicket;
-import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicket;
-import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicketReply;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
 import net.chrisrichardson.ftgo.testutil.FtgoTestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +44,7 @@ import static io.eventuate.util.test.async.Eventually.eventually;
 import static io.restassured.RestAssured.given;
 import static java.util.Collections.singleton;
 import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.AJANTA_RESTAURANT_MENU;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 
 @SpringBootTest(classes = OrderServiceComponentTestStepDefinitions.TestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -87,11 +82,6 @@ public class OrderServiceComponentTestStepDefinitions {
     @Bean
     public MessageTracker messageTracker(MessageConsumer messageConsumer) {
       return new MessageTracker(singleton("net.chrisrichardson.ftgo.orderservice.domain.Order"), messageConsumer) ;
-    }
-
-    @Bean
-    public ChannelMapping channelMapping() {
-      return new DefaultChannelMapping.DefaultChannelMappingBuilder().build();
     }
 
   }

@@ -1,9 +1,7 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
 import com.jayway.jsonpath.JsonPath;
-import io.eventuate.tram.commands.common.ChannelMapping;
 import io.eventuate.tram.commands.common.CommandMessageHeaders;
-import io.eventuate.tram.commands.common.DefaultChannelMapping;
 import io.eventuate.tram.commands.producer.TramCommandProducerConfiguration;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.inmemory.TramInMemoryConfiguration;
@@ -61,11 +59,6 @@ public class OrderServiceIntegrationTest {
           TramCommandProducerConfiguration.class,
           TramInMemoryConfiguration.class})
   public static class TestConfiguration {
-
-    @Bean
-    public ChannelMapping channelMapping() {
-      return new DefaultChannelMapping.DefaultChannelMappingBuilder().build();
-    }
 
     @Bean
     public TestMessageConsumerFactory testMessageConsumerFactory() {

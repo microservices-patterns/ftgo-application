@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.consumerservice.web;
 
-import io.eventuate.tram.events.ResultWithEvents;
+import io.eventuate.tram.events.publisher.ResultWithEvents;
 import net.chrisrichardson.ftgo.consumerservice.api.web.CreateConsumerRequest;
 import net.chrisrichardson.ftgo.consumerservice.api.web.CreateConsumerResponse;
 import net.chrisrichardson.ftgo.consumerservice.domain.Consumer;

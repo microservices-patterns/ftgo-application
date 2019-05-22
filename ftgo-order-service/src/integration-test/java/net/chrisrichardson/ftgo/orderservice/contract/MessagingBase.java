@@ -1,7 +1,5 @@
 package net.chrisrichardson.ftgo.orderservice.contract;
 
-import io.eventuate.tram.commands.common.ChannelMapping;
-import io.eventuate.tram.commands.common.DefaultChannelMapping;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.events.publisher.TramEventsPublisherConfiguration;
 import io.eventuate.tram.inmemory.TramInMemoryConfiguration;
@@ -33,11 +31,6 @@ public abstract class MessagingBase {
   @EnableAutoConfiguration
   @Import({EventuateContractVerifierConfiguration.class, TramEventsPublisherConfiguration.class, TramInMemoryConfiguration.class})
   public static class TestConfiguration {
-
-    @Bean
-    public ChannelMapping channelMapping() {
-      return new DefaultChannelMapping.DefaultChannelMappingBuilder().build();
-    }
 
     @Bean
     public OrderDomainEventPublisher orderAggregateEventPublisher(DomainEventPublisher eventPublisher) {

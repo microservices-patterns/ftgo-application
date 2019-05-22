@@ -2,8 +2,6 @@ package net.chrisrichardson.ftgo.accountingservice.main;
 
 import io.eventuate.javaclient.driver.EventuateDriverConfiguration;
 import io.eventuate.jdbckafka.TramJdbcKafkaConfiguration;
-import io.eventuate.tram.commands.common.ChannelMapping;
-import io.eventuate.tram.commands.common.DefaultChannelMapping;
 import io.eventuate.tram.commands.producer.TramCommandProducerConfiguration;
 import net.chrisrichardson.ftgo.accountingservice.messaging.AccountingMessagingConfiguration;
 import net.chrisrichardson.ftgo.accountingservice.web.AccountingWebConfiguration;
@@ -20,11 +18,6 @@ import org.springframework.context.annotation.Import;
         EventuateDriverConfiguration.class,
         TramJdbcKafkaConfiguration.class})
 public class AccountingServiceMain {
-
-  @Bean
-  public ChannelMapping channelMapping() {
-    return new DefaultChannelMapping.DefaultChannelMappingBuilder().build();
-  }
 
   public static void main(String[] args) {
     SpringApplication.run(AccountingServiceMain.class, args);
