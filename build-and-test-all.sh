@@ -41,7 +41,7 @@ ${DOCKER_COMPOSE?} up -d --build ${DATABASE_SERVICES?}
 
 echo mysql is started
 
-${DOCKER_COMPOSE?} up -d --build tram-cdc-service
+${DOCKER_COMPOSE?} up -d --build cdc-service
 
 if [ -z "$ASSEMBLE_ONLY" ] ; then
 

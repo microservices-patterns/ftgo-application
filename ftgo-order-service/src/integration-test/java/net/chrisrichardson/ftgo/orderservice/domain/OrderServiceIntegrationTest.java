@@ -61,11 +61,6 @@ public class OrderServiceIntegrationTest {
   public static class TestConfiguration {
 
     @Bean
-    public ChannelMapping channelMapping() {
-      return new DefaultChannelMapping.DefaultChannelMappingBuilder().build();
-    }
-
-    @Bean
     public TestMessageConsumerFactory testMessageConsumerFactory() {
       return new TestMessageConsumerFactory();
     }

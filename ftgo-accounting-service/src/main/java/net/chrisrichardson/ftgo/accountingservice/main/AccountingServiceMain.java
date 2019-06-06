@@ -21,11 +21,6 @@ import org.springframework.context.annotation.Import;
         TramJdbcKafkaConfiguration.class})
 public class AccountingServiceMain {
 
-  @Bean
-  public ChannelMapping channelMapping() {
-    return new DefaultChannelMapping.DefaultChannelMappingBuilder().build();
-  }
-
   public static void main(String[] args) {
     SpringApplication.run(AccountingServiceMain.class, args);
   }

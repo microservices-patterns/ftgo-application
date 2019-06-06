@@ -58,11 +58,6 @@ public class AccountingServiceCommandHandlerTest {
     }
 
     @Bean
-    public ChannelMapping channelMapping() {
-      return new DefaultChannelMapping.DefaultChannelMappingBuilder().build();
-    }
-
-    @Bean
     public DataSource dataSource() {
       EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
       return builder.setType(EmbeddedDatabaseType.H2)

@@ -53,12 +53,6 @@ public class KitchenServiceProxyIntegrationTest {
           TramInMemoryConfiguration.class, EventuateContractVerifierConfiguration.class})
   public static class TestConfiguration {
 
-    @Bean
-    public ChannelMapping channelMapping() {
-      return new DefaultChannelMapping.DefaultChannelMappingBuilder().build();
-    }
-
-
     /// TramSagaInMemoryConfiguration
 
     @Bean

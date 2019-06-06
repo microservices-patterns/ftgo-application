@@ -82,7 +82,7 @@ services:
     depends_on:
       - mysql
       - kafka
-      - tram-cdc-service
+      - cdc-service
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgoconsumerservice
       SPRING_DATASOURCE_USERNAME: mysqluser
@@ -99,7 +99,7 @@ services:
     depends_on:
       - mysql
       - kafka
-      - tram-cdc-service
+      - cdc-service
       - zipkin
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgoorderservice
@@ -121,7 +121,7 @@ services:
         - mysql
         - kafka
         - zookeeper
-        - tram-cdc-service
+        - cdc-service
       environment:
         SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgokitchenservice
         SPRING_DATASOURCE_USERNAME: mysqluser
@@ -139,7 +139,7 @@ services:
         - mysql
         - kafka
         - zookeeper
-        - tram-cdc-service
+        - cdc-service
       environment:
         SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgorestaurantservice
         SPRING_DATASOURCE_USERNAME: mysqluser
@@ -173,7 +173,7 @@ services:
         depends_on:
           - kafka
           - zookeeper
-          - tram-cdc-service
+          - cdc-service
           - dynamodblocal
           - dynamodblocal-init
         environment:

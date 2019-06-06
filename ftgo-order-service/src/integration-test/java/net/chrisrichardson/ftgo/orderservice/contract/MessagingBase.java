@@ -35,11 +35,6 @@ public abstract class MessagingBase {
   public static class TestConfiguration {
 
     @Bean
-    public ChannelMapping channelMapping() {
-      return new DefaultChannelMapping.DefaultChannelMappingBuilder().build();
-    }
-
-    @Bean
     public OrderDomainEventPublisher orderAggregateEventPublisher(DomainEventPublisher eventPublisher) {
       return new OrderDomainEventPublisher(eventPublisher);
     }
