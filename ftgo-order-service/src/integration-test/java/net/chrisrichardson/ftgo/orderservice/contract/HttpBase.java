@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.orderservice.contract;
 
-import io.eventuate.javaclient.commonimpl.JSonMapper;
+import io.eventuate.common.json.mapper.JSonMapper;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;

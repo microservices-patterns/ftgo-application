@@ -3,7 +3,7 @@ package net.chrisrichardson.ftgo.restaurantservice.lambda;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
-import io.eventuate.javaclient.commonimpl.JSonMapper;
+import io.eventuate.common.json.mapper.JSonMapper;
 import net.chrisrichardson.ftgo.restaurantservice.aws.ApiGatewayResponse;
 import net.chrisrichardson.ftgo.restaurantservice.domain.Restaurant;
 import net.chrisrichardson.ftgo.restaurantservice.domain.RestaurantService;

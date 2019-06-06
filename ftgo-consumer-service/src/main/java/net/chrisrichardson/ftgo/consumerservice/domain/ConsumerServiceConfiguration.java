@@ -1,9 +1,12 @@
 package net.chrisrichardson.ftgo.consumerservice.domain;
 
-import io.eventuate.tram.commands.common.ChannelMapping;
-import io.eventuate.tram.commands.common.DefaultChannelMapping;
 import io.eventuate.tram.commands.consumer.CommandDispatcher;
 import io.eventuate.tram.events.publisher.TramEventsPublisherConfiguration;
+import io.eventuate.tram.messaging.common.ChannelMapping;
+import io.eventuate.tram.messaging.common.DefaultChannelMapping;
+import io.eventuate.tram.messaging.consumer.MessageConsumer;
+import io.eventuate.tram.messaging.producer.MessageProducer;
+import io.eventuate.tram.sagas.common.SagaLockManager;
 import io.eventuate.tram.sagas.participant.SagaCommandDispatcher;
 import io.eventuate.tram.sagas.participant.SagaParticipantConfiguration;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
@@ -34,8 +37,15 @@ public class ConsumerServiceConfiguration {
   }
 
   @Bean
-  public CommandDispatcher commandDispatcher(ConsumerServiceCommandHandlers consumerServiceCommandHandlers) {
-    return new SagaCommandDispatcher("consumerServiceDispatcher", consumerServiceCommandHandlers.commandHandlers());
+  public CommandDispatcher commandDispatcher(ConsumerServiceCommandHandlers consumerServiceCommandHandlers,
+                                             MessageConsumer messageConsumer,
+                                             MessageProducer messageProducer,
+                                             SagaLockManager sagaLockManager) {
+    return new SagaCommandDispatcher("consumerServiceDispatcher",
+            consumerServiceCommandHandlers.commandHandlers(),
+            messageConsumer,
+            messageProducer,
+            sagaLockManager);
   }
 
   @Bean

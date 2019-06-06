@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb;
 
-import io.eventuate.javaclient.commonimpl.JSonMapper;
+import io.eventuate.common.json.mapper.JSonMapper;
 import io.eventuate.tram.inmemory.TramInMemoryConfiguration;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.OrderHistory;

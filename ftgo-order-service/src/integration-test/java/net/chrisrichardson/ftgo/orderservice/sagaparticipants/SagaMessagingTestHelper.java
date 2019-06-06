@@ -1,7 +1,7 @@
 package net.chrisrichardson.ftgo.orderservice.sagaparticipants;
 
-import io.eventuate.javaclient.commonimpl.JSonMapper;
-import io.eventuate.javaclient.spring.jdbc.IdGenerator;
+import io.eventuate.common.id.IdGenerator;
+import io.eventuate.common.json.mapper.JSonMapper;
 import io.eventuate.tram.commands.common.Command;
 import io.eventuate.tram.sagas.orchestration.SagaCommandProducer;
 import io.eventuate.tram.sagas.simpledsl.CommandEndpoint;

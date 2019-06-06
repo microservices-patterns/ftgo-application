@@ -1,8 +1,8 @@
 package net.chrisrichardson.ftgo.kitchenservice.main;
 
 import io.eventuate.jdbckafka.TramJdbcKafkaConfiguration;
-import io.eventuate.tram.commands.common.ChannelMapping;
-import io.eventuate.tram.commands.common.DefaultChannelMapping;
+import io.eventuate.tram.messaging.common.ChannelMapping;
+import io.eventuate.tram.messaging.common.DefaultChannelMapping;
 import net.chrisrichardson.eventstore.examples.customersandorders.commonswagger.CommonSwaggerConfiguration;
 import net.chrisrichardson.ftgo.kitchenservice.messagehandlers.KitchenServiceMessageHandlersConfiguration;
 import net.chrisrichardson.ftgo.kitchenservice.web.KitchenServiceWebConfiguration;

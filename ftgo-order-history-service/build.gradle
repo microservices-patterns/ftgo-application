@@ -20,7 +20,6 @@ dependencyManagement {
     }
 }
 
-
 dependencies {
     compile 'com.amazonaws:aws-java-sdk-dynamodb:1.11.158'
 
@@ -30,9 +29,10 @@ dependencies {
         exclude module: "spring-boot-starter-data-jpa"
     }
 
-    compile "io.eventuate.tram.core:eventuate-tram-consumer-kafka:$eventuateTramVersion"
+    compile "io.eventuate.messaging.kafka:eventuate-messaging-kafka-consumer:$eventuateMessagingKafkaVersion"
 
     compile "io.eventuate.tram.core:eventuate-tram-events:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-consumer-wrappers:$eventuateTramVersion"
 
     compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"

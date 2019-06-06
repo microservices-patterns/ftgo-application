@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.common;
 
-import io.eventuate.javaclient.commonimpl.JSonMapper;
+import io.eventuate.common.json.mapper.JSonMapper;
 
 import javax.annotation.PostConstruct;
 

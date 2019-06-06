@@ -2,7 +2,7 @@ package net.chrisrichardson.ftgo.orderservice.web;
 
 import brave.sampler.Sampler;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.eventuate.javaclient.commonimpl.JSonMapper;
+import io.eventuate.common.json.mapper.JSonMapper;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderServiceWithRepositoriesConfiguration;
 import org.springframework.context.annotation.*;
 

@@ -3,8 +3,10 @@ package net.chrisrichardson.ftgo.accountingservice.messaging;
 import io.eventuate.javaclient.spring.EnableEventHandlers;
 import io.eventuate.tram.commands.consumer.CommandDispatcher;
 import io.eventuate.tram.consumer.common.DuplicateMessageDetector;
+import io.eventuate.tram.events.common.DefaultDomainEventNameMapping;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcher;
 import io.eventuate.tram.messaging.consumer.MessageConsumer;
+import io.eventuate.tram.messaging.producer.MessageProducer;
 import io.eventuate.tram.sagas.eventsourcingsupport.SagaReplyRequestedEventSubscriber;
 import net.chrisrichardson.ftgo.accountingservice.domain.Account;
 import net.chrisrichardson.ftgo.accountingservice.domain.AccountServiceConfiguration;
@@ -27,7 +29,10 @@ public class AccountingMessagingConfiguration {
 
   @Bean
   public DomainEventDispatcher domainEventDispatcher(AccountingEventConsumer accountingEventConsumer, MessageConsumer messageConsumer) {
-    return new DomainEventDispatcher("accountingServiceDomainEventDispatcher", accountingEventConsumer.domainEventHandlers(), messageConsumer);
+    return new DomainEventDispatcher("accountingServiceDomainEventDispatcher",
+            accountingEventConsumer.domainEventHandlers(),
+            messageConsumer,
+            new DefaultDomainEventNameMapping());
   }
 
   @Bean
@@ -38,8 +43,10 @@ public class AccountingMessagingConfiguration {
 
   @Bean
   public CommandDispatcher commandDispatcher(AccountingServiceCommandHandler target,
-                                             AccountServiceChannelConfiguration data) {
-    return new CommandDispatcher(data.getCommandDispatcherId(), target.commandHandlers());
+                                             AccountServiceChannelConfiguration data,
+                                             MessageConsumer messageConsumer,
+                                             MessageProducer messageProducer) {
+    return new CommandDispatcher(data.getCommandDispatcherId(), target.commandHandlers(), messageConsumer, messageProducer);
   }
 
   @Bean

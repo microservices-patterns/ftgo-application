@@ -144,6 +144,7 @@ dependencies {
 
     compile "io.microservices.tools.canvas:microservice-canvas-springmvc:$microserviceCanvasVersion"
     compile "io.microservices.tools.canvas:microservice-canvas-extractor-tram-sagas:$microserviceCanvasVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-messaging:$eventuateTramVersion"
 
 
     testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"

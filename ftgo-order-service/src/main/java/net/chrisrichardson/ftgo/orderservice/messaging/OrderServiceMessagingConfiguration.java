@@ -1,5 +1,6 @@
 package net.chrisrichardson.ftgo.orderservice.messaging;
 
+import io.eventuate.tram.events.common.DefaultDomainEventNameMapping;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcher;
 import io.eventuate.tram.messaging.consumer.MessageConsumer;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderService;
@@ -19,7 +20,10 @@ public class OrderServiceMessagingConfiguration {
 
   @Bean
   public DomainEventDispatcher domainEventDispatcher(OrderEventConsumer orderEventConsumer, MessageConsumer messageConsumer) {
-    return new DomainEventDispatcher("orderServiceEvents", orderEventConsumer.domainEventHandlers(), messageConsumer); // @Autowire
+    return new DomainEventDispatcher("orderServiceEvents",
+            orderEventConsumer.domainEventHandlers(),
+            messageConsumer,
+            new DefaultDomainEventNameMapping()); // @Autowire
   }
 
 }
