@@ -1,13 +1,11 @@
 version: '3'
 services:
   zookeeper:
-    image: test-eventuate-zookeeper
+    image: eventuateio/eventuate-zookeeper:0.4.0.RELEASE
     ports:
       - 2181:2181
-      - 2888:2888
-      - 3888:3888
   kafka:
-    image: test-eventuate-kafka
+    image: eventuateio/eventuate-kafka:0.3.0.RELEASE
     ports:
       - 9092:9092
     depends_on:
@@ -25,7 +23,7 @@ services:
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
   cdc-service:
-    image: test-eventuate-cdc-service
+    image: eventuateio/eventuate-cdc-service:0.2.0.RELEASE
     ports:
       - "8099:8080"
     depends_on:
