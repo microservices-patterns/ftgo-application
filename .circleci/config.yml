@@ -6,7 +6,9 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key:         ftgo-application-{{ checksum "gradle.properties" }}
+          keys:
+            - ftgo-application-{{ checksum "gradle.properties" }}
+            - ftgo-application-
       - run:           TERM=dumb ./build-contracts.sh
       - run:           TERM=dumb ./gradlew testClasses :ftgo-order-service:compileComponentTestJava
       - save_cache:
@@ -35,7 +37,9 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key:         ftgo-application-{{ checksum "gradle.properties" }}
+          keys:
+            - ftgo-application-{{ checksum "gradle.properties" }}
+            - ftgo-application-
       - run:           TERM=dumb ./build-contracts.sh
       - run:           TERM=dumb ./gradlew testClasses :ftgo-order-service:compileComponentTestJava
       - save_cache:
@@ -64,7 +68,9 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key:         ftgo-application-{{ checksum "gradle.properties" }}
+          keys:
+            - ftgo-application-{{ checksum "gradle.properties" }}
+            - ftgo-application-
       - run:           TERM=dumb ./build-contracts.sh
       - run:           TERM=dumb ./gradlew testClasses :ftgo-order-service:compileComponentTestJava
       - save_cache:
