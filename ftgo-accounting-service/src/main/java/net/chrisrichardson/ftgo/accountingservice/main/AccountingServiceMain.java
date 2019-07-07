@@ -1,7 +1,7 @@
 package net.chrisrichardson.ftgo.accountingservice.main;
 
 import io.eventuate.javaclient.driver.EventuateDriverConfiguration;
-import io.eventuate.jdbckafka.TramJdbcKafkaConfiguration;
+import io.eventuate.tram.jdbckafka.TramJdbcKafkaConfiguration;
 import io.eventuate.tram.commands.producer.TramCommandProducerConfiguration;
 import io.eventuate.tram.messaging.common.ChannelMapping;
 import io.eventuate.tram.messaging.common.DefaultChannelMapping;

@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.orderservice;
 
-import io.eventuate.jdbckafka.TramJdbcKafkaConfiguration;
+import io.eventuate.tram.jdbckafka.TramJdbcKafkaConfiguration;
 import io.eventuate.tram.commands.producer.TramCommandProducerConfiguration;
 import io.eventuate.tram.events.publisher.TramEventsPublisherConfiguration;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;

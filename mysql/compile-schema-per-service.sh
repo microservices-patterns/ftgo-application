@@ -1,6 +1,6 @@
 #! /bin/bash -e
 
-eventuate_schemas=( ftgoaccountingservice ftgoconsumerservice ftgoorderservice ftgokitchenservice ftgorestaurantservice ftgoaccountingservice ftgoorderhistoryservice )
+eventuate_schemas=( ftgoaccountingservice ftgoconsumerservice ftgoorderservice ftgokitchenservice ftgorestaurantservice )
 
 for schema in "${eventuate_schemas[@]}"
 do
