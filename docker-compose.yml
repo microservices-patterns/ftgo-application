@@ -34,23 +34,23 @@ services:
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
       EVENTUATE_CDC_PIPELINE_PIPELINE1_TYPE: eventuate-tram
       EVENTUATE_CDC_PIPELINE_PIPELINE1_READER: reader1
-      EVENTUATE_CDC_PIPELINE_PIPELINE1_EVENTUATEDATABASESCHEMA: ftgoconsumerservice
+      EVENTUATE_CDC_PIPELINE_PIPELINE1_EVENTUATEDATABASESCHEMA: ftgo_consumer_service
 
       EVENTUATE_CDC_PIPELINE_PIPELINE2_TYPE: eventuate-tram
       EVENTUATE_CDC_PIPELINE_PIPELINE2_READER: reader1
-      EVENTUATE_CDC_PIPELINE_PIPELINE2_EVENTUATEDATABASESCHEMA: ftgoorderservice
+      EVENTUATE_CDC_PIPELINE_PIPELINE2_EVENTUATEDATABASESCHEMA: ftgo_order_service
 
       EVENTUATE_CDC_PIPELINE_PIPELINE3_TYPE: eventuate-tram
       EVENTUATE_CDC_PIPELINE_PIPELINE3_READER: reader1
-      EVENTUATE_CDC_PIPELINE_PIPELINE3_EVENTUATEDATABASESCHEMA: ftgokitchenservice
+      EVENTUATE_CDC_PIPELINE_PIPELINE3_EVENTUATEDATABASESCHEMA: ftgo_kitchen_service
 
       EVENTUATE_CDC_PIPELINE_PIPELINE4_TYPE: eventuate-tram
       EVENTUATE_CDC_PIPELINE_PIPELINE4_READER: reader1
-      EVENTUATE_CDC_PIPELINE_PIPELINE4_EVENTUATEDATABASESCHEMA: ftgorestaurantservice
+      EVENTUATE_CDC_PIPELINE_PIPELINE4_EVENTUATEDATABASESCHEMA: ftgo_restaurant_service
 
       EVENTUATE_CDC_PIPELINE_PIPELINE5_TYPE: eventuate-tram
       EVENTUATE_CDC_PIPELINE_PIPELINE5_READER: reader1
-      EVENTUATE_CDC_PIPELINE_PIPELINE5_EVENTUATEDATABASESCHEMA: ftgoaccountingservice
+      EVENTUATE_CDC_PIPELINE_PIPELINE5_EVENTUATEDATABASESCHEMA: ftgo_accounting_service
 
       EVENTUATE_CDC_PIPELINE_PIPELINE6_TYPE: eventuate-tram
       EVENTUATE_CDC_PIPELINE_PIPELINE6_READER: reader1
@@ -58,7 +58,7 @@ services:
 
       EVENTUATE_CDC_PIPELINE_PIPELINE7_TYPE: eventuate-local
       EVENTUATE_CDC_PIPELINE_PIPELINE7_READER: reader1
-      EVENTUATE_CDC_PIPELINE_PIPELINE7_EVENTUATEDATABASESCHEMA: ftgoaccountingservice
+      EVENTUATE_CDC_PIPELINE_PIPELINE7_EVENTUATEDATABASESCHEMA: ftgo_accounting_service
 
       EVENTUATE_CDC_READER_READER1_TYPE: mysql-binlog
       EVENTUATE_CDC_READER_READER1_DATASOURCEURL: jdbc:mysql://mysql:3306/eventuate
@@ -82,13 +82,13 @@ services:
       - kafka
       - cdc-service
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgoconsumerservice
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgo_consumer_service
       SPRING_DATASOURCE_USERNAME: mysqluser
       SPRING_DATASOURCE_PASSWORD: mysqlpw
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-      EVENTUATE_DATABASE_SCHEMA: ftgoconsumerservice
+      EVENTUATE_DATABASE_SCHEMA: ftgo_consumer_service
       JAVA_OPTS: -Xmx192m
   ftgo-order-service:
     build: ./ftgo-order-service
@@ -100,7 +100,7 @@ services:
       - cdc-service
       - zipkin
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgoorderservice
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgo_order_service
       SPRING_DATASOURCE_USERNAME: mysqluser
       SPRING_DATASOURCE_PASSWORD: mysqlpw
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
@@ -110,7 +110,7 @@ services:
       SPRING_SLEUTH_ENABLED: "true"
       SPRING_SLEUTH_SAMPLER_PROBABILITY: 1
       SPRING_ZIPKIN_BASE_URL: http://zipkin:9411/
-      EVENTUATE_DATABASE_SCHEMA: ftgoorderservice
+      EVENTUATE_DATABASE_SCHEMA: ftgo_order_service
   ftgo-kitchen-service:
       build: ./ftgo-kitchen-service
       ports:
@@ -121,14 +121,14 @@ services:
         - zookeeper
         - cdc-service
       environment:
-        SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgokitchenservice
+        SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgo_kitchen_service
         SPRING_DATASOURCE_USERNAME: mysqluser
         SPRING_DATASOURCE_PASSWORD: mysqlpw
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
         EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
         JAVA_OPTS: -Xmx192m
-        EVENTUATE_DATABASE_SCHEMA: ftgokitchenservice
+        EVENTUATE_DATABASE_SCHEMA: ftgo_kitchen_service
   ftgo-restaurant-service:
       build: ./ftgo-restaurant-service
       ports:
@@ -139,14 +139,14 @@ services:
         - zookeeper
         - cdc-service
       environment:
-        SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgorestaurantservice
+        SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgo_restaurant_service
         SPRING_DATASOURCE_USERNAME: mysqluser
         SPRING_DATASOURCE_PASSWORD: mysqlpw
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
         EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
         JAVA_OPTS: -Xmx192m
-        EVENTUATE_DATABASE_SCHEMA: ftgorestaurantservice
+        EVENTUATE_DATABASE_SCHEMA: ftgo_restaurant_service
   ftgo-accounting-service:
         build: ./ftgo-accounting-service
         ports:
@@ -157,14 +157,14 @@ services:
           - zookeeper
           - cdc-service
         environment:
-          SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgoaccountingservice
+          SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgo_accounting_service
           SPRING_DATASOURCE_USERNAME: mysqluser
           SPRING_DATASOURCE_PASSWORD: mysqlpw
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
           EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
           EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
           JAVA_OPTS: -Xmx192m
-          EVENTUATE_DATABASE_SCHEMA: ftgoaccountingservice
+          EVENTUATE_DATABASE_SCHEMA: ftgo_accounting_service
   ftgo-order-history-service:
         build: ./ftgo-order-history-service
         ports:
