@@ -83,8 +83,8 @@ services:
       - cdc-service
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgo_consumer_service
-      SPRING_DATASOURCE_USERNAME: mysqluser
-      SPRING_DATASOURCE_PASSWORD: mysqlpw
+      SPRING_DATASOURCE_USERNAME: ftgo_consumer_service_user
+      SPRING_DATASOURCE_PASSWORD: ftgo_consumer_service_password
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
@@ -101,8 +101,8 @@ services:
       - zipkin
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgo_order_service
-      SPRING_DATASOURCE_USERNAME: mysqluser
-      SPRING_DATASOURCE_PASSWORD: mysqlpw
+      SPRING_DATASOURCE_USERNAME: ftgo_order_service_user
+      SPRING_DATASOURCE_PASSWORD: ftgo_order_service_password
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
@@ -122,8 +122,8 @@ services:
         - cdc-service
       environment:
         SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgo_kitchen_service
-        SPRING_DATASOURCE_USERNAME: mysqluser
-        SPRING_DATASOURCE_PASSWORD: mysqlpw
+        SPRING_DATASOURCE_USERNAME: ftgo_kitchen_service_user
+        SPRING_DATASOURCE_PASSWORD: ftgo_kitchen_service_password
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
         EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
@@ -140,8 +140,8 @@ services:
         - cdc-service
       environment:
         SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgo_restaurant_service
-        SPRING_DATASOURCE_USERNAME: mysqluser
-        SPRING_DATASOURCE_PASSWORD: mysqlpw
+        SPRING_DATASOURCE_USERNAME: ftgo_restaurant_service_user
+        SPRING_DATASOURCE_PASSWORD: ftgo_restaurant_service_password
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
         EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
@@ -158,8 +158,8 @@ services:
           - cdc-service
         environment:
           SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ftgo_accounting_service
-          SPRING_DATASOURCE_USERNAME: mysqluser
-          SPRING_DATASOURCE_PASSWORD: mysqlpw
+          SPRING_DATASOURCE_USERNAME: ftgo_accounting_service_user
+          SPRING_DATASOURCE_PASSWORD: ftgo_accounting_service_password
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
           EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
           EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
