@@ -8,7 +8,6 @@ import io.eventuate.tram.consumer.common.DuplicateMessageDetector;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcher;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcherFactory;
 import io.eventuate.tram.events.subscriber.TramEventSubscriberConfiguration;
-import io.eventuate.tram.messaging.consumer.MessageConsumer;
 import io.eventuate.tram.sagas.eventsourcingsupport.SagaReplyRequestedEventSubscriber;
 import net.chrisrichardson.ftgo.accountingservice.domain.Account;
 import net.chrisrichardson.ftgo.accountingservice.domain.AccountServiceConfiguration;
