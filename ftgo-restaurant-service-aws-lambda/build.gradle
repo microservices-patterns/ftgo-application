@@ -1,4 +1,5 @@
-
+apply plugin: IntegrationTestsPlugin
+apply plugin: 'docker-compose'
 
 dependencies {
 
@@ -32,6 +33,18 @@ task buildZip(type: Zip) {
         from configurations.runtime
     }
 }
+
+dockerCompose {
+
+    startedServices = ['not-used']
+
+    integrationTests {
+        startedServices = ['mysql']
+        stopContainers = true
+    }
+}
+
+integrationTest.dependsOn(integrationTestsComposeUp)
 
 build.dependsOn buildZip
 
