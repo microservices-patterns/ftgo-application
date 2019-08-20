@@ -51,9 +51,7 @@ if [ -z "$ASSEMBLE_ONLY" ] ; then
 
   ./gradlew $* integrationTest
 
-  # Component tests need to use the per-service database schema
-
-  ./gradlew :ftgo-order-service:cleanComponentTest :ftgo-order-service:componentTest
+  ./gradlew cleanComponentTest componentTest
 
   # Reset the DB/messages
 
