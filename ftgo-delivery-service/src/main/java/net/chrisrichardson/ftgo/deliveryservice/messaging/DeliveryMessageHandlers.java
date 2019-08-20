@@ -5,9 +5,12 @@ import io.eventuate.tram.events.subscriber.DomainEventHandlers;
 import io.eventuate.tram.events.subscriber.DomainEventHandlersBuilder;
 import net.chrisrichardson.ftgo.common.Address;
 import net.chrisrichardson.ftgo.deliveryservice.domain.DeliveryService;
+import net.chrisrichardson.ftgo.kitchenservice.api.KitchenServiceChannels;
 import net.chrisrichardson.ftgo.kitchenservice.api.events.TicketAcceptedEvent;
 import net.chrisrichardson.ftgo.kitchenservice.api.events.TicketCancelled;
+import net.chrisrichardson.ftgo.orderservice.api.OrderServiceChannels;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
+import net.chrisrichardson.ftgo.restaurantservice.RestaurantServiceChannels;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
 
 import java.time.LocalDateTime;
@@ -22,12 +25,12 @@ public class DeliveryMessageHandlers {
 
   public DomainEventHandlers domainEventHandlers() {
     return DomainEventHandlersBuilder
-            .forAggregateType("TODO")
+            .forAggregateType(KitchenServiceChannels.TICKET_EVENT_CHANNEL)
             .onEvent(TicketAcceptedEvent.class, this::handleTicketAcceptedEvent)
             .onEvent(TicketCancelled.class, this::handleTicketCancelledEvent)
-            .andForAggregateType("TODO")
+            .andForAggregateType(OrderServiceChannels.ORDER_EVENT_CHANNEL)
             .onEvent(OrderCreatedEvent.class, this::handleOrderCreatedEvent)
-            .andForAggregateType("TODO")
+            .andForAggregateType(RestaurantServiceChannels.RESTAURANT_EVENT_CHANNEL)
             .onEvent(RestaurantCreated.class, this::handleRestaurantCreated)
             .build();
   }

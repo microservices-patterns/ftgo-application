@@ -8,6 +8,7 @@ dependencies {
     compile "io.eventuate.tram.core:eventuate-tram-jdbc-kafka:$eventuateTramVersion"
     compile "io.eventuate.tram.core:eventuate-tram-events:$eventuateTramVersion"
     compile "io.eventuate.tram.sagas:eventuate-tram-sagas-simple-dsl:$eventuateTramSagasVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-aggregate-domain-events:$eventuateTramVersion"
 
     compile project(":common-swagger")
     compile project(":ftgo-restaurant-service-api")

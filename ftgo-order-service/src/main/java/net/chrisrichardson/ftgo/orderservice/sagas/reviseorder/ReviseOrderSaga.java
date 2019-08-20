@@ -57,14 +57,14 @@ public class ReviseOrderSaga implements SimpleSaga<ReviseOrderSagaData> {
 
   private CommandWithDestination confirmOrderRevision(ReviseOrderSagaData data) {
     return send(new ConfirmReviseOrderCommand(data.getOrderId(), data.getOrderRevision()))
-            .to(OrderServiceChannels.orderServiceChannel)
+            .to(OrderServiceChannels.COMMAND_CHANNEL)
             .build();
 
   }
 
   private CommandWithDestination confirmTicketRevision(ReviseOrderSagaData data) {
     return send(new ConfirmReviseTicketCommand(data.getRestaurantId(), data.getOrderId(), data.getOrderRevision().getRevisedLineItemQuantities()))
-            .to(KitchenServiceChannels.kitchenServiceChannel)
+            .to(KitchenServiceChannels.COMMAND_CHANNEL)
             .build();
 
   }
@@ -78,27 +78,27 @@ public class ReviseOrderSaga implements SimpleSaga<ReviseOrderSagaData> {
 
   private CommandWithDestination undoBeginReviseTicket(ReviseOrderSagaData data) {
     return send(new UndoBeginReviseTicketCommand(data.getRestaurantId(), data.getOrderId()))
-            .to(KitchenServiceChannels.kitchenServiceChannel)
+            .to(KitchenServiceChannels.COMMAND_CHANNEL)
             .build();
 
   }
 
   private CommandWithDestination beginReviseTicket(ReviseOrderSagaData data) {
     return send(new BeginReviseTicketCommand(data.getRestaurantId(), data.getOrderId(), data.getOrderRevision().getRevisedLineItemQuantities()))
-            .to(KitchenServiceChannels.kitchenServiceChannel)
+            .to(KitchenServiceChannels.COMMAND_CHANNEL)
             .build();
 
   }
 
   private CommandWithDestination undoBeginReviseOrder(ReviseOrderSagaData data) {
     return send(new UndoBeginReviseOrderCommand(data.getOrderId()))
-            .to(OrderServiceChannels.orderServiceChannel)
+            .to(OrderServiceChannels.COMMAND_CHANNEL)
             .build();
   }
 
   private CommandWithDestination beginReviseOrder(ReviseOrderSagaData data) {
     return send(new BeginReviseOrderCommand(data.getOrderId(), data.getOrderRevision()))
-            .to(OrderServiceChannels.orderServiceChannel)
+            .to(OrderServiceChannels.COMMAND_CHANNEL)
             .build();
 
   }

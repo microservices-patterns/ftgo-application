@@ -47,7 +47,7 @@ public class CreateOrderSagaTest {
         successReply().
     expect().
       command(new CreateTicket(AJANTA_ID, ORDER_ID, null /* FIXME */)).
-      to(KitchenServiceChannels.kitchenServiceChannel).
+      to(KitchenServiceChannels.COMMAND_CHANNEL).
     andGiven().
         successReply().
     expect().
@@ -57,12 +57,12 @@ public class CreateOrderSagaTest {
         successReply().
     expect().
       command(new ConfirmCreateTicket(ORDER_ID)).
-      to(KitchenServiceChannels.kitchenServiceChannel).
+      to(KitchenServiceChannels.COMMAND_CHANNEL).
     andGiven().
         successReply().
     expect().
       command(new ApproveOrderCommand(ORDER_ID)).
-      to(OrderServiceChannels.orderServiceChannel)
+      to(OrderServiceChannels.COMMAND_CHANNEL)
             ;
   }
 
@@ -79,7 +79,7 @@ public class CreateOrderSagaTest {
         failureReply().
     expect().
         command(new RejectOrderCommand(ORDER_ID)).
-        to(OrderServiceChannels.orderServiceChannel);
+        to(OrderServiceChannels.COMMAND_CHANNEL);
   }
 
   @Test
@@ -95,7 +95,7 @@ public class CreateOrderSagaTest {
       successReply().
     expect().
       command(new CreateTicket(AJANTA_ID, ORDER_ID, null /* FIXME */)).
-      to(KitchenServiceChannels.kitchenServiceChannel).
+      to(KitchenServiceChannels.COMMAND_CHANNEL).
     andGiven().
       successReply().
     expect().
@@ -105,12 +105,12 @@ public class CreateOrderSagaTest {
       failureReply().
     expect().
       command(new CancelCreateTicket(ORDER_ID)).
-      to(KitchenServiceChannels.kitchenServiceChannel).
+      to(KitchenServiceChannels.COMMAND_CHANNEL).
     andGiven().
       successReply().
     expect().
       command(new RejectOrderCommand(ORDER_ID)).
-      to(OrderServiceChannels.orderServiceChannel)
+      to(OrderServiceChannels.COMMAND_CHANNEL)
     ;
   }
 }

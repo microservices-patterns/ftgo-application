@@ -2,7 +2,7 @@ package net.chrisrichardson.ftgo.restaurantservice.events;
 
 import io.eventuate.tram.events.common.DomainEvent;
 
-public class RestaurantCreated implements DomainEvent {
+public class RestaurantCreated implements RestaurantDomainEvent {
   private String name;
   private RestaurantMenu menu;
 

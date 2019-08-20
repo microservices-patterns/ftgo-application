@@ -8,8 +8,7 @@ public class OrderDomainEventPublisher extends AbstractAggregateDomainEventPubli
 
 
   public OrderDomainEventPublisher(DomainEventPublisher eventPublisher) {
-    super(eventPublisher, Order.class, Order::getId
-    );
+    super(eventPublisher, Order.class, Order::getId);
   }
 
 }

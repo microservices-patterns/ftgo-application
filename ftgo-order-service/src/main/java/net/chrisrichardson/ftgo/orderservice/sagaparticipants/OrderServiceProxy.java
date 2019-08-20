@@ -9,13 +9,13 @@ public class OrderServiceProxy {
 
   public final CommandEndpoint<RejectOrderCommand> reject = CommandEndpointBuilder
           .forCommand(RejectOrderCommand.class)
-          .withChannel(OrderServiceChannels.orderServiceChannel)
+          .withChannel(OrderServiceChannels.COMMAND_CHANNEL)
           .withReply(Success.class)
           .build();
 
   public final CommandEndpoint<ApproveOrderCommand> approve = CommandEndpointBuilder
           .forCommand(ApproveOrderCommand.class)
-          .withChannel(OrderServiceChannels.orderServiceChannel)
+          .withChannel(OrderServiceChannels.COMMAND_CHANNEL)
           .withReply(Success.class)
           .build();
 
