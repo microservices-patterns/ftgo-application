@@ -25,6 +25,11 @@ include "ftgo-consumer-service-contracts"
 include "ftgo-restaurant-service-api"
 include "ftgo-restaurant-service"
 include "ftgo-order-history-service"
+
+include "ftgo-delivery-service"
+include "ftgo-delivery-service-api"
+
+
 include "ftgo-api-gateway"
 include "ftgo-end-to-end-tests"
 

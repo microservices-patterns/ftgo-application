@@ -10,4 +10,18 @@
             </basic>
         </attributes>
     </embeddable>
+    <embeddable class="net.chrisrichardson.ftgo.common.Address" access="FIELD">
+        <attributes>
+            <basic name="street1">
+            </basic>
+            <basic name="street2">
+            </basic>
+            <basic name="city">
+            </basic>
+            <basic name="state">
+            </basic>
+            <basic name="zip">
+            </basic>
+        </attributes>
+    </embeddable>
 </entity-mappings>

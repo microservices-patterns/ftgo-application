@@ -1,6 +1,6 @@
 #! /bin/bash -e
 
-for schema in ftgo_accounting_service ftgo_consumer_service ftgo_order_service ftgo_kitchen_service ftgo_restaurant_service ;
+for schema in ftgo_accounting_service ftgo_consumer_service ftgo_order_service ftgo_kitchen_service ftgo_restaurant_service ftgo_delivery_service;
 do
   user=${schema}_user
   password=${schema}_password

@@ -1,0 +1,24 @@
+
+apply plugin: FtgoServicePlugin
+
+apply plugin: 'spring-cloud-contract'
+apply plugin: 'docker-compose'
+
+apply plugin: IntegrationTestsPlugin
+apply plugin: ComponentTestsPlugin
+
+dependencies {
+    compile project(":ftgo-delivery-service-api")
+    compile project(":ftgo-kitchen-service-api")
+    compile project(":ftgo-restaurant-service-api")
+    compile project(":ftgo-order-service-api")
+    compile project(":ftgo-common")
+    compile project(":ftgo-common-jpa")
+
+    compile "io.eventuate.tram.core:eventuate-tram-events:$eventuateTramVersion"
+    compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
+
+    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+
+
+}

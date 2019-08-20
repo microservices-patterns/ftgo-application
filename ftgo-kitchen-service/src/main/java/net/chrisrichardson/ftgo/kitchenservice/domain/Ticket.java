@@ -5,6 +5,9 @@ import net.chrisrichardson.ftgo.common.NotYetImplementedException;
 import net.chrisrichardson.ftgo.common.UnsupportedStateTransitionException;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketLineItem;
+import net.chrisrichardson.ftgo.kitchenservice.api.events.TicketAcceptedEvent;
+import net.chrisrichardson.ftgo.kitchenservice.api.events.TicketCancelled;
+import net.chrisrichardson.ftgo.kitchenservice.api.events.TicketDomainEvent;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

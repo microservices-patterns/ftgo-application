@@ -1,4 +1,4 @@
-package net.chrisrichardson.ftgo.kitchenservice.domain;
+package net.chrisrichardson.ftgo.kitchenservice.api.events;
 
 import java.time.LocalDateTime;
 

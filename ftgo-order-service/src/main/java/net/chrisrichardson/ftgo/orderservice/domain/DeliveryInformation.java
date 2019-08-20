@@ -1,6 +1,8 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
 
+import net.chrisrichardson.ftgo.common.Address;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.AttributeOverride;
