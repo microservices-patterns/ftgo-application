@@ -81,7 +81,7 @@ public class DeliveryServiceTest {
 
     deliveryService.scheduleDelivery(ORDER_ID, READY_BY);
 
-    assertSame(courier, delivery.getAssignedCourier());
+    assertSame(courier.getId(), delivery.getAssignedCourier());
     List<Action> actions = courier.getPlan().getActions();
     assertEquals(2, actions.size());
     assertEquals(ActionType.PICKUP, actions.get(0).getType());
