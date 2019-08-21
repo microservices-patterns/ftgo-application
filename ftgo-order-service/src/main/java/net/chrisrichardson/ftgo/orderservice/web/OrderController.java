@@ -34,6 +34,7 @@ public class OrderController {
   public CreateOrderResponse create(@RequestBody CreateOrderRequest request) {
     Order order = orderService.createOrder(request.getConsumerId(),
             request.getRestaurantId(),
+            new DeliveryInformation(request.getDeliveryTime(), request.getDeliveryAddress()),
             request.getLineItems().stream().map(x -> new MenuItemIdAndQuantity(x.getMenuItemId(), x.getQuantity())).collect(toList())
     );
     return new CreateOrderResponse(order.getId());

@@ -3,6 +3,8 @@ package net.chrisrichardson.ftgo.orderservice.grpc;
 
 import io.grpc.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -27,19 +29,27 @@ public class OrderServiceClient {
     channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
   }
 
-  public long createOrder(long consumerId, long restaurantId, List<MenuItemIdAndQuantity> lineItems) {
+  public long createOrder(long consumerId, long restaurantId, List<MenuItemIdAndQuantity> lineItems, net.chrisrichardson.ftgo.common.Address deliveryAddress, LocalDateTime deliveryTime) {
     CreateOrderRequest.Builder builder = CreateOrderRequest.newBuilder()
             .setConsumerId(consumerId)
-            .setRestaurantId(restaurantId);
-    CreateOrderRequest request = builder
-            .build();
-    IntStream.range(0, lineItems.size()).forEach(idx -> {
-      MenuItemIdAndQuantity li = lineItems.get(idx);
-      builder.setLineItems(idx, LineItem.newBuilder().setQuantity(li.getQuantity()).setMenuItemId(li.getMenuItemId()).build());
-    });
-    CreateOrderReply response;
-      response = clientStub.createOrder(request);
+            .setRestaurantId(restaurantId)
+            .setDeliveryAddress(makeAddress(deliveryAddress))
+            .setDeliveryTime(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(deliveryTime));
+    lineItems.forEach(li -> builder.addLineItems(LineItem.newBuilder().setQuantity(li.getQuantity()).setMenuItemId(li.getMenuItemId())));
+    CreateOrderReply response = clientStub.createOrder(builder.build());
     return response.getOrderId();
+  }
+
+  private Address makeAddress(net.chrisrichardson.ftgo.common.Address address) {
+    Address.Builder builder = Address.newBuilder()
+            .setStreet1(address.getStreet1());
+    if (address.getStreet2() != null)
+      builder.setStreet2(address.getStreet2());
+    builder
+            .setCity(address.getCity())
+            .setState(address.getState())
+            .setZip(address.getZip());
+    return builder.build();
   }
 
 

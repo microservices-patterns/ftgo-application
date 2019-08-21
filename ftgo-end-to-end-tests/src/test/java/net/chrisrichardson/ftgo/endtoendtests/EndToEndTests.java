@@ -4,6 +4,7 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.config.ObjectMapperConfig;
 import com.jayway.restassured.config.RestAssuredConfig;
 import io.eventuate.common.json.mapper.JSonMapper;
+import net.chrisrichardson.ftgo.common.Address;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.common.PersonName;
@@ -17,6 +18,7 @@ import io.eventuate.util.test.async.Eventually;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 import static com.jayway.restassured.RestAssured.given;
@@ -230,6 +232,7 @@ public class EndToEndTests {
     Integer restaurantId =
             given().
                     body(new CreateRestaurantRequest(RESTAURANT_NAME,
+                            new Address("1 Main Street", "Unit 99", "Oakland", "CA", "94611"),
                             new RestaurantMenu(Collections.singletonList(new MenuItem(CHICKED_VINDALOO_MENU_ITEM_ID, "Chicken Vindaloo", priceOfChickenVindaloo))))).
                     contentType("application/json").
                     when().
@@ -264,7 +267,10 @@ public class EndToEndTests {
   private int createOrder(int consumerId, int restaurantId) {
     Integer orderId =
             given().
-                    body(new CreateOrderRequest(consumerId, restaurantId, Collections.singletonList(new CreateOrderRequest.LineItem(CHICKED_VINDALOO_MENU_ITEM_ID, 5)))).
+                    body(new CreateOrderRequest(consumerId, restaurantId,
+                            new Address("9 Amazing View", null, "Oakland", "CA", "94612"),
+                            LocalDateTime.now(),
+                            Collections.singletonList(new CreateOrderRequest.LineItem(CHICKED_VINDALOO_MENU_ITEM_ID, 5)))).
                     contentType("application/json").
                     when().
                     post(orderBaseUrl()).

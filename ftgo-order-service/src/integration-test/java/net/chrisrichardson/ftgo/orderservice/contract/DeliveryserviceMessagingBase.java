@@ -6,6 +6,7 @@ import io.eventuate.tram.inmemory.TramInMemoryConfiguration;
 import io.eventuate.tram.springcloudcontractsupport.EventuateContractVerifierConfiguration;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
+import net.chrisrichardson.ftgo.orderservice.RestaurantMother;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderDomainEventPublisher;
 import org.junit.runner.RunWith;
@@ -25,9 +26,9 @@ import static net.chrisrichardson.ftgo.orderservice.OrderDetailsMother.CHICKEN_V
 import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.AJANTA_RESTAURANT_NAME;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = MessagingBase.TestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(classes = DeliveryserviceMessagingBase.TestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @AutoConfigureMessageVerifier
-public abstract class MessagingBase {
+public abstract class DeliveryserviceMessagingBase {
 
   static {
     CommonJsonMapperInitializer.registerMoneyModule();
@@ -48,7 +49,7 @@ public abstract class MessagingBase {
   @Autowired
   private OrderDomainEventPublisher orderAggregateEventPublisher;
 
-  protected void orderCreated() {
+  protected void orderCreatedEvent() {
     orderAggregateEventPublisher.publish(CHICKEN_VINDALOO_ORDER,
             Collections.singletonList(new OrderCreatedEvent(CHICKEN_VINDALOO_ORDER_DETAILS, OrderDetailsMother.DELIVERY_ADDRESS, AJANTA_RESTAURANT_NAME)));
   }

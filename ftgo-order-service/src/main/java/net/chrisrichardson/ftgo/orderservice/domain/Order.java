@@ -1,6 +1,7 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
 import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
+import net.chrisrichardson.ftgo.common.Address;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.common.UnsupportedStateTransitionException;
 import net.chrisrichardson.ftgo.orderservice.api.events.*;
@@ -21,11 +22,12 @@ import static java.util.Collections.singletonList;
 public class Order {
 
   public static ResultWithDomainEvents<Order, OrderDomainEvent>
-  createOrder(long consumerId, Restaurant restaurant, List<OrderLineItem> orderLineItems) {
-    Order order = new Order(consumerId, restaurant.getId(), orderLineItems);
+  createOrder(long consumerId, Restaurant restaurant, DeliveryInformation deliveryInformation, List<OrderLineItem> orderLineItems) {
+    Order order = new Order(consumerId, restaurant.getId(), deliveryInformation, orderLineItems);
     List<OrderDomainEvent> events = singletonList(new OrderCreatedEvent(
             new OrderDetails(consumerId, restaurant.getId(), orderLineItems,
                     order.getOrderTotal()),
+            deliveryInformation.getDeliveryAddress(),
             restaurant.getName()));
     return new ResultWithDomainEvents<>(order, events);
   }
@@ -58,9 +60,10 @@ public class Order {
   private Order() {
   }
 
-  public Order(long consumerId, long restaurantId, List<OrderLineItem> orderLineItems) {
+  public Order(long consumerId, long restaurantId, DeliveryInformation deliveryInformation, List<OrderLineItem> orderLineItems) {
     this.consumerId = consumerId;
     this.restaurantId = restaurantId;
+    this.deliveryInformation = deliveryInformation;
     this.orderLineItems = new OrderLineItems(orderLineItems);
     this.state = APPROVAL_PENDING;
   }
@@ -73,7 +76,9 @@ public class Order {
     this.id = id;
   }
 
-
+  public DeliveryInformation getDeliveryInformation() {
+    return deliveryInformation;
+  }
 
   public Money getOrderTotal() {
     return orderLineItems.orderTotal();

@@ -8,6 +8,8 @@ dependencies {
 
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
 
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.7"
+
     runtime "javax.xml.bind:jaxb-api:2.2.11"
     runtime "com.sun.xml.bind:jaxb-core:2.2.11"
     runtime "com.sun.xml.bind:jaxb-impl:2.2.11"

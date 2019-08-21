@@ -11,6 +11,7 @@ buildscript {
 
 apply plugin: "io.spring.dependency-management"
 apply plugin: 'spring-cloud-contract'
+apply plugin: IntegrationTestsPlugin
 
 dependencyManagement {
     imports {
@@ -24,8 +25,19 @@ dependencies {
 
 contracts {
     contractsDslDir = new File("../ftgo-kitchen-service-contracts/src/main/resources/contracts")
-    baseClassForTests = 'net.chrisrichardson.ftgo.kitchenservice.contract.AbstractKitchenServiceConsumerContractTest'
+    packageWithBaseClasses = 'net.chrisrichardson.ftgo.kitchenservice.contract'
+    generatedTestSourcesDir = project.file("${project.buildDir}/generated-integration-test-sources/contracts")
 }
+
+sourceSets {
+    integrationTest {
+        java {
+            srcDir project.file("${project.buildDir}/generated-integration-test-sources/contracts")
+        }
+    }
+}
+
+compileTestGroovy.enabled=false
 
 apply plugin: FtgoServicePlugin
 

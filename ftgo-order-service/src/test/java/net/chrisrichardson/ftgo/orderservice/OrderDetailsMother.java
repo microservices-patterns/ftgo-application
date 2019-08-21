@@ -1,12 +1,15 @@
 package net.chrisrichardson.ftgo.orderservice;
 
+import net.chrisrichardson.ftgo.common.Address;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDetails;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderLineItem;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderState;
+import net.chrisrichardson.ftgo.orderservice.domain.DeliveryInformation;
 import net.chrisrichardson.ftgo.orderservice.domain.Order;
 import net.chrisrichardson.ftgo.orderservice.web.MenuItemIdAndQuantity;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,13 +38,18 @@ public class OrderDetailsMother {
 
   public static long ORDER_ID = 99L;
 
-  public static Order CHICKEN_VINDALOO_ORDER = makeAjantaOrder();
-
   public static final OrderState CHICKEN_VINDALOO_ORDER_STATE = OrderState.APPROVAL_PENDING;
 
+  public static final Address DELIVERY_ADDRESS = new Address("9 Amazing View", null, "Oakland", "CA", "94612");
+  public static final LocalDateTime DELIVERY_TIME = LocalDateTime.now();
+  public static final DeliveryInformation DELIVERY_INFORMATION = new DeliveryInformation(DELIVERY_TIME, DELIVERY_ADDRESS);
+
   private static Order makeAjantaOrder() {
-    Order order = new Order(CONSUMER_ID, AJANTA_ID, chickenVindalooLineItems());
+    Order order = new Order(CONSUMER_ID, AJANTA_ID, new DeliveryInformation(DELIVERY_TIME, DELIVERY_ADDRESS), chickenVindalooLineItems());
     order.setId(ORDER_ID);
     return order;
   }
+
+  public static Order CHICKEN_VINDALOO_ORDER = makeAjantaOrder();
+
 }

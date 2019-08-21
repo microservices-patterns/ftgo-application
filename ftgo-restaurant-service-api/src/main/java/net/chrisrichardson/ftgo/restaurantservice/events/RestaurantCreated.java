@@ -1,9 +1,10 @@
 package net.chrisrichardson.ftgo.restaurantservice.events;
 
-import io.eventuate.tram.events.common.DomainEvent;
+import net.chrisrichardson.ftgo.common.Address;
 
 public class RestaurantCreated implements RestaurantDomainEvent {
   private String name;
+  private Address address;
   private RestaurantMenu menu;
 
   public String getName() {
@@ -13,8 +14,9 @@ public class RestaurantCreated implements RestaurantDomainEvent {
   private RestaurantCreated() {
   }
 
-  public RestaurantCreated(String name, RestaurantMenu menu) {
+  public RestaurantCreated(String name, Address address, RestaurantMenu menu) {
     this.name = name;
+    this.address = address;
     this.menu = menu;
   }
 
@@ -28,5 +30,13 @@ public class RestaurantCreated implements RestaurantDomainEvent {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public Address getAddress() {
+    return address;
+  }
+
+  public void setAddress(Address address) {
+    this.address = address;
   }
 }

@@ -36,18 +36,18 @@ public class DeliveryMessageHandlers {
   }
 
   public void handleRestaurantCreated(DomainEventEnvelope<RestaurantCreated> dee) {
-    Address address = null; // TODO dee.getEvent().getAddress()
+    Address address = dee.getEvent().getAddress();
     deliveryService.createRestaurant(Long.parseLong(dee.getAggregateId()), dee.getEvent().getName(), address);
   }
 
   public void handleOrderCreatedEvent(DomainEventEnvelope<OrderCreatedEvent> dee) {
-    Address address = null; // TODO dee.getEvent().getOrderDetails().getDeliveryAddress()
+    Address address = dee.getEvent().getDeliveryAddress();
     deliveryService.createDelivery(Long.parseLong(dee.getAggregateId()),
             dee.getEvent().getOrderDetails().getRestaurantId(), address);
   }
 
   public void handleTicketAcceptedEvent(DomainEventEnvelope<TicketAcceptedEvent> dee) {
-    LocalDateTime readyBy = null; // TODO dee.getEvent().getReadyBy()
+    LocalDateTime readyBy = dee.getEvent().getReadyBy();
     deliveryService.scheduleDelivery(Long.parseLong(dee.getAggregateId()), readyBy);
   }
 

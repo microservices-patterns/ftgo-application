@@ -1,5 +1,6 @@
 package net.chrisrichardson.ftgo.restaurantservice.domain;
 
+import net.chrisrichardson.ftgo.common.Address;
 import net.chrisrichardson.ftgo.restaurantservice.events.CreateRestaurantRequest;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class RestaurantService {
   public Restaurant create(CreateRestaurantRequest request) {
     Restaurant restaurant = new Restaurant(request.getName(), request.getMenu());
     restaurantRepository.save(restaurant);
-    restaurantDomainEventPublisher.publish(restaurant, Collections.singletonList(new RestaurantCreated(request.getName(), request.getMenu())));
+    restaurantDomainEventPublisher.publish(restaurant, Collections.singletonList(new RestaurantCreated(request.getName(), request.getAddress(), request.getMenu())));
     return restaurant;
   }
 

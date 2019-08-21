@@ -4,6 +4,7 @@ import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.sagas.orchestration.SagaManager;
 import io.micrometer.core.instrument.MeterRegistry;
+import net.chrisrichardson.ftgo.common.Address;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDetails;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDomainEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderLineItem;
@@ -53,7 +54,7 @@ public class OrderService {
     this.meterRegistry = meterRegistry;
   }
 
-  public Order createOrder(long consumerId, long restaurantId,
+  public Order createOrder(long consumerId, long restaurantId, DeliveryInformation deliveryInformation,
                            List<MenuItemIdAndQuantity> lineItems) {
     Restaurant restaurant = restaurantRepository.findById(restaurantId)
             .orElseThrow(() -> new RestaurantNotFoundException(restaurantId));
@@ -61,7 +62,7 @@ public class OrderService {
     List<OrderLineItem> orderLineItems = makeOrderLineItems(lineItems, restaurant);
 
     ResultWithDomainEvents<Order, OrderDomainEvent> orderAndEvents =
-            Order.createOrder(consumerId, restaurant, orderLineItems);
+            Order.createOrder(consumerId, restaurant, deliveryInformation, orderLineItems);
 
     Order order = orderAndEvents.result;
     orderRepository.save(order);

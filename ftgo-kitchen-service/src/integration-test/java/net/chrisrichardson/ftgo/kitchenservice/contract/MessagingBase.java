@@ -24,9 +24,9 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = AbstractKitchenServiceConsumerContractTest.TestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(classes = MessagingBase.TestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @AutoConfigureMessageVerifier
-public abstract class AbstractKitchenServiceConsumerContractTest {
+public abstract class MessagingBase {
 
   @Configuration
   @Import({KitchenServiceMessageHandlersConfiguration.class, EventuateContractVerifierConfiguration.class})

@@ -1,5 +1,6 @@
 package net.chrisrichardson.ftgo.orderservice;
 
+import net.chrisrichardson.ftgo.common.Address;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.orderservice.domain.Restaurant;
 import net.chrisrichardson.ftgo.restaurantservice.events.MenuItem;
@@ -15,6 +16,7 @@ public class RestaurantMother {
   public static final String CHICKEN_VINDALOO = "Chicken Vindaloo";
   public static final String CHICKEN_VINDALOO_MENU_ITEM_ID = "1";
   public static final Money CHICKEN_VINDALOO_PRICE = new Money("12.34");
+  public static final Address RESTAURANT_ADDRESS = new Address("1 Main Street", "Unit 99", "Oakland", "CA", "94611");
 
   public static MenuItem CHICKEN_VINDALOO_MENU_ITEM = new MenuItem(CHICKEN_VINDALOO_MENU_ITEM_ID, CHICKEN_VINDALOO, CHICKEN_VINDALOO_PRICE);
 
