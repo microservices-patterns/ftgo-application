@@ -17,6 +17,11 @@ public class CustomCourierRepositoryImpl implements CustomCourierRepository {
 
   @Override
   public Courier findOrCreateCourier(long courierId) {
-    return null;
+    Courier courier = entityManager.find(Courier.class, courierId);
+    if (courier == null) {
+      courier = Courier.create(courierId);
+      entityManager.persist(courier);
+    }
+    return courier;
   }
 }

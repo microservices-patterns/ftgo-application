@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-@Transactional
 public class KitchenService {
 
   @Autowired
@@ -41,6 +40,7 @@ public class KitchenService {
     return rwe.result;
   }
 
+  @Transactional
   public void accept(long ticketId, LocalDateTime readyBy) {
     Ticket ticket = ticketRepository.findById(ticketId)
             .orElseThrow(() -> new TicketNotFoundException(ticketId));

@@ -77,7 +77,7 @@ public class Ticket {
         // Verify that readyBy is in the futurestate = TicketState.ACCEPTED;
         this.acceptTime = LocalDateTime.now();
         if (!acceptTime.isBefore(readyBy))
-          throw new IllegalArgumentException("readyBy is not in the future");
+          throw new IllegalArgumentException(String.format("readyBy %s is not after now %s", readyBy, acceptTime));
         this.readyBy = readyBy;
         return singletonList(new TicketAcceptedEvent(readyBy));
       default:

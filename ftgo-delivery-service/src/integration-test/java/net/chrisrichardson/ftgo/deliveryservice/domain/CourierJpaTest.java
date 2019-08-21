@@ -60,11 +60,26 @@ public class CourierJpaTest {
 
     courierRepository.save(courier1);
     courierRepository.save(courier2);
-    
+
     List<Courier> availableCouriers = courierRepository.findAllAvailable();
 
     assertTrue(availableCouriers.stream().anyMatch(c -> c.getId() == courierId1));
     assertFalse(availableCouriers.stream().anyMatch(c -> c.getId() == courierId2));
+  }
+
+  @Test
+  public void shouldFindOrCreate() {
+    long courierId = System.currentTimeMillis();
+    transactionTemplate.execute((ts) -> {
+      Courier courier = courierRepository.findOrCreateCourier(courierId);
+      assertNotNull(courier);
+      return null;
+    });
+    transactionTemplate.execute((ts) -> {
+      Courier courier2 = courierRepository.findOrCreateCourier(courierId);
+      assertNotNull(courier2);
+      return null;
+    });
   }
 
 }

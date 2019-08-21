@@ -1,6 +1,7 @@
 package net.chrisrichardson.ftgo.deliveryservice.domain;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Access(AccessType.FIELD)
@@ -53,5 +54,9 @@ public class Courier {
 
   public void noteUnavailable() {
     this.available = false;
+  }
+
+  public List<Action> actionsForDelivery(long deliveryId) {
+    return plan.actionsForDelivery(deliveryId);
   }
 }

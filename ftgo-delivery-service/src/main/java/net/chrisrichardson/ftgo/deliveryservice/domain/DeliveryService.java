@@ -1,11 +1,17 @@
 package net.chrisrichardson.ftgo.deliveryservice.domain;
 
 import net.chrisrichardson.ftgo.common.Address;
+import net.chrisrichardson.ftgo.deliveryservice.api.web.ActionInfo;
+import net.chrisrichardson.ftgo.deliveryservice.api.web.DeliveryInfo;
+import net.chrisrichardson.ftgo.deliveryservice.api.web.DeliveryStatus;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class DeliveryService {
 
@@ -63,6 +69,10 @@ public class DeliveryService {
     courierRepository.findOrCreateCourier(courierId).noteAvailable();
   }
 
+  void noteUnavailable(long courierId) {
+    courierRepository.findOrCreateCourier(courierId).noteUnavailable();
+  }
+
   private Courier findOrCreateCourier(long courierId) {
     Courier courier = Courier.create(courierId);
     try {
@@ -72,8 +82,38 @@ public class DeliveryService {
     }
   }
 
-  // noteUnavailable
+  @Transactional
+  public void updateAvailability(long courierId, boolean available) {
+    if (available)
+      noteAvailable(courierId);
+    else
+      noteUnavailable(courierId);
+  }
+
 
   // getCourierRoute()
 
+  @Transactional
+  public DeliveryStatus getDeliveryInfo(long deliveryId) {
+    Delivery delivery = deliveryRepository.findById(deliveryId).get();
+    Long assignedCourier = delivery.getAssignedCourier();
+    List<Action> courierActions = Collections.EMPTY_LIST;
+    if (assignedCourier != null) {
+      Courier courier = courierRepository.findById(assignedCourier).get();
+      courierActions = courier.actionsForDelivery(deliveryId);
+    }
+    return makeDeliveryStatus(delivery, assignedCourier, courierActions);
+  }
+
+  private DeliveryStatus makeDeliveryStatus(Delivery delivery, Long assignedCourier, List<Action> courierActions) {
+    return new DeliveryStatus(makeDeliveryInfo(delivery), assignedCourier, courierActions.stream().map(action -> makeActionInfo(action)).collect(Collectors.toList()));
+  }
+
+  private DeliveryInfo makeDeliveryInfo(Delivery delivery) {
+    return new DeliveryInfo(delivery.getId(), delivery.getState().name());
+  }
+
+  private ActionInfo makeActionInfo(Action action) {
+    return new ActionInfo(action.getType().name());
+  }
 }

@@ -14,9 +14,14 @@ dependencies {
     compile project(":ftgo-order-service-api")
     compile project(":ftgo-common")
     compile project(":ftgo-common-jpa")
+    compile project(":common-swagger")
 
     compile "io.eventuate.tram.core:eventuate-tram-events:$eventuateTramVersion"
     compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-jdbc-kafka:$eventuateTramVersion"
+
+    compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+    compile "io.micrometer:micrometer-registry-prometheus:$micrometerVersion"
 
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
 

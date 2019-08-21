@@ -21,4 +21,8 @@ public class Plan {
   public List<Action> getActions() {
     return actions;
   }
+
+  public List<Action> actionsForDelivery(long deliveryId) {
+    return actions.stream().filter(action -> action.actionFor(deliveryId)).collect(Collectors.toList());
+  }
 }
