@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -37,15 +38,16 @@ public class DeliveryService {
 
   public void scheduleDelivery(long orderId, LocalDateTime readyBy) {
     Delivery delivery = deliveryRepository.findById(orderId).get();
-    delivery.schedule(readyBy);
 
     // Stupid implementation
 
     List<Courier> couriers = courierRepository.findAllAvailable();
     Courier courier = couriers.get(random.nextInt(couriers.size()));
-    delivery.assignCourier(courier.getId());
     courier.addAction(Action.makePickup(delivery.getId(), delivery.getPickupAddress(), readyBy));
     courier.addAction(Action.makeDropoff(delivery.getId(), delivery.getDeliveryAddress(), readyBy.plusMinutes(30)));
+
+    delivery.schedule(readyBy, courier.getId());
+
   }
 
   public void cancelDelivery(long orderId) {
@@ -94,15 +96,16 @@ public class DeliveryService {
   // getCourierRoute()
 
   @Transactional
-  public DeliveryStatus getDeliveryInfo(long deliveryId) {
-    Delivery delivery = deliveryRepository.findById(deliveryId).get();
-    Long assignedCourier = delivery.getAssignedCourier();
-    List<Action> courierActions = Collections.EMPTY_LIST;
-    if (assignedCourier != null) {
-      Courier courier = courierRepository.findById(assignedCourier).get();
-      courierActions = courier.actionsForDelivery(deliveryId);
-    }
-    return makeDeliveryStatus(delivery, assignedCourier, courierActions);
+  public Optional<DeliveryStatus> getDeliveryInfo(long deliveryId) {
+    return deliveryRepository.findById(deliveryId).map(delivery -> {
+      Long assignedCourier = delivery.getAssignedCourier();
+      List<Action> courierActions = Collections.EMPTY_LIST;
+      if (assignedCourier != null) {
+        Courier courier = courierRepository.findById(assignedCourier).get();
+        courierActions = courier.actionsForDelivery(deliveryId);
+      }
+      return makeDeliveryStatus(delivery, assignedCourier, courierActions);
+    });
   }
 
   private DeliveryStatus makeDeliveryStatus(Delivery delivery, Long assignedCourier, List<Action> courierActions) {

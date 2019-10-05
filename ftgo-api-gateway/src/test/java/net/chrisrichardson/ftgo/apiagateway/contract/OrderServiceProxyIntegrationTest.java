@@ -34,7 +34,6 @@ public class OrderServiceProxyIntegrationTest {
   public void setUp() throws Exception {
     orderDestinations = new OrderDestinations();
     String orderServiceUrl = "http://localhost:" + port;
-    System.out.println("orderServiceUrl=" + orderServiceUrl);
     orderDestinations.setOrderServiceUrl(orderServiceUrl);
     orderService = new OrderServiceProxy(orderDestinations, WebClient.create());
   }

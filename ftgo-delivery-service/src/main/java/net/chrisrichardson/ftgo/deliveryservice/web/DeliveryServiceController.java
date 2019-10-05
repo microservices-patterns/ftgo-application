@@ -23,8 +23,8 @@ public class DeliveryServiceController {
   }
 
   @RequestMapping(path="/deliveries/{deliveryId}", method= RequestMethod.GET)
-  public DeliveryStatus getDeliveryStatus(@PathVariable long deliveryId) {
-    return deliveryService.getDeliveryInfo(deliveryId);
+  public ResponseEntity<DeliveryStatus> getDeliveryStatus(@PathVariable long deliveryId) {
+    return deliveryService.getDeliveryInfo(deliveryId).map(ds -> new ResponseEntity<>(ds, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
 

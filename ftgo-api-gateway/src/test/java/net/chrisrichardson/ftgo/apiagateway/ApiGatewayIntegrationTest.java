@@ -48,11 +48,13 @@ public class ApiGatewayIntegrationTest {
     @Test
     public void shouldProxyCreateOrder() {
 
+        String expectedResponse = "{}";
+
         stubFor(post(urlEqualTo("/orders"))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withHeader("Content-Type", "text/xml")
-                        .withBody("<response>Some content</response>")));
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(expectedResponse)));
 
 
         WebClient client = WebClient.create("http://localhost:" + port + "/orders");
@@ -66,7 +68,7 @@ public class ApiGatewayIntegrationTest {
 
         assertNotNull(z);
         assertEquals(HttpStatus.OK, z.getStatusCode());
-        assertEquals("<response>Some content</response>", z.getBody());
+        assertEquals(expectedResponse, z.getBody());
 
         verify(postRequestedFor(urlMatching("/orders")));
 

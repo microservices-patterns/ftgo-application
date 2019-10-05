@@ -24,6 +24,24 @@ dependencies {
     compile "io.micrometer:micrometer-registry-prometheus:$micrometerVersion"
 
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+    testCompile "io.eventuate.tram.core:eventuate-tram-in-memory:$eventuateTramVersion"
+    testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
+
+    componentTestCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
+    componentTestCompile "com.jayway.jsonpath:json-path:2.3.0"
 
 
 }
+
+dockerCompose {
+
+    componentTests {
+        startedServices = [ 'ftgo-delivery-service']
+        stopContainers = true
+    }
+
+}
+
+componentTestsComposeUp.dependsOn(assemble)
+dockerCompose.componentTests.isRequiredBy(componentTest)
+

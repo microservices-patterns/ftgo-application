@@ -19,6 +19,7 @@ else
     npm install -g typescript
 fi
 
+docker-compose -f ../docker-compose.yml -f ../docker-compose-api-gateway-graphql.yml up -d --build
+
 npm run unit-test
 npm run end-to-end-test
-

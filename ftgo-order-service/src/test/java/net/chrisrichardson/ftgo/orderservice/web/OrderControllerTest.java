@@ -27,7 +27,7 @@ public class OrderControllerTest {
   private OrderController orderController;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     orderService = mock(OrderService.class);
     orderRepository = mock(OrderRepository.class);
     orderController = new OrderController(orderService, orderRepository);

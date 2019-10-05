@@ -43,6 +43,7 @@ public class Delivery {
   private LocalDateTime deliveryTime;
 
   private Long assignedCourier;
+  private LocalDateTime readyBy;
 
   private Delivery() {
   }
@@ -59,7 +60,10 @@ public class Delivery {
     return new Delivery(orderId, restaurantId, pickupAddress, deliveryAddress);
   }
 
-  public void schedule(LocalDateTime readyBy) {
+  public void schedule(LocalDateTime readyBy, long assignedCourier) {
+    this.readyBy = readyBy;
+    this.assignedCourier = assignedCourier;
+    this.state = DeliveryState.SCHEDULED;
 
   }
 
@@ -68,9 +72,6 @@ public class Delivery {
     this.assignedCourier = null;
   }
 
-  public void assignCourier(long courierId) {
-    this.assignedCourier = courierId;
-  }
 
   public long getId() {
     return id;
