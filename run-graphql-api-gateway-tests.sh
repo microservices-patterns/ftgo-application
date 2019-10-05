@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#! /bin/bash -e
 
 if which npm ; then
    echo npm on path. attempting to test GraphQL API gateway

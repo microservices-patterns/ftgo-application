@@ -30,4 +30,3 @@ app.post('/graphql', bodyParser.json(), makeGraphQLHandler());
 app.get('/graphql', makeGraphQLHandler());
 
 exports.app = app;
-
