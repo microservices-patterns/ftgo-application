@@ -1,6 +1,6 @@
 = FTGO example application
 
-This is the example code for my book https://www.manning.com/books/microservice-patterns[Microservice patterns].
+This is the example code for my book https://microservices.io/book[Microservice patterns].
 
 image::http://microservices.io/i/Microservices-Patterns-Cover.png[width=50%]
 
