@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#! /bin/bash -e
 
 if which npm ; then
    echo npm on path. attempting to test GraphQL API gateway
@@ -19,7 +19,8 @@ else
     npm install -g typescript
 fi
 
+npm run unit-test
+
 docker-compose -f ../docker-compose.yml -f ../docker-compose-api-gateway-graphql.yml up -d --build
 
-npm run unit-test
 npm run end-to-end-test
