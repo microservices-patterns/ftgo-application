@@ -119,7 +119,7 @@ All the services' business logic is implemented using Domain-Driven design aggre
 Temporary: Build the Spring Cloud Contracts using this command:
 
 ```
-./build-contracts.sh
+./gradlew buildContracts
 ```
 
 Build the services using this command:

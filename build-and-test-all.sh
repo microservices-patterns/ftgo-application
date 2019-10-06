@@ -30,7 +30,7 @@ echo KEEP_RUNNING=$KEEP_RUNNING
 
 # TODO Temporarily
 
-./build-contracts.sh
+./gradlew buildContracts
 
 ./gradlew testClasses
 
