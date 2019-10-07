@@ -1,11 +1,15 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
+import io.eventuate.tram.commands.producer.CommandProducer;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
-import io.eventuate.tram.events.publisher.TramEventsPublisherConfiguration;
+import io.eventuate.tram.events.spring.publisher.TramEventsPublisherConfiguration;
+import io.eventuate.tram.messaging.consumer.MessageConsumer;
+import io.eventuate.tram.sagas.common.SagaLockManager;
 import io.eventuate.tram.sagas.orchestration.SagaCommandProducer;
+import io.eventuate.tram.sagas.orchestration.SagaInstanceRepository;
 import io.eventuate.tram.sagas.orchestration.SagaManager;
 import io.eventuate.tram.sagas.orchestration.SagaManagerImpl;
-import io.eventuate.tram.sagas.orchestration.SagaOrchestratorConfiguration;
+import io.eventuate.tram.sagas.orchestration.spring.SagaOrchestratorConfiguration;
 import io.micrometer.core.instrument.MeterRegistry;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.AccountingServiceProxy;
@@ -23,7 +27,6 @@ import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCusto
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Optional;
 
@@ -33,8 +36,8 @@ public class OrderServiceConfiguration {
   // TODO move to framework
 
   @Bean
-  public SagaCommandProducer sagaCommandProducer() {
-    return new SagaCommandProducer();
+  public SagaCommandProducer sagaCommandProducer(CommandProducer commandProducer) {
+    return new SagaCommandProducer(commandProducer);
   }
 
   @Bean
@@ -46,8 +49,13 @@ public class OrderServiceConfiguration {
   }
 
   @Bean
-  public SagaManager<CreateOrderSagaState> createOrderSagaManager(CreateOrderSaga saga) {
-    return new SagaManagerImpl<>(saga);
+  public SagaManager<CreateOrderSagaState> createOrderSagaManager(CreateOrderSaga saga,
+                                                                  SagaInstanceRepository sagaInstanceRepository,
+                                                                  CommandProducer commandProducer,
+                                                                  MessageConsumer messageConsumer,
+                                                                  SagaLockManager sagaLockManager,
+                                                                  SagaCommandProducer sagaCommandProducer) {
+    return new SagaManagerImpl<>(saga, sagaInstanceRepository, commandProducer, messageConsumer, sagaLockManager, sagaCommandProducer);
   }
 
   @Bean
@@ -56,8 +64,13 @@ public class OrderServiceConfiguration {
   }
 
   @Bean
-  public SagaManager<CancelOrderSagaData> CancelOrderSagaManager(CancelOrderSaga saga) {
-    return new SagaManagerImpl<>(saga);
+  public SagaManager<CancelOrderSagaData> CancelOrderSagaManager(CancelOrderSaga saga,
+                                                                 SagaInstanceRepository sagaInstanceRepository,
+                                                                 CommandProducer commandProducer,
+                                                                 MessageConsumer messageConsumer,
+                                                                 SagaLockManager sagaLockManager,
+                                                                 SagaCommandProducer sagaCommandProducer) {
+    return new SagaManagerImpl<>(saga, sagaInstanceRepository, commandProducer, messageConsumer, sagaLockManager, sagaCommandProducer);
   }
 
   @Bean
@@ -66,8 +79,13 @@ public class OrderServiceConfiguration {
   }
 
   @Bean
-  public SagaManager<ReviseOrderSagaData> reviseOrderSagaManager(ReviseOrderSaga saga) {
-    return new SagaManagerImpl<>(saga);
+  public SagaManager<ReviseOrderSagaData> reviseOrderSagaManager(ReviseOrderSaga saga,
+                                                                 SagaInstanceRepository sagaInstanceRepository,
+                                                                 CommandProducer commandProducer,
+                                                                 MessageConsumer messageConsumer,
+                                                                 SagaLockManager sagaLockManager,
+                                                                 SagaCommandProducer sagaCommandProducer) {
+    return new SagaManagerImpl<>(saga, sagaInstanceRepository, commandProducer, messageConsumer, sagaLockManager, sagaCommandProducer);
   }
 
   @Bean

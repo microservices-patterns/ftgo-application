@@ -8,8 +8,8 @@ dependencies {
     compile project(":common-swagger")
     compile "io.eventuate.tram.sagas:eventuate-tram-sagas-event-sourcing-support:$eventuateTramSagasVersion"
 
-    compile "io.eventuate.tram.core:eventuate-tram-jdbc-kafka:$eventuateTramVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-events:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-jdbc-kafka-spring:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-events-spring:$eventuateTramVersion"
     compile "io.eventuate.tram.sagas:eventuate-tram-sagas-simple-dsl:$eventuateTramSagasVersion"
 
     compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
@@ -19,13 +19,13 @@ dependencies {
 
 
     compile "io.eventuate.client.java:eventuate-client-java-spring:$eventuateClientVersion"
-    compile "io.eventuate.local.java:eventuate-local-java-jdbc:${eventuateLocalVersion}"
+    compile "io.eventuate.local.java:eventuate-local-java-jdbc-spring:${eventuateLocalVersion}"
 
-    testCompile "io.eventuate.client.java:eventuate-client-java-jdbc:$eventuateClientVersion"
+    testCompile "io.eventuate.client.java:eventuate-client-java-jdbc-spring:$eventuateClientVersion"
     testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
     testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"
 
-    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-in-memory:$eventuateTramSagasVersion"
+    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-in-memory-spring:$eventuateTramSagasVersion"
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
     testCompile "com.jayway.jsonpath:json-path:2.3.0"
