@@ -82,7 +82,7 @@ public class AccountingServiceCommandHandlerTest {
   private AggregateRepository<Account, AccountCommand> accountRepository;
 
   @Test
-  public void shouldReply() throws InterruptedException, ExecutionException, TimeoutException {
+  public void shouldReply() {
 
     TestMessageConsumer testMessageConsumer = testMessageConsumerFactory.make();
 

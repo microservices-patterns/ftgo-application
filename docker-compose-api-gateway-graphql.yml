@@ -1,0 +1,10 @@
+version: '3'
+services:
+  ftgo-api-gateway-graphql:
+    build: ./ftgo-api-gateway-graphql
+    ports:
+      - "8088:3000"
+    environment:
+      ORDER_HISTORY_SERVICE_URL: http://ftgo-order-history-service:8080
+      CONSUMER_SERVICE_URL: http://ftgo-consumer-service:8080
+      RESTAURANT_SERVICE_URL: http://ftgo-restaurant-service:8080

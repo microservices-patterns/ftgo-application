@@ -30,7 +30,7 @@ echo KEEP_RUNNING=$KEEP_RUNNING
 
 # TODO Temporarily
 
-./build-contracts.sh
+./gradlew buildContracts
 
 ./gradlew testClasses
 
@@ -53,8 +53,7 @@ if [ -z "$ASSEMBLE_ONLY" ] ; then
 
   # Component tests need to use the per-service database schema
 
-
-  EVENTUATE_DATABASE_SCHEMA=${ORDER_SERVICE_COMPONENT_TEST_EVENTUATE_DATABASE_SCHEMA:-eventuate}  SPRING_DATASOURCE_URL=jdbc:mysql://${DOCKER_HOST_IP?}/ftgoorderservice ./gradlew :ftgo-order-service:cleanComponentTest :ftgo-order-service:componentTest
+  ./gradlew :ftgo-order-service:cleanComponentTest :ftgo-order-service:componentTest
 
   # Reset the DB/messages
 

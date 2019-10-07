@@ -36,11 +36,6 @@ create table snapshots (
   PRIMARY KEY(entity_type, entity_id, entity_version)
 );
 
-create table cdc_monitoring (
-  reader_id VARCHAR(1000) PRIMARY KEY,
-  last_time BIGINT
-);
-
 DROP Table IF Exists message;
 DROP Table IF Exists received_messages;
 DROP Table IF Exists offset_store;

@@ -39,7 +39,9 @@ import java.util.function.Predicate;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = OrderServiceIntegrationTest.TestConfiguration.class,
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties="eventuate.database.schema=eventuate"
+)
 public class OrderServiceIntegrationTest {
 
 

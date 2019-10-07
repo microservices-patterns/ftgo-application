@@ -1,6 +1,6 @@
 = FTGO example application
 
-This is the example code for my book https://www.manning.com/books/microservice-patterns[Microservice patterns].
+This is the example code for my book https://microservices.io/book[Microservice patterns].
 
 image::http://microservices.io/i/Microservices-Patterns-Cover.png[width=50%]
 
@@ -12,10 +12,9 @@ image::http://microservices.io/i/Microservices-Patterns-Cover.png[width=50%]
 * The application consists of many services and so requires a lot of memory. It runs well, for example, on a 16GB Macbook pro.
 * The application's services and the infrastructure services, such as MySQL and Apache Kafka, are deployed using Docker containers using either Docker Compose or Kubernetes.
 
-== Got questions
+== Got questions?
 
-Please post a message to the https://forums.manning.com/forums/microservice-patterns[book's discussion forum] or create a github issue.
-I'll do my best to help you.
+Please create a https://github.com/microservices-patterns/ftgo-application/issues[github issue] and I'll do my best to help you.
 
 == Application architecture
 
@@ -119,7 +118,7 @@ All the services' business logic is implemented using Domain-Driven design aggre
 Temporary: Build the Spring Cloud Contracts using this command:
 
 ```
-./build-contracts.sh
+./gradlew buildContracts
 ```
 
 Build the services using this command:
