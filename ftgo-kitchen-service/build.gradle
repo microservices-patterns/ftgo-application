@@ -35,6 +35,7 @@ dependencies {
 
     compile "io.eventuate.tram.core:eventuate-tram-jdbc-kafka-spring:$eventuateTramVersion"
     compile "io.eventuate.tram.core:eventuate-tram-events-spring:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-messaging-spring:$eventuateTramVersion"
     compile "io.eventuate.tram.sagas:eventuate-tram-sagas-simple-dsl:$eventuateTramSagasVersion"
 
     compile project(":common-swagger")
@@ -47,6 +48,10 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     compile 'javax.el:javax.el-api:2.2.5'
+
+    compile('org.apache.kafka:kafka-clients:2.3.0') {
+        force = true
+    }
 
     testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
     testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"

@@ -10,6 +10,7 @@ dependencies {
 
     compile "io.eventuate.tram.core:eventuate-tram-jdbc-kafka-spring:$eventuateTramVersion"
     compile "io.eventuate.tram.core:eventuate-tram-events-spring:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-messaging-spring:$eventuateTramVersion"
     compile "io.eventuate.tram.sagas:eventuate-tram-sagas-simple-dsl:$eventuateTramSagasVersion"
 
     compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
@@ -20,7 +21,11 @@ dependencies {
 
     compile "io.eventuate.client.java:eventuate-client-java-spring:$eventuateClientVersion"
     compile "io.eventuate.local.java:eventuate-local-java-jdbc-spring:${eventuateLocalVersion}"
-
+    
+    compile('org.apache.kafka:kafka-clients:2.3.0') {
+        force = true
+    }
+    
     testCompile "io.eventuate.client.java:eventuate-client-java-jdbc-spring:$eventuateClientVersion"
     testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
     testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"

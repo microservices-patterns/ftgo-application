@@ -32,11 +32,16 @@ dependencies {
     compile "io.eventuate.messaging.kafka:eventuate-messaging-kafka-consumer-spring:$eventuateMessagingKafkaVersion"
 
     compile "io.eventuate.tram.core:eventuate-tram-events-spring:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-messaging-spring:$eventuateTramVersion"
     compile "io.eventuate.tram.core:eventuate-tram-consumer-kafka-spring:$eventuateTramVersion"
 
     compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     compile 'javax.el:javax.el-api:2.2.5'
+
+    compile('org.apache.kafka:kafka-clients:2.3.0') {
+        force = true
+    }
 
     testCompile "io.eventuate.tram.core:eventuate-tram-in-memory-spring:$eventuateTramVersion"
     testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
