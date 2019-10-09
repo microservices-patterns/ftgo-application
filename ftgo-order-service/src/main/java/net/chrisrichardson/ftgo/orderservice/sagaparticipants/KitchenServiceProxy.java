@@ -9,18 +9,18 @@ public class KitchenServiceProxy {
 
   public final CommandEndpoint<CreateTicket> create = CommandEndpointBuilder
           .forCommand(CreateTicket.class)
-          .withChannel(KitchenServiceChannels.kitchenServiceChannel)
+          .withChannel(KitchenServiceChannels.COMMAND_CHANNEL)
           .withReply(CreateTicketReply.class)
           .build();
 
   public final CommandEndpoint<ConfirmCreateTicket> confirmCreate = CommandEndpointBuilder
           .forCommand(ConfirmCreateTicket.class)
-          .withChannel(KitchenServiceChannels.kitchenServiceChannel)
+          .withChannel(KitchenServiceChannels.COMMAND_CHANNEL)
           .withReply(Success.class)
           .build();
   public final CommandEndpoint<CancelCreateTicket> cancel = CommandEndpointBuilder
           .forCommand(CancelCreateTicket.class)
-          .withChannel(KitchenServiceChannels.kitchenServiceChannel)
+          .withChannel(KitchenServiceChannels.COMMAND_CHANNEL)
           .withReply(Success.class)
           .build();
 

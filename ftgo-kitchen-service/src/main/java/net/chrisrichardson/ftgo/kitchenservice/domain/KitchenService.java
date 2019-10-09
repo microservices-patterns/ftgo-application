@@ -2,6 +2,7 @@ package net.chrisrichardson.ftgo.kitchenservice.domain;
 
 import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;
+import net.chrisrichardson.ftgo.kitchenservice.api.events.TicketDomainEvent;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-@Transactional
 public class KitchenService {
 
   @Autowired
@@ -40,6 +40,7 @@ public class KitchenService {
     return rwe.result;
   }
 
+  @Transactional
   public void accept(long ticketId, LocalDateTime readyBy) {
     Ticket ticket = ticketRepository.findById(ticketId)
             .orElseThrow(() -> new TicketNotFoundException(ticketId));

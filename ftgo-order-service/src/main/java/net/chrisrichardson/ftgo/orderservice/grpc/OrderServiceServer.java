@@ -3,15 +3,21 @@ package net.chrisrichardson.ftgo.orderservice.grpc;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
+import net.chrisrichardson.ftgo.common.Address;
+import net.chrisrichardson.ftgo.orderservice.domain.DeliveryInformation;
 import net.chrisrichardson.ftgo.orderservice.domain.Order;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderService;
 import net.chrisrichardson.ftgo.orderservice.web.MenuItemIdAndQuantity;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
@@ -49,13 +55,19 @@ public class OrderServiceServer {
 
     @Override
     public void createOrder(CreateOrderRequest req, StreamObserver<CreateOrderReply> responseObserver) {
+      List<LineItem> lineItemsList = req.getLineItemsList();
       Order order = orderService.createOrder(req.getConsumerId(),
               req.getRestaurantId(),
-              req.getLineItemsList().stream().map(x -> new MenuItemIdAndQuantity(x.getMenuItemId(), x.getQuantity())).collect(toList())
+              new DeliveryInformation(LocalDateTime.parse(req.getDeliveryTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME), makeAddress(req.getDeliveryAddress())),
+              lineItemsList.stream().map(x -> new MenuItemIdAndQuantity(x.getMenuItemId(), x.getQuantity())).collect(toList())
       );
       CreateOrderReply reply = CreateOrderReply.newBuilder().setOrderId(order.getId()).build();
       responseObserver.onNext(reply);
       responseObserver.onCompleted();
+    }
+
+    private Address makeAddress(net.chrisrichardson.ftgo.orderservice.grpc.Address address) {
+      return new Address(address.getStreet1(), nullIfBlank(address.getStreet2()), address.getCity(), address.getState(), address.getZip());
     }
 
     @Override
@@ -71,5 +83,9 @@ public class OrderServiceServer {
       responseObserver.onNext(reply);
       responseObserver.onCompleted();
     }
+  }
+
+  private String nullIfBlank(String s) {
+    return StringUtils.isBlank(s) ? null : s;
   }
 }

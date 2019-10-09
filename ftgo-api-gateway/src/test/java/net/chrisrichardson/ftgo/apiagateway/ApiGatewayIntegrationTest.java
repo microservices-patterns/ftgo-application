@@ -9,8 +9,10 @@ import net.chrisrichardson.ftgo.apiagateway.proxies.OrderInfo;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,31 +32,29 @@ import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-//import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
-//import static org.springframework.web.reactive.function.server.RouterFunctions.route;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ApiGatewayIntegrationTestConfiguration.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties={"order.destinations.orderServiceUrl=http://localhost:8082",
+        properties={"order.destinations.orderServiceUrl=http://localhost:${wiremock.server.port}",
                 "order.destinations.orderHistoryServiceUrl=http://localhost:8083",
                 "consumer.destinations.consumerServiceUrl=http://localhost:9999"
                   })
+@AutoConfigureWireMock(port=0)
 public class ApiGatewayIntegrationTest {
+
     @LocalServerPort
     private int port;
-
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8082); // No-args constructor defaults to port 8080
 
     @Test
     public void shouldProxyCreateOrder() {
 
+        String expectedResponse = "{}";
+
         stubFor(post(urlEqualTo("/orders"))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withHeader("Content-Type", "text/xml")
-                        .withBody("<response>Some content</response>")));
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(expectedResponse)));
 
 
         WebClient client = WebClient.create("http://localhost:" + port + "/orders");
@@ -68,7 +68,7 @@ public class ApiGatewayIntegrationTest {
 
         assertNotNull(z);
         assertEquals(HttpStatus.OK, z.getStatusCode());
-        assertEquals("<response>Some content</response>", z.getBody());
+        assertEquals(expectedResponse, z.getBody());
 
         verify(postRequestedFor(urlMatching("/orders")));
 

@@ -1,12 +1,20 @@
 package net.chrisrichardson.ftgo.restaurantservice.events;
 
+import net.chrisrichardson.ftgo.common.Address;
+
 public class CreateRestaurantRequest {
 
   private String name;
+  private Address address;
   private RestaurantMenu menu;
 
-  public CreateRestaurantRequest(String name, RestaurantMenu menu) {
+  private CreateRestaurantRequest() {
+
+  }
+
+  public CreateRestaurantRequest(String name, Address address, RestaurantMenu menu) {
     this.name = name;
+    this.address = address;
     this.menu = menu;
   }
 
@@ -26,7 +34,7 @@ public class CreateRestaurantRequest {
     this.menu = menu;
   }
 
-  private CreateRestaurantRequest() {
-
+  public Address getAddress() {
+    return address;
   }
 }

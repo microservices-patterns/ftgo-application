@@ -1,6 +1,31 @@
 
 apply plugin: FtgoServicePlugin
 
+apply plugin: IntegrationTestsPlugin
+
+apply plugin: 'spring-cloud-contract'
+
+contracts {
+    contractsDslDir = new File("../ftgo-restaurant-service-contracts/src/main/resources/contracts")
+    packageWithBaseClasses = 'net.chrisrichardson.ftgo.restaurantservice.contract'
+    generatedTestSourcesDir = project.file("${project.buildDir}/generated-integration-test-sources/contracts")
+}
+
+sourceSets {
+    integrationTest {
+        java {
+            srcDir project.file("${project.buildDir}/generated-integration-test-sources/contracts")
+        }
+    }
+}
+
+compileTestGroovy.enabled=false
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"
+    }
+}
 
 dependencies {
 
@@ -9,6 +34,7 @@ dependencies {
     compile "io.eventuate.tram.core:eventuate-tram-events-spring:$eventuateTramVersion"
     compile "io.eventuate.tram.core:eventuate-tram-messaging-spring:$eventuateTramVersion"
     compile "io.eventuate.tram.sagas:eventuate-tram-sagas-simple-dsl:$eventuateTramSagasVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-aggregate-domain-events:$eventuateTramVersion"
 
     compile project(":common-swagger")
     compile project(":ftgo-restaurant-service-api")
@@ -32,5 +58,9 @@ dependencies {
     testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
     testCompile "com.jayway.jsonpath:json-path:2.3.0"
     testCompile "io.eventuate.tram.core:eventuate-tram-testing-support-spring-cloud-contract:$eventuateTramVersion"
+
+    integrationTestCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
+    integrationTestCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
+    integrationTestCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-testing-support:$eventuateTramSagasVersion"
 
 }

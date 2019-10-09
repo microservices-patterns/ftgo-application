@@ -1,5 +1,6 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
+import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderState;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +29,7 @@ public class OrderJpaTest {
   public void shouldSaveAndLoadOrder() {
 
     long orderId = transactionTemplate.execute((ts) -> {
-      Order order = new Order(CONSUMER_ID, AJANTA_ID, chickenVindalooLineItems());
+      Order order = new Order(CONSUMER_ID, AJANTA_ID, OrderDetailsMother.DELIVERY_INFORMATION, chickenVindalooLineItems());
       orderRepository.save(order);
       return order.getId();
     });

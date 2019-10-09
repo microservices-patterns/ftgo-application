@@ -17,6 +17,16 @@ message CreateOrderRequest {
   int64 restaurantId = 1;
   int64 consumerId = 2;
   repeated LineItem lineItems = 3;
+  Address deliveryAddress = 4;
+  string deliveryTime = 5;
+}
+
+message Address {
+    string street1 = 1;
+    string street2 = 2;
+    string city = 3;
+    string state = 4;
+    string zip = 5;
 }
 
 message LineItem {

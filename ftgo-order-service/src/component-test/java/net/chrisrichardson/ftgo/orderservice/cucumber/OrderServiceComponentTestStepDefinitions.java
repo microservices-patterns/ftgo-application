@@ -44,6 +44,7 @@ import static io.eventuate.util.test.async.Eventually.eventually;
 import static io.restassured.RestAssured.given;
 import static java.util.Collections.singleton;
 import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.AJANTA_RESTAURANT_MENU;
+import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.RESTAURANT_ADDRESS;
 import static org.junit.Assert.*;
 
 
@@ -141,7 +142,7 @@ public class OrderServiceComponentTestStepDefinitions {
 
     if (!restaurantRepository.findById(RestaurantMother.AJANTA_ID).isPresent()) {
       domainEventPublisher.publish("net.chrisrichardson.ftgo.restaurantservice.domain.Restaurant", RestaurantMother.AJANTA_ID,
-              Collections.singletonList(new RestaurantCreated(RestaurantMother.AJANTA_RESTAURANT_NAME, AJANTA_RESTAURANT_MENU)));
+              Collections.singletonList(new RestaurantCreated(RestaurantMother.AJANTA_RESTAURANT_NAME, RESTAURANT_ADDRESS, AJANTA_RESTAURANT_MENU)));
 
       eventually(() -> {
         FtgoTestUtil.assertPresent(restaurantRepository.findById(RestaurantMother.AJANTA_ID));
@@ -154,7 +155,7 @@ public class OrderServiceComponentTestStepDefinitions {
 
     response = given().
             body(new CreateOrderRequest(consumerId,
-                    RestaurantMother.AJANTA_ID, Collections.singletonList(
+                    RestaurantMother.AJANTA_ID, OrderDetailsMother.DELIVERY_ADDRESS, OrderDetailsMother.DELIVERY_TIME, Collections.singletonList(
                             new CreateOrderRequest.LineItem(RestaurantMother.CHICKEN_VINDALOO_MENU_ITEM_ID,
                                                             OrderDetailsMother.CHICKEN_VINDALOO_QUANTITY)))).
             contentType("application/json").

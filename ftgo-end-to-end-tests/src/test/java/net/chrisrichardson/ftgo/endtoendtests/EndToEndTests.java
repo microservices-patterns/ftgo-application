@@ -4,10 +4,13 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.config.ObjectMapperConfig;
 import com.jayway.restassured.config.RestAssuredConfig;
 import io.eventuate.common.json.mapper.JSonMapper;
+import net.chrisrichardson.ftgo.common.Address;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.common.PersonName;
 import net.chrisrichardson.ftgo.consumerservice.api.web.CreateConsumerRequest;
+import net.chrisrichardson.ftgo.deliveryservice.api.web.CourierAvailability;
+import net.chrisrichardson.ftgo.kitchenservice.api.web.TicketAcceptance;
 import net.chrisrichardson.ftgo.orderservice.api.web.CreateOrderRequest;
 import net.chrisrichardson.ftgo.orderservice.api.web.ReviseOrderRequest;
 import net.chrisrichardson.ftgo.restaurantservice.events.CreateRestaurantRequest;
@@ -17,9 +20,11 @@ import io.eventuate.util.test.async.Eventually;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 import static com.jayway.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -37,8 +42,11 @@ public class EndToEndTests {
   private int restaurantId;
   private int orderId;
   private final Money priceOfChickenVindaloo = new Money("12.34");
+  private long courierId;
 
   private String baseUrl(int port, String path, String... pathElements) {
+    assertNotNull("host", host);
+
     StringBuilder sb = new StringBuilder("http://");
     sb.append(host);
     sb.append(":");
@@ -61,6 +69,7 @@ public class EndToEndTests {
   private int restaurantsPort = 8084;
   private int kitchenPort = 8083;
   private int apiGatewayPort = 8087;
+  private int deliveryServicePort = 8089;
 
 
   private String consumerBaseUrl(String... pathElements) {
@@ -76,11 +85,19 @@ public class EndToEndTests {
   }
 
   private String kitchenRestaurantBaseUrl(String... pathElements) {
-    return baseUrl(kitchenPort, "restaurants", pathElements);
+    return kitchenServiceBaseUrl("restaurants", pathElements);
+  }
+
+  private String kitchenServiceBaseUrl(String first, String... pathElements) {
+    return baseUrl(kitchenPort, first, pathElements);
   }
 
   private String orderBaseUrl(String... pathElements) {
     return baseUrl(apiGatewayPort, "orders", pathElements);
+  }
+
+  private String deliveryServiceBaseUrl(String first, String... pathElements) {
+    return baseUrl(deliveryServicePort, first, pathElements);
   }
 
   private String orderRestaurantBaseUrl(String... pathElements) {
@@ -102,7 +119,7 @@ public class EndToEndTests {
   }
 
   @Test
-  public void shouldCreateOrder() {
+  public void shouldCreateReviseAndCancelOrder() {
 
     createOrder();
 
@@ -111,6 +128,20 @@ public class EndToEndTests {
     cancelOrder();
 
   }
+
+  @Test
+  public void shouldDeliverOrder() {
+
+    createOrder();
+
+    noteCourierAvailable();
+
+    acceptTicket();
+
+    assertOrderAssignedToCourier();
+
+  }
+
 
   private void reviseOrder() {
     reviseOrder(orderId);
@@ -230,6 +261,7 @@ public class EndToEndTests {
     Integer restaurantId =
             given().
                     body(new CreateRestaurantRequest(RESTAURANT_NAME,
+                            new Address("1 Main Street", "Unit 99", "Oakland", "CA", "94611"),
                             new RestaurantMenu(Collections.singletonList(new MenuItem(CHICKED_VINDALOO_MENU_ITEM_ID, "Chicken Vindaloo", priceOfChickenVindaloo))))).
                     contentType("application/json").
                     when().
@@ -264,7 +296,10 @@ public class EndToEndTests {
   private int createOrder(int consumerId, int restaurantId) {
     Integer orderId =
             given().
-                    body(new CreateOrderRequest(consumerId, restaurantId, Collections.singletonList(new CreateOrderRequest.LineItem(CHICKED_VINDALOO_MENU_ITEM_ID, 5)))).
+                    body(new CreateOrderRequest(consumerId, restaurantId,
+                            new Address("9 Amazing View", null, "Oakland", "CA", "94612"),
+                            LocalDateTime.now(),
+                            Collections.singletonList(new CreateOrderRequest.LineItem(CHICKED_VINDALOO_MENU_ITEM_ID, 5)))).
                     contentType("application/json").
                     when().
                     post(orderBaseUrl()).
@@ -303,6 +338,42 @@ public class EndToEndTests {
                       path("orders[0].status"); // TODO state?
       assertNotNull(state);
     });
+  }
+
+  private void noteCourierAvailable() {
+    courierId = System.currentTimeMillis();
+    given().
+            body(new CourierAvailability(true)).
+            contentType("application/json").
+            when().
+            post(deliveryServiceBaseUrl("couriers", Long.toString(courierId), "availability")).
+            then().
+            statusCode(200);
+  }
+
+  private void acceptTicket() {
+    courierId = System.currentTimeMillis();
+    given().
+            body(new TicketAcceptance(LocalDateTime.now().plusHours(9))).
+            contentType("application/json").
+            when().
+            post(kitchenServiceBaseUrl("tickets", Long.toString(orderId), "accept")).
+            then().
+            statusCode(200);
+  }
+
+  private void assertOrderAssignedToCourier() {
+    Eventually.eventually(() -> {
+      long assignedCourier = given().
+              when().
+              get(deliveryServiceBaseUrl("deliveries", Long.toString(orderId))).
+              then().
+              statusCode(200)
+              .extract()
+              .path("assignedCourier");
+      assertThat(assignedCourier).isGreaterThan(0);
+    });
+
   }
 
 }

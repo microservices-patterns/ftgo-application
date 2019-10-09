@@ -1,6 +1,7 @@
 dependencies {
 
     compile "io.eventuate.tram.sagas:eventuate-tram-sagas-participant-spring:$eventuateTramSagasVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-events-spring:$eventuateTramVersion"
     compile project(":ftgo-common")
 
 }

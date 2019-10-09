@@ -11,6 +11,8 @@ import io.eventuate.util.test.async.Eventually;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.consumerservice.api.ConsumerServiceChannels;
 import net.chrisrichardson.ftgo.consumerservice.api.ValidateOrderByConsumer;
+import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
+import net.chrisrichardson.ftgo.orderservice.RestaurantMother;
 import net.chrisrichardson.ftgo.orderservice.messaging.OrderServiceMessagingConfiguration;
 import net.chrisrichardson.ftgo.orderservice.service.OrderCommandHandlersConfiguration;
 import net.chrisrichardson.ftgo.orderservice.web.MenuItemIdAndQuantity;
@@ -103,7 +105,7 @@ public class OrderServiceIntegrationTest {
   @Test
   public void shouldCreateOrder() {
     domainEventPublisher.publish("net.chrisrichardson.ftgo.restaurantservice.domain.Restaurant", RESTAURANT_ID,
-            Collections.singletonList(new RestaurantCreated("Ajanta",
+            Collections.singletonList(new RestaurantCreated("Ajanta", RestaurantMother.RESTAURANT_ADDRESS,
                     new RestaurantMenu(Collections.singletonList(new MenuItem(CHICKED_VINDALOO_MENU_ITEM_ID, "Chicken Vindaloo", new Money("12.34")))))));
 
     Eventually.eventually(() -> {
@@ -112,7 +114,7 @@ public class OrderServiceIntegrationTest {
 
     long consumerId = 1511300065921L;
 
-    Order order = orderService.createOrder(consumerId, Long.parseLong(RESTAURANT_ID), Collections.singletonList(new MenuItemIdAndQuantity(CHICKED_VINDALOO_MENU_ITEM_ID, 5)));
+    Order order = orderService.createOrder(consumerId, Long.parseLong(RESTAURANT_ID), OrderDetailsMother.DELIVERY_INFORMATION, Collections.singletonList(new MenuItemIdAndQuantity(CHICKED_VINDALOO_MENU_ITEM_ID, 5)));
 
     FtgoTestUtil.assertPresent(orderRepository.findById(order.getId()));
 

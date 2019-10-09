@@ -49,4 +49,8 @@ public class Restaurant {
   public Long getId() {
     return id;
   }
+
+  public RestaurantMenu getMenu() {
+    return menu;
+  }
 }

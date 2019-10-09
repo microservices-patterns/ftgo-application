@@ -4,6 +4,8 @@ import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.events.spring.publisher.TramEventsPublisherConfiguration;
 import io.eventuate.tram.inmemory.spring.TramInMemoryConfiguration;
 import io.eventuate.tram.springcloudcontractsupport.EventuateContractVerifierConfiguration;
+import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
+import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderDomainEventPublisher;
 import org.junit.runner.RunWith;
@@ -27,6 +29,10 @@ import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.AJANTA_REST
 @AutoConfigureMessageVerifier
 public abstract class MessagingBase {
 
+  static {
+    CommonJsonMapperInitializer.registerMoneyModule();
+  }
+
   @Configuration
   @EnableAutoConfiguration
   @Import({EventuateContractVerifierConfiguration.class, TramEventsPublisherConfiguration.class, TramInMemoryConfiguration.class})
@@ -44,7 +50,7 @@ public abstract class MessagingBase {
 
   protected void orderCreated() {
     orderAggregateEventPublisher.publish(CHICKEN_VINDALOO_ORDER,
-            Collections.singletonList(new OrderCreatedEvent(CHICKEN_VINDALOO_ORDER_DETAILS, AJANTA_RESTAURANT_NAME)));
+            Collections.singletonList(new OrderCreatedEvent(CHICKEN_VINDALOO_ORDER_DETAILS, OrderDetailsMother.DELIVERY_ADDRESS, AJANTA_RESTAURANT_NAME)));
   }
 
 }
