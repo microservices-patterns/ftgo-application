@@ -26,7 +26,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: ftgo-kafka
-          image: eventuateio/eventuateio-local-kafka:0.14.0
+          image: eventuateio/eventuate-kafka:0.3.0.RELEASE
           env:
             - name: KAFKA_HEAP_OPTS
               value: -Xmx320m -Xms320m

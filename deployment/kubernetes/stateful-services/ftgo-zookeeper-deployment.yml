@@ -27,7 +27,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: ftgo-zookeeper
-          image: eventuateio/eventuateio-local-zookeeper:0.14.0
+          image: eventuateio/eventuate-zookeeper:0.4.0.RELEASE
           ports:
               - containerPort: 2181
           volumeMounts:
