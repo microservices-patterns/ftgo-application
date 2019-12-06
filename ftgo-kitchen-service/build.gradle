@@ -37,6 +37,16 @@ sourceSets {
     }
 }
 
+task deregisterContractTestSources() {
+    doLast {
+        project.sourceSets.test.java {
+            exclude '**/MessagingTest.java'
+        }
+    }
+}
+
+compileTestJava.dependsOn deregisterContractTestSources
+
 compileTestGroovy.enabled=false
 
 apply plugin: FtgoServicePlugin
@@ -62,6 +72,8 @@ dependencies {
 
     testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
     testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"
+
+    testCompile "io.eventuate.tram.core:eventuate-tram-in-memory:$eventuateTramVersion"
 
     testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-in-memory:$eventuateTramSagasVersion"
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"

@@ -3,10 +3,8 @@ package net.chrisrichardson.ftgo.kitchenservice.domain;
 
 import io.eventuate.tram.commands.producer.CommandProducer;
 import io.eventuate.tram.commands.producer.TramCommandProducerConfiguration;
-import io.eventuate.tram.inmemory.TramInMemoryConfiguration;
-import io.eventuate.tram.messaging.common.ChannelMapping;
-import io.eventuate.tram.messaging.common.DefaultChannelMapping;
 import io.eventuate.tram.sagas.common.SagaCommandHeaders;
+import io.eventuate.tram.sagas.inmemory.TramSagaInMemoryConfiguration;
 import io.eventuate.tram.testutil.TestMessageConsumer;
 import io.eventuate.tram.testutil.TestMessageConsumerFactory;
 import net.chrisrichardson.ftgo.common.Money;
@@ -25,11 +23,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,22 +43,12 @@ public class KitchenServiceInMemoryIntegrationTest {
   @EnableAutoConfiguration
   @Import({KitchenServiceWebConfiguration.class, KitchenServiceMessageHandlersConfiguration.class,
           TramCommandProducerConfiguration.class,
-          TramInMemoryConfiguration.class})
+          TramSagaInMemoryConfiguration.class})
   public static class TestConfiguration {
 
     @Bean
     public TestMessageConsumerFactory testMessageConsumerFactory() {
       return new TestMessageConsumerFactory();
-    }
-
-
-    @Bean
-    public DataSource dataSource() {
-      EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-      return builder.setType(EmbeddedDatabaseType.H2)
-              .addScript("eventuate-tram-embedded-schema.sql")
-              .addScript("eventuate-tram-sagas-embedded.sql")
-              .build();
     }
 
 

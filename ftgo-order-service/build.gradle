@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractDependenciesVersion"
         classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.10'
     }
 }
 
@@ -43,6 +43,17 @@ sourceSets {
         }
     }
 }
+
+task deregisterContractTestSources() {
+    doLast {
+        project.sourceSets.test.java {
+            exclude '**/MessagingTest.java'
+            exclude '**/HttpTest.java'
+        }
+    }
+}
+
+compileTestJava.dependsOn deregisterContractTestSources
 
 compileTestGroovy.enabled=false
 
@@ -160,5 +171,8 @@ dependencies {
     componentTestCompile 'info.cukes:cucumber-junit:1.2.5'
     componentTestCompile 'info.cukes:cucumber-spring:1.2.5'
     testCompile project(":ftgo-test-util")
+    testCompile "org.hamcrest:hamcrest:2.1"
+
+    integrationTestCompile "io.eventuate.tram.core:eventuate-tram-in-memory:$eventuateTramVersion"
 
 }

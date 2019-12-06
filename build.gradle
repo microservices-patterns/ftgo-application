@@ -23,7 +23,8 @@ apply plugin: WaitForMySqlPlugin
 subprojects {
 
     apply plugin: "java"
-    apply plugin: 'pmd'
+
+    // TODO apply plugin: 'pmd'
 
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'

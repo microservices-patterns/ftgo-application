@@ -1,7 +1,8 @@
 
 apply plugin: FtgoServicePlugin
 
-apply plugin: 'spring-cloud-contract'
+// apply plugin: 'spring-cloud-contract'
+
 apply plugin: 'docker-compose'
 
 apply plugin: IntegrationTestsPlugin
@@ -29,7 +30,7 @@ dependencies {
 
     componentTestCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
     componentTestCompile "com.jayway.jsonpath:json-path:2.3.0"
-
+    componentTestCompile "org.hamcrest:hamcrest:2.1"
 
 }
 
@@ -44,4 +45,3 @@ dockerCompose {
 
 componentTestsComposeUp.dependsOn(assemble)
 dockerCompose.componentTests.isRequiredBy(componentTest)
-

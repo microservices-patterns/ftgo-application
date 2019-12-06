@@ -13,7 +13,7 @@ buildscript {
 
 apply plugin: FtgoServicePlugin
 apply plugin: "io.spring.dependency-management"
-apply plugin: 'spring-cloud-contract'
+// apply plugin: 'spring-cloud-contract'
 apply plugin: IntegrationTestsPlugin
 apply plugin: 'docker-compose'
 
@@ -54,6 +54,7 @@ dependencies {
     testCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
     testCompile "io.eventuate.tram.core:eventuate-tram-testing-support-spring-cloud-contract:$eventuateTramVersion"
 
+    testCompile "org.hamcrest:hamcrest:2.1"
 
 }
 

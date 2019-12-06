@@ -21,6 +21,8 @@ dependencies {
     compile "io.eventuate.client.java:eventuate-client-java-spring:$eventuateClientVersion"
     compile "io.eventuate.local.java:eventuate-local-java-jdbc:${eventuateLocalVersion}"
 
+    testCompile "io.eventuate.tram.core:eventuate-tram-in-memory:$eventuateTramVersion"
+
     testCompile "io.eventuate.client.java:eventuate-client-java-jdbc:$eventuateClientVersion"
     testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
     testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"

@@ -39,7 +39,6 @@ public class DeliveryServiceInProcessComponentTest {
   private long orderId;
 
   @Configuration
-  @EnableJpaRepositories
   @EnableAutoConfiguration
   @Import({DeliveryServiceMessagingConfiguration.class,
           DeliveryServiceWebConfiguration.class,

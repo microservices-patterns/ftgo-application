@@ -8,7 +8,7 @@ org.springframework.cloud.contract.spec.Contract.make {
     response {
         status 200
         headers {
-            header('Content-Type': 'application/json;charset=UTF-8')
+            header('Content-Type': 'application/json')
         }
         body('''{"orderId" : "99", "state" : "APPROVAL_PENDING"}''')
     }

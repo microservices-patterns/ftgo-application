@@ -1,6 +1,8 @@
 package net.chrisrichardson.ftgo.orderhistory.contracts;
 
 import io.eventuate.tram.commands.producer.TramCommandProducerConfiguration;
+import io.eventuate.tram.consumer.common.TramNoopDuplicateMessageDetectorConfiguration;
+import io.eventuate.tram.inmemory.TramInMemoryCommonConfiguration;
 import io.eventuate.tram.inmemory.TramInMemoryConfiguration;
 import io.eventuate.tram.messaging.common.ChannelMapping;
 import io.eventuate.tram.messaging.common.DefaultChannelMapping;
@@ -45,7 +47,8 @@ public class OrderHistoryEventHandlersTest {
   @EnableAutoConfiguration
   @Import({OrderHistoryServiceMessagingConfiguration.class,
           TramCommandProducerConfiguration.class,
-          TramInMemoryConfiguration.class,
+          TramInMemoryCommonConfiguration.class,
+          TramNoopDuplicateMessageDetectorConfiguration.class,
           EventuateContractVerifierConfiguration.class})
   public static class TestConfiguration {
 
