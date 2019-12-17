@@ -27,6 +27,7 @@ contracts {
     contractsDslDir = new File("../ftgo-kitchen-service-contracts/src/main/resources/contracts")
     packageWithBaseClasses = 'net.chrisrichardson.ftgo.kitchenservice.contract'
     generatedTestSourcesDir = project.file("${project.buildDir}/generated-integration-test-sources/contracts")
+    sourceSet = "integrationTest"
 }
 
 sourceSets {
@@ -36,16 +37,6 @@ sourceSets {
         }
     }
 }
-
-task deregisterContractTestSources() {
-    doLast {
-        project.sourceSets.test.java {
-            exclude '**/MessagingTest.java'
-        }
-    }
-}
-
-compileTestJava.dependsOn deregisterContractTestSources
 
 compileTestGroovy.enabled=false
 

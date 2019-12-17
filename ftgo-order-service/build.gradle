@@ -6,11 +6,21 @@ buildscript {
         maven {
             url 'https://repo.spring.io/libs-milestone'
         }
+        maven {
+          url "https://dl.bintray.com/eventuateio-oss/eventuate-maven-rc"
+        }
+        maven {
+          url "https://dl.bintray.com/eventuateio-oss/eventuate-maven-release"
+        }
     }
     dependencies {
         classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractDependenciesVersion"
         classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.10'
+
+        classpath "org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:${js2pVersion}"
+        classpath "io.eventuate.tram.core:eventuate-tram-commands:$eventuateTramVersion"
+
     }
 }
 
@@ -23,6 +33,9 @@ apply plugin: 'com.google.protobuf'
 apply plugin: IntegrationTestsPlugin
 apply plugin: ComponentTestsPlugin
 
+apply plugin: 'jsonschema2pojo'
+
+
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"
@@ -33,8 +46,8 @@ contracts {
     contractsDslDir = new File("../ftgo-order-service-contracts/src/main/resources/contracts")
     packageWithBaseClasses = 'net.chrisrichardson.ftgo.orderservice.contract'
     generatedTestSourcesDir = project.file("${project.buildDir}/generated-integration-test-sources/contracts")
+    sourceSet = "integrationTest"
 }
-
 
 sourceSets {
     integrationTest {
@@ -43,17 +56,6 @@ sourceSets {
         }
     }
 }
-
-task deregisterContractTestSources() {
-    doLast {
-        project.sourceSets.test.java {
-            exclude '**/MessagingTest.java'
-            exclude '**/HttpTest.java'
-        }
-    }
-}
-
-compileTestJava.dependsOn deregisterContractTestSources
 
 compileTestGroovy.enabled=false
 
@@ -175,4 +177,21 @@ dependencies {
 
     integrationTestCompile "io.eventuate.tram.core:eventuate-tram-in-memory:$eventuateTramVersion"
 
+}
+
+jsonSchema2Pojo {
+    source = files("../ftgo-consumer-service-api/src/main/resources/ValidateOrderByConsumer.json")
+    targetPackage = "net.chrisrichardson.ftgo.consumerservice.api"
+    includeAdditionalProperties = false
+    generateBuilders = true
+    useLongIntegers = true
+
+}
+
+sourceSets {
+    test {
+        java {
+            srcDirs += [ jsonSchema2Pojo.targetDirectory ]
+        }
+    }
 }

@@ -1,4 +1,4 @@
-package contracts.messaging;
+package deliveryservice.messaging;
 
 org.springframework.cloud.contract.spec.Contract.make {
     label 'orderCreatedForDeliveryService'

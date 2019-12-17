@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "consumerId": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "orderId": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "orderTotal": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "consumerId",
+    "orderId",
+    "orderTotal"
+  ],
+  "javaInterfaces": ["io.eventuate.tram.commands.common.Command"]
+}

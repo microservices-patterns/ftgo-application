@@ -11,6 +11,7 @@ buildscript {
     }
 }
 
+apply plugin: 'groovy'
 apply plugin: 'spring-cloud-contract'
 apply plugin: 'maven-publish'
 
@@ -31,3 +32,7 @@ generateContractTests.enabled = false
 
 
 build.finalizedBy(publish)
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.4.6'
+}
