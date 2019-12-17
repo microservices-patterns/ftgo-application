@@ -26,9 +26,14 @@ dependencies {
     testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
     testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"
 
+    testCompile "io.eventuate.tram.core:eventuate-tram-in-memory-spring:$eventuateTramVersion"
     testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-in-memory-spring:$eventuateTramSagasVersion"
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
     testCompile "com.jayway.jsonpath:json-path:2.3.0"
+    testCompile "org.hamcrest:hamcrest:2.1"
+
+    testCompile "com.atlassian.oai:swagger-request-validator-springmvc:${swaggerRequestValidatorVersion}"
+    testCompile 'io.rest-assured:spring-mock-mvc:3.0.6'
 
 }

@@ -2,6 +2,7 @@
 
 KEEP_RUNNING=
 ASSEMBLE_ONLY=
+USE_EXISTING_CONTAINERS=
 
 DATABASE_SERVICES="dynamodblocal mysql dynamodblocal-init"
 if [ -z "$DOCKER_COMPOSE" ] ; then
@@ -16,8 +17,11 @@ while [ ! -z "$*" ] ; do
     "--assemble-only" )
       ASSEMBLE_ONLY=yes
       ;;
+    "--use-existing-containers" )
+      USE_EXISTING_CONTAINERS=yes
+      ;;
     "--help" )
-      echo ./build-and-test-all.sh --keep-running --assemble-only
+      echo ./build-and-test-all.sh --keep-running --assemble-only --use-existing-containers
       exit 0
       ;;
   esac
@@ -32,9 +36,12 @@ echo KEEP_RUNNING=$KEEP_RUNNING
 
 ./gradlew buildContracts
 
-./gradlew testClasses
+./gradlew compileAll
 
-${DOCKER_COMPOSE?} down --remove-orphans -v
+if [ -z "$USE_EXISTING_CONTAINERS" ] ; then
+    ${DOCKER_COMPOSE?} down --remove-orphans -v
+fi
+
 ${DOCKER_COMPOSE?} up -d --build ${DATABASE_SERVICES?}
 
 ./gradlew waitForMySql

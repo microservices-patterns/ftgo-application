@@ -4,8 +4,8 @@ import com.jayway.jsonpath.JsonPath;
 import io.eventuate.tram.commands.common.CommandMessageHeaders;
 import io.eventuate.tram.commands.spring.producer.TramCommandProducerConfiguration;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
-import io.eventuate.tram.inmemory.spring.TramInMemoryConfiguration;
 import io.eventuate.tram.messaging.common.Message;
+import io.eventuate.tram.sagas.inmemory.TramSagaInMemoryConfiguration;
 import io.eventuate.tram.testutil.TestMessageConsumerFactory;
 import io.eventuate.util.test.async.Eventually;
 import net.chrisrichardson.ftgo.common.Money;
@@ -31,11 +31,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.function.Predicate;
 
@@ -59,22 +56,12 @@ public class OrderServiceIntegrationTest {
   @EnableAutoConfiguration
   @Import({OrderWebConfiguration.class, OrderServiceMessagingConfiguration.class,  OrderCommandHandlersConfiguration.class,
           TramCommandProducerConfiguration.class,
-          TramInMemoryConfiguration.class})
+          TramSagaInMemoryConfiguration.class})
   public static class TestConfiguration {
 
     @Bean
     public TestMessageConsumerFactory testMessageConsumerFactory() {
       return new TestMessageConsumerFactory();
-    }
-
-
-    @Bean
-    public DataSource dataSource() {
-      EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-      return builder.setType(EmbeddedDatabaseType.H2)
-              .addScript("eventuate-tram-embedded-schema.sql")
-              .addScript("eventuate-tram-sagas-embedded.sql")
-              .build();
     }
 
 

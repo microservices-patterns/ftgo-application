@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,14 +33,9 @@ public abstract class MessagingBase {
   @Import({KitchenServiceMessageHandlersConfiguration.class, EventuateContractVerifierConfiguration.class})
   public static class TestConfiguration {
 
-    @Bean
-    public KitchenService kitchenService() {
-      return mock(KitchenService.class);
-    }
-
   }
 
-  @Autowired
+  @MockBean
   private KitchenService kitchenService;
 
   @Before

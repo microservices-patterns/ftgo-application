@@ -4,11 +4,11 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.config.ObjectMapperConfig;
 import com.jayway.restassured.config.RestAssuredConfig;
 import io.eventuate.common.json.mapper.JSonMapper;
+import net.chrisrichardson.ftgo.apis.model.consumerservice.CreateConsumerRequest;
+import net.chrisrichardson.ftgo.apis.model.consumerservice.PersonName;
 import net.chrisrichardson.ftgo.common.Address;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.common.Money;
-import net.chrisrichardson.ftgo.common.PersonName;
-import net.chrisrichardson.ftgo.consumerservice.api.web.CreateConsumerRequest;
 import net.chrisrichardson.ftgo.deliveryservice.api.web.CourierAvailability;
 import net.chrisrichardson.ftgo.kitchenservice.api.web.TicketAcceptance;
 import net.chrisrichardson.ftgo.orderservice.api.web.CreateOrderRequest;
@@ -234,7 +234,7 @@ public class EndToEndTests {
   private Integer createConsumer() {
     Integer consumerId =
             given().
-                    body(new CreateConsumerRequest(new PersonName("John", "Doe"))).
+                    body(new CreateConsumerRequest().name(new PersonName().firstName("John").lastName("Doe"))).
                     contentType("application/json").
                     when().
                     post(consumerBaseUrl()).

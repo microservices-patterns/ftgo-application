@@ -1,4 +1,4 @@
-package net.chrisrichardson.ftgo.consumerservice.api.web;
+package net.chrisrichardson.ftgo.consumerservice.web;
 
 import net.chrisrichardson.ftgo.common.PersonName;
 

@@ -19,6 +19,16 @@ sourceSets {
     }
 }
 
+task deregisterContractTestSources() {
+    doLast {
+        project.sourceSets.test.java {
+            exclude '**/MessagingTest.java'
+        }
+    }
+}
+
+compileTestJava.dependsOn deregisterContractTestSources
+
 compileTestGroovy.enabled=false
 
 dependencyManagement {
@@ -62,5 +72,6 @@ dependencies {
     integrationTestCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
     integrationTestCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
     integrationTestCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-testing-support:$eventuateTramSagasVersion"
+    integrationTestCompile "io.eventuate.tram.core:eventuate-tram-in-memory-spring:$eventuateTramVersion"
 
 }

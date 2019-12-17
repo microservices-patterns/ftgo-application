@@ -33,12 +33,6 @@ import java.util.Optional;
 @Configuration
 @Import({TramEventsPublisherConfiguration.class, SagaOrchestratorConfiguration.class, CommonConfiguration.class})
 public class OrderServiceConfiguration {
-  // TODO move to framework
-
-  @Bean
-  public SagaCommandProducer sagaCommandProducer(CommandProducer commandProducer) {
-    return new SagaCommandProducer(commandProducer);
-  }
 
   @Bean
   public OrderService orderService(RestaurantRepository restaurantRepository, OrderRepository orderRepository, DomainEventPublisher eventPublisher,

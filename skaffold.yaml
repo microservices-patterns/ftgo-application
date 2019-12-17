@@ -1,0 +1,20 @@
+apiVersion: skaffold/v1
+kind: Config
+metadata:
+  name: ftgo-application
+build:
+  artifacts:
+  - image: msapatterns/ftgo-consumer-service
+    context: ftgo-consumer-service
+deploy:
+  kubectl:
+    manifests:
+    - deployment/kubernetes/cdc-services/eventuate-local-cdc-service.yml
+    - deployment/kubernetes/cdc-services/ftgo-tram-cdc-service.yml
+    - deployment/kubernetes/stateful-services/ftgo-db-secret.yml
+    - deployment/kubernetes/stateful-services/ftgo-dynamodb-local.yml
+    - deployment/kubernetes/stateful-services/ftgo-kafka-config.yml
+    - deployment/kubernetes/stateful-services/ftgo-kafka-deployment.yml
+    - deployment/kubernetes/stateful-services/ftgo-mysql-deployment.yml
+    - deployment/kubernetes/stateful-services/ftgo-zookeeper-deployment.yml
+    - ftgo-consumer-service/src/deployment/kubernetes/ftgo-consumer-service.yml

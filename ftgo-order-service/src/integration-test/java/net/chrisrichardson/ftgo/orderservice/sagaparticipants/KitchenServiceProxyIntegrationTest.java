@@ -2,16 +2,16 @@ package net.chrisrichardson.ftgo.orderservice.sagaparticipants;
 
 import io.eventuate.tram.commands.producer.CommandProducer;
 import io.eventuate.tram.commands.spring.producer.TramCommandProducerConfiguration;
-import io.eventuate.tram.inmemory.spring.TramInMemoryConfiguration;
+import io.eventuate.tram.sagas.inmemory.TramSagaInMemoryConfiguration;
 import io.eventuate.tram.sagas.orchestration.SagaCommandProducer;
 import io.eventuate.tram.springcloudcontractsupport.EventuateContractVerifierConfiguration;
 import io.eventuate.tram.springcloudcontractsupport.EventuateTramRoutesConfigurer;
-import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
-import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSaga;
 import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicket;
 import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicketReply;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketLineItem;
+import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
+import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSaga;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,18 +22,13 @@ import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRun
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.sql.DataSource;
 import java.util.Collections;
 
 import static net.chrisrichardson.ftgo.orderservice.OrderDetailsMother.CHICKEN_VINDALOO_QUANTITY;
-import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.AJANTA_ID;
-import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.CHICKEN_VINDALOO;
-import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.CHICKEN_VINDALOO_MENU_ITEM_ID;
+import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.*;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
@@ -49,19 +44,8 @@ public class KitchenServiceProxyIntegrationTest {
   @Configuration
   @EnableAutoConfiguration
   @Import({TramCommandProducerConfiguration.class,
-          TramInMemoryConfiguration.class, EventuateContractVerifierConfiguration.class})
+          TramSagaInMemoryConfiguration.class, EventuateContractVerifierConfiguration.class})
   public static class TestConfiguration {
-
-    /// TramSagaInMemoryConfiguration
-
-    @Bean
-    public DataSource dataSource() {
-      EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-      return builder.setType(EmbeddedDatabaseType.H2)
-              .addScript("eventuate-tram-embedded-schema.sql")
-              .addScript("eventuate-tram-sagas-embedded.sql")
-              .build();
-    }
 
 
     @Bean
