@@ -67,7 +67,7 @@ dockerCompose {
 }
 
 integrationTest.dependsOn(integrationTestsComposeUp)
-
+componentTestsComposeUp.dependsOn(integrationTestsComposeUp)
 componentTest.dependsOn(componentTestsComposeUp)
 
 
