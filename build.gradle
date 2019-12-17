@@ -52,3 +52,7 @@ subprojects {
 task buildContracts(type: GradleBuild) {
   tasks = subprojects.collect { it.name }.findAll { it.endsWith("-contracts") }.collect { ":" + it + ":publish"}
 }
+
+task compileAll(type: GradleBuild) {
+  tasks = ["testClasses", "compileIntegrationTestJava", "compileComponentTestJava"]
+}

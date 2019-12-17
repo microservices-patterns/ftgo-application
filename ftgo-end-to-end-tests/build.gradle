@@ -1,4 +1,32 @@
+plugins {
+  id 'org.hidetake.swagger.generator' version '2.18.1'
+}
+
 apply plugin: 'docker-compose'
+
+dependencies {
+  swaggerCodegen 'org.openapitools:openapi-generator-cli:3.3.4'     // or OpenAPI Generator
+}
+
+swaggerSources {
+  consumerService {
+    inputFile = file('../ftgo-consumer-service-api/src/main/resources/ftgo-consumer-service-swagger.json')
+    code {
+      language = 'java'
+      configFile = file('swagger-codegen-config/consumer-service.json')
+      components = ['models']
+      // Supports additionalProperties: https://github.com/swagger-api/swagger-codegen#to-generate-a-sample-client-library
+    }
+  }
+}
+
+compileJava.dependsOn swaggerSources.consumerService.code
+
+sourceSets.main.java.srcDir "${swaggerSources.consumerService.code.outputDir}/src/main/java"
+
+// This is unnecessary
+
+sourceSets.main.resources.srcDir "${swaggerSources.consumerService.code.outputDir}/src/main/resources"
 
 dependencies {
     compile project(":ftgo-accounting-service-api")
@@ -7,9 +35,10 @@ dependencies {
     compile project(":ftgo-restaurant-service-api")
     compile project(":ftgo-order-service-api")
     compile project(":ftgo-delivery-service-api")
-    
+
     compile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
 
+    compile 'io.swagger:swagger-annotations:1.5.24'
 
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"

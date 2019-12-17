@@ -36,7 +36,7 @@ echo KEEP_RUNNING=$KEEP_RUNNING
 
 ./gradlew buildContracts
 
-./gradlew testClasses compileIntegrationTestJava compileComponentTestJava
+./gradlew compileAll
 
 if [ -z "$USE_EXISTING_CONTAINERS" ] ; then
     ${DOCKER_COMPOSE?} down --remove-orphans -v

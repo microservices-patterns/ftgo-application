@@ -1,0 +1,136 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Api Documentation",
+    "version": "1.0",
+    "title": "Api Documentation",
+    "termsOfService": "urn:tos",
+    "contact": {},
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "localhost:8081",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "consumer-controller",
+      "description": "Consumer Controller"
+    }
+  ],
+  "paths": {
+    "/consumers": {
+      "post": {
+        "tags": [
+          "consumer-controller"
+        ],
+        "summary": "create",
+        "operationId": "createUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "request",
+            "description": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateConsumerRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/CreateConsumerResponse"
+            }
+          }
+        }
+      }
+    },
+    "/consumers/{consumerId}": {
+      "get": {
+        "tags": [
+          "consumer-controller"
+        ],
+        "summary": "get",
+        "operationId": "getUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "consumerId",
+            "in": "path",
+            "description": "consumerId",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/GetConsumerResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CreateConsumerRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/PersonName"
+        }
+      },
+      "title": "CreateConsumerRequest"
+    },
+    "CreateConsumerResponse": {
+      "type": "object",
+      "properties": {
+        "consumerId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "CreateConsumerResponse"
+    },
+    "GetConsumerResponse": {
+      "type": "object",
+      "properties": {
+        "consumerId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "$ref": "#/definitions/PersonName"
+        }
+      },
+      "title": "GetConsumerResponse"
+    },
+    "PersonName": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        }
+      },
+      "required" : ["lastName", "firstName"],
+      "additionalProperties": true,
+      "title": "PersonName"
+    }
+  }
+}

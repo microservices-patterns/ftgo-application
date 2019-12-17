@@ -9,7 +9,7 @@ import io.eventuate.tram.testutil.TestMessageConsumerFactory;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.common.PersonName;
 import net.chrisrichardson.ftgo.consumerservice.api.ValidateOrderByConsumer;
-import net.chrisrichardson.ftgo.consumerservice.api.web.CreateConsumerRequest;
+import net.chrisrichardson.ftgo.consumerservice.web.CreateConsumerRequest;
 import net.chrisrichardson.ftgo.consumerservice.web.ConsumerWebConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;

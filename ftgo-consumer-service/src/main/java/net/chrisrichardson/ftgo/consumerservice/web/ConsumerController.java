@@ -1,11 +1,8 @@
 package net.chrisrichardson.ftgo.consumerservice.web;
 
 import io.eventuate.tram.events.publisher.ResultWithEvents;
-import net.chrisrichardson.ftgo.consumerservice.api.web.CreateConsumerRequest;
-import net.chrisrichardson.ftgo.consumerservice.api.web.CreateConsumerResponse;
 import net.chrisrichardson.ftgo.consumerservice.domain.Consumer;
 import net.chrisrichardson.ftgo.consumerservice.domain.ConsumerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +11,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path="/consumers")
 public class ConsumerController {
 
-  @Autowired
   private ConsumerService consumerService;
+
+  public ConsumerController(ConsumerService consumerService) {
+    this.consumerService = consumerService;
+  }
 
   @RequestMapping(method= RequestMethod.POST)
   public CreateConsumerResponse create(@RequestBody CreateConsumerRequest request) {
