@@ -2,6 +2,11 @@
 
 apply plugin: FtgoServicePlugin
 
+repositories {
+    maven {
+        url 'https://jitpack.io'
+    }
+}
 
 dependencies {
 
@@ -30,5 +35,6 @@ dependencies {
 
     testCompile "com.atlassian.oai:swagger-request-validator-springmvc:${swaggerRequestValidatorVersion}"
     testCompile 'io.rest-assured:spring-mock-mvc:3.0.6'
+    testCompile "com.github.everit-org.json-schema:org.everit.json.schema:1.12.0"
 
 }

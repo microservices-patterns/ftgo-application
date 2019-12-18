@@ -36,7 +36,7 @@ public class ValidateOrderByConsumer implements Command {
     this.orderTotal = orderTotal;
   }
 
-  public Long getOrderId() {
+  public long getOrderId() {
     return orderId;
   }
 
