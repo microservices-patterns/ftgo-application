@@ -1,4 +1,4 @@
-package net.chrisrichardson.ftgo.orderservice.domain;
+package net.chrisrichardson.ftgo.orderservice.api.events;
 
 import io.eventuate.tram.events.common.DomainEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDomainEvent;

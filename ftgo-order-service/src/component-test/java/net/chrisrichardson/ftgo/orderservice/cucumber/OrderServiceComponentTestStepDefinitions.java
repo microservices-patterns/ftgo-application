@@ -39,6 +39,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static io.eventuate.tram.commands.consumer.CommandHandlerReplyBuilder.withSuccess;
@@ -200,7 +201,18 @@ public class OrderServiceComponentTestStepDefinitions {
   @And("an (.*) event should be published")
   public void verifyEventPublished(String expectedEventClass) {
     messageTracker.assertDomainEventPublished("net.chrisrichardson.ftgo.orderservice.domain.Order",
-            "net.chrisrichardson.ftgo.orderservice.domain." + expectedEventClass);
+            findEventClass(expectedEventClass, "net.chrisrichardson.ftgo.orderservice.domain", "net.chrisrichardson.ftgo.orderservice.api.events"));
+  }
+
+  private String findEventClass(String expectedEventClass, String... packages) {
+    return Arrays.stream(packages).map(p -> p + "." + expectedEventClass).filter(className -> {
+      try {
+        Class.forName(className);
+        return true;
+      } catch (ClassNotFoundException e) {
+        return false;
+      }
+    }).findFirst().orElseThrow(() -> new RuntimeException(String.format("Cannot find class %s in packages %s", expectedEventClass, String.join(",", packages))));
   }
 
 }

@@ -343,15 +343,13 @@ public class OrderHistoryDaoDynamoDb implements OrderHistoryDao {
 //  }
 
   @Override
-  public boolean cancelOrder(String orderId, Optional<SourceEvent>
-          eventSource) {
+  public boolean updateOrderState(String orderId, OrderState newState, Optional<SourceEvent> eventSource) {
     UpdateItemSpec spec = new UpdateItemSpec()
             .withPrimaryKey("orderId", orderId)
             .withUpdateExpression("SET #orderStatus = :orderStatus")
             .withNameMap(Collections.singletonMap("#orderStatus",
                     ORDER_STATUS_FIELD))
-            .withValueMap(Collections.singletonMap(":orderStatus", OrderState
-                    .CANCELLED.toString()))
+            .withValueMap(Collections.singletonMap(":orderStatus", newState.toString()))
             .withReturnValues(ReturnValue.NONE);
     return idempotentUpdate(spec, eventSource);
   }
@@ -404,6 +402,7 @@ public class OrderHistoryDaoDynamoDb implements OrderHistoryDao {
             .withConsistentRead(true));
     return Optional.ofNullable(item).map(this::toOrder);
   }
+
 
   private Order toOrder(Item avs) {
     Order order = new Order(avs.getString("orderId"),

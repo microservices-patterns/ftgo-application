@@ -2,6 +2,7 @@ package net.chrisrichardson.ftgo.orderservice.domain;
 
 import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
 import net.chrisrichardson.ftgo.orderservice.RestaurantMother;
+import net.chrisrichardson.ftgo.orderservice.api.events.OrderAuthorized;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDomainEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderState;
@@ -14,7 +15,6 @@ import java.util.Optional;
 
 import static java.util.Collections.singletonList;
 import static net.chrisrichardson.ftgo.orderservice.OrderDetailsMother.*;
-import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.AJANTA_ID;
 import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.AJANTA_RESTAURANT;
 import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.CHICKEN_VINDALOO_PRICE;
 import static org.junit.Assert.assertEquals;

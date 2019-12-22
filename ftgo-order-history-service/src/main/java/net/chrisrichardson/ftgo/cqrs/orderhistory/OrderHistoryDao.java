@@ -3,6 +3,7 @@ package net.chrisrichardson.ftgo.cqrs.orderhistory;
 
 import net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb.SourceEvent;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb.Order;
+import net.chrisrichardson.ftgo.orderservice.api.events.OrderState;
 
 import java.util.Optional;
 
@@ -12,7 +13,7 @@ public interface OrderHistoryDao {
 
   OrderHistory findOrderHistory(String consumerId, OrderHistoryFilter filter);
 
-  public boolean cancelOrder(String orderId, Optional<SourceEvent> eventSource);
+  boolean updateOrderState(String orderId, OrderState newState, Optional<SourceEvent> eventSource);
 
   void noteTicketPreparationStarted(String orderId);
 
@@ -25,4 +26,5 @@ public interface OrderHistoryDao {
   void noteDelivered(String orderId);
 
   Optional<Order> findOrder(String orderId);
+
 }

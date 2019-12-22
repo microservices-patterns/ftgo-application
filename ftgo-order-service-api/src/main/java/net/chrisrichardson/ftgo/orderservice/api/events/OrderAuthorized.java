@@ -1,7 +1,5 @@
-package net.chrisrichardson.ftgo.orderservice.domain;
+package net.chrisrichardson.ftgo.orderservice.api.events;
 
-import io.eventuate.tram.events.common.DomainEvent;
-import net.chrisrichardson.ftgo.orderservice.api.events.OrderDomainEvent;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
