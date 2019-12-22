@@ -3,6 +3,7 @@ buildscript {
     dependencies {
         classpath "io.spring.gradle:dependency-management-plugin:$springDependencyManagementPluginVersion"
         classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractDependenciesVersion"
+        classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
     }
     repositories {
         mavenCentral()
@@ -13,6 +14,8 @@ buildscript {
 apply plugin: FtgoServicePlugin
 apply plugin: "io.spring.dependency-management"
 apply plugin: 'spring-cloud-contract'
+apply plugin: IntegrationTestsPlugin
+apply plugin: 'docker-compose'
 
 dependencyManagement {
     imports {
@@ -53,3 +56,20 @@ dependencies {
 
 
 }
+
+dockerCompose {
+
+    startedServices = ['not-used']
+
+    integrationTests {
+        if (System.getenv("FTGO_DOCKER_COMPOSE_FILES") != null)
+            useComposeFiles = System.getenv("FTGO_DOCKER_COMPOSE_FILES").split(",").collect { "../" + it }
+
+        startedServices = ['dynamodblocal', 'dynamodblocal-init']
+        stopContainers = true
+    }
+}
+
+integrationTest.dependsOn(integrationTestsComposeUp)
+
+
