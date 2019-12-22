@@ -27,7 +27,7 @@ public class OrderJpaTest {
   @Test
   public void shouldSaveAndLoadOrder() {
 
-    long orderId = transactionTemplate.execute((ts) -> {
+    long orderId = transactionTemplate.execute(ts -> {
       Order order = new Order(CONSUMER_ID, AJANTA_ID, chickenVindalooLineItems());
       orderRepository.save(order);
       return order.getId();
