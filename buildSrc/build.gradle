@@ -8,4 +8,6 @@ dependencies {
     compile 'mysql:mysql-connector-java:5.1.39'
     compile 'com.amazonaws:aws-java-sdk-dynamodb:1.11.158'
     compile 'commons-lang:commons-lang:2.6'
+
+    compile 'org.jsonschema2pojo:jsonschema2pojo-core:1.0.1'
 }

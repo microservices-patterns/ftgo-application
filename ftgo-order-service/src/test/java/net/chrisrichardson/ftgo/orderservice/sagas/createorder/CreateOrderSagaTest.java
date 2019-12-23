@@ -51,7 +51,7 @@ public class CreateOrderSagaTest {
     andGiven().
         successReply().
     expect().
-      command(new AuthorizeCommand(CONSUMER_ID, ORDER_ID, CHICKEN_VINDALOO_ORDER_TOTAL)).
+      command(new AuthorizeCommand().withConsumerId(CONSUMER_ID).withOrderId(ORDER_ID).withOrderTotal(CHICKEN_VINDALOO_ORDER_TOTAL.asString())).
       to(AccountingServiceChannels.accountingServiceChannel).
     andGiven().
         successReply().
@@ -102,7 +102,7 @@ public class CreateOrderSagaTest {
     andGiven().
       successReply().
     expect().
-      command(new AuthorizeCommand(CONSUMER_ID, ORDER_ID, CHICKEN_VINDALOO_ORDER_TOTAL)).
+      command(new AuthorizeCommand().withConsumerId(CONSUMER_ID).withOrderId(ORDER_ID).withOrderTotal(CHICKEN_VINDALOO_ORDER_TOTAL.asString())).
       to(AccountingServiceChannels.accountingServiceChannel).
     andGiven().
       failureReply().

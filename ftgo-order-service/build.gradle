@@ -33,7 +33,7 @@ apply plugin: 'com.google.protobuf'
 apply plugin: IntegrationTestsPlugin
 apply plugin: ComponentTestsPlugin
 
-apply plugin: 'jsonschema2pojo'
+apply plugin: FtgoJSONSchema2PojoPlugin
 
 
 dependencyManagement {
@@ -179,19 +179,22 @@ dependencies {
 
 }
 
-jsonSchema2Pojo {
-    source = files("../ftgo-consumer-service-api/src/main/resources/ValidateOrderByConsumer.json")
-    targetPackage = "net.chrisrichardson.ftgo.consumerservice.api"
-    includeAdditionalProperties = false
-    generateBuilders = true
-    useLongIntegers = true
+ftgoJsonSchema2Pojo {
 
-}
-
-sourceSets {
-    test {
-        java {
-            srcDirs += [ jsonSchema2Pojo.targetDirectory ]
-        }
+    ftgoConsumerService {
+        source = files("../ftgo-consumer-service-api/src/main/resources/ValidateOrderByConsumer.json")
+        targetPackage = "net.chrisrichardson.ftgo.consumerservice.api"
+        includeAdditionalProperties = false
+        generateBuilders = true
+        useLongIntegers = true
     }
+    ftgoAccountingService {
+        source = files("../ftgo-accounting-service-api/src/main/resources/messages")
+        targetPackage = "net.chrisrichardson.ftgo.accountservice.api"
+        includeAdditionalProperties = false
+        generateBuilders = true
+        useLongIntegers = true
+    }
+
 }
+
