@@ -11,6 +11,7 @@ import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.deliveryservice.api.web.CourierAvailability;
 import net.chrisrichardson.ftgo.kitchenservice.api.web.TicketAcceptance;
+import net.chrisrichardson.ftgo.orderservice.api.events.OrderState;
 import net.chrisrichardson.ftgo.orderservice.api.web.CreateOrderRequest;
 import net.chrisrichardson.ftgo.orderservice.api.web.ReviseOrderRequest;
 import net.chrisrichardson.ftgo.restaurantservice.events.CreateRestaurantRequest;
@@ -22,6 +23,7 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Optional;
 
 import static com.jayway.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +39,7 @@ public class EndToEndTests {
   public static final String RESTAURANT_NAME = "My Restaurant";
 
   private final int revisedQuantityOfChickenVindaloo = 10;
-  private String host = System.getenv("DOCKER_HOST_IP");
+  private String host = Optional.ofNullable(System.getenv("DOCKER_HOST_IP")).orElse("localhost");
   private int consumerId;
   private int restaurantId;
   private int orderId;
@@ -197,13 +199,16 @@ public class EndToEndTests {
 
     verifyOrderAuthorized(orderId);
 
-    verifyOrderHistoryUpdated(orderId, consumerId);
+    verifyOrderHistoryUpdated(orderId, consumerId, OrderState.APPROVED.name());
   }
 
   private void cancelOrder() {
     cancelOrder(orderId);
 
     verifyOrderCancelled(orderId);
+
+    verifyOrderHistoryUpdated(orderId, consumerId, OrderState.CANCELLED.name());
+
   }
 
   private void verifyOrderCancelled(int orderId) {
@@ -326,7 +331,7 @@ public class EndToEndTests {
   }
 
 
-  private void verifyOrderHistoryUpdated(int orderId, int consumerId) {
+  private void verifyOrderHistoryUpdated(int orderId, int consumerId, String expectedState) {
     Eventually.eventually(String.format("verifyOrderHistoryUpdated %s", orderId), () -> {
       String state = given().
               when().
@@ -336,7 +341,7 @@ public class EndToEndTests {
               .body("orders[0].restaurantName", equalTo(RESTAURANT_NAME))
               .extract().
                       path("orders[0].status"); // TODO state?
-      assertNotNull(state);
+      assertEquals(expectedState, state);
     });
   }
 

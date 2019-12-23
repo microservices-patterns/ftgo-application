@@ -65,6 +65,8 @@ dockerCompose {
     integrationTests {
         startedServices = ["dynamodblocal", "dynamodblocal-init"]
         stopContainers = false
+        if (System.getenv("FTGO_DOCKER_COMPOSE_FILES") != null)
+            useComposeFiles = System.getenv("FTGO_DOCKER_COMPOSE_FILES").split(",").collect { "../" + it }
     }
 }
 

@@ -75,7 +75,7 @@ public class OrderHistoryDaoDynamoDbTest {
 
   @Test
   public void shouldIgnoreDuplicateAdd() {
-    dao.cancelOrder(orderId, Optional.empty());
+    dao.updateOrderState(orderId, OrderState.CANCELLED, Optional.empty());
     assertFalse(dao.addOrder(order1, eventSource));
     Optional<Order> order = dao.findOrder(orderId);
     assertEquals(OrderState.CANCELLED, order.get().getStatus());
@@ -111,15 +111,15 @@ public class OrderHistoryDaoDynamoDbTest {
 
   @Test
   public void shouldCancel() throws InterruptedException {
-    dao.cancelOrder(orderId, Optional.of(new SourceEvent("a", "b", "c")));
+    dao.updateOrderState(orderId, OrderState.CANCELLED, Optional.of(new SourceEvent("a", "b", "c")));
     Order order = dao.findOrder(orderId).get();
     assertEquals(OrderState.CANCELLED, order.getStatus());
   }
 
   @Test
   public void shouldHandleCancel() throws InterruptedException {
-    assertTrue(dao.cancelOrder(orderId, Optional.of(new SourceEvent("a", "b", "c"))));
-    assertFalse(dao.cancelOrder(orderId, Optional.of(new SourceEvent("a", "b", "c"))));
+    assertTrue(dao.updateOrderState(orderId, OrderState.CANCELLED, Optional.of(new SourceEvent("a", "b", "c"))));
+    assertFalse(dao.updateOrderState(orderId, OrderState.CANCELLED, Optional.of(new SourceEvent("a", "b", "c"))));
   }
 
   @Test

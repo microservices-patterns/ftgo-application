@@ -3,14 +3,12 @@ package net.chrisrichardson.ftgo.cqrs.orderhistory.messaging;
 import io.eventuate.tram.events.subscriber.DomainEventEnvelope;
 import io.eventuate.tram.events.subscriber.DomainEventHandlers;
 import io.eventuate.tram.events.subscriber.DomainEventHandlersBuilder;
-import io.eventuate.tram.messaging.common.Message;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.DeliveryPickedUp;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.Location;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.OrderHistoryDao;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb.Order;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb.SourceEvent;
-import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
-import net.chrisrichardson.ftgo.orderservice.api.events.OrderState;
+import net.chrisrichardson.ftgo.orderservice.api.events.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +34,9 @@ public class OrderHistoryEventHandlers {
     return DomainEventHandlersBuilder
             .forAggregateType("net.chrisrichardson.ftgo.orderservice.domain.Order")
             .onEvent(OrderCreatedEvent.class, this::handleOrderCreated)
+            .onEvent(OrderAuthorized.class, this::handleOrderAuthorized)
+            .onEvent(OrderCancelled.class, this::handleOrderCancelled)
+            .onEvent(OrderRejected.class, this::handleOrderRejected)
 //            .onEvent(DeliveryPickedUp.class, this::handleDeliveryPickedUp)
             .build();
   }
@@ -49,6 +50,24 @@ public class OrderHistoryEventHandlers {
     logger.debug("handleOrderCreated called {}", dee);
     boolean result = orderHistoryDao.addOrder(makeOrder(dee.getAggregateId(), dee.getEvent()), makeSourceEvent(dee));
     logger.debug("handleOrderCreated result {} {}", dee, result);
+  }
+
+  public void handleOrderAuthorized(DomainEventEnvelope<OrderAuthorized> dee) {
+    logger.debug("handleOrderAuthorized called {}", dee);
+    boolean result = orderHistoryDao.updateOrderState(dee.getAggregateId(), OrderState.APPROVED, makeSourceEvent(dee));
+    logger.debug("handleOrderAuthorized result {} {}", dee, result);
+  }
+
+  public void handleOrderCancelled(DomainEventEnvelope<OrderCancelled> dee) {
+    logger.debug("handleOrderCancelled called {}", dee);
+    boolean result = orderHistoryDao.updateOrderState(dee.getAggregateId(), OrderState.CANCELLED, makeSourceEvent(dee));
+    logger.debug("handleOrderCancelled result {} {}", dee, result);
+  }
+
+  public void handleOrderRejected(DomainEventEnvelope<OrderRejected> dee) {
+    logger.debug("handleOrderRejected called {}", dee);
+    boolean result = orderHistoryDao.updateOrderState(dee.getAggregateId(), OrderState.REJECTED, makeSourceEvent(dee));
+    logger.debug("handleOrderRejected result {} {}", dee, result);
   }
 
   private Order makeOrder(String orderId, OrderCreatedEvent event) {
