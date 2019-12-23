@@ -1,13 +1,12 @@
 package net.chrisrichardson.ftgo.deliveryservice.domain;
 
-import io.eventuate.common.jdbc.spring.EventuateCommonJdbcOperationsConfiguration;
+import io.eventuate.tram.consumer.jdbc.spring.TramConsumerJdbcAutoConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -19,8 +18,7 @@ public class DeliveryJpaTest {
 
   @Configuration
   @EnableJpaRepositories
-  @EnableAutoConfiguration
-  @Import(EventuateCommonJdbcOperationsConfiguration.class)
+  @EnableAutoConfiguration(exclude = TramConsumerJdbcAutoConfiguration.class)
   public static class Config {
   }
 

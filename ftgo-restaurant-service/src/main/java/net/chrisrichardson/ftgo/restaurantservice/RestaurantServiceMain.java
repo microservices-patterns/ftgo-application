@@ -3,7 +3,6 @@ package net.chrisrichardson.ftgo.restaurantservice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.eventuate.common.json.mapper.JSonMapper;
 import io.eventuate.tram.jdbckafka.TramJdbcKafkaConfiguration;
-import io.eventuate.tram.messaging.common.spring.TramMessagingCommonAutoConfiguration;
 import net.chrisrichardson.eventstore.examples.customersandorders.commonswagger.CommonSwaggerConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -15,7 +14,7 @@ import org.springframework.context.annotation.Primary;
 
 @SpringBootApplication
 @EnableAutoConfiguration
-@Import({TramJdbcKafkaConfiguration.class, CommonSwaggerConfiguration.class, TramMessagingCommonAutoConfiguration.class})
+@Import({TramJdbcKafkaConfiguration.class, CommonSwaggerConfiguration.class})
 @ComponentScan
 public class RestaurantServiceMain {
 
