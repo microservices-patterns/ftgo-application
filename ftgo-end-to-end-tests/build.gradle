@@ -3,6 +3,7 @@ plugins {
 }
 
 apply plugin: 'docker-compose'
+apply plugin: FtgoApiDependencyResolverPlugin
 
 dependencies {
   swaggerCodegen 'org.openapitools:openapi-generator-cli:3.3.4'     // or OpenAPI Generator
@@ -10,7 +11,7 @@ dependencies {
 
 swaggerSources {
   consumerService {
-    inputFile = file('../ftgo-consumer-service-api/src/main/resources/ftgo-consumer-service-swagger.json')
+    inputFile = file("${ftgoApiSpecsDir}/ftgo-consumer-service-swagger.json")
     code {
       language = 'java'
       configFile = file('swagger-codegen-config/consumer-service.json')
@@ -19,6 +20,8 @@ swaggerSources {
     }
   }
 }
+
+swaggerSources.consumerService.code.dependsOn ftgoResolveAPIDependencies
 
 compileJava.dependsOn swaggerSources.consumerService.code
 
@@ -29,6 +32,8 @@ sourceSets.main.java.srcDir "${swaggerSources.consumerService.code.outputDir}/sr
 sourceSets.main.resources.srcDir "${swaggerSources.consumerService.code.outputDir}/src/main/resources"
 
 dependencies {
+    ftgoApiSpecification project(":ftgo-consumer-service-api-spec")
+
     compile project(":ftgo-accounting-service-api")
     compile project(":ftgo-consumer-service-api")
     compile project(":ftgo-kitchen-service-api")

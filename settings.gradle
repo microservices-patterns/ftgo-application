@@ -15,10 +15,12 @@ include "ftgo-kitchen-service"
 include "ftgo-kitchen-service-contracts"
 
 include "ftgo-accounting-service-api"
+include "ftgo-accounting-service-api-spec"
 include "ftgo-accounting-service"
 include "ftgo-accounting-service-contracts"
 
 include "ftgo-consumer-service-api"
+include "ftgo-consumer-service-api-spec"
 include "ftgo-consumer-service"
 include "ftgo-consumer-service-contracts"
 

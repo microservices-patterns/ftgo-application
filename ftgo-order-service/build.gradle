@@ -35,7 +35,6 @@ apply plugin: ComponentTestsPlugin
 
 apply plugin: FtgoJSONSchema2PojoPlugin
 
-
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"
@@ -114,9 +113,10 @@ idea {
     }
 }
 
-
 dependencies {
 
+    ftgoApiSpecification project(":ftgo-consumer-service-api-spec")
+    ftgoApiSpecification project(":ftgo-accounting-service-api-spec")
 
     compile project(":common-swagger")
     compile project(":ftgo-common-jpa")
@@ -132,6 +132,7 @@ dependencies {
     compile project(":ftgo-kitchen-service-api")
     compile project(":ftgo-restaurant-service-api")
     compile project(":ftgo-order-service-api")
+
 
     compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
@@ -182,14 +183,14 @@ dependencies {
 ftgoJsonSchema2Pojo {
 
     ftgoConsumerService {
-        source = files("../ftgo-consumer-service-api/src/main/resources/ValidateOrderByConsumer.json")
+        source = files("${ftgoApiSpecsDir}/ValidateOrderByConsumer.json")
         targetPackage = "net.chrisrichardson.ftgo.consumerservice.api"
         includeAdditionalProperties = false
         generateBuilders = true
         useLongIntegers = true
     }
     ftgoAccountingService {
-        source = files("../ftgo-accounting-service-api/src/main/resources/messages")
+        source = files("${ftgoApiSpecsDir}/messages")
         targetPackage = "net.chrisrichardson.ftgo.accountservice.api"
         includeAdditionalProperties = false
         generateBuilders = true

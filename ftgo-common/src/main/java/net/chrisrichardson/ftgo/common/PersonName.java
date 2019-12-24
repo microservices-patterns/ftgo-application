@@ -1,8 +1,5 @@
 package net.chrisrichardson.ftgo.common;
 
-import javax.persistence.Embeddable;
-
-@Embeddable
 public class PersonName {
   private String firstName;
   private String lastName;

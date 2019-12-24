@@ -6,6 +6,7 @@ import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +24,8 @@ public class ValidatingJSONMapper {
   public static ValidatingJSONMapper forSchema(String schemaPath) {
     Schema schema;
     try (InputStream inputStream = ValidatingJSONMapper.class.getResourceAsStream(schemaPath)) {
+      if (inputStream == null)
+        fail("Can't find schema: " + schemaPath);
       JSONObject rawSchema = new JSONObject(new JSONTokener(inputStream));
       schema = SchemaLoader.load(rawSchema);
     } catch (IOException e) {

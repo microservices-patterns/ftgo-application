@@ -4,6 +4,8 @@ dependencies {
 
     compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
 
+    // compile "org.springframework.boot:spring-boot-starter:$springBootVersion"
+
     compile "io.eventuate.common:eventuate-common-json-mapper:$eventuateCommonVersion"
 
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"

@@ -10,6 +10,16 @@
             </basic>
         </attributes>
     </embeddable>
+    <embeddable class="net.chrisrichardson.ftgo.common.PersonName" access="FIELD">
+        <attributes>
+            <basic name="firstName">
+                <column name="firstName"/>
+            </basic>
+            <basic name="lastName">
+                <column name="lastName"/>
+            </basic>
+        </attributes>
+    </embeddable>
     <embeddable class="net.chrisrichardson.ftgo.common.Address" access="FIELD">
         <attributes>
             <basic name="street1">

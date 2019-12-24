@@ -5,6 +5,9 @@ class FtgoJSONSchema2PojoPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
+
+        project.apply(plugin: FtgoApiDependencyResolverPlugin)
+
         def jsonSchemaSources = project.container(JSONSchemaSource)
         project.extensions.add('ftgoJsonSchema2Pojo', jsonSchemaSources)
 
@@ -19,6 +22,7 @@ class FtgoJSONSchema2PojoPlugin implements Plugin<Project> {
 
             source.codeGen.targetDirectory = new File(project.buildDir, "generated-js2p-code-${source.name}")
 
+            source.codeGen.dependsOn(project.tasks.ftgoResolveAPIDependencies)
 
             project.afterEvaluate {
                 project.sourceSets[source.sourceSet].java.srcDirs += [source.codeGen.targetDirectory]
