@@ -1,8 +1,8 @@
 package net.chrisrichardson.ftgo.kitchenservice.contract;
 
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
-import io.eventuate.tram.events.publisher.TramEventsPublisherConfiguration;
-import io.eventuate.tram.inmemory.TramInMemoryConfiguration;
+import io.eventuate.tram.events.spring.publisher.TramEventsPublisherConfiguration;
+import io.eventuate.tram.inmemory.spring.TramInMemoryConfiguration;
 import io.eventuate.tram.springcloudcontractsupport.EventuateContractVerifierConfiguration;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;

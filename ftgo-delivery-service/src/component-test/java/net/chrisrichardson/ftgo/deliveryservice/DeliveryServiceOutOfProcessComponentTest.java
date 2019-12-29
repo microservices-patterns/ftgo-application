@@ -1,7 +1,7 @@
 package net.chrisrichardson.ftgo.deliveryservice;
 
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
-import io.eventuate.tram.events.publisher.TramEventsPublisherConfiguration;
+import io.eventuate.tram.events.spring.publisher.TramEventsPublisherConfiguration;
 import io.eventuate.tram.jdbckafka.TramJdbcKafkaConfiguration;
 import net.chrisrichardson.ftgo.deliveryservice.domain.DeliveryServiceTestData;
 import net.chrisrichardson.ftgo.orderservice.api.OrderServiceChannels;

@@ -2,7 +2,7 @@ package net.chrisrichardson.ftgo.orderservice.domain;
 
 import com.jayway.jsonpath.JsonPath;
 import io.eventuate.tram.commands.common.CommandMessageHeaders;
-import io.eventuate.tram.commands.producer.TramCommandProducerConfiguration;
+import io.eventuate.tram.commands.spring.producer.TramCommandProducerConfiguration;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.messaging.common.Message;
 import io.eventuate.tram.sagas.inmemory.TramSagaInMemoryConfiguration;

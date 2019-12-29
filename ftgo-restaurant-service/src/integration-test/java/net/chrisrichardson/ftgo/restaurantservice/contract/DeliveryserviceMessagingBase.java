@@ -1,8 +1,8 @@
 package net.chrisrichardson.ftgo.restaurantservice.contract;
 
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
-import io.eventuate.tram.events.publisher.TramEventsPublisherConfiguration;
-import io.eventuate.tram.inmemory.TramInMemoryConfiguration;
+import io.eventuate.tram.events.spring.publisher.TramEventsPublisherConfiguration;
+import io.eventuate.tram.inmemory.spring.TramInMemoryConfiguration;
 import io.eventuate.tram.springcloudcontractsupport.EventuateContractVerifierConfiguration;
 import net.chrisrichardson.ftgo.common.Address;
 import net.chrisrichardson.ftgo.restaurantservice.domain.Restaurant;

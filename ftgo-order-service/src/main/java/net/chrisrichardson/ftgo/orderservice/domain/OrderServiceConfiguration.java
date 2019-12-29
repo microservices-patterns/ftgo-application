@@ -1,10 +1,9 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
-import io.eventuate.tram.events.publisher.TramEventsPublisherConfiguration;
-import io.eventuate.tram.sagas.orchestration.SagaManager;
-import io.eventuate.tram.sagas.orchestration.SagaManagerImpl;
-import io.eventuate.tram.sagas.orchestration.SagaOrchestratorConfiguration;
+import io.eventuate.tram.events.spring.publisher.TramEventsPublisherConfiguration;
+import io.eventuate.tram.sagas.orchestration.*;
+import io.eventuate.tram.sagas.orchestration.spring.SagaOrchestratorConfiguration;
 import io.micrometer.core.instrument.MeterRegistry;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.AccountingServiceProxy;
@@ -12,11 +11,8 @@ import net.chrisrichardson.ftgo.orderservice.sagaparticipants.ConsumerServicePro
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.KitchenServiceProxy;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.OrderServiceProxy;
 import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSaga;
-import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSagaData;
 import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSaga;
-import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSagaState;
 import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSaga;
-import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSagaData;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -30,16 +26,18 @@ import java.util.Optional;
 public class OrderServiceConfiguration {
 
   @Bean
-  public OrderService orderService(RestaurantRepository restaurantRepository, OrderRepository orderRepository, DomainEventPublisher eventPublisher,
-                                   SagaManager<CreateOrderSagaState> createOrderSagaManager,
-                                   SagaManager<CancelOrderSagaData> cancelOrderSagaManager, SagaManager<ReviseOrderSagaData> reviseOrderSagaManager, OrderDomainEventPublisher orderAggregateEventPublisher, Optional<MeterRegistry> meterRegistry) {
-    return new OrderService(orderRepository, eventPublisher, restaurantRepository,
-            createOrderSagaManager, cancelOrderSagaManager, reviseOrderSagaManager, orderAggregateEventPublisher, meterRegistry);
-  }
+  public OrderService orderService(SagaInstanceFactory sagaInstanceFactory,
+                                   RestaurantRepository restaurantRepository,
+                                   OrderRepository orderRepository,
+                                   DomainEventPublisher eventPublisher,
+                                   CreateOrderSaga createOrderSaga,
+                                   CancelOrderSaga cancelOrderSaga,
+                                   ReviseOrderSaga reviseOrderSaga,
+                                   OrderDomainEventPublisher orderAggregateEventPublisher,
+                                   Optional<MeterRegistry> meterRegistry) {
 
-  @Bean
-  public SagaManager<CreateOrderSagaState> createOrderSagaManager(CreateOrderSaga saga) {
-    return new SagaManagerImpl<>(saga);
+    return new OrderService(sagaInstanceFactory, orderRepository, eventPublisher, restaurantRepository,
+            createOrderSaga, cancelOrderSaga, reviseOrderSaga, orderAggregateEventPublisher, meterRegistry);
   }
 
   @Bean
@@ -48,18 +46,8 @@ public class OrderServiceConfiguration {
   }
 
   @Bean
-  public SagaManager<CancelOrderSagaData> CancelOrderSagaManager(CancelOrderSaga saga) {
-    return new SagaManagerImpl<>(saga);
-  }
-
-  @Bean
   public CancelOrderSaga cancelOrderSaga() {
     return new CancelOrderSaga();
-  }
-
-  @Bean
-  public SagaManager<ReviseOrderSagaData> reviseOrderSagaManager(ReviseOrderSaga saga) {
-    return new SagaManagerImpl<>(saga);
   }
 
   @Bean

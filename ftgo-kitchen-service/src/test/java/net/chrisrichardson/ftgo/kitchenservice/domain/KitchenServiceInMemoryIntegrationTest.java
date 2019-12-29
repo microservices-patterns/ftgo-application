@@ -2,7 +2,7 @@ package net.chrisrichardson.ftgo.kitchenservice.domain;
 
 
 import io.eventuate.tram.commands.producer.CommandProducer;
-import io.eventuate.tram.commands.producer.TramCommandProducerConfiguration;
+import io.eventuate.tram.commands.spring.producer.TramCommandProducerConfiguration;
 import io.eventuate.tram.sagas.common.SagaCommandHeaders;
 import io.eventuate.tram.sagas.inmemory.TramSagaInMemoryConfiguration;
 import io.eventuate.tram.testutil.TestMessageConsumer;
