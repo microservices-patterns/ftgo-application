@@ -3,8 +3,6 @@ package net.chrisrichardson.ftgo.orderservice.messaging;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.orderservice.RestaurantMother;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderService;
-import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
-import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +18,7 @@ public class OrderEventConsumerTest {
   private OrderEventConsumer orderEventConsumer;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     orderService = mock(OrderService.class);
     orderEventConsumer = new OrderEventConsumer(orderService);
   }
@@ -34,10 +32,10 @@ public class OrderEventConsumerTest {
             eventHandlers(orderEventConsumer.domainEventHandlers()).
     when().
             aggregate("net.chrisrichardson.ftgo.restaurantservice.domain.Restaurant", AJANTA_ID).
-            publishes(new RestaurantCreated(AJANTA_RESTAURANT_NAME, RestaurantMother.RESTAURANT_ADDRESS, RestaurantMother.AJANTA_RESTAURANT_MENU)).
+            publishes(RestaurantMother.makeAjantaRestaurantCreatedEvent()).
     then().
        verify(() -> {
-         verify(orderService).createMenu(AJANTA_ID, AJANTA_RESTAURANT_NAME, new RestaurantMenu(RestaurantMother.AJANTA_RESTAURANT_MENU_ITEMS));
+         verify(orderService).createMenu(AJANTA_ID, AJANTA_RESTAURANT_NAME, RestaurantMother.AJANTA_RESTAURANT_MENU_ITEMS);
        })
     ;
 

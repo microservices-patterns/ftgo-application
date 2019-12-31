@@ -1,12 +1,15 @@
-package net.chrisrichardson.ftgo.consumerservice.api;
+package net.chrisrichardson.ftgo.testutil.jsonschema;
 
 import io.eventuate.common.json.mapper.JSonMapper;
+import org.apache.commons.lang.StringUtils;
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.ValidationException;
+import org.everit.json.schema.loader.SchemaClient;
 import org.everit.json.schema.loader.SchemaLoader;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.springframework.util.Assert;
+import org.junit.Assert;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,8 +30,16 @@ public class ValidatingJSONMapper {
       if (inputStream == null)
         fail("Can't find schema: " + schemaPath);
       JSONObject rawSchema = new JSONObject(new JSONTokener(inputStream));
-      schema = SchemaLoader.load(rawSchema);
-    } catch (IOException e) {
+      schema = SchemaLoader.load(rawSchema, new SchemaClient() {
+        @Override
+        public InputStream get(String url) {
+          String path = StringUtils.substringBeforeLast(schemaPath, "/") + "/" + url;
+          InputStream is = ValidatingJSONMapper.class.getResourceAsStream(path);
+          Assert.assertNotNull(path, is);
+          return is;
+        }
+      });
+    } catch (IOException | JSONException e) {
       throw new RuntimeException(e);
     }
     return new ValidatingJSONMapper(schema);
@@ -43,9 +54,19 @@ public class ValidatingJSONMapper {
     }
 
   }
+  public void validate(String jsonObject) {
+    JSONObject jo = new JSONObject(new JSONTokener(jsonObject));
+    validate(jo);
+  }
 
-  <T> T fromJSON(JSONObject jsonObject, Class<T> clasz) {
+  public <T> T fromJSON(JSONObject jsonObject, Class<T> clasz) {
     validate(jsonObject);
     return JSonMapper.fromJson(jsonObject.toString(), clasz);
+  }
+
+  public String toJSON(Object object) {
+    String json = JSonMapper.toJson(object);
+    validate(json);
+    return json;
   }
 }

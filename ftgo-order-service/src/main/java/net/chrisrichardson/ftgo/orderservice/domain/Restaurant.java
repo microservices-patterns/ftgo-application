@@ -1,18 +1,9 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
-import net.chrisrichardson.ftgo.orderservice.api.events.OrderDomainEvent;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;
-import net.chrisrichardson.ftgo.restaurantservice.events.MenuItem;
-import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
+import net.chrisrichardson.ftgo.orderservice.api.events.OrderDomainEvent;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +30,7 @@ public class Restaurant {
     this.menuItems = menuItems;
   }
 
-  public List<OrderDomainEvent> reviseMenu(RestaurantMenu revisedMenu) {
+  public List<OrderDomainEvent> reviseMenu(List<MenuItem> revisedMenu) {
     throw new UnsupportedOperationException();
   }
 

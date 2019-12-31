@@ -6,16 +6,15 @@ import io.eventuate.tram.messaging.consumer.MessageConsumer;
 import io.eventuate.util.test.async.Eventually;
 import net.chrisrichardson.ftgo.accountservice.api.AuthorizeCommand;
 import net.chrisrichardson.ftgo.consumerservice.api.ValidateOrderByConsumer;
+import net.chrisrichardson.ftgo.kitchenservice.api.ConfirmCreateTicket;
+import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicket;
+import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicketReply;
 import net.chrisrichardson.ftgo.orderservice.api.web.CreateOrderRequest;
 import net.chrisrichardson.ftgo.orderservice.domain.RestaurantRepository;
 import net.chrisrichardson.ftgo.orderservice.messaging.OrderServiceMessagingConfiguration;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.ApproveOrderCommand;
 import net.chrisrichardson.ftgo.orderservice.service.OrderCommandHandlersConfiguration;
 import net.chrisrichardson.ftgo.orderservice.web.OrderWebConfiguration;
-import net.chrisrichardson.ftgo.kitchenservice.api.ConfirmCreateTicket;
-import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicket;
-import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicketReply;
-import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,6 @@ import java.util.Collections;
 
 import static io.eventuate.tram.commands.consumer.CommandHandlerReplyBuilder.withSuccess;
 import static io.restassured.RestAssured.given;
-import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.AJANTA_RESTAURANT_MENU;
 import static org.junit.Assert.assertNotNull;
 
 public abstract class AbstractOrderServiceComponentTest {
@@ -92,7 +90,7 @@ public abstract class AbstractOrderServiceComponentTest {
 
 
     domainEventPublisher.publish("net.chrisrichardson.ftgo.restaurantservice.domain.Restaurant", RestaurantMother.AJANTA_ID,
-            Collections.singletonList(new RestaurantCreated(RestaurantMother.AJANTA_RESTAURANT_NAME, AJANTA_RESTAURANT_MENU)));
+            Collections.singletonList(RestaurantMother.makeAjantaRestaurantCreatedEvent()));
 
 
     Eventually.eventually(() -> {

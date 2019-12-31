@@ -5,10 +5,7 @@ import io.eventuate.tram.events.subscriber.DomainEventHandlers;
 import io.eventuate.tram.events.subscriber.DomainEventHandlersBuilder;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderService;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
-import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenuRevised;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 
 public class OrderEventConsumer {
@@ -30,17 +27,13 @@ public class OrderEventConsumer {
   private void createMenu(DomainEventEnvelope<RestaurantCreated> de) {
     String restaurantIds = de.getAggregateId();
     long id = Long.parseLong(restaurantIds);
-    RestaurantMenu menu = de.getEvent().getMenu();
-    orderService.createMenu(id, de.getEvent().getName(), menu);
+    orderService.createMenu(id, de.getEvent().getName(), RestaurantEventMapper.toMenuItems(de.getEvent().getMenu().getMenuItems()));
   }
 
   public void reviseMenu(DomainEventEnvelope<RestaurantMenuRevised> de) {
-
     String restaurantIds = de.getAggregateId();
     long id = Long.parseLong(restaurantIds);
-    RestaurantMenu revisedMenu = de.getEvent().getRevisedMenu();
-
-    orderService.reviseMenu(id, revisedMenu);
+    orderService.reviseMenu(id, RestaurantEventMapper.toMenuItems(de.getEvent().getMenu().getMenuItems()));
   }
 
 }

@@ -28,6 +28,11 @@ dependencyManagement {
     }
 }
 
+configurations.all {
+    // Out of date, conflicting JSON library
+    exclude  group: "com.vaadin.external.google"
+}
+
 dependencies {
 
 
@@ -54,6 +59,7 @@ dependencies {
     testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
     testCompile "com.jayway.jsonpath:json-path:2.3.0"
     testCompile "io.eventuate.tram.core:eventuate-tram-testing-support-spring-cloud-contract:$eventuateTramVersion"
+    testCompile project(":ftgo-test-util-json-schema")
 
     integrationTestCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
     integrationTestCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"

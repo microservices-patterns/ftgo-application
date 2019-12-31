@@ -1,8 +1,9 @@
 
 dependencies {
-
-
+    
     compile "io.eventuate.tram.core:eventuate-tram-events:$eventuateTramVersion"
     compile project(":ftgo-common")
+    compile project(":ftgo-restaurant-service-api-spec")
+    compile project(":ftgo-restaurant-service-api-temp")
 
 }

@@ -2,11 +2,11 @@ package net.chrisrichardson.ftgo.consumerservice.api;
 
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.common.Money;
+import net.chrisrichardson.ftgo.testutil.jsonschema.ValidatingJSONMapper;
+import org.json.JSONObject;
 import org.junit.Test;
 
-import org.json.JSONObject;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class ValidateOrderByConsumerTest {
 

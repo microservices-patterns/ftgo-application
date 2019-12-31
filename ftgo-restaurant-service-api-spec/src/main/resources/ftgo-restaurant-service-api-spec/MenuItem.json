@@ -1,0 +1,20 @@
+{
+  "type" : "object",
+  "javaType" : "net.chrisrichardson.ftgo.restaurantservice.events.MenuItem",
+  "properties" : {
+    "id" : {
+      "type" : "string"
+    },
+    "name" : {
+      "type" : "string"
+    },
+    "price" : {
+      "type" : "string"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "price"
+  ]
+}
