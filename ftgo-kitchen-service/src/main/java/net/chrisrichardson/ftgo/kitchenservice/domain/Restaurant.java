@@ -2,8 +2,6 @@ package net.chrisrichardson.ftgo.kitchenservice.domain;
 
 import io.eventuate.tram.events.common.DomainEvent;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;
-import net.chrisrichardson.ftgo.restaurantservice.events.MenuItem;
-import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
