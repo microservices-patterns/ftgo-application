@@ -12,7 +12,6 @@ import net.chrisrichardson.ftgo.orderservice.api.OrderServiceChannels;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDetails;
 import net.chrisrichardson.ftgo.restaurantservice.RestaurantServiceChannels;
-import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Collections;
@@ -120,7 +118,8 @@ public class DeliveryServiceInProcessComponentTest {
   private void createRestaurant() {
     restaurantId = System.currentTimeMillis();
 
-    domainEventPublisher.publish(RestaurantServiceChannels.RESTAURANT_EVENT_CHANNEL, restaurantId, Collections.singletonList(new RestaurantCreated("Delicious Indian", DeliveryServiceTestData.PICKUP_ADDRESS, null)));
+    domainEventPublisher.publish(RestaurantServiceChannels.RESTAURANT_EVENT_CHANNEL, restaurantId,
+            Collections.singletonList(RestaurantEventMother.makeRestaurantCreated()));
 
     eventually(() -> assertTrue(restaurantRepository.findById(restaurantId).isPresent()));
   }
