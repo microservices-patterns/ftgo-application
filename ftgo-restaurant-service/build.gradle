@@ -43,6 +43,7 @@ dependencies {
 
     compile project(":common-swagger")
     compile project(":ftgo-restaurant-service-api")
+    compile project(":ftgo-restaurant-service-api-spec")
     compile project(":ftgo-common-jpa")
     compile project(":ftgo-common")
 
