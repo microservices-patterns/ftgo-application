@@ -61,4 +61,3 @@ ftgoJsonSchema2Pojo {
 
 }
 
-tasks.getByPath(":ftgo-delivery-service:ftgoResolveAPIDependencies").dependsOn(tasks.getByPath(":ftgo-restaurant-service-api-spec:assemble"))
