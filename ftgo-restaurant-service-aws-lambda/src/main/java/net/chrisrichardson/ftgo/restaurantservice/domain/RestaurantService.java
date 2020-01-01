@@ -1,7 +1,6 @@
 package net.chrisrichardson.ftgo.restaurantservice.domain;
 
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
-import net.chrisrichardson.ftgo.restaurantservice.events.CreateRestaurantRequest;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;

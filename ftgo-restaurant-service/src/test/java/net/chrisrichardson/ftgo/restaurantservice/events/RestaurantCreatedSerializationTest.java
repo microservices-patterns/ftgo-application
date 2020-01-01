@@ -3,6 +3,8 @@ package net.chrisrichardson.ftgo.restaurantservice.events;
 import net.chrisrichardson.ftgo.common.Address;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.common.Money;
+import net.chrisrichardson.ftgo.restaurantservice.domain.MenuItem;
+import net.chrisrichardson.ftgo.restaurantservice.domain.RestaurantMenu;
 import net.chrisrichardson.ftgo.testutil.jsonschema.ValidatingJSONMapper;
 import org.json.JSONException;
 import org.junit.Test;
@@ -29,7 +31,7 @@ public class RestaurantCreatedSerializationTest {
   @Test
   public void shouldSerialize() throws JSONException {
 
-    ValidatingJSONMapper mapper = ValidatingJSONMapper.forSchema("/ftgo-restaurant-service-api-spec/RestaurantCreated.json");
+    ValidatingJSONMapper mapper = ValidatingJSONMapper.forSchema("/ftgo-restaurant-service-api-spec/messages/RestaurantCreated.json");
 
     RestaurantCreated event = new RestaurantCreated(AJANTA_RESTAURANT_NAME, RESTAURANT_ADDRESS,
             new RestaurantMenu(Collections.singletonList(CHICKEN_VINDALOO_MENU_ITEM)));

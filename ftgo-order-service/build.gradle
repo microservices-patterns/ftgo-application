@@ -132,7 +132,7 @@ dependencies {
     compile project(":ftgo-accounting-service-api")
     compile project(":ftgo-consumer-service-api")
     compile project(":ftgo-kitchen-service-api")
-    compile project(":ftgo-restaurant-service-api-temp")
+    compile project(":ftgo-restaurant-service-api")
     compile project(":ftgo-order-service-api")
 
 
@@ -199,7 +199,7 @@ ftgoJsonSchema2Pojo {
         useLongIntegers = true
     }
     ftgoRestaurantService {
-        source = files("${ftgoApiSpecsDir}/ftgo-restaurant-service-api-spec")
+        source = files("${ftgoApiSpecsDir}/ftgo-restaurant-service-api-spec/messages")
         targetPackage = "net.chrisrichardson.ftgo.restaurantservice.events"
         includeAdditionalProperties = false
         generateBuilders = true

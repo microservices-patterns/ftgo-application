@@ -26,7 +26,6 @@ include "ftgo-consumer-service"
 include "ftgo-consumer-service-contracts"
 
 include "ftgo-restaurant-service-api"
-include "ftgo-restaurant-service-api-temp"
 include "ftgo-restaurant-service-api-spec"
 include "ftgo-restaurant-service-contracts"
 include "ftgo-restaurant-service"

@@ -1,4 +1,4 @@
-package net.chrisrichardson.ftgo.restaurantservice.events;
+package net.chrisrichardson.ftgo.restaurantservice.domain;
 
 import net.chrisrichardson.ftgo.common.Money;
 import org.apache.commons.lang.builder.EqualsBuilder;

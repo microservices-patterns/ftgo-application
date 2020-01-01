@@ -14,7 +14,7 @@ dependencies {
 
     compile project(":ftgo-delivery-service-api")
     compile project(":ftgo-kitchen-service-api")
-    compile project(":ftgo-restaurant-service-api-temp")
+    compile project(":ftgo-restaurant-service-api")
     compile project(":ftgo-order-service-api")
     compile project(":ftgo-common")
     compile project(":ftgo-common-jpa")
@@ -52,7 +52,7 @@ dockerCompose.componentTests.isRequiredBy(componentTest)
 ftgoJsonSchema2Pojo {
 
     ftgoRestaurantService {
-        source = files("${ftgoApiSpecsDir}/ftgo-restaurant-service-api-spec")
+        source = files("${ftgoApiSpecsDir}/ftgo-restaurant-service-api-spec/messages")
         targetPackage = "net.chrisrichardson.ftgo.restaurantservice.events"
         includeAdditionalProperties = false
         generateBuilders = true
@@ -61,4 +61,4 @@ ftgoJsonSchema2Pojo {
 
 }
 
-tasks.getByPath(":ftgo-delivery-service:ftgoResolveAPIDependencies").dependsOn(tasks.getByPath(":ftgo-restaurant-service:assemble"))
+tasks.getByPath(":ftgo-delivery-service:ftgoResolveAPIDependencies").dependsOn(tasks.getByPath(":ftgo-restaurant-service-api-spec:assemble"))

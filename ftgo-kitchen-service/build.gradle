@@ -51,7 +51,7 @@ dependencies {
     compile project(":common-swagger")
     compile project(":ftgo-common-jpa")
     compile project(":ftgo-kitchen-service-api")
-    compile project(":ftgo-restaurant-service-api-temp")
+    compile project(":ftgo-restaurant-service-api")
     compile "io.eventuate.tram.core:eventuate-tram-aggregate-domain-events:$eventuateTramVersion"
 
     compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
@@ -76,7 +76,7 @@ dependencies {
 ftgoJsonSchema2Pojo {
 
     ftgoRestaurantService {
-        source = files("${ftgoApiSpecsDir}/ftgo-restaurant-service-api-spec")
+        source = files("${ftgoApiSpecsDir}/ftgo-restaurant-service-api-spec/messages")
         targetPackage = "net.chrisrichardson.ftgo.restaurantservice.events"
         includeAdditionalProperties = false
         generateBuilders = true

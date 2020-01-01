@@ -1,6 +1,7 @@
 package net.chrisrichardson.ftgo.restaurantservice.events;
 
 import net.chrisrichardson.ftgo.common.Address;
+import net.chrisrichardson.ftgo.restaurantservice.domain.RestaurantMenu;
 
 public class RestaurantCreated implements RestaurantDomainEvent {
   private String name;

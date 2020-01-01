@@ -7,7 +7,7 @@ import io.eventuate.common.json.mapper.JSonMapper;
 import net.chrisrichardson.ftgo.restaurantservice.aws.ApiGatewayResponse;
 import net.chrisrichardson.ftgo.restaurantservice.domain.Restaurant;
 import net.chrisrichardson.ftgo.restaurantservice.domain.RestaurantService;
-import net.chrisrichardson.ftgo.restaurantservice.events.CreateRestaurantRequest;
+import net.chrisrichardson.ftgo.restaurantservice.domain.CreateRestaurantRequest;
 import net.chrisrichardson.ftgo.restaurantservice.web.CreateRestaurantResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

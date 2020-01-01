@@ -19,13 +19,24 @@ swaggerSources {
       // Supports additionalProperties: https://github.com/swagger-api/swagger-codegen#to-generate-a-sample-client-library
     }
   }
+  restaurantService {
+    inputFile = file("${ftgoApiSpecsDir}/ftgo-restaurant-service-api-spec/web/ftgo-restaurant-service-swagger.json")
+    code {
+      language = 'java'
+      configFile = file('swagger-codegen-config/restaurant-service.json')
+      components = ['models']
+    }
+  }
 }
 
 swaggerSources.consumerService.code.dependsOn ftgoResolveAPIDependencies
+swaggerSources.restaurantService.code.dependsOn ftgoResolveAPIDependencies
 
 compileJava.dependsOn swaggerSources.consumerService.code
+compileJava.dependsOn swaggerSources.restaurantService.code
 
 sourceSets.main.java.srcDir "${swaggerSources.consumerService.code.outputDir}/src/main/java"
+sourceSets.main.java.srcDir "${swaggerSources.restaurantService.code.outputDir}/src/main/java"
 
 // This is unnecessary
 
@@ -33,6 +44,7 @@ sourceSets.main.resources.srcDir "${swaggerSources.consumerService.code.outputDi
 
 dependencies {
     ftgoApiSpecification project(":ftgo-consumer-service-api-spec")
+    ftgoApiSpecification project(":ftgo-restaurant-service-api-spec")
 
     compile project(":ftgo-accounting-service-api")
     compile project(":ftgo-consumer-service-api")
