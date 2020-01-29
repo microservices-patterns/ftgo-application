@@ -4,9 +4,6 @@ buildscript {
         mavenCentral()
         jcenter()
         maven {
-            url 'https://repo.spring.io/libs-milestone'
-        }
-        maven {
           url "https://dl.bintray.com/eventuateio-oss/eventuate-maven-rc"
         }
         maven {

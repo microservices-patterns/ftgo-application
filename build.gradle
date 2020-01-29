@@ -9,6 +9,7 @@ buildscript {
         classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
         classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractDependenciesVersion"
         classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
+        classpath "io.spring.gradle:dependency-management-plugin:$springDependencyManagementPluginVersion"
     }
 
 }
@@ -39,10 +40,6 @@ subprojects {
 
         maven {
             url 'https://jitpack.io'
-        }
-
-        maven {
-            url 'https://repo.spring.io/libs-milestone'
         }
 
         maven {
