@@ -55,7 +55,7 @@ dependencies {
 }
 
 dockerCompose {
-
+    projectName = null
 }
 
 test.dependsOn(composeUp)

@@ -47,9 +47,9 @@ dependencies {
     compile 'org.springframework.cloud:spring-cloud-starter-gateway'
     compile "org.apache.commons:commons-lang3:3.6"
 
-    // compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
-    //compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
-    // compile 'io.zipkin.brave:brave-bom:4.17.1'
+    compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
+    compile "io.zipkin.brave:brave-bom:4.17.1"
 
     compile "io.micrometer:micrometer-registry-prometheus:$micrometerVersion"
     compile "org.springframework.boot:spring-boot-starter-actuator"
