@@ -10,7 +10,8 @@ import org.slf4j.LoggerFactory;
 import static net.chrisrichardson.ftgo.restaurantservice.aws.ApiGatewayResponse.buildErrorResponse;
 
 
-public abstract class AbstractHttpHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+public abstract class AbstractHttpHandler
+        implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
