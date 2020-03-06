@@ -1,8 +1,8 @@
 package net.chrisrichardson.ftgo.deliveryservice;
 
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
-import io.eventuate.tram.events.spring.publisher.TramEventsPublisherConfiguration;
-import io.eventuate.tram.inmemory.spring.TramInMemoryConfiguration;
+import io.eventuate.tram.spring.events.publisher.TramEventsPublisherConfiguration;
+import io.eventuate.tram.spring.inmemory.TramInMemoryConfiguration;
 import net.chrisrichardson.ftgo.deliveryservice.domain.DeliveryRepository;
 import net.chrisrichardson.ftgo.deliveryservice.domain.DeliveryServiceTestData;
 import net.chrisrichardson.ftgo.deliveryservice.domain.RestaurantRepository;

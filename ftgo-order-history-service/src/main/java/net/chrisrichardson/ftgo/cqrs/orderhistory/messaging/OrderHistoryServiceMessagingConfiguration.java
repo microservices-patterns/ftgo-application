@@ -1,7 +1,7 @@
 package net.chrisrichardson.ftgo.cqrs.orderhistory.messaging;
 
-import io.eventuate.tram.consumer.common.spring.TramNoopDuplicateMessageDetectorConfiguration;
-import io.eventuate.tram.events.spring.subscriber.TramEventSubscriberConfiguration;
+import io.eventuate.tram.spring.consumer.common.TramNoopDuplicateMessageDetectorConfiguration;
+import io.eventuate.tram.spring.events.subscriber.TramEventSubscriberConfiguration;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcher;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcherFactory;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;

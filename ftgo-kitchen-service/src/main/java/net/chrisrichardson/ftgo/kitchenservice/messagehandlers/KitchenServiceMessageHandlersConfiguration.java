@@ -1,11 +1,11 @@
 package net.chrisrichardson.ftgo.kitchenservice.messagehandlers;
 
-import io.eventuate.tram.events.spring.subscriber.TramEventSubscriberConfiguration;
+import io.eventuate.tram.spring.events.subscriber.TramEventSubscriberConfiguration;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcher;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcherFactory;
 import io.eventuate.tram.sagas.participant.SagaCommandDispatcher;
 import io.eventuate.tram.sagas.participant.SagaCommandDispatcherFactory;
-import io.eventuate.tram.sagas.participant.spring.SagaParticipantConfiguration;
+import io.eventuate.tram.sagas.spring.participant.SagaParticipantConfiguration;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
 import net.chrisrichardson.ftgo.kitchenservice.domain.KitchenDomainConfiguration;
 import org.springframework.context.annotation.Bean;

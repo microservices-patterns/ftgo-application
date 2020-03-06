@@ -1,13 +1,13 @@
 package net.chrisrichardson.ftgo.accountingservice.messaging;
 
-import io.eventuate.javaclient.jdbc.spring.EmbeddedTestAggregateStoreConfiguration;
+import io.eventuate.javaclient.spring.jdbc.EmbeddedTestAggregateStoreConfiguration;
 import io.eventuate.sync.AggregateRepository;
 import io.eventuate.tram.commands.producer.CommandProducer;
-import io.eventuate.tram.commands.spring.producer.TramCommandProducerConfiguration;
+import io.eventuate.tram.spring.commands.producer.TramCommandProducerConfiguration;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
-import io.eventuate.tram.events.spring.publisher.TramEventsPublisherConfiguration;
+import io.eventuate.tram.spring.events.publisher.TramEventsPublisherConfiguration;
 import io.eventuate.tram.sagas.common.SagaCommandHeaders;
-import io.eventuate.tram.sagas.inmemory.TramSagaInMemoryConfiguration;
+import io.eventuate.tram.sagas.spring.inmemory.TramSagaInMemoryConfiguration;
 import io.eventuate.tram.testutil.TestMessageConsumer;
 import io.eventuate.tram.testutil.TestMessageConsumerFactory;
 import io.eventuate.util.test.async.Eventually;

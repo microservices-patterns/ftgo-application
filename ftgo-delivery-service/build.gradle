@@ -17,9 +17,9 @@ dependencies {
     compile project(":ftgo-common-jpa")
     compile project(":common-swagger")
 
-    compile "io.eventuate.tram.core:eventuate-tram-events-spring:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-events:$eventuateTramVersion"
     compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-jdbc-kafka-spring:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka:$eventuateTramVersion"
 
     compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
     compile "io.micrometer:micrometer-registry-prometheus:$micrometerVersion"
@@ -29,7 +29,7 @@ dependencies {
     }
 
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
-    testCompile "io.eventuate.tram.core:eventuate-tram-in-memory-spring:$eventuateTramVersion"
+    testCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory:$eventuateTramVersion"
     testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
 
     componentTestCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
