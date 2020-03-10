@@ -1,8 +1,8 @@
 package net.chrisrichardson.ftgo.accountingservice.main;
 
-import io.eventuate.spring.javaclient.driver.EventuateDriverConfiguration;
-import io.eventuate.tram.commands.spring.producer.TramCommandProducerConfiguration;
-import io.eventuate.tram.jdbckafka.TramJdbcKafkaConfiguration;
+import io.eventuate.local.java.spring.javaclient.driver.EventuateDriverConfiguration;
+import io.eventuate.tram.spring.commands.producer.TramCommandProducerConfiguration;
+import io.eventuate.tram.spring.jdbckafka.TramJdbcKafkaConfiguration;
 import net.chrisrichardson.ftgo.accountingservice.messaging.AccountingMessagingConfiguration;
 import net.chrisrichardson.ftgo.accountingservice.web.AccountingWebConfiguration;
 import org.springframework.boot.SpringApplication;

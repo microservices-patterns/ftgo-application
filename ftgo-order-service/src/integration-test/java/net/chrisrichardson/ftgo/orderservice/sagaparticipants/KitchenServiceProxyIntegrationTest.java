@@ -1,11 +1,11 @@
 package net.chrisrichardson.ftgo.orderservice.sagaparticipants;
 
 import io.eventuate.tram.commands.producer.CommandProducer;
-import io.eventuate.tram.commands.spring.producer.TramCommandProducerConfiguration;
-import io.eventuate.tram.sagas.inmemory.TramSagaInMemoryConfiguration;
+import io.eventuate.tram.spring.commands.producer.TramCommandProducerConfiguration;
+import io.eventuate.tram.sagas.spring.inmemory.TramSagaInMemoryConfiguration;
 import io.eventuate.tram.sagas.orchestration.SagaCommandProducer;
-import io.eventuate.tram.springcloudcontractsupport.EventuateContractVerifierConfiguration;
-import io.eventuate.tram.springcloudcontractsupport.EventuateTramRoutesConfigurer;
+import io.eventuate.tram.spring.cloudcontractsupport.EventuateContractVerifierConfiguration;
+import io.eventuate.tram.spring.cloudcontractsupport.EventuateTramRoutesConfigurer;
 import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicket;
 import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicketReply;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;

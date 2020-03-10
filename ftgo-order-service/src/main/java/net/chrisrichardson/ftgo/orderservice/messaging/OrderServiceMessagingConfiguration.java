@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.orderservice.messaging;
 
-import io.eventuate.tram.events.spring.subscriber.TramEventSubscriberConfiguration;
+import io.eventuate.tram.spring.events.subscriber.TramEventSubscriberConfiguration;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcher;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcherFactory;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderService;

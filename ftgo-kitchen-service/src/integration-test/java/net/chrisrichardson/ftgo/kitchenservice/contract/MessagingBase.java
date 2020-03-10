@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.kitchenservice.contract;
 
-import io.eventuate.tram.springcloudcontractsupport.EventuateContractVerifierConfiguration;
+import io.eventuate.tram.spring.cloudcontractsupport.EventuateContractVerifierConfiguration;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;
 import net.chrisrichardson.ftgo.kitchenservice.domain.KitchenService;
 import net.chrisrichardson.ftgo.kitchenservice.domain.Ticket;

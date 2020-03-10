@@ -2,7 +2,7 @@
 dependencies {
 
 
-    compile "io.eventuate.tram.core:eventuate-tram-events-spring:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-events:$eventuateTramVersion"
     compile project(":ftgo-common")
 
 }

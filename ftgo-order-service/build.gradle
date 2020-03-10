@@ -14,7 +14,7 @@ buildscript {
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.10'
 
         classpath "org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:${js2pVersion}"
-        classpath "io.eventuate.tram.core:eventuate-tram-commands:$eventuateTramVersion"
+        classpath "io.eventuate.tram.core:eventuate-tram-spring-commands:$eventuateTramVersion"
 
     }
 }
@@ -117,10 +117,10 @@ dependencies {
     compile project(":ftgo-common-jpa")
 
     compile "io.eventuate.tram.core:eventuate-tram-aggregate-domain-events:$eventuateTramVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-jdbc-kafka-spring:$eventuateTramVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-commands-spring:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-commands:$eventuateTramVersion"
 
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-simple-dsl:$eventuateTramSagasVersion"
+    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl:$eventuateTramSagasVersion"
 
     compile project(":ftgo-accounting-service-api")
     compile project(":ftgo-consumer-service-api")
@@ -141,8 +141,8 @@ dependencies {
 
     compile "io.microservices.tools.canvas:microservice-canvas-springmvc:$microserviceCanvasVersion"
     compile "io.microservices.tools.canvas:microservice-canvas-extractor-tram-sagas:$microserviceCanvasVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-messaging-spring:$eventuateTramVersion"
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-orchestration-spring:$eventuateTramSagasVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-messaging:$eventuateTramVersion"
+    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration:$eventuateTramSagasVersion"
 
     compile('org.apache.kafka:kafka-clients:2.3.0') {
         force = true
@@ -152,7 +152,7 @@ dependencies {
     testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
     testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"
 
-    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-in-memory-spring:$eventuateTramSagasVersion"
+    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory:$eventuateTramSagasVersion"
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
 
     // Added this stuff
@@ -166,9 +166,9 @@ dependencies {
     testCompile 'io.rest-assured:spring-mock-mvc:3.0.6'
     testCompile "io.rest-assured:json-path:3.0.6"
 
-    testCompile "io.eventuate.tram.core:eventuate-tram-testing-support-spring-cloud-contract:$eventuateTramVersion"
+    testCompile "io.eventuate.tram.core:eventuate-tram-spring-testing-support-cloud-contract:$eventuateTramVersion"
 
-    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-testing-support-spring:$eventuateTramSagasVersion"
+    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support:$eventuateTramSagasVersion"
 
     componentTestCompile 'info.cukes:cucumber-java:1.2.5'
     componentTestCompile 'info.cukes:cucumber-junit:1.2.5'
@@ -176,7 +176,7 @@ dependencies {
     testCompile project(":ftgo-test-util")
     testCompile "org.hamcrest:hamcrest:2.1"
 
-    integrationTestCompile "io.eventuate.tram.core:eventuate-tram-in-memory-spring:$eventuateTramVersion"
+    integrationTestCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory:$eventuateTramVersion"
 
 }
 

@@ -46,10 +46,10 @@ apply plugin: FtgoServicePlugin
 dependencies {
 
 
-    compile "io.eventuate.tram.core:eventuate-tram-jdbc-kafka-spring:$eventuateTramVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-events-spring:$eventuateTramVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-messaging-spring:$eventuateTramVersion"
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-simple-dsl:$eventuateTramSagasVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-events:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-messaging:$eventuateTramVersion"
+    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl:$eventuateTramSagasVersion"
 
     compile project(":common-swagger")
     compile project(":ftgo-common-jpa")
@@ -69,10 +69,10 @@ dependencies {
     testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
     testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"
 
-    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-in-memory-spring:$eventuateTramSagasVersion"
-    testCompile "io.eventuate.tram.core:eventuate-tram-in-memory-spring:$eventuateTramVersion"
+    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory:$eventuateTramSagasVersion"
+    testCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory:$eventuateTramVersion"
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
     testCompile "com.jayway.jsonpath:json-path:2.3.0"
-    testCompile "io.eventuate.tram.core:eventuate-tram-testing-support-spring-cloud-contract:$eventuateTramVersion"
+    testCompile "io.eventuate.tram.core:eventuate-tram-spring-testing-support-cloud-contract:$eventuateTramVersion"
 }

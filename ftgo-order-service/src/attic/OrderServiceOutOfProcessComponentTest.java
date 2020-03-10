@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.orderservice;
 
-import io.eventuate.tram.jdbckafka.TramJdbcKafkaConfiguration;
+import io.eventuate.tram.spring.jdbckafka.TramJdbcKafkaConfiguration;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

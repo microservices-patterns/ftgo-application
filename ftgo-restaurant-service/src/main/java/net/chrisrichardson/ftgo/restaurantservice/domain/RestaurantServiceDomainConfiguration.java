@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.restaurantservice.domain;
 
-import io.eventuate.tram.events.spring.publisher.TramEventsPublisherConfiguration;
+import io.eventuate.tram.spring.events.publisher.TramEventsPublisherConfiguration;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
