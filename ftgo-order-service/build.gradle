@@ -15,6 +15,7 @@ buildscript {
 
         classpath "org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:${js2pVersion}"
         classpath "io.eventuate.tram.core:eventuate-tram-spring-commands:$eventuateTramVersion"
+        classpath "io.eventuate.tram.core:eventuate-tram-spring-events:$eventuateTramVersion"
 
     }
 }
@@ -112,6 +113,7 @@ dependencies {
 
     ftgoApiSpecification project(":ftgo-consumer-service-api-spec")
     ftgoApiSpecification project(":ftgo-accounting-service-api-spec")
+    ftgoApiSpecification project(":ftgo-restaurant-service-api-spec")
 
     compile project(":common-swagger")
     compile project(":ftgo-common-jpa")
@@ -192,6 +194,13 @@ ftgoJsonSchema2Pojo {
     ftgoAccountingService {
         source = files("${ftgoApiSpecsDir}/messages")
         targetPackage = "net.chrisrichardson.ftgo.accountservice.api"
+        includeAdditionalProperties = false
+        generateBuilders = true
+        useLongIntegers = true
+    }
+    ftgoRestaurantService {
+        source = files("${ftgoApiSpecsDir}/ftgo-restaurant-service-api-spec/messages")
+        targetPackage = "net.chrisrichardson.ftgo.restaurantservice.events"
         includeAdditionalProperties = false
         generateBuilders = true
         useLongIntegers = true

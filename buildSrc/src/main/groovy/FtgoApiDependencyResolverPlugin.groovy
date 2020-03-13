@@ -1,5 +1,6 @@
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 
 class FtgoApiDependencyResolverPlugin implements Plugin<Project> {
 
@@ -12,10 +13,19 @@ class FtgoApiDependencyResolverPlugin implements Plugin<Project> {
 
         project.configurations.implementation.extendsFrom(c)
 
-        project.task("ftgoResolveAPIDependencies",
+        def resolveTask = project.task("ftgoResolveAPIDependencies",
                 type: FtgoResolveAPIDependencies,
                 group: 'build setup',
                 description: "fetch API dependencies")
+
+        project.afterEvaluate {
+            project.configurations.ftgoApiSpecification.allDependencies.each {
+                if (it instanceof DefaultProjectDependency) {
+                    def buildTask = it.dependencyProject.tasks.getByPath("build")
+                    resolveTask.dependsOn(buildTask)
+                }
+            }
+        }
     }
 
 }

@@ -3,7 +3,6 @@ package net.chrisrichardson.ftgo.kitchenservice.domain;
 import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;
 import net.chrisrichardson.ftgo.kitchenservice.api.events.TicketDomainEvent;
-import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 

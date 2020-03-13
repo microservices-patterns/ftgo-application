@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "menu": {
+      "type": "object",
+      "properties": {
+        "menuItems": {
+          "type": "array",
+          "items": {
+            "$ref": "MenuItem.json"
+          }
+        }
+      }
+    }
+  },
+  "required": [  "menu"
+  ],
+  "javaInterfaces": [
+    "io.eventuate.tram.events.common.DomainEvent"
+  ]
+}

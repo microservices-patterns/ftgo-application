@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.restaurantservice.events;
 
-import io.eventuate.tram.events.common.DomainEvent;
+import net.chrisrichardson.ftgo.restaurantservice.domain.RestaurantMenu;
 
 public class RestaurantMenuRevised implements RestaurantDomainEvent {
 

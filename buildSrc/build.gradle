@@ -2,6 +2,10 @@ test.enabled=false
 
 repositories {
     mavenCentral()
+    jcenter()
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
 }
 
 dependencies {
@@ -10,4 +14,6 @@ dependencies {
     compile 'commons-lang:commons-lang:2.6'
 
     compile 'org.jsonschema2pojo:jsonschema2pojo-core:1.0.1'
+
+    compile "gradle.plugin.org.hidetake:gradle-swagger-generator-plugin:2.18.1"
 }

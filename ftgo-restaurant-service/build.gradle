@@ -28,6 +28,11 @@ dependencyManagement {
     }
 }
 
+configurations.all {
+    // Out of date, conflicting JSON library
+    exclude  group: "com.vaadin.external.google"
+}
+
 dependencies {
 
 
@@ -39,7 +44,9 @@ dependencies {
 
     compile project(":common-swagger")
     compile project(":ftgo-restaurant-service-api")
+    compile project(":ftgo-restaurant-service-api-spec")
     compile project(":ftgo-common-jpa")
+    compile project(":ftgo-common")
 
     compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
@@ -59,6 +66,7 @@ dependencies {
     testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
     testCompile "com.jayway.jsonpath:json-path:2.3.0"
     testCompile "io.eventuate.tram.core:eventuate-tram-spring-testing-support-cloud-contract:$eventuateTramVersion"
+    testCompile project(":ftgo-test-util-json-schema")
 
     integrationTestCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
     integrationTestCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"

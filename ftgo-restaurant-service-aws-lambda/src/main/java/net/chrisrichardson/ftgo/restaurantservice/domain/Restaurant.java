@@ -1,7 +1,5 @@
 package net.chrisrichardson.ftgo.restaurantservice.domain;
 
-import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Embedded;

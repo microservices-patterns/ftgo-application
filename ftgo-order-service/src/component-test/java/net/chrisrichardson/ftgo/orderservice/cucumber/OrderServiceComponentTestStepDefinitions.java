@@ -25,7 +25,6 @@ import net.chrisrichardson.ftgo.orderservice.RestaurantMother;
 import net.chrisrichardson.ftgo.orderservice.api.web.CreateOrderRequest;
 import net.chrisrichardson.ftgo.orderservice.domain.Order;
 import net.chrisrichardson.ftgo.orderservice.domain.RestaurantRepository;
-import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
 import net.chrisrichardson.ftgo.testutil.FtgoTestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -44,8 +43,6 @@ import static io.eventuate.tram.commands.consumer.CommandHandlerReplyBuilder.wit
 import static io.eventuate.util.test.async.Eventually.eventually;
 import static io.restassured.RestAssured.given;
 import static java.util.Collections.singleton;
-import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.AJANTA_RESTAURANT_MENU;
-import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.RESTAURANT_ADDRESS;
 import static org.junit.Assert.*;
 
 
@@ -143,7 +140,7 @@ public class OrderServiceComponentTestStepDefinitions {
 
     if (!restaurantRepository.findById(RestaurantMother.AJANTA_ID).isPresent()) {
       domainEventPublisher.publish("net.chrisrichardson.ftgo.restaurantservice.domain.Restaurant", RestaurantMother.AJANTA_ID,
-              Collections.singletonList(new RestaurantCreated(RestaurantMother.AJANTA_RESTAURANT_NAME, RESTAURANT_ADDRESS, AJANTA_RESTAURANT_MENU)));
+              Collections.singletonList(RestaurantMother.makeAjantaRestaurantCreatedEvent()));
 
       eventually(() -> {
         FtgoTestUtil.assertPresent(restaurantRepository.findById(RestaurantMother.AJANTA_ID));

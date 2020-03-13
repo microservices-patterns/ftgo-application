@@ -12,15 +12,12 @@ buildscript {
 apply plugin: "io.spring.dependency-management"
 apply plugin: 'spring-cloud-contract'
 apply plugin: IntegrationTestsPlugin
+apply plugin: FtgoJSONSchema2PojoPlugin
 
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"
     }
-}
-
-dependencies {
-    testCompile 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
 }
 
 contracts {
@@ -45,6 +42,7 @@ apply plugin: FtgoServicePlugin
 
 dependencies {
 
+    ftgoApiSpecification project(":ftgo-restaurant-service-api-spec")
 
     compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka:$eventuateTramVersion"
     compile "io.eventuate.tram.core:eventuate-tram-spring-events:$eventuateTramVersion"
@@ -75,4 +73,18 @@ dependencies {
     testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
     testCompile "com.jayway.jsonpath:json-path:2.3.0"
     testCompile "io.eventuate.tram.core:eventuate-tram-spring-testing-support-cloud-contract:$eventuateTramVersion"
+
+    testCompile 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
+}
+
+ftgoJsonSchema2Pojo {
+
+    ftgoRestaurantService {
+        source = files("${ftgoApiSpecsDir}/ftgo-restaurant-service-api-spec/messages")
+        targetPackage = "net.chrisrichardson.ftgo.restaurantservice.events"
+        includeAdditionalProperties = false
+        generateBuilders = true
+        useLongIntegers = true
+    }
+
 }

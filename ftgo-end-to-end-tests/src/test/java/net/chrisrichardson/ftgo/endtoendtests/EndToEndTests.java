@@ -6,6 +6,9 @@ import com.jayway.restassured.config.RestAssuredConfig;
 import io.eventuate.common.json.mapper.JSonMapper;
 import net.chrisrichardson.ftgo.apis.model.consumerservice.CreateConsumerRequest;
 import net.chrisrichardson.ftgo.apis.model.consumerservice.PersonName;
+import net.chrisrichardson.ftgo.apis.model.restaurantservice.CreateRestaurantRequest;
+import net.chrisrichardson.ftgo.apis.model.restaurantservice.MenuItem;
+import net.chrisrichardson.ftgo.apis.model.restaurantservice.RestaurantMenu;
 import net.chrisrichardson.ftgo.common.Address;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.common.Money;
@@ -14,9 +17,6 @@ import net.chrisrichardson.ftgo.kitchenservice.api.web.TicketAcceptance;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderState;
 import net.chrisrichardson.ftgo.orderservice.api.web.CreateOrderRequest;
 import net.chrisrichardson.ftgo.orderservice.api.web.ReviseOrderRequest;
-import net.chrisrichardson.ftgo.restaurantservice.events.CreateRestaurantRequest;
-import net.chrisrichardson.ftgo.restaurantservice.events.MenuItem;
-import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 import io.eventuate.util.test.async.Eventually;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -263,11 +263,17 @@ public class EndToEndTests {
   }
 
   private int createRestaurant() {
+    CreateRestaurantRequest request = new CreateRestaurantRequest().name(RESTAURANT_NAME)
+            .address(new net.chrisrichardson.ftgo.apis.model.restaurantservice.Address()
+                    .street1("1 Main Street").street2("Unit 99").city("Oakland").state("CA").zip("94611"))
+            .menu(
+                    new RestaurantMenu().addMenuItemsItem(
+                            new MenuItem().id(CHICKED_VINDALOO_MENU_ITEM_ID)
+                                    .name("Chicken Vindaloo")
+                                    .price(priceOfChickenVindaloo.asString())));
     Integer restaurantId =
             given().
-                    body(new CreateRestaurantRequest(RESTAURANT_NAME,
-                            new Address("1 Main Street", "Unit 99", "Oakland", "CA", "94611"),
-                            new RestaurantMenu(Collections.singletonList(new MenuItem(CHICKED_VINDALOO_MENU_ITEM_ID, "Chicken Vindaloo", priceOfChickenVindaloo))))).
+                    body(request).
                     contentType("application/json").
                     when().
                     post(restaurantBaseUrl()).

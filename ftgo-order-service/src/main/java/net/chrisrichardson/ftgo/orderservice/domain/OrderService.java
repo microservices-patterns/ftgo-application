@@ -14,8 +14,6 @@ import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSagaSt
 import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSaga;
 import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSagaData;
 import net.chrisrichardson.ftgo.orderservice.web.MenuItemIdAndQuantity;
-import net.chrisrichardson.ftgo.restaurantservice.events.MenuItem;
-import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
@@ -175,15 +173,15 @@ public class OrderService {
   }
 
   @Transactional(propagation = Propagation.MANDATORY)
-  public void createMenu(long id, String name, RestaurantMenu menu) {
-    Restaurant restaurant = new Restaurant(id, name, menu.getMenuItems());
+  public void createMenu(long id, String name, List<MenuItem> menuItems) {
+    Restaurant restaurant = new Restaurant(id, name, menuItems);
     restaurantRepository.save(restaurant);
   }
 
   @Transactional(propagation = Propagation.MANDATORY)
-  public void reviseMenu(long id, RestaurantMenu revisedMenu) {
+  public void reviseMenu(long id, List<MenuItem> menuItems) {
     restaurantRepository.findById(id).map(restaurant -> {
-      List<OrderDomainEvent> events = restaurant.reviseMenu(revisedMenu);
+      List<OrderDomainEvent> events = restaurant.reviseMenu(menuItems);
       return restaurant;
     }).orElseThrow(RuntimeException::new);
   }

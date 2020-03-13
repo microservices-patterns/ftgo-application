@@ -1,0 +1,6 @@
+dependencies {
+    compile "com.github.everit-org.json-schema:org.everit.json.schema:1.12.0"
+    compile "junit:junit:4.12"
+    compile "io.eventuate.common:eventuate-common-json-mapper:$eventuateCommonVersion"
+
+}

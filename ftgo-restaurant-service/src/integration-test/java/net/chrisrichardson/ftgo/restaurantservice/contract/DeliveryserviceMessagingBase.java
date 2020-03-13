@@ -8,7 +8,7 @@ import net.chrisrichardson.ftgo.common.Address;
 import net.chrisrichardson.ftgo.restaurantservice.domain.Restaurant;
 import net.chrisrichardson.ftgo.restaurantservice.domain.RestaurantDomainEventPublisher;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
-import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
+import net.chrisrichardson.ftgo.restaurantservice.domain.RestaurantMenu;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

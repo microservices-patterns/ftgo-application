@@ -8,7 +8,6 @@ import net.chrisrichardson.ftgo.orderservice.api.OrderServiceChannels;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDetails;
 import net.chrisrichardson.ftgo.restaurantservice.RestaurantServiceChannels;
-import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantCreated;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 import static com.jayway.restassured.RestAssured.given;
 import static io.eventuate.util.test.async.Eventually.eventually;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = DeliveryServiceOutOfProcessComponentTest.Config.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -106,7 +106,7 @@ public class DeliveryServiceOutOfProcessComponentTest {
   private void createRestaurant() {
     restaurantId = System.currentTimeMillis();
 
-    domainEventPublisher.publish(RestaurantServiceChannels.RESTAURANT_EVENT_CHANNEL, restaurantId, Collections.singletonList(new RestaurantCreated("Delicious Indian", DeliveryServiceTestData.PICKUP_ADDRESS, null)));
+    domainEventPublisher.publish(RestaurantServiceChannels.RESTAURANT_EVENT_CHANNEL, restaurantId, Collections.singletonList(RestaurantEventMother.makeRestaurantCreated()));
 
     sleep();
   }

@@ -1,15 +1,3 @@
-buildscript {
-    dependencies {
-        // if using Stub Runner (consumer side) only remove this dependency
-        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractDependenciesVersion"
-    }
-    repositories {
-        mavenCentral()
-        maven {
-            url 'https://repo.spring.io/libs-milestone'
-        }
-    }
-}
 
 apply plugin: 'groovy'
 apply plugin: 'spring-cloud-contract'

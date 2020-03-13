@@ -1,9 +1,12 @@
+apply plugin: FtgoOpenApiCodeGenPlugin
+
+/*
 plugins {
   id 'org.hidetake.swagger.generator' version '2.18.1'
 }
+*/
 
 apply plugin: 'docker-compose'
-apply plugin: FtgoApiDependencyResolverPlugin
 
 dependencies {
   swaggerCodegen 'org.openapitools:openapi-generator-cli:3.3.4'     // or OpenAPI Generator
@@ -19,20 +22,19 @@ swaggerSources {
       // Supports additionalProperties: https://github.com/swagger-api/swagger-codegen#to-generate-a-sample-client-library
     }
   }
+  restaurantService {
+    inputFile = file("${ftgoApiSpecsDir}/ftgo-restaurant-service-api-spec/web/ftgo-restaurant-service-swagger.json")
+    code {
+      language = 'java'
+      configFile = file('swagger-codegen-config/restaurant-service.json')
+      components = ['models']
+    }
+  }
 }
-
-swaggerSources.consumerService.code.dependsOn ftgoResolveAPIDependencies
-
-compileJava.dependsOn swaggerSources.consumerService.code
-
-sourceSets.main.java.srcDir "${swaggerSources.consumerService.code.outputDir}/src/main/java"
-
-// This is unnecessary
-
-sourceSets.main.resources.srcDir "${swaggerSources.consumerService.code.outputDir}/src/main/resources"
 
 dependencies {
     ftgoApiSpecification project(":ftgo-consumer-service-api-spec")
+    ftgoApiSpecification project(":ftgo-restaurant-service-api-spec")
 
     compile project(":ftgo-accounting-service-api")
     compile project(":ftgo-consumer-service-api")
@@ -53,7 +55,7 @@ dependencies {
 }
 
 dockerCompose {
-
+    projectName = null
 }
 
 test.dependsOn(composeUp)
