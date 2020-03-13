@@ -1,9 +1,9 @@
 package net.chrisrichardson.ftgo.orderservice.contract;
 
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
-import io.eventuate.tram.events.publisher.TramEventsPublisherConfiguration;
-import io.eventuate.tram.inmemory.TramInMemoryConfiguration;
-import io.eventuate.tram.springcloudcontractsupport.EventuateContractVerifierConfiguration;
+import io.eventuate.tram.spring.events.publisher.TramEventsPublisherConfiguration;
+import io.eventuate.tram.spring.inmemory.TramInMemoryConfiguration;
+import io.eventuate.tram.spring.cloudcontractsupport.EventuateContractVerifierConfiguration;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
 import net.chrisrichardson.ftgo.orderservice.RestaurantMother;

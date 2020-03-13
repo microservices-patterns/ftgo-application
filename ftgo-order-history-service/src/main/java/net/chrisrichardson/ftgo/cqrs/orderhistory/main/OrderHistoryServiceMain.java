@@ -1,7 +1,7 @@
 package net.chrisrichardson.ftgo.cqrs.orderhistory.main;
 
-import io.eventuate.tram.consumer.common.TramConsumerCommonConfiguration;
-import io.eventuate.tram.consumer.kafka.EventuateTramKafkaMessageConsumerConfiguration;
+import io.eventuate.tram.spring.consumer.common.TramConsumerCommonConfiguration;
+import io.eventuate.tram.spring.consumer.kafka.EventuateTramKafkaMessageConsumerConfiguration;
 import net.chrisrichardson.eventstore.examples.customersandorders.commonswagger.CommonSwaggerConfiguration;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.messaging.OrderHistoryServiceMessagingConfiguration;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.web.OrderHistoryWebConfiguration;

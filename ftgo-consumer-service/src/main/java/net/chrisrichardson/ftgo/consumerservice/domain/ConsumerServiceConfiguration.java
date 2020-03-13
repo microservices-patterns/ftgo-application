@@ -1,9 +1,9 @@
 package net.chrisrichardson.ftgo.consumerservice.domain;
 
 import io.eventuate.tram.commands.consumer.CommandDispatcher;
-import io.eventuate.tram.events.publisher.TramEventsPublisherConfiguration;
+import io.eventuate.tram.spring.events.publisher.TramEventsPublisherConfiguration;
 import io.eventuate.tram.sagas.participant.SagaCommandDispatcherFactory;
-import io.eventuate.tram.sagas.participant.SagaParticipantConfiguration;
+import io.eventuate.tram.sagas.spring.participant.SagaParticipantConfiguration;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;

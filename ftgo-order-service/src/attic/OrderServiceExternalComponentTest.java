@@ -1,8 +1,8 @@
 package net.chrisrichardson.ftgo.orderservice;
 
-import io.eventuate.tram.jdbckafka.TramJdbcKafkaConfiguration;
-import io.eventuate.tram.commands.producer.TramCommandProducerConfiguration;
-import io.eventuate.tram.events.publisher.TramEventsPublisherConfiguration;
+import io.eventuate.tram.spring.jdbckafka.TramJdbcKafkaConfiguration;
+import io.eventuate.tram.spring.commands.producer.TramCommandProducerConfiguration;
+import io.eventuate.tram.spring.events.publisher.TramEventsPublisherConfiguration;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import org.junit.runner.RunWith;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

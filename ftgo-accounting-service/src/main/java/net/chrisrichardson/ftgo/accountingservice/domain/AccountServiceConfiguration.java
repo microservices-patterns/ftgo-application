@@ -2,7 +2,7 @@ package net.chrisrichardson.ftgo.accountingservice.domain;
 
 import io.eventuate.sync.AggregateRepository;
 import io.eventuate.sync.EventuateAggregateStore;
-import io.eventuate.tram.commands.producer.TramCommandProducerConfiguration;
+import io.eventuate.tram.spring.commands.producer.TramCommandProducerConfiguration;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

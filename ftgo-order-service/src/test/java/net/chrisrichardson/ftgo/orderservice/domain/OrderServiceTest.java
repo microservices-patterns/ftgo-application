@@ -1,13 +1,14 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
-import io.eventuate.tram.sagas.orchestration.SagaManager;
+import io.eventuate.tram.sagas.orchestration.SagaInstanceFactory;
 import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
 import net.chrisrichardson.ftgo.orderservice.RestaurantMother;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
-import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSagaData;
+import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSaga;
+import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSaga;
 import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSagaState;
-import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSagaData;
+import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSaga;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,26 +33,28 @@ public class OrderServiceTest {
   private OrderRepository orderRepository;
   private DomainEventPublisher eventPublisher;
   private RestaurantRepository restaurantRepository;
-  private SagaManager<CreateOrderSagaState> createOrderSagaManager;
-  private SagaManager<CancelOrderSagaData> cancelOrderSagaManager;
-  private SagaManager<ReviseOrderSagaData> reviseOrderSagaManager;
+  private SagaInstanceFactory sagaInstanceFactory;
+  private CreateOrderSaga createOrderSaga;
+  private CancelOrderSaga cancelOrderSaga;
+  private ReviseOrderSaga reviseOrderSaga;
   private OrderDomainEventPublisher orderAggregateEventPublisher;
 
   @Before
   public void setup() {
+    sagaInstanceFactory = mock(SagaInstanceFactory.class);
     orderRepository = mock(OrderRepository.class);
     eventPublisher = mock(DomainEventPublisher.class);
     restaurantRepository = mock(RestaurantRepository.class);
-    createOrderSagaManager = mock(SagaManager.class);
-    cancelOrderSagaManager = mock(SagaManager.class);
-    reviseOrderSagaManager = mock(SagaManager.class);
+    createOrderSaga = mock(CreateOrderSaga.class);
+    cancelOrderSaga = mock(CancelOrderSaga.class);
+    reviseOrderSaga = mock(ReviseOrderSaga.class);
 
     // Mock DomainEventPublisher AND use the real OrderDomainEventPublisher
 
     orderAggregateEventPublisher = mock(OrderDomainEventPublisher.class);
 
-    orderService = new OrderService(orderRepository, eventPublisher, restaurantRepository,
-            createOrderSagaManager, cancelOrderSagaManager, reviseOrderSagaManager, orderAggregateEventPublisher, Optional.empty());
+    orderService = new OrderService(sagaInstanceFactory, orderRepository, eventPublisher, restaurantRepository,
+            createOrderSaga, cancelOrderSaga, reviseOrderSaga, orderAggregateEventPublisher, Optional.empty());
   }
 
 
@@ -71,7 +74,7 @@ public class OrderServiceTest {
     verify(orderAggregateEventPublisher).publish(order,
             Collections.singletonList(new OrderCreatedEvent(CHICKEN_VINDALOO_ORDER_DETAILS, OrderDetailsMother.DELIVERY_ADDRESS, RestaurantMother.AJANTA_RESTAURANT_NAME)));
 
-    verify(createOrderSagaManager).create(new CreateOrderSagaState(ORDER_ID, CHICKEN_VINDALOO_ORDER_DETAILS), Order.class, ORDER_ID);
+    verify(sagaInstanceFactory).create(createOrderSaga, new CreateOrderSagaState(ORDER_ID, CHICKEN_VINDALOO_ORDER_DETAILS));
   }
 
   // TODO write tests for other methods

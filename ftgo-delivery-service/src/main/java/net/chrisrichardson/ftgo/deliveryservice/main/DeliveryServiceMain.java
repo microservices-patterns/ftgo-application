@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.deliveryservice.main;
 
-import io.eventuate.tram.jdbckafka.TramJdbcKafkaConfiguration;
+import io.eventuate.tram.spring.jdbckafka.TramJdbcKafkaConfiguration;
 import net.chrisrichardson.eventstore.examples.customersandorders.commonswagger.CommonSwaggerConfiguration;
 import net.chrisrichardson.ftgo.deliveryservice.messaging.DeliveryServiceMessagingConfiguration;
 import net.chrisrichardson.ftgo.deliveryservice.web.DeliveryServiceWebConfiguration;

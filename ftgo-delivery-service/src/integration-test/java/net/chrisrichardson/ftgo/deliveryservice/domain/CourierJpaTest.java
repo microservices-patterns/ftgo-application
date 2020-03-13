@@ -1,5 +1,6 @@
 package net.chrisrichardson.ftgo.deliveryservice.domain;
 
+import io.eventuate.tram.spring.consumer.jdbc.TramConsumerJdbcAutoConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class CourierJpaTest {
 
   @Configuration
   @EnableJpaRepositories
-  @EnableAutoConfiguration
+  @EnableAutoConfiguration(exclude = TramConsumerJdbcAutoConfiguration.class)
   public static class Config {
   }
 

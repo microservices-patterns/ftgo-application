@@ -2,13 +2,16 @@ package net.chrisrichardson.ftgo.orderservice.domain;
 
 import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
-import io.eventuate.tram.sagas.orchestration.SagaManager;
+import io.eventuate.tram.sagas.orchestration.SagaInstanceFactory;
 import io.micrometer.core.instrument.MeterRegistry;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDetails;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDomainEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderLineItem;
+import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSaga;
 import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSagaData;
+import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSaga;
 import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSagaState;
+import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSaga;
 import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSagaData;
 import net.chrisrichardson.ftgo.orderservice.web.MenuItemIdAndQuantity;
 import org.slf4j.Logger;
@@ -27,26 +30,38 @@ public class OrderService {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
+  private SagaInstanceFactory sagaInstanceFactory;
+
   private OrderRepository orderRepository;
 
   private RestaurantRepository restaurantRepository;
 
-  private SagaManager<CreateOrderSagaState> createOrderSagaManager;
+  private CreateOrderSaga createOrderSaga;
 
-  private SagaManager<CancelOrderSagaData> cancelOrderSagaManager;
+  private CancelOrderSaga cancelOrderSaga;
 
-  private SagaManager<ReviseOrderSagaData> reviseOrderSagaManager;
+  private ReviseOrderSaga reviseOrderSaga;
 
   private OrderDomainEventPublisher orderAggregateEventPublisher;
 
   private Optional<MeterRegistry> meterRegistry;
 
-  public OrderService(OrderRepository orderRepository, DomainEventPublisher eventPublisher, RestaurantRepository restaurantRepository, SagaManager<CreateOrderSagaState> createOrderSagaManager, SagaManager<CancelOrderSagaData> cancelOrderSagaManager, SagaManager<ReviseOrderSagaData> reviseOrderSagaManager, OrderDomainEventPublisher orderAggregateEventPublisher, Optional<MeterRegistry> meterRegistry) {
+  public OrderService(SagaInstanceFactory sagaInstanceFactory,
+                      OrderRepository orderRepository,
+                      DomainEventPublisher eventPublisher,
+                      RestaurantRepository restaurantRepository,
+                      CreateOrderSaga createOrderSaga,
+                      CancelOrderSaga cancelOrderSaga,
+                      ReviseOrderSaga reviseOrderSaga,
+                      OrderDomainEventPublisher orderAggregateEventPublisher,
+                      Optional<MeterRegistry> meterRegistry) {
+
+    this.sagaInstanceFactory = sagaInstanceFactory;
     this.orderRepository = orderRepository;
     this.restaurantRepository = restaurantRepository;
-    this.createOrderSagaManager = createOrderSagaManager;
-    this.cancelOrderSagaManager = cancelOrderSagaManager;
-    this.reviseOrderSagaManager = reviseOrderSagaManager;
+    this.createOrderSaga = createOrderSaga;
+    this.cancelOrderSaga = cancelOrderSaga;
+    this.reviseOrderSaga = reviseOrderSaga;
     this.orderAggregateEventPublisher = orderAggregateEventPublisher;
     this.meterRegistry = meterRegistry;
   }
@@ -69,7 +84,7 @@ public class OrderService {
     OrderDetails orderDetails = new OrderDetails(consumerId, restaurantId, orderLineItems, order.getOrderTotal());
 
     CreateOrderSagaState data = new CreateOrderSagaState(order.getId(), orderDetails);
-    createOrderSagaManager.create(data, Order.class, order.getId());
+    sagaInstanceFactory.create(createOrderSaga, data);
 
     meterRegistry.ifPresent(mr -> mr.counter("placed_orders").increment());
 
@@ -101,7 +116,7 @@ public class OrderService {
     Order order = orderRepository.findById(orderId)
             .orElseThrow(() -> new OrderNotFoundException(orderId));
     CancelOrderSagaData sagaData = new CancelOrderSagaData(order.getConsumerId(), orderId, order.getOrderTotal());
-    cancelOrderSagaManager.create(sagaData);
+    sagaInstanceFactory.create(cancelOrderSaga, sagaData);
     return order;
   }
 
@@ -137,7 +152,7 @@ public class OrderService {
   public Order reviseOrder(long orderId, OrderRevision orderRevision) {
     Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
     ReviseOrderSagaData sagaData = new ReviseOrderSagaData(order.getConsumerId(), orderId, null, orderRevision);
-    reviseOrderSagaManager.create(sagaData);
+    sagaInstanceFactory.create(reviseOrderSaga, sagaData);
     return order;
   }
 

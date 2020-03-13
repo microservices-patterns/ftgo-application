@@ -1,8 +1,8 @@
 package net.chrisrichardson.ftgo.deliveryservice.messaging;
 
+import io.eventuate.tram.spring.events.subscriber.TramEventSubscriberConfiguration;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcher;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcherFactory;
-import io.eventuate.tram.events.subscriber.TramEventSubscriberConfiguration;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
 import net.chrisrichardson.ftgo.deliveryservice.domain.DeliveryService;
 import net.chrisrichardson.ftgo.deliveryservice.domain.DeliveryServiceDomainConfiguration;

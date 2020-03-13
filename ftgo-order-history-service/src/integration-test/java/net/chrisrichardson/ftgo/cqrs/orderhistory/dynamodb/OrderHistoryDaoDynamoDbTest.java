@@ -1,7 +1,7 @@
 package net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb;
 
 import io.eventuate.common.json.mapper.JSonMapper;
-import io.eventuate.tram.inmemory.TramInMemoryConfiguration;
+import io.eventuate.tram.spring.inmemory.TramInMemoryConfiguration;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.OrderHistory;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.OrderHistoryDao;

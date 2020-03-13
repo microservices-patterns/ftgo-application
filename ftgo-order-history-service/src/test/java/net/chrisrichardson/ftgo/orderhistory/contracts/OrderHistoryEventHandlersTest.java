@@ -1,12 +1,11 @@
 package net.chrisrichardson.ftgo.orderhistory.contracts;
 
-import io.eventuate.tram.commands.producer.TramCommandProducerConfiguration;
-import io.eventuate.tram.consumer.common.TramNoopDuplicateMessageDetectorConfiguration;
-import io.eventuate.tram.inmemory.TramInMemoryCommonConfiguration;
-import io.eventuate.tram.inmemory.TramInMemoryConfiguration;
+import io.eventuate.tram.spring.commands.producer.TramCommandProducerConfiguration;
+import io.eventuate.tram.spring.consumer.common.TramNoopDuplicateMessageDetectorConfiguration;
+import io.eventuate.tram.spring.inmemory.TramInMemoryCommonConfiguration;
 import io.eventuate.tram.messaging.common.ChannelMapping;
 import io.eventuate.tram.messaging.common.DefaultChannelMapping;
-import io.eventuate.tram.springcloudcontractsupport.EventuateContractVerifierConfiguration;
+import io.eventuate.tram.spring.cloudcontractsupport.EventuateContractVerifierConfiguration;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.OrderHistoryDao;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb.Order;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb.SourceEvent;

@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.consumerservice.main;
 
-import io.eventuate.tram.jdbckafka.TramJdbcKafkaConfiguration;
+import io.eventuate.tram.spring.jdbckafka.TramJdbcKafkaConfiguration;
 import net.chrisrichardson.eventstore.examples.customersandorders.commonswagger.CommonSwaggerConfiguration;
 import net.chrisrichardson.ftgo.consumerservice.web.ConsumerWebConfiguration;
 import org.springframework.boot.SpringApplication;
