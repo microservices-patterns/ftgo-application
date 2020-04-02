@@ -24,7 +24,7 @@ public class OrderServiceExternalComponentTest extends AbstractOrderServiceCompo
   }
   
   private int port = 8082;
-  private String host = System.getenv("DOCKER_HOST_IP");
+  private String host = FtgoTestUtil.getDockerHostIp();
 
   @Override
   protected String baseUrl(String path) {

@@ -7,7 +7,7 @@ ports=$*
 echo $path
 echo $ports
 
-host=$DOCKER_HOST_IP
+host=${DOCKER_HOST_IP:-localhost}
 
 done=false
 

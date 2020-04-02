@@ -64,7 +64,7 @@ public class OrderServiceComponentTestStepDefinitions {
   }
 
   private int port = 8082;
-  private String host = System.getenv("DOCKER_HOST_IP");
+  private String host = FtgoTestUtil.getDockerHostIp();
 
   protected String baseUrl(String path) {
     return String.format("http://%s:%s%s", host, port, path);

@@ -176,6 +176,7 @@ dependencies {
     componentTestCompile 'info.cukes:cucumber-java:1.2.5'
     componentTestCompile 'info.cukes:cucumber-junit:1.2.5'
     componentTestCompile 'info.cukes:cucumber-spring:1.2.5'
+
     testCompile project(":ftgo-test-util")
 
 }

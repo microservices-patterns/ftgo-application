@@ -15,11 +15,11 @@ import net.chrisrichardson.ftgo.restaurantservice.events.CreateRestaurantRequest
 import net.chrisrichardson.ftgo.restaurantservice.events.MenuItem;
 import net.chrisrichardson.ftgo.restaurantservice.events.RestaurantMenu;
 import io.eventuate.util.test.async.Eventually;
+import net.chrisrichardson.ftgo.testutil.FtgoTestUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Collections;
-import java.util.Optional;
 
 import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -34,7 +34,8 @@ public class EndToEndTests {
   public static final String RESTAURANT_NAME = "My Restaurant";
 
   private final int revisedQuantityOfChickenVindaloo = 10;
-  private String host = Optional.ofNullable(System.getenv("DOCKER_HOST_IP")).orElse("localhost");
+  private String host = FtgoTestUtil.getDockerHostIp();
+
   private int consumerId;
   private int restaurantId;
   private int orderId;

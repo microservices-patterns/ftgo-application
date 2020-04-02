@@ -1,19 +1,24 @@
 version: '3'
 services:
   zookeeper:
-    image: eventuateio/eventuate-zookeeper:0.4.0.RELEASE
+    image: confluentinc/cp-zookeeper:5.2.4
     ports:
       - 2181:2181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
   kafka:
-    image: eventuateio/eventuate-kafka:0.3.0.RELEASE
+    image: "confluentinc/cp-enterprise-kafka:5.2.4"
     ports:
       - 9092:9092
     depends_on:
       - zookeeper
     environment:
-      - ADVERTISED_HOST_NAME=${DOCKER_HOST_IP?DOCKER_HOST_IP must be set}
-      - KAFKA_HEAP_OPTS=-Xmx192m -Xms192m
-      - ZOOKEEPER_SERVERS=zookeeper:2181
+      KAFKA_LISTENERS: LC://kafka:29092,LX://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: LC://kafka:29092,LX://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LC:PLAINTEXT,LX:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LC
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
   mysql:
     build: ./mysql
     ports:
@@ -30,7 +35,7 @@ services:
       - mysql
       - kafka
     environment:
-      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
       EVENTUATE_CDC_PIPELINE_PIPELINE1_TYPE: eventuate-tram
       EVENTUATE_CDC_PIPELINE_PIPELINE1_READER: reader1
@@ -86,7 +91,7 @@ services:
       SPRING_DATASOURCE_USERNAME: ftgo_consumer_service_user
       SPRING_DATASOURCE_PASSWORD: ftgo_consumer_service_password
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
-      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
       EVENTUATE_DATABASE_SCHEMA: ftgo_consumer_service
       JAVA_OPTS: -Xmx192m
@@ -104,7 +109,7 @@ services:
       SPRING_DATASOURCE_USERNAME: ftgo_order_service_user
       SPRING_DATASOURCE_PASSWORD: ftgo_order_service_password
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
-      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
       JAVA_OPTS: -Xmx192m
       SPRING_SLEUTH_ENABLED: "true"
@@ -125,7 +130,7 @@ services:
         SPRING_DATASOURCE_USERNAME: ftgo_kitchen_service_user
         SPRING_DATASOURCE_PASSWORD: ftgo_kitchen_service_password
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
-        EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+        EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
         JAVA_OPTS: -Xmx192m
         EVENTUATE_DATABASE_SCHEMA: ftgo_kitchen_service
@@ -143,7 +148,7 @@ services:
         SPRING_DATASOURCE_USERNAME: ftgo_restaurant_service_user
         SPRING_DATASOURCE_PASSWORD: ftgo_restaurant_service_password
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
-        EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+        EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
         JAVA_OPTS: -Xmx192m
         EVENTUATE_DATABASE_SCHEMA: ftgo_restaurant_service
@@ -161,7 +166,7 @@ services:
           SPRING_DATASOURCE_USERNAME: ftgo_accounting_service_user
           SPRING_DATASOURCE_PASSWORD: ftgo_accounting_service_password
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
-          EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+          EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
           EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
           JAVA_OPTS: -Xmx192m
           EVENTUATE_DATABASE_SCHEMA: ftgo_accounting_service
@@ -176,7 +181,7 @@ services:
           - dynamodblocal
           - dynamodblocal-init
         environment:
-          EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+          EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
           EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
           AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-id_key}
           AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-access_key}

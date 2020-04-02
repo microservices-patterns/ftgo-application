@@ -1,0 +1,68 @@
+
+apply plugin: FtgoServicePlugin
+
+// apply plugin: 'spring-cloud-contract'
+
+apply plugin: 'docker-compose'
+
+apply plugin: IntegrationTestsPlugin
+apply plugin: ComponentTestsPlugin
+apply plugin: FtgoJSONSchema2PojoPlugin
+
+dependencies {
+    ftgoApiSpecification project(":ftgo-restaurant-service-api-spec")
+
+    compile project(":ftgo-delivery-service-api")
+    compile project(":ftgo-kitchen-service-api")
+    compile project(":ftgo-restaurant-service-api")
+    compile project(":ftgo-order-service-api")
+    compile project(":ftgo-common")
+    compile project(":ftgo-common-jpa")
+    compile project(":common-swagger")
+
+    compile "io.eventuate.tram.core:eventuate-tram-spring-events:$eventuateTramVersion"
+    compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka:$eventuateTramVersion"
+
+    compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+    compile "io.micrometer:micrometer-registry-prometheus:$micrometerVersion"
+
+    compile('org.apache.kafka:kafka-clients:2.3.0') {
+        force = true
+    }
+
+    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+    testCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory:$eventuateTramVersion"
+    testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
+
+    componentTestCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
+    componentTestCompile "com.jayway.jsonpath:json-path:2.3.0"
+    componentTestCompile "org.hamcrest:hamcrest:2.1"
+    componentTestCompile project(":ftgo-test-util")
+
+}
+
+dockerCompose {
+
+    componentTests {
+        startedServices = [ 'ftgo-delivery-service']
+        stopContainers = true
+    }
+
+}
+
+componentTestsComposeUp.dependsOn(assemble)
+dockerCompose.componentTests.isRequiredBy(componentTest)
+
+ftgoJsonSchema2Pojo {
+
+    ftgoRestaurantService {
+        source = files("${ftgoApiSpecsDir}/ftgo-restaurant-service-api-spec/messages")
+        targetPackage = "net.chrisrichardson.ftgo.restaurantservice.events"
+        includeAdditionalProperties = false
+        generateBuilders = true
+        useLongIntegers = true
+    }
+
+}
+
