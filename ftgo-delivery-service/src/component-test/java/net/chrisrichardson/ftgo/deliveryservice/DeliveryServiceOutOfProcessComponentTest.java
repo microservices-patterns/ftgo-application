@@ -8,6 +8,7 @@ import net.chrisrichardson.ftgo.orderservice.api.OrderServiceChannels;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDetails;
 import net.chrisrichardson.ftgo.restaurantservice.RestaurantServiceChannels;
+import net.chrisrichardson.ftgo.testutil.FtgoTestUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class DeliveryServiceOutOfProcessComponentTest {
   public static class Config {
   }
 
-  private String host = System.getenv("DOCKER_HOST_IP");
+  private String host = FtgoTestUtil.getDockerHostIp();
   private int port = 8089;
   private long restaurantId;
   private long orderId;

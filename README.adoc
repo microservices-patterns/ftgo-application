@@ -127,39 +127,6 @@ Build the services using this command:
 ./gradlew assemble
 ```
 
-=== Setting environment variables
-
-
-==== Quick way
-
-A quick way to set the environment variables is to run the script `./set-env.sh`
-
-==== Long way
-
-To run the application you must set the `DOCKER_HOST_IP` environment variable to the IP address of where the Docker containers are running:
-
-* Docker toolbox/Virtual machine - IP address of the virtual machine
-* Docker for Windows/Mac/Linux - IP address of your laptop/desktop
-
-The value of `DOCKER_HOST_IP` must be meaningful to both Java services/tests running on your desktop/laptop and to Docker containers.
-Please do NOT set it to the unresolvable hostname of your machine, `localhost` or `127.0.0.1` since the Docker containers will probably not work correctly.
-
-=== Verifying that DOCKER_HOST_IP is set correctly
-
-You can verify that `DOCKER_HOST_IP` is set correctly by running this command:
-
-----
-docker run -p 8889:8888 -e DOCKER_DIAGNOSTICS_PORT=8889 -e DOCKER_HOST_IP \
-     --rm eventuateio/eventuateio-docker-networking-diagnostics:0.2.0.RELEASE
-----
-
-==== Setting the environment variable in your IDE
-
-If you want to run Java services/tests within your IDE on your desktop/laptop AND  the Docker containers are not accessible via `localhost` THEN you will need to set `DOCKER_HOST_IP` within your IDE.
-How to do this depends on your operating system and IDE.
-For example, I find it convenient to launch my IDE from the command line and after setting this environment variable.
-
-
 === Running the application
 
 Run the application using this command:
@@ -174,14 +141,16 @@ This can take a while.
 
 Use the services Swagger UIs to invoke the services.
 
-* Create consumer - `http://${DOCKER_HOST_IP?}:8081/swagger-ui.html`
-* Create a restaurant - `http://${DOCKER_HOST_IP?}:8084/swagger-ui.html`
-* Create an order - `http://${DOCKER_HOST_IP?}:8082/swagger-ui.html`
-* View the order - `http://${DOCKER_HOST_IP?}:8082/swagger-ui.html`
-* View the order history -  `http://${DOCKER_HOST_IP?}:8086/swagger-ui.html`
+* Create consumer - `http://localhost:8081/swagger-ui.html`
+* Create a restaurant - `http://localhost:8084/swagger-ui.html`
+* Create an order - `http://localhost:8082/swagger-ui.html`
+* View the order - `http://localhost:8082/swagger-ui.html`
+* View the order history -  `http://localhost:8086/swagger-ui.html`
 
-You can also access the application via the `API Gateway` at `http://${DOCKER_HOST_IP?}:8087`.
+You can also access the application via the `API Gateway` at `http://localhost:8087`.
 However, currently it  doesn't have a Swagger UI so you will have to use `curl`, for example.
+
+Note: if the containers aren't accessible via `localhost`, you will have to use `${DOCKER_HOST_IP}` as described below.
 
 === Stopping the application
 
@@ -217,3 +186,35 @@ If you want to delete the persistent volumes for Apache Kafka, Zookeeper and MyS
 ```
 ./deployment/kubernetes/scripts/kubernetes-delete-volumes.sh
 ```
+
+== Setting environment variables to do development
+
+You should not need to set any environment variables.
+To run the application, you certainly do not.
+Similarly, to do development (e.g. run tests), you typically do not need to set any environment variables.
+That's because Docker containers are generally accessible (e.g. Docker for Windows/Mac) on the host via `localhost`.
+However, if Docker is running elsewhere you will need to set `DOCKER_HOST_IP`.
+
+=== Quick way
+
+A quick way to set the environment variables is to run the script `./set-env.sh`.
+
+=== Long way
+
+The value of `DOCKER_HOST_IP` must be meaningful to both Java services/tests running on your desktop/laptop and to Docker containers.
+Please do NOT set it to the unresolvable hostname of your machine, `localhost` or `127.0.0.1` since the Docker containers will probably not work correctly.
+
+=== Verifying that DOCKER_HOST_IP is set correctly
+
+You can verify that `DOCKER_HOST_IP` is set correctly by running this command:
+
+----
+docker run -p 8889:8888 -e DOCKER_DIAGNOSTICS_PORT=8889 -e DOCKER_HOST_IP \
+     --rm eventuateio/eventuateio-docker-networking-diagnostics:0.2.0.RELEASE
+----
+
+=== Setting the environment variable in your IDE
+
+If you want to run Java services/tests within your IDE on your desktop/laptop AND  the Docker containers are not accessible via `localhost` THEN you will need to set `DOCKER_HOST_IP` within your IDE.
+How to do this depends on your operating system and IDE.
+For example, I find it convenient to launch my IDE from the command line and after setting this environment variable.

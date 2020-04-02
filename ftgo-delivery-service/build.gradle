@@ -38,6 +38,7 @@ dependencies {
     componentTestCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
     componentTestCompile "com.jayway.jsonpath:json-path:2.3.0"
     componentTestCompile "org.hamcrest:hamcrest:2.1"
+    componentTestCompile project(":ftgo-test-util")
 
 }
 
