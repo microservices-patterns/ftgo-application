@@ -19,8 +19,8 @@ dependencies {
     compile 'javax.el:javax.el-api:2.2.5'
 
 
-    compile "io.eventuate.client.java:eventuate-client-java-spring:$eventuateClientVersion"
-    compile "io.eventuate.client.java:eventuate-client-java-spring-jdbc:$eventuateClientVersion"
+    compile "io.eventuate.local.java:eventuate-client-java-spring:$eventuateLocalVersion"
+    compile "io.eventuate.local.java:eventuate-client-java-spring-jdbc:$eventuateLocalVersion"
     compile "io.eventuate.local.java:eventuate-local-java-spring-jdbc:${eventuateLocalVersion}"
     
     compile('org.apache.kafka:kafka-clients:2.3.0') {

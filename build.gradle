@@ -14,7 +14,6 @@ buildscript {
 
 }
 
-
 plugins {
     id "com.github.ben-manes.versions" version "0.20.0"
 }
@@ -33,7 +32,7 @@ subprojects {
     group = "net.chrisrichardson.ftgo"
 
     repositories {
-        eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
+        eventuateMavenRepoUrl.split('[ ,]').each { repoUrl -> maven { url repoUrl.trim() } }
 
         mavenCentral()
         jcenter()
