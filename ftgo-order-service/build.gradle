@@ -179,6 +179,7 @@ dependencies {
     testCompile project(":ftgo-test-util")
     testCompile "org.hamcrest:hamcrest:2.1"
 
+    integrationTestCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support-cloud-contract:$eventuateTramSagasVersion"
     integrationTestCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory:$eventuateTramVersion"
 
 }

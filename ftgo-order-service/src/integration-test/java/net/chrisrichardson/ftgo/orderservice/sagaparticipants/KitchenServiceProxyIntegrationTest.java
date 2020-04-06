@@ -1,10 +1,8 @@
 package net.chrisrichardson.ftgo.orderservice.sagaparticipants;
 
-import io.eventuate.tram.commands.producer.CommandProducer;
-import io.eventuate.tram.spring.commands.producer.TramCommandProducerConfiguration;
 import io.eventuate.tram.sagas.spring.inmemory.TramSagaInMemoryConfiguration;
-import io.eventuate.tram.sagas.orchestration.SagaCommandProducer;
-import io.eventuate.tram.spring.cloudcontractsupport.EventuateContractVerifierConfiguration;
+import io.eventuate.tram.sagas.spring.testing.contract.EventuateTramSagasSpringCloudContractSupportConfiguration;
+import io.eventuate.tram.sagas.spring.testing.contract.SagaMessagingTestHelper;
 import io.eventuate.tram.spring.cloudcontractsupport.EventuateTramRoutesConfigurer;
 import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicket;
 import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicketReply;
@@ -43,24 +41,13 @@ public class KitchenServiceProxyIntegrationTest {
 
   @Configuration
   @EnableAutoConfiguration
-  @Import({TramCommandProducerConfiguration.class,
-          TramSagaInMemoryConfiguration.class, EventuateContractVerifierConfiguration.class})
+  @Import({TramSagaInMemoryConfiguration.class, EventuateTramSagasSpringCloudContractSupportConfiguration.class})
   public static class TestConfiguration {
 
 
     @Bean
     public EventuateTramRoutesConfigurer eventuateTramRoutesConfigurer(BatchStubRunner batchStubRunner) {
       return new EventuateTramRoutesConfigurer(batchStubRunner);
-    }
-
-    @Bean
-    public SagaMessagingTestHelper sagaMessagingTestHelper() {
-      return new SagaMessagingTestHelper();
-    }
-
-    @Bean
-    public SagaCommandProducer sagaCommandProducer(CommandProducer commandProducer) {
-      return new SagaCommandProducer(commandProducer);
     }
 
     @Bean
