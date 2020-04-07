@@ -1,5 +1,9 @@
 #! /bin/bash -e
 
+docker-compose version
+
+docker network ls
+
 docker run $* \
    --name mysqlterm --rm \
    -e MYSQL_PORT_3306_TCP_ADDR=$DOCKER_HOST_IP -e MYSQL_PORT_3306_TCP_PORT=3306 -e MYSQL_ENV_MYSQL_ROOT_PASSWORD=rootpassword \
