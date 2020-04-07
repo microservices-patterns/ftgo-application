@@ -5,7 +5,6 @@ docker-compose version
 docker network ls
 
 docker run $* \
-   --name mysqlterm --rm \
-   -e MYSQL_PORT_3306_TCP_ADDR=$DOCKER_HOST_IP -e MYSQL_PORT_3306_TCP_PORT=3306 -e MYSQL_ENV_MYSQL_ROOT_PASSWORD=rootpassword \
+   --name mysqlterm --rm --network=${PWD##*/}_default \
    mysql:5.7.13  \
-   sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD" '
+   mysql -hmysql -P3306 -uroot -prootpassword
