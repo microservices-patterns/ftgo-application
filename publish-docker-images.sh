@@ -1,6 +1,6 @@
 #! /bin/bash -e
 
-DOCKER_COMPOSE_PREFIX=${PWD##*/}
+DOCKER_COMPOSE_PREFIX="${PWD##*/}_"
 
 DOCKER_REPO=msapatterns
 
