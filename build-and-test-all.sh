@@ -48,6 +48,10 @@ ${DOCKER_COMPOSE?} up -d --build ${DATABASE_SERVICES?}
 
 echo mysql is started
 
+# Test ./mysql-cli.sh
+
+echo 'show databases;' | ./mysql-cli.sh -i
+
 ${DOCKER_COMPOSE?} up -d --build cdc-service
 
 if [ -z "$ASSEMBLE_ONLY" ] ; then
