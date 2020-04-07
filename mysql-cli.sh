@@ -5,6 +5,6 @@ docker-compose version
 docker network ls
 
 docker run $* \
-   --name mysqlterm --rm --network=${PWD##*/}_default \
+   --name mysqlterm --rm \
    mysql:5.7.13  \
-   mysql -hmysql -P3306 -uroot -prootpassword
+   mysql -hhost.docker.internal -P3306 -uroot -prootpassword
