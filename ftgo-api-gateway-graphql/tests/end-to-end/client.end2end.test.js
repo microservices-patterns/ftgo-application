@@ -19,7 +19,7 @@ afterAll(() => {
 */
 
 test('findConsumerWithOrders', () => {
-    const client = new FtgoGraphQLClient({baseUrl: `http://${process.env.DOCKER_HOST_IP}:8088`});
+    const client = new FtgoGraphQLClient({baseUrl: `http://${process.env.DOCKER_HOST_IP || "localhost"}:8088`});
 
     return client.findConsumerWithOrders("1")
         .then(result => {
