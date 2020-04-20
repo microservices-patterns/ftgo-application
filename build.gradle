@@ -5,6 +5,7 @@ buildscript {
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "io.spring.gradle:dependency-management-plugin:$springDependencyManagementPluginVersion"
+        classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
     }
 
 }
@@ -15,6 +16,7 @@ plugins {
 }
 
 apply plugin: WaitForMySqlPlugin
+apply plugin: 'docker-compose'
 
 subprojects {
 
@@ -46,4 +48,15 @@ subprojects {
 
 task buildContracts(type: GradleBuild) {
   tasks = subprojects.collect { it.name }.findAll { it.endsWith("-contracts") }.collect { ":" + it + ":publish"}
+}
+
+task compileAll(type: GradleBuild) {
+  tasks = ["testClasses", "compileIntegrationTestJava", "compileComponentTestJava"]
+}
+
+dockerCompose {
+  projectName = null
+  if (project.hasProperty('startedService'))
+    startedServices= [project.ext.startedService]
+
 }

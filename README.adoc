@@ -132,8 +132,10 @@ Build the services using this command:
 Run the application using this command:
 
 ```
-docker-compose up -d
+./gradlew :composeUp
 ```
+
+Note: the ':'
 
 This can take a while.
 
@@ -157,7 +159,7 @@ Note: if the containers aren't accessible via `localhost`, you will have to use 
 Stop the application using this command:
 
 ```
-docker-compose down -v
+./gradlew :composeDown
 ```
 
 == Deploying the application on Kubernetes
