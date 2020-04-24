@@ -1,0 +1,2 @@
+mysql/*.sh text eol=lf
+dynamodblocal-init/*.sh text eol=lf
