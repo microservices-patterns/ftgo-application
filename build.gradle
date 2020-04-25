@@ -57,7 +57,7 @@ task compileAll(type: GradleBuild) {
 dockerCompose {
   projectName = null
   removeOrphans = true
-  if (project.hasProperty('startedService'))
-    startedServices= [project.ext.startedService]
+  if (project.hasProperty('startedServices'))
+    startedServices= project.ext.startedServices.split(',')
 
 }
