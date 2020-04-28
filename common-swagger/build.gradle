@@ -6,5 +6,5 @@ dependencies {
         exclude group: "org.springframework"
     }
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-
+    compile project(":ftgo-common")
 }
