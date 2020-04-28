@@ -1,6 +1,7 @@
 package net.chrisrichardson.eventstore.examples.customersandorders.commonswagger;
 
 import com.fasterxml.classmate.TypeResolver;
+import net.chrisrichardson.ftgo.common.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +32,8 @@ public class CommonSwaggerConfiguration {
                 .alternateTypeRules(
                         newRule(typeResolver.resolve(DeferredResult.class,
                                         typeResolver.resolve(ResponseEntity.class, WildcardType.class)),
-                                typeResolver.resolve(WildcardType.class))
+                                typeResolver.resolve(WildcardType.class)),
+                        newRule(Money.class, String.class)
                 )
                 .useDefaultResponseMessages(false)
                 ;
