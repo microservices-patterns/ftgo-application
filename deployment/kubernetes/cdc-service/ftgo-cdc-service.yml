@@ -1,0 +1,121 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ftgo-cdc-service
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    svc: ftgo-cdc-service
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ftgo-cdc-service
+  labels:
+    application: ftgo
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        svc: ftgo-cdc-service
+    spec:
+      containers:
+      - name: ftgo-cdc-service
+        image: eventuateio/eventuate-cdc-service:0.4.0.RELEASE
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: httpport
+        command: ["bash", "-c", "java -Dsun.net.inetaddr.ttl=30 -jar *.jar" ]
+        env:
+          - name: JAVA_OPTS
+            value: "-Dsun.net.inetaddr.ttl=30"
+          - name: EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS
+            value: ftgo-kafka:29092
+          - name: EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING
+            value: ftgo-zookeeper:2181
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE1_TYPE
+            value: eventuate-tram
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE1_READER
+            value: reader1
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE1_EVENTUATEDATABASESCHEMA
+            value: ftgo_consumer_service
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE2_TYPE
+            value: eventuate-tram
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE2_READER
+            value: reader1
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE2_EVENTUATEDATABASESCHEMA
+            value: ftgo_order_service
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE3_TYPE
+            value: eventuate-tram
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE3_READER
+            value: reader1
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE3_EVENTUATEDATABASESCHEMA
+            value: ftgo_kitchen_service
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE4_TYPE
+            value: eventuate-tram
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE4_READER
+            value: reader1
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE4_EVENTUATEDATABASESCHEMA
+            value: ftgo_restaurant_service
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE5_TYPE
+            value: eventuate-tram
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE5_READER
+            value: reader1
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE5_EVENTUATEDATABASESCHEMA
+            value: ftgo_accounting_service
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE6_TYPE
+            value: eventuate-tram
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE6_READER
+            value: reader1
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE6_EVENTUATEDATABASESCHEMA
+            value: ftgoorderhistoryservice
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE7_TYPE
+            value: eventuate-local
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE7_READER
+            value: reader1
+          - name: EVENTUATE_CDC_PIPELINE_PIPELINE7_EVENTUATEDATABASESCHEMA
+            value: ftgo_accounting_service
+          - name: EVENTUATE_CDC_READER_READER1_TYPE
+            value: mysql-binlog
+          - name: EVENTUATE_CDC_READER_READER1_DATASOURCEURL
+            value: jdbc:mysql://ftgo-mysql:3306/eventuate
+          - name: EVENTUATE_CDC_READER_READER1_DATASOURCEUSERNAME
+            value: root
+          - name: EVENTUATE_CDC_READER_READER1_DATASOURCEPASSWORD
+            value: rootpassword
+          - name: EVENTUATE_CDC_READER_READER1_DATASOURCEDRIVERCLASSNAME
+            value: com.mysql.jdbc.Driver
+          - name: EVENTUATE_CDC_READER_READER1_LEADERSHIPLOCKPATH
+            value: /eventuate/cdc/leader/common
+          - name: EVENTUATE_CDC_READER_READER1_CDCDBUSERNAME
+            value: root
+          - name: EVENTUATE_CDC_READER_READER1_CDCDBPASSWORD
+            value: rootpassword
+          - name: EVENTUATE_CDC_READER_READER1_READOLDDEBEZIUMDBOFFSETSTORAGETOPIC
+            value: "false"
+          - name: EVENTUATE_CDC_READER_READER1_MYSQLBINLOGCLIENTUNIQUEID
+            value: "1"
+          - name: EVENTUATE_CDC_READER_READER1_OFFSETSTOREKEY
+            value: MySqlBinlog
+          - name: EVENTUATE_CDC_READER_READER1_OFFSETSTORAGETOPICNAME
+            value: db.history.common
+        livenessProbe:
+          httpGet:
+            path: /actuator
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /actuator
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 20
+---

@@ -26,23 +26,19 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: ftgo-kafka
-          image: eventuateio/eventuateio-local-kafka:0.14.0
+          image: confluentinc/cp-kafka:5.2.4
           env:
-            - name: KAFKA_HEAP_OPTS
-              value: -Xmx320m -Xms320m
-            - name: ZOOKEEPER_SERVERS
+            - name: KAFKA_ADVERTISED_LISTENERS
+              value: PLAINTEXT://ftgo-kafka:9092
+            - name: KAFKA_ZOOKEEPER_CONNECT
               value: ftgo-zookeeper:2181
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+              value: "1"
           ports:
               - containerPort: 9092
           volumeMounts:
             - name: ftgo-kafka-persistent-storage
-              mountPath: /usr/local/kafka-data
-            - name: ftgo-kafka-config-volume
-              mountPath: /usr/local/kafka-config
-      volumes:
-      - name: ftgo-kafka-config-volume
-        configMap:
-          name: ftgo-kafka-config
+              mountPath: /var/lib/zookeeper/data
   volumeClaimTemplates:
   - metadata:
       name: ftgo-kafka-persistent-storage
