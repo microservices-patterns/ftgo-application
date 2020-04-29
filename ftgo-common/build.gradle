@@ -2,7 +2,8 @@ dependencies {
     // TODO eliminate this - problem is value objects like Money need to be embeddable.
     // TODO https://en.wikibooks.org/wiki/Java_Persistence/Embeddables#Example_of_an_Embeddable_object_XML
 
-    compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
+//    compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
+    compile "org.springframework.boot:spring-boot-starter:$springBootVersion"
 
     // compile "org.springframework.boot:spring-boot-starter:$springBootVersion"
 

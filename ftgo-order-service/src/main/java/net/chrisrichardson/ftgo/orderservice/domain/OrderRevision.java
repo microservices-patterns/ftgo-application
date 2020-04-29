@@ -1,35 +1,35 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
-import java.util.Map;
+import net.chrisrichardson.ftgo.common.RevisedOrderLineItem;
+
 import java.util.Optional;
 
 public class OrderRevision {
 
   private Optional<DeliveryInformation> deliveryInformation = Optional.empty();
-  private Map<String, Integer> revisedLineItemQuantities;
+  private RevisedOrderLineItem[] revisedOrderLineItems;
 
   private OrderRevision() {
   }
 
-  public OrderRevision(Optional<DeliveryInformation> deliveryInformation, Map<String, Integer> revisedLineItemQuantities) {
+  public OrderRevision(Optional<DeliveryInformation> deliveryInformation, RevisedOrderLineItem[] revisedOrderLineItems) {
     this.deliveryInformation = deliveryInformation;
-    this.revisedLineItemQuantities = revisedLineItemQuantities;
+    this.revisedOrderLineItems = revisedOrderLineItems;
   }
 
   public void setDeliveryInformation(Optional<DeliveryInformation> deliveryInformation) {
     this.deliveryInformation = deliveryInformation;
   }
 
-  public void setRevisedLineItemQuantities(Map<String, Integer> revisedLineItemQuantities) {
-    this.revisedLineItemQuantities = revisedLineItemQuantities;
-  }
-
   public Optional<DeliveryInformation> getDeliveryInformation() {
     return deliveryInformation;
   }
 
+  public RevisedOrderLineItem[] getRevisedOrderLineItems() {
+    return revisedOrderLineItems;
+  }
 
-  public Map<String, Integer> getRevisedLineItemQuantities() {
-    return revisedLineItemQuantities;
+  public void setRevisedOrderLineItems(RevisedOrderLineItem[] revisedOrderLineItems) {
+    this.revisedOrderLineItems = revisedOrderLineItems;
   }
 }

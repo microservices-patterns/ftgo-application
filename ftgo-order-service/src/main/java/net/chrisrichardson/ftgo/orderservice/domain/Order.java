@@ -175,7 +175,7 @@ public class Order {
 
         orderRevision.getDeliveryInformation().ifPresent(newDi -> this.deliveryInformation = newDi);
 
-        if (!orderRevision.getRevisedLineItemQuantities().isEmpty()) {
+        if (orderRevision.getRevisedOrderLineItems() != null && orderRevision.getRevisedOrderLineItems().length > 0) {
           orderLineItems.updateLineItems(orderRevision);
         }
 
