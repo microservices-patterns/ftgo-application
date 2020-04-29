@@ -2,11 +2,15 @@ package net.chrisrichardson.ftgo.orderservice.domain;
 
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderLineItem;
+import net.chrisrichardson.ftgo.common.RevisedOrderLineItem;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Embeddable
@@ -38,17 +42,25 @@ public class OrderLineItems {
   Money changeToOrderTotal(OrderRevision orderRevision) {
     AtomicReference<Money> delta = new AtomicReference<>(Money.ZERO);
 
-    orderRevision.getRevisedLineItemQuantities().forEach((lineItemId, newQuantity) -> {
-      OrderLineItem lineItem = findOrderLineItem(lineItemId);
-      delta.set(delta.get().add(lineItem.deltaForChangedQuantity(newQuantity)));
+    Arrays.asList(orderRevision.getRevisedOrderLineItems()).forEach(item -> {
+      OrderLineItem lineItem = findOrderLineItem(item.getMenuItemId());
+      delta.set(delta.get().add(lineItem.deltaForChangedQuantity(item.getQuantity())));
     });
     return delta.get();
   }
 
   void updateLineItems(OrderRevision orderRevision) {
     getLineItems().stream().forEach(li -> {
-      Integer revised = orderRevision.getRevisedLineItemQuantities().get(li.getMenuItemId());
-      li.setQuantity(revised);
+
+      Optional<Integer> revised = Arrays
+              .asList(orderRevision.getRevisedOrderLineItems())
+              .stream()
+              .filter(item -> Objects.equals(li.getMenuItemId(), item.getMenuItemId()))
+              .map(RevisedOrderLineItem::getQuantity)
+              .findFirst();
+
+      li.setQuantity(revised.orElseThrow(() ->
+              new IllegalArgumentException(String.format("menu item id not found.", li.getMenuItemId()))));
     });
   }
 

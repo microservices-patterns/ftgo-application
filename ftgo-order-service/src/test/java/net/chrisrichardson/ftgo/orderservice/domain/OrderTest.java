@@ -1,6 +1,7 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
 import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
+import net.chrisrichardson.ftgo.common.RevisedOrderLineItem;
 import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
 import net.chrisrichardson.ftgo.orderservice.RestaurantMother;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderAuthorized;
@@ -56,7 +57,7 @@ public class OrderTest {
 
     order.noteApproved();
 
-    OrderRevision orderRevision = new OrderRevision(Optional.empty(), Collections.singletonMap("1", 10));
+    OrderRevision orderRevision = new OrderRevision(Optional.empty(), new RevisedOrderLineItem[] {new RevisedOrderLineItem(10, "1")});
 
     ResultWithDomainEvents<LineItemQuantityChange, OrderDomainEvent> result = order.revise(orderRevision);
 

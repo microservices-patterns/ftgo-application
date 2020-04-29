@@ -2,6 +2,7 @@ package net.chrisrichardson.ftgo.kitchenservice.domain;
 
 import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
 import net.chrisrichardson.ftgo.common.NotYetImplementedException;
+import net.chrisrichardson.ftgo.common.RevisedOrderLineItem;
 import net.chrisrichardson.ftgo.common.UnsupportedStateTransitionException;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketLineItem;
@@ -173,7 +174,7 @@ public class Ticket {
     }
   }
 
-  public List<TicketDomainEvent> beginReviseOrder(Map<String, Integer> revisedLineItemQuantities) {
+  public List<TicketDomainEvent> beginReviseOrder(RevisedOrderLineItem[] revisedOrderLineItems) {
     switch (state) {
       case AWAITING_ACCEPTANCE:
       case ACCEPTED:
@@ -195,7 +196,7 @@ public class Ticket {
     }
   }
 
-  public List<TicketDomainEvent> confirmReviseTicket(Map<String, Integer> revisedLineItemQuantities) {
+  public List<TicketDomainEvent> confirmReviseTicket(RevisedOrderLineItem[] revisedOrderLineItems) {
     switch (state) {
       case REVISION_PENDING:
         this.state = this.previousState;

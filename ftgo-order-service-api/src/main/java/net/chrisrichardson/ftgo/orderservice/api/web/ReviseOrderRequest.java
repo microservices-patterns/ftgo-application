@@ -1,22 +1,22 @@
 package net.chrisrichardson.ftgo.orderservice.api.web;
 
-import java.util.Map;
+import net.chrisrichardson.ftgo.common.RevisedOrderLineItem;
 
 public class ReviseOrderRequest {
-  private Map<String, Integer> revisedLineItemQuantities;
+  private RevisedOrderLineItem[] revisedOrderLineItems;
 
   private ReviseOrderRequest() {
   }
 
-  public ReviseOrderRequest(Map<String, Integer> revisedLineItemQuantities) {
-    this.revisedLineItemQuantities = revisedLineItemQuantities;
+  public ReviseOrderRequest(RevisedOrderLineItem[] revisedOrderLineItems) {
+    this.revisedOrderLineItems = revisedOrderLineItems;
   }
 
-  public Map<String, Integer> getRevisedLineItemQuantities() {
-    return revisedLineItemQuantities;
+  public RevisedOrderLineItem[] getRevisedOrderLineItems() {
+    return revisedOrderLineItems;
   }
 
-  public void setRevisedLineItemQuantities(Map<String, Integer> revisedLineItemQuantities) {
-    this.revisedLineItemQuantities = revisedLineItemQuantities;
+  public void setRevisedOrderLineItems(RevisedOrderLineItem[] revisedOrderLineItems) {
+    this.revisedOrderLineItems = revisedOrderLineItems;
   }
 }

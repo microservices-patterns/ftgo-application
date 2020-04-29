@@ -12,6 +12,7 @@ import net.chrisrichardson.ftgo.apis.model.restaurantservice.RestaurantMenu;
 import net.chrisrichardson.ftgo.common.Address;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.common.Money;
+import net.chrisrichardson.ftgo.common.RevisedOrderLineItem;
 import net.chrisrichardson.ftgo.deliveryservice.api.web.CourierAvailability;
 import net.chrisrichardson.ftgo.kitchenservice.api.web.TicketAcceptance;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderState;
@@ -176,7 +177,7 @@ public class EndToEndTests {
 
   private void reviseOrder(int orderId) {
     given().
-            body(new ReviseOrderRequest(Collections.singletonMap(CHICKED_VINDALOO_MENU_ITEM_ID, revisedQuantityOfChickenVindaloo)))
+            body(new ReviseOrderRequest(new RevisedOrderLineItem[] {new RevisedOrderLineItem(revisedQuantityOfChickenVindaloo, CHICKED_VINDALOO_MENU_ITEM_ID)}))
             .contentType("application/json").
             when().
             post(orderBaseUrl(Integer.toString(orderId), "revise")).
