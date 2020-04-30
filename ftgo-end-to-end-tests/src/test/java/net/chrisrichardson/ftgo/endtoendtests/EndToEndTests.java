@@ -177,7 +177,7 @@ public class EndToEndTests {
 
   private void reviseOrder(int orderId) {
     given().
-            body(new ReviseOrderRequest(new RevisedOrderLineItem[] {new RevisedOrderLineItem(revisedQuantityOfChickenVindaloo, CHICKED_VINDALOO_MENU_ITEM_ID)}))
+            body(new ReviseOrderRequest(Collections.singletonList(new RevisedOrderLineItem(revisedQuantityOfChickenVindaloo, CHICKED_VINDALOO_MENU_ITEM_ID))))
             .contentType("application/json").
             when().
             post(orderBaseUrl(Integer.toString(orderId), "revise")).

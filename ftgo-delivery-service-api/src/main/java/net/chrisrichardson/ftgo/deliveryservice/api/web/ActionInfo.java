@@ -1,20 +1,22 @@
 package net.chrisrichardson.ftgo.deliveryservice.api.web;
 
+import net.chrisrichardson.ftgo.common.DeliveryActionType;
+
 public class ActionInfo {
-  private String type;
+  private DeliveryActionType type;
 
   public ActionInfo() {
   }
 
-  public ActionInfo(String type) {
+  public ActionInfo(DeliveryActionType type) {
     this.type = type;
   }
 
-  public String getType() {
+  public DeliveryActionType getType() {
     return type;
   }
 
-  public void setType(String type) {
+  public void setType(DeliveryActionType type) {
     this.type = type;
   }
 }

@@ -174,7 +174,7 @@ public class Ticket {
     }
   }
 
-  public List<TicketDomainEvent> beginReviseOrder(RevisedOrderLineItem[] revisedOrderLineItems) {
+  public List<TicketDomainEvent> beginReviseOrder(List<RevisedOrderLineItem> revisedOrderLineItems) {
     switch (state) {
       case AWAITING_ACCEPTANCE:
       case ACCEPTED:
@@ -196,7 +196,7 @@ public class Ticket {
     }
   }
 
-  public List<TicketDomainEvent> confirmReviseTicket(RevisedOrderLineItem[] revisedOrderLineItems) {
+  public List<TicketDomainEvent> confirmReviseTicket(List<RevisedOrderLineItem> revisedOrderLineItems) {
     switch (state) {
       case REVISION_PENDING:
         this.state = this.previousState;

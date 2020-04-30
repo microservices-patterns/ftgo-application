@@ -89,7 +89,7 @@ public class KitchenService {
 
   }
 
-  public void beginReviseOrder(long restaurantId, Long ticketId, RevisedOrderLineItem[] revisedOrderLineItems) {
+  public void beginReviseOrder(long restaurantId, Long ticketId, List<RevisedOrderLineItem> revisedOrderLineItems) {
     Ticket ticket = ticketRepository.findById(ticketId)
             .orElseThrow(() -> new TicketNotFoundException(ticketId));
     // TODO - verify restaurant id
@@ -106,7 +106,7 @@ public class KitchenService {
     domainEventPublisher.publish(ticket, events);
   }
 
-  public void confirmReviseTicket(long restaurantId, long ticketId, RevisedOrderLineItem[] revisedOrderLineItems) {
+  public void confirmReviseTicket(long restaurantId, long ticketId, List<RevisedOrderLineItem> revisedOrderLineItems) {
     Ticket ticket = ticketRepository.findById(ticketId)
             .orElseThrow(() -> new TicketNotFoundException(ticketId));
     // TODO - verify restaurant id

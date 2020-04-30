@@ -16,7 +16,7 @@ public class KitchenController {
   }
 
   @RequestMapping(path="/tickets/{ticketId}/accept", method= RequestMethod.POST)
-  public ResponseEntity<String> acceptTicket(@PathVariable long ticketId, @RequestBody TicketAcceptance ticketAcceptance) {
+  public ResponseEntity<Void> acceptTicket(@PathVariable long ticketId, @RequestBody TicketAcceptance ticketAcceptance) {
     kitchenService.accept(ticketId, ticketAcceptance.getReadyBy());
     return new ResponseEntity<>(HttpStatus.OK);
   }

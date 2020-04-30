@@ -42,7 +42,7 @@ public class OrderLineItems {
   Money changeToOrderTotal(OrderRevision orderRevision) {
     AtomicReference<Money> delta = new AtomicReference<>(Money.ZERO);
 
-    Arrays.asList(orderRevision.getRevisedOrderLineItems()).forEach(item -> {
+    orderRevision.getRevisedOrderLineItems().forEach(item -> {
       OrderLineItem lineItem = findOrderLineItem(item.getMenuItemId());
       delta.set(delta.get().add(lineItem.deltaForChangedQuantity(item.getQuantity())));
     });
@@ -52,8 +52,7 @@ public class OrderLineItems {
   void updateLineItems(OrderRevision orderRevision) {
     getLineItems().stream().forEach(li -> {
 
-      Optional<Integer> revised = Arrays
-              .asList(orderRevision.getRevisedOrderLineItems())
+      Optional<Integer> revised = orderRevision.getRevisedOrderLineItems()
               .stream()
               .filter(item -> Objects.equals(li.getMenuItemId(), item.getMenuItemId()))
               .map(RevisedOrderLineItem::getQuantity)

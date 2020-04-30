@@ -57,7 +57,7 @@ public class OrderTest {
 
     order.noteApproved();
 
-    OrderRevision orderRevision = new OrderRevision(Optional.empty(), new RevisedOrderLineItem[] {new RevisedOrderLineItem(10, "1")});
+    OrderRevision orderRevision = new OrderRevision(Optional.empty(), Collections.singletonList(new RevisedOrderLineItem(10, "1")));
 
     ResultWithDomainEvents<LineItemQuantityChange, OrderDomainEvent> result = order.revise(orderRevision);
 
