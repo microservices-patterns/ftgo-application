@@ -1,4 +1,4 @@
-package net.chrisrichardson.ftgo.common;
+package net.chrisrichardson.ftgo.deliveryservice.api.web;
 
 public enum DeliveryState {
   CANCELLED, SCHEDULED, PENDING

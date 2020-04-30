@@ -1,6 +1,6 @@
 package net.chrisrichardson.ftgo.deliveryservice.domain;
 
-import net.chrisrichardson.ftgo.common.DeliveryActionType;
+import net.chrisrichardson.ftgo.deliveryservice.api.web.DeliveryActionType;
 import net.chrisrichardson.ftgo.common.Address;
 
 import javax.persistence.Embeddable;

@@ -1,7 +1,7 @@
 package net.chrisrichardson.ftgo.deliveryservice.domain;
 
 import net.chrisrichardson.ftgo.common.Address;
-import net.chrisrichardson.ftgo.common.DeliveryState;
+import net.chrisrichardson.ftgo.deliveryservice.api.web.DeliveryState;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

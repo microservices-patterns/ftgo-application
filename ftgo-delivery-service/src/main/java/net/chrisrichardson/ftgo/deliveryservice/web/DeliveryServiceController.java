@@ -17,9 +17,8 @@ public class DeliveryServiceController {
   }
 
   @RequestMapping(path="/couriers/{courierId}/availability", method= RequestMethod.POST)
-  public ResponseEntity<Void> updateCourierLocation(@PathVariable long courierId, @RequestBody CourierAvailability availability) {
+  public void updateCourierLocation(@PathVariable long courierId, @RequestBody CourierAvailability availability) {
     deliveryService.updateAvailability(courierId, availability.isAvailable());
-    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @RequestMapping(path="/deliveries/{deliveryId}", method= RequestMethod.GET)

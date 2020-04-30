@@ -1,7 +1,7 @@
 package net.chrisrichardson.ftgo.deliveryservice.domain;
 
-import net.chrisrichardson.ftgo.common.DeliveryActionType;
-import net.chrisrichardson.ftgo.common.DeliveryState;
+import net.chrisrichardson.ftgo.deliveryservice.api.web.DeliveryActionType;
+import net.chrisrichardson.ftgo.deliveryservice.api.web.DeliveryState;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;

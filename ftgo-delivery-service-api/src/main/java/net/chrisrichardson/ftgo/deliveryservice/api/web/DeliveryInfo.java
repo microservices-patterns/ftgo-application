@@ -1,7 +1,5 @@
 package net.chrisrichardson.ftgo.deliveryservice.api.web;
 
-import net.chrisrichardson.ftgo.common.DeliveryState;
-
 public class DeliveryInfo {
 
   private long id;

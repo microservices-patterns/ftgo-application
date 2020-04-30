@@ -1,7 +1,5 @@
 package net.chrisrichardson.ftgo.deliveryservice.api.web;
 
-import net.chrisrichardson.ftgo.common.DeliveryActionType;
-
 public class ActionInfo {
   private DeliveryActionType type;
 
