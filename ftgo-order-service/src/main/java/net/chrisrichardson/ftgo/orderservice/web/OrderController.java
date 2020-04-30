@@ -48,7 +48,7 @@ public class OrderController {
   }
 
   private GetOrderResponse makeGetOrderResponse(Order order) {
-    return new GetOrderResponse(order.getId(), order.getState().name(), order.getOrderTotal());
+    return new GetOrderResponse(order.getId(), order.getState(), order.getOrderTotal());
   }
 
   @RequestMapping(path = "/{orderId}/cancel", method = RequestMethod.POST)

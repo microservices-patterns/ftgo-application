@@ -113,10 +113,10 @@ public class DeliveryService {
   }
 
   private DeliveryInfo makeDeliveryInfo(Delivery delivery) {
-    return new DeliveryInfo(delivery.getId(), delivery.getState().name());
+    return new DeliveryInfo(delivery.getId(), delivery.getState());
   }
 
   private ActionInfo makeActionInfo(Action action) {
-    return new ActionInfo(action.getType().name());
+    return new ActionInfo(action.getType());
   }
 }

@@ -3,12 +3,12 @@ package net.chrisrichardson.ftgo.deliveryservice.api.web;
 public class DeliveryInfo {
 
   private long id;
-  private String state;
+  private DeliveryState state;
 
   public DeliveryInfo() {
   }
 
-  public DeliveryInfo(long id, String state) {
+  public DeliveryInfo(long id, DeliveryState state) {
 
     this.id = id;
     this.state = state;
@@ -22,11 +22,11 @@ public class DeliveryInfo {
     this.id = id;
   }
 
-  public String getState() {
+  public DeliveryState getState() {
     return state;
   }
 
-  public void setState(String state) {
+  public void setState(DeliveryState state) {
     this.state = state;
   }
 }

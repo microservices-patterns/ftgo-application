@@ -1,5 +1,7 @@
 package net.chrisrichardson.ftgo.deliveryservice.domain;
 
+import net.chrisrichardson.ftgo.deliveryservice.api.web.DeliveryActionType;
+import net.chrisrichardson.ftgo.deliveryservice.api.web.DeliveryState;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -86,9 +88,9 @@ public class DeliveryServiceTest {
 
     List<Action> actions = courier.getPlan().getActions();
     assertEquals(2, actions.size());
-    assertEquals(ActionType.PICKUP, actions.get(0).getType());
+    assertEquals(DeliveryActionType.PICKUP, actions.get(0).getType());
     assertEquals(DeliveryServiceTestData.PICKUP_ADDRESS, actions.get(0).getAddress());
-    assertEquals(ActionType.DROPOFF, actions.get(1).getType());
+    assertEquals(DeliveryActionType.DROPOFF, actions.get(1).getType());
     assertEquals(DeliveryServiceTestData.DELIVERY_ADDRESS, actions.get(1).getAddress());
   }
 

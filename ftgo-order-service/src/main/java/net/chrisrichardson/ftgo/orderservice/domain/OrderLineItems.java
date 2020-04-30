@@ -7,11 +7,9 @@ import net.chrisrichardson.ftgo.common.RevisedOrderLineItem;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Embeddable
 public class OrderLineItems {
@@ -40,20 +38,20 @@ public class OrderLineItems {
   }
 
   Money changeToOrderTotal(OrderRevision orderRevision) {
-    AtomicReference<Money> delta = new AtomicReference<>(Money.ZERO);
-
-    Arrays.asList(orderRevision.getRevisedOrderLineItems()).forEach(item -> {
-      OrderLineItem lineItem = findOrderLineItem(item.getMenuItemId());
-      delta.set(delta.get().add(lineItem.deltaForChangedQuantity(item.getQuantity())));
-    });
-    return delta.get();
+    return orderRevision
+            .getRevisedOrderLineItems()
+            .stream()
+            .map(item -> {
+              OrderLineItem lineItem = findOrderLineItem(item.getMenuItemId());
+              return lineItem.deltaForChangedQuantity(item.getQuantity());
+            })
+            .reduce(new Money(0), Money::add);
   }
 
   void updateLineItems(OrderRevision orderRevision) {
     getLineItems().stream().forEach(li -> {
 
-      Optional<Integer> revised = Arrays
-              .asList(orderRevision.getRevisedOrderLineItems())
+      Optional<Integer> revised = orderRevision.getRevisedOrderLineItems()
               .stream()
               .filter(item -> Objects.equals(li.getMenuItemId(), item.getMenuItemId()))
               .map(RevisedOrderLineItem::getQuantity)
