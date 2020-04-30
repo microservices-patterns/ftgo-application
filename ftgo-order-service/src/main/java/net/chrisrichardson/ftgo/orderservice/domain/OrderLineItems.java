@@ -45,7 +45,7 @@ public class OrderLineItems {
               OrderLineItem lineItem = findOrderLineItem(item.getMenuItemId());
               return lineItem.deltaForChangedQuantity(item.getQuantity());
             })
-            .reduce(new Money(0), Money::add);
+            .reduce(Money.ZERO, Money::add);
   }
 
   void updateLineItems(OrderRevision orderRevision) {
