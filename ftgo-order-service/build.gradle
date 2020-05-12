@@ -109,6 +109,19 @@ idea {
     }
 }
 
+// This is already done by ComponentTestsPlugin
+// apply plugin: 'eclipse'
+
+eclipse {
+  sourceSets {
+    main {
+      java {
+         srcDirs += ["build/generated/source/proto/main/java", "build/generated/source/proto/main/grpc"]
+      }
+    }
+  }
+}
+
 dependencies {
 
     ftgoApiSpecification project(":ftgo-consumer-service-api-spec")

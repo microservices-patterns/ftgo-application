@@ -132,8 +132,10 @@ Build the services using this command:
 Run the application using this command:
 
 ```
-docker-compose up -d
+./gradlew :composeUp
 ```
+
+Note: the ':'
 
 This can take a while.
 
@@ -150,14 +152,14 @@ Use the services Swagger UIs to invoke the services.
 You can also access the application via the `API Gateway` at `http://localhost:8087`.
 However, currently it  doesn't have a Swagger UI so you will have to use `curl`, for example.
 
-Note: if the containers aren't accessible via `localhost`, you will have to use `${DOCKER_HOST_IP}` as described below.
+Note: if the containers aren't accessible via `localhost` - e.g. you are using Docker Toolbox, you will have to use `${DOCKER_HOST_IP}` as described below.
 
 === Stopping the application
 
 Stop the application using this command:
 
 ```
-docker-compose down -v
+./gradlew :composeDown
 ```
 
 == Deploying the application on Kubernetes
@@ -193,7 +195,7 @@ You should not need to set any environment variables.
 To run the application, you certainly do not.
 Similarly, to do development (e.g. run tests), you typically do not need to set any environment variables.
 That's because Docker containers are generally accessible (e.g. Docker for Windows/Mac) on the host via `localhost`.
-However, if Docker is running elsewhere you will need to set `DOCKER_HOST_IP`.
+However, if Docker is running elsewhere (e.g. you are using Docker Toolbox) you will need to set `DOCKER_HOST_IP`.
 
 === Quick way
 

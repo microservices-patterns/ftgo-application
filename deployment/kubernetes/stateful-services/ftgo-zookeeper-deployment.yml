@@ -27,12 +27,15 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: ftgo-zookeeper
-          image: eventuateio/eventuate-zookeeper:0.4.0.RELEASE
+          image: confluentinc/cp-zookeeper:5.2.4
           ports:
               - containerPort: 2181
+          env:
+            - name: ZOOKEEPER_CLIENT_PORT
+              value: "2181"
           volumeMounts:
             - name: ftgo-zookeeper-persistent-storage
-              mountPath: /usr/local/zookeeper-data
+              mountPath: /var/lib/kafka/data
   volumeClaimTemplates:
   - metadata:
       name: ftgo-zookeeper-persistent-storage

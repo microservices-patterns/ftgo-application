@@ -7,10 +7,7 @@ buildscript {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "io.spring.gradle:dependency-management-plugin:$springDependencyManagementPluginVersion"
         classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
-        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractDependenciesVersion"
-        classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
-        classpath "io.spring.gradle:dependency-management-plugin:$springDependencyManagementPluginVersion"
-    }
+        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractDependenciesVersion"    }
 
 }
 
@@ -19,6 +16,7 @@ plugins {
 }
 
 apply plugin: WaitForMySqlPlugin
+apply plugin: 'docker-compose'
 
 subprojects {
 
@@ -55,4 +53,12 @@ task buildContracts(type: GradleBuild) {
 
 task compileAll(type: GradleBuild) {
   tasks = ["testClasses", "compileIntegrationTestJava", "compileComponentTestJava"]
+}
+
+dockerCompose {
+  projectName = null
+  removeOrphans = true
+  if (project.hasProperty('startedServices'))
+    startedServices= project.ext.startedServices.split(',')
+
 }
