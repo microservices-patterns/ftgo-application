@@ -98,7 +98,6 @@ services:
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
       EVENTUATE_DATABASE_SCHEMA: ftgo_consumer_service
-      JAVA_OPTS: -Xmx192m
   ftgo-order-service:
     build: ./ftgo-order-service
     ports:
@@ -115,7 +114,6 @@ services:
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-      JAVA_OPTS: -Xmx192m
       SPRING_SLEUTH_ENABLED: "true"
       SPRING_SLEUTH_SAMPLER_PROBABILITY: 1
       SPRING_ZIPKIN_BASE_URL: http://zipkin:9411/
@@ -136,7 +134,6 @@ services:
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
         EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-        JAVA_OPTS: -Xmx192m
         EVENTUATE_DATABASE_SCHEMA: ftgo_kitchen_service
   ftgo-restaurant-service:
       build: ./ftgo-restaurant-service
@@ -154,7 +151,6 @@ services:
         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
         EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
         EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-        JAVA_OPTS: -Xmx192m
         EVENTUATE_DATABASE_SCHEMA: ftgo_restaurant_service
   ftgo-accounting-service:
         build: ./ftgo-accounting-service
@@ -172,7 +168,6 @@ services:
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
           EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
           EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-          JAVA_OPTS: -Xmx192m
           EVENTUATE_DATABASE_SCHEMA: ftgo_accounting_service
   ftgo-delivery-service:
     build: ./ftgo-delivery-service
@@ -190,7 +185,6 @@ services:
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
-      JAVA_OPTS: -Xmx192m
       SPRING_SLEUTH_ENABLED: "true"
       SPRING_SLEUTH_SAMPLER_PROBABILITY: 1
       SPRING_ZIPKIN_BASE_URL: http://zipkin:9411/
@@ -212,7 +206,6 @@ services:
           AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-access_key}
           AWS_DYNAMODB_ENDPOINT_URL: http://dynamodblocal:8000
           AWS_REGION: ${AWS_REGION:-us-west-2}
-          JAVA_OPTS: -Xmx192m
   ftgo-api-gateway:
     build: ./ftgo-api-gateway
     ports:
@@ -221,7 +214,6 @@ services:
       ORDER_DESTINATIONS_ORDERSERVICEURL: http://ftgo-order-service:8080
       ORDER_DESTINATIONS_ORDERHISTORYSERVICEURL: http://ftgo-order-history-service:8080
       CONSUMER_DESTINATIONS_CONSUMERSERVICEURL: http://ftgo-consumer-service:8080
-      JAVA_OPTS: -Xmx192m
       SPRING_SLEUTH_ENABLED: "true"
       SPRING_SLEUTH_SAMPLER_PROBABILITY: 1
       SPRING_ZIPKIN_BASE_URL: http://zipkin:9411/
