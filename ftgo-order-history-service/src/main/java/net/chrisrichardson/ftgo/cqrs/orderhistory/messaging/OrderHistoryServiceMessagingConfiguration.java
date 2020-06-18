@@ -1,5 +1,6 @@
 package net.chrisrichardson.ftgo.cqrs.orderhistory.messaging;
 
+import io.eventuate.messaging.kafka.spring.consumer.KafkaConsumerFactoryConfiguration;
 import io.eventuate.tram.spring.consumer.common.TramNoopDuplicateMessageDetectorConfiguration;
 import io.eventuate.tram.spring.events.subscriber.TramEventSubscriberConfiguration;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcher;
@@ -11,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({CommonConfiguration.class, TramNoopDuplicateMessageDetectorConfiguration.class, TramEventSubscriberConfiguration.class})
+@Import({CommonConfiguration.class, TramNoopDuplicateMessageDetectorConfiguration.class, TramEventSubscriberConfiguration.class, KafkaConsumerFactoryConfiguration.class})
 public class OrderHistoryServiceMessagingConfiguration {
 
   @Bean
