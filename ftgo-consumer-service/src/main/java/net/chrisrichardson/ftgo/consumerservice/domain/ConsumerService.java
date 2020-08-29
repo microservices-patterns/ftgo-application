@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@Transactional
 public class ConsumerService {
 
   @Autowired
@@ -23,6 +22,7 @@ public class ConsumerService {
     consumer.orElseThrow(ConsumerNotFoundException::new).validateOrderByConsumer(orderTotal);
   }
 
+  @Transactional
   public ResultWithEvents<Consumer> create(PersonName name) {
     ResultWithEvents<Consumer> rwe = Consumer.create(name);
     consumerRepository.save(rwe.result);
