@@ -9,13 +9,16 @@ spec:
   selector:
     svc: ftgo-dynamodb-local
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: ftgo-dynamodb-local
   labels:
     application: ftgo
 spec:
+  selector:
+    matchLabels:
+      svc: ftgo-dynamodb-local
   serviceName: "ftgo-dynamodb"
   replicas: 1
   template:
