@@ -9,7 +9,7 @@ spec:
   selector:
     svc: ftgo-restaurant-service
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ftgo-restaurant-service
@@ -17,6 +17,9 @@ metadata:
     application: ftgo
     svc: ftgo-restaurant-service
 spec:
+  selector:
+    matchLabels:
+      svc: ftgo-restaurant-service
   replicas: 1
   strategy:
     rollingUpdate:

@@ -12,11 +12,14 @@ spec:
   selector:
     role: ftgo-mysql
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: ftgo-mysql
 spec:
+  selector:
+    matchLabels:
+      role: ftgo-mysql
   serviceName: "mysql"
   replicas: 1
   template:

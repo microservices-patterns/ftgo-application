@@ -12,11 +12,14 @@ spec:
   selector:
     role: ftgo-zookeeper
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: ftgo-zookeeper
 spec:
+  selector:
+    matchLabels:
+      role: ftgo-zookeeper
   serviceName: "zookeeper"
   replicas: 1
   template:

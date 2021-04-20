@@ -9,13 +9,16 @@ spec:
   selector:
     svc: ftgo-accounting-service
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ftgo-accounting-service
   labels:
     application: ftgo
 spec:
+  selector:
+    matchLabels:
+        svc: ftgo-accounting-service
   replicas: 1
   strategy:
     rollingUpdate:
