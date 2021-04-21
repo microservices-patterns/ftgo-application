@@ -24,7 +24,6 @@ spec:
     selector:
       matchLabels:
         svc: ftgo-accounting-service
-        application: ftgo
     metadata:
       labels:
         svc: ftgo-accounting-service

@@ -20,7 +20,6 @@ spec:
   selector:
     matchLabels:
       svc: ftgo-restaurant-service
-      application: ftgo
   replicas: 1
   strategy:
     rollingUpdate:

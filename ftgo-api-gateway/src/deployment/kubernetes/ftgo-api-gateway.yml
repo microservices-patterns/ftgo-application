@@ -26,7 +26,6 @@ spec:
   selector:
     matchLabels:
       svc: ftgo-api-gateway
-      application: ftgo
   replicas: 1
   strategy:
     rollingUpdate:

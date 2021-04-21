@@ -19,7 +19,6 @@ spec:
   selector:
     matchLabels:
       svc: ftgo-order-history-service
-      application: ftgo
   replicas: 1
   strategy:
     rollingUpdate:
