@@ -16,14 +16,14 @@ metadata:
   labels:
     application: ftgo
 spec:
+  selector:
+    matchLabels:
+        svc: ftgo-accounting-service
   replicas: 1
   strategy:
     rollingUpdate:
       maxUnavailable: 0
   template:
-    selector:
-      matchLabels:
-        svc: ftgo-accounting-service
     metadata:
       labels:
         svc: ftgo-accounting-service
