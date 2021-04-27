@@ -25,7 +25,6 @@ import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
 
-@Transactional
 public class OrderService {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
@@ -66,6 +65,7 @@ public class OrderService {
     this.meterRegistry = meterRegistry;
   }
 
+  @Transactional
   public Order createOrder(long consumerId, long restaurantId, DeliveryInformation deliveryInformation,
                            List<MenuItemIdAndQuantity> lineItems) {
     Restaurant restaurant = restaurantRepository.findById(restaurantId)
@@ -112,6 +112,7 @@ public class OrderService {
     throw new UnsupportedOperationException();
   }
 
+  @Transactional
   public Order cancel(Long orderId) {
     Order order = orderRepository.findById(orderId)
             .orElseThrow(() -> new OrderNotFoundException(orderId));
@@ -149,6 +150,7 @@ public class OrderService {
     updateOrder(orderId, Order::noteCancelled);
   }
 
+  @Transactional
   public Order reviseOrder(long orderId, OrderRevision orderRevision) {
     Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
     ReviseOrderSagaData sagaData = new ReviseOrderSagaData(order.getConsumerId(), orderId, null, orderRevision);
@@ -172,13 +174,11 @@ public class OrderService {
     updateOrder(orderId, order -> order.confirmRevision(revision));
   }
 
-  @Transactional(propagation = Propagation.MANDATORY)
   public void createMenu(long id, String name, List<MenuItem> menuItems) {
     Restaurant restaurant = new Restaurant(id, name, menuItems);
     restaurantRepository.save(restaurant);
   }
 
-  @Transactional(propagation = Propagation.MANDATORY)
   public void reviseMenu(long id, List<MenuItem> menuItems) {
     restaurantRepository.findById(id).map(restaurant -> {
       List<OrderDomainEvent> events = restaurant.reviseMenu(menuItems);
