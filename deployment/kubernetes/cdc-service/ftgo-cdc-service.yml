@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: ftgo-cdc-service
-        image: eventuateio/eventuate-cdc-service:0.4.0.RELEASE
+        image: eventuateio/eventuate-cdc-service:0.6.0.RC3
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
