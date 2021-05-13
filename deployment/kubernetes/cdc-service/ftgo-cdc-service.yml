@@ -40,7 +40,7 @@ spec:
           - name: JAVA_OPTS
             value: "-Dsun.net.inetaddr.ttl=30"
           - name: EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS
-            value: ftgo-kafka:29092
+            value: ftgo-kafka:9092
           - name: EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING
             value: ftgo-zookeeper:2181
           - name: EVENTUATE_CDC_PIPELINE_PIPELINE1_TYPE
