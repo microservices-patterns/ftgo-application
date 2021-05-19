@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Transactional
@@ -26,5 +27,9 @@ public class RestaurantService {
 
   public Optional<Restaurant> findById(long restaurantId) {
     return restaurantRepository.findById(restaurantId);
+  }
+
+  public List<Restaurant> getAllRestaurants() {
+    return (List<Restaurant>) restaurantRepository.findAll();
   }
 }
