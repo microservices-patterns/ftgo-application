@@ -7,6 +7,7 @@ import net.chrisrichardson.ftgo.common.PersonName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public class ConsumerService {
@@ -32,5 +33,10 @@ public class ConsumerService {
 
   public Optional<Consumer> findById(long consumerId) {
     return consumerRepository.findById(consumerId);
+  }
+
+
+  public List<Consumer> getAllConsumers() {
+    return (List<Consumer>) consumerRepository.findAll();
   }
 }
