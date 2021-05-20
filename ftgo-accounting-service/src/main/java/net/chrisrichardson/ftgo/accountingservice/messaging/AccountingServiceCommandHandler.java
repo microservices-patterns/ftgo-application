@@ -5,10 +5,7 @@ import io.eventuate.tram.commands.consumer.CommandHandlers;
 import io.eventuate.tram.commands.consumer.CommandMessage;
 import io.eventuate.tram.sagas.participant.SagaCommandHandlersBuilder;
 import net.chrisrichardson.ftgo.accountingservice.domain.*;
-import net.chrisrichardson.ftgo.accountservice.api.AccountDisabledReply;
-import net.chrisrichardson.ftgo.accountservice.api.AuthorizeCommand;
-import net.chrisrichardson.ftgo.accountservice.api.ReverseAuthorizationCommand;
-import net.chrisrichardson.ftgo.accountservice.api.ReviseAuthorization;
+import net.chrisrichardson.ftgo.accountservice.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +24,7 @@ public class AccountingServiceCommandHandler {
     return SagaCommandHandlersBuilder
             .fromChannel("accountingService")
             .onMessage(AuthorizeCommand.class, this::authorize)
+            .onMessage(CheckAccountLimitCommand.class, this::checkAccountLimit)
             .onMessage(ReverseAuthorizationCommand.class, this::reverseAuthorization)
             .onMessage(ReviseAuthorization.class, this::reviseAuthorization)
             .build();
@@ -40,6 +38,17 @@ public class AccountingServiceCommandHandler {
             makeAuthorizeCommandInternal(command),
             replyingTo(cm)
                     .catching(AccountDisabledException.class, () -> withFailure(new AccountDisabledReply()))
+                    .build());
+
+  }
+
+  public void checkAccountLimit(CommandMessage<CheckAccountLimitCommand> cm){
+    CheckAccountLimitCommand command = cm.getCommand();
+
+    accountRepository.update(Long.toString(command.getConsumerId()),
+            makeCheckAccountLimitCommandInternal(command),
+            replyingTo(cm)
+                    .catching(AccountLimitExceededException.class, () -> withFailure(new AccountLimitExceededReply()))
                     .build());
 
   }
@@ -70,6 +79,9 @@ public class AccountingServiceCommandHandler {
 
   private AuthorizeCommandInternal makeAuthorizeCommandInternal(AuthorizeCommand command) {
     return new AuthorizeCommandInternal(Long.toString(command.getConsumerId()), Long.toString(command.getOrderId()), command.getOrderTotal());
+  }
+  private CheckAccountLimitCommandInternal makeCheckAccountLimitCommandInternal(CheckAccountLimitCommand command) {
+    return new CheckAccountLimitCommandInternal(Long.toString(command.getConsumerId()), command.getMoney(), Long.toString(command.getOrderId()));
   }
   private ReverseAuthorizationCommandInternal makeReverseAuthorizeCommandInternal(ReverseAuthorizationCommand command) {
     return new ReverseAuthorizationCommandInternal(Long.toString(command.getConsumerId()), Long.toString(command.getOrderId()), command.getOrderTotal());

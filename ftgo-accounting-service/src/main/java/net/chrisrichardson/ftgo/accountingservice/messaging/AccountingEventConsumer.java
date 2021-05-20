@@ -21,7 +21,8 @@ public class AccountingEventConsumer {
   }
 
   private void createAccount(DomainEventEnvelope<ConsumerCreated> dee) {
-    accountingService.create(dee.getAggregateId());
+    ConsumerCreated ccEvent = dee.getEvent();
+    accountingService.create(ccEvent.getConsumerId(), dee.getAggregateId());
   }
 
 

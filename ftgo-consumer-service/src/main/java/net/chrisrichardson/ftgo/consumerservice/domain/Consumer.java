@@ -45,6 +45,7 @@ public class Consumer {
   }
 
   public static ResultWithEvents<Consumer> create(PersonName name) {
-    return new ResultWithEvents<>(new Consumer(name), new ConsumerCreated());
+    Consumer newConsumer = new Consumer(name);
+    return new ResultWithEvents<>(newConsumer, new ConsumerCreated(newConsumer.getId()));
   }
 }
