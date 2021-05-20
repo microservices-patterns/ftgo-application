@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping(path = "/restaurants")
 public class RestaurantController {
@@ -28,9 +30,13 @@ public class RestaurantController {
             .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
+  @RequestMapping(method = RequestMethod.GET)
+  public ResponseEntity<GetRestaurantsResponse> get() {
+    return new ResponseEntity<>(new GetRestaurantsResponse(restaurantService.getAllRestaurants().stream()
+            .map(this::makeGetRestaurantResponse).collect(Collectors.toList())), HttpStatus.OK);
+  }
+
   private GetRestaurantResponse makeGetRestaurantResponse(Restaurant r) {
     return new GetRestaurantResponse(r.getId(), r.getName());
   }
-
-
 }
