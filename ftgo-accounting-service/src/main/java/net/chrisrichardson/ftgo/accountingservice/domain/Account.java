@@ -28,7 +28,8 @@ public class Account extends ReflectiveMutableCommandProcessingAggregate<Account
     if(balance.isGreaterThanOrEqual(command.getMoney())){
       return events(new AccountLimitSufficientEvent());
     }
-    return events(new AccountLimitExceededEvent());
+    //return events(new AccountLimitExceededEvent());
+    throw new AccountLimitExceededException();
   }
 
   public List<Event> process(AuthorizeCommandInternal command) {
@@ -44,6 +45,12 @@ public class Account extends ReflectiveMutableCommandProcessingAggregate<Account
 
   public void apply(AccountAuthorizedEvent event) {
 
+  }
+
+  public void apply(AccountLimitSufficientEvent event) {
+  }
+
+  public void apply(AccountLimitExceededEvent event) {
   }
 
   public void apply(SagaReplyRequestedEvent event) {
