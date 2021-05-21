@@ -14,4 +14,8 @@ public class AccountCreatedEvent implements Event {
     public AccountCreatedEvent(Money initialBalance){
         this.initialBalance = initialBalance;
     }
+
+    public Money getInitialBalance() {
+        return initialBalance;
+    }
 }

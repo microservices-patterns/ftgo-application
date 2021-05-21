@@ -21,7 +21,7 @@ public class Account extends ReflectiveMutableCommandProcessingAggregate<Account
   }
 
   public void apply(AccountCreatedEvent event) {
-
+    this.balance = event.getInitialBalance();
   }
 
   public List<Event> process(CheckAccountLimitCommandInternal command) {
