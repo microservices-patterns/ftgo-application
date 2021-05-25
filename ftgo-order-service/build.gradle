@@ -131,6 +131,7 @@ dependencies {
     compile project(":common-swagger")
     compile project(":ftgo-common-jpa")
 
+    compile 'org.jetbrains:annotations:13.0'
     compile "io.eventuate.tram.core:eventuate-tram-aggregate-domain-events:$eventuateTramVersion"
     compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka:$eventuateTramVersion"
     compile "io.eventuate.tram.core:eventuate-tram-spring-commands:$eventuateTramVersion"
@@ -154,8 +155,8 @@ dependencies {
     compile "io.grpc:grpc-protobuf:${grpcVersion}"
     compile "io.grpc:grpc-stub:${grpcVersion}"
 
-    compile "io.microservices.tools.canvas:microservice-canvas-springmvc:$microserviceCanvasVersion"
-    compile "io.microservices.tools.canvas:microservice-canvas-extractor-tram-sagas:$microserviceCanvasVersion"
+    //compile "io.microservices.tools.canvas:microservice-canvas-springmvc:$microserviceCanvasVersion"
+    //compile "io.microservices.tools.canvas:microservice-canvas-extractor-tram-sagas:$microserviceCanvasVersion"
     compile "io.eventuate.tram.core:eventuate-tram-spring-messaging:$eventuateTramVersion"
     compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration:$eventuateTramSagasVersion"
 
