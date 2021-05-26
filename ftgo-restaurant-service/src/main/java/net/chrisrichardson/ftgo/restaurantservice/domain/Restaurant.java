@@ -19,10 +19,18 @@ public class Restaurant {
 
   private String name;
 
+  private Long efficiency;
+
   @Embedded
   private RestaurantMenu menu;
 
   private Restaurant() {
+  }
+
+  public Restaurant(String name, RestaurantMenu menu, Long efficiency) {
+    this.name = name;
+    this.menu = menu;
+    this.efficiency = efficiency;
   }
 
   public void setId(Long id) {
@@ -37,13 +45,6 @@ public class Restaurant {
     this.name = name;
   }
 
-
-  public Restaurant(String name, RestaurantMenu menu) {
-    this.name = name;
-    this.menu = menu;
-  }
-
-
   public Long getId() {
     return id;
   }
@@ -51,4 +52,13 @@ public class Restaurant {
   public RestaurantMenu getMenu() {
     return menu;
   }
+
+  public Long getEfficiency() {
+    return efficiency;
+  }
+
+  public void setEfficiency(Long efficiency) {
+    this.efficiency = efficiency;
+  }
+
 }

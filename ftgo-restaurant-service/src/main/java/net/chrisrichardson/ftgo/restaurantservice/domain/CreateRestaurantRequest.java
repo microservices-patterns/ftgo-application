@@ -7,15 +7,17 @@ public class CreateRestaurantRequest {
   private String name;
   private Address address;
   private RestaurantMenu menu;
+  private Long efficiency; // how many orders can be processed within an hour
 
   private CreateRestaurantRequest() {
 
   }
 
-  public CreateRestaurantRequest(String name, Address address, RestaurantMenu menu) {
+  public CreateRestaurantRequest(String name, Address address, RestaurantMenu menu, Long efficiency) {
     this.name = name;
     this.address = address;
     this.menu = menu;
+    this.efficiency = efficiency;
   }
 
   public String getName() {
@@ -37,4 +39,13 @@ public class CreateRestaurantRequest {
   public Address getAddress() {
     return address;
   }
+
+  public Long getEfficiency() {
+    return efficiency;
+  }
+
+  public void setEfficiency(Long efficiency) {
+    this.efficiency = efficiency;
+  }
+
 }

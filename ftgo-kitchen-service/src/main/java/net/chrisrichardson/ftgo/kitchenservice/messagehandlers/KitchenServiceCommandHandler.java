@@ -5,6 +5,7 @@ import io.eventuate.tram.commands.consumer.CommandMessage;
 import io.eventuate.tram.messaging.common.Message;
 import io.eventuate.tram.sagas.participant.SagaCommandHandlersBuilder;
 import net.chrisrichardson.ftgo.kitchenservice.api.*;
+import net.chrisrichardson.ftgo.kitchenservice.domain.RestaurantCapacityExceededException;
 import net.chrisrichardson.ftgo.kitchenservice.domain.RestaurantDetailsVerificationException;
 import net.chrisrichardson.ftgo.kitchenservice.domain.Ticket;
 import net.chrisrichardson.ftgo.kitchenservice.domain.KitchenService;
@@ -48,7 +49,7 @@ public class KitchenServiceCommandHandler {
       Ticket ticket = kitchenService.createTicket(restaurantId, ticketId, ticketDetails);
       CreateTicketReply reply = new CreateTicketReply(ticket.getId());
       return withLock(Ticket.class, ticket.getId()).withSuccess(reply);
-    } catch (RestaurantDetailsVerificationException e) {
+    } catch (RestaurantDetailsVerificationException | RestaurantCapacityExceededException e) {
       return withFailure();
     }
   }

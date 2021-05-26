@@ -7,4 +7,5 @@ public enum OrderState {
   CANCEL_PENDING,
   CANCELLED,
   REVISION_PENDING,
+  COMPLETED
 }

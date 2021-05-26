@@ -4,6 +4,9 @@
     "name": {
       "type": "string"
     },
+    "efficiency": {
+      "type": "integer"
+    },
     "address": {
       "type": "object",
       "properties": {
