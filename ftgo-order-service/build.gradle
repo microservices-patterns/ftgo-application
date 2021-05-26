@@ -59,7 +59,6 @@ componentTest.dependsOn(assemble)
 
 dockerCompose {
 
-    startedServices = [ 'not-used']
 
     integrationTests {
         startedServices = [ 'mysql']

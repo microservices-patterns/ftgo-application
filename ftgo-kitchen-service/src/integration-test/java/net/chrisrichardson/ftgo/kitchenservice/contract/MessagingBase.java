@@ -1,6 +1,7 @@
 package net.chrisrichardson.ftgo.kitchenservice.contract;
 
 import io.eventuate.tram.spring.cloudcontractsupport.EventuateContractVerifierConfiguration;
+import io.eventuate.util.spring.swagger.CommonSwaggerConfiguration;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;
 import net.chrisrichardson.ftgo.kitchenservice.domain.KitchenService;
 import net.chrisrichardson.ftgo.kitchenservice.domain.Ticket;
@@ -8,6 +9,7 @@ import net.chrisrichardson.ftgo.kitchenservice.messagehandlers.KitchenServiceMes
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
@@ -30,6 +32,7 @@ import static org.mockito.Mockito.when;
 public abstract class MessagingBase {
 
   @Configuration
+  @EnableAutoConfiguration(exclude = CommonSwaggerConfiguration.class)
   @Import({KitchenServiceMessageHandlersConfiguration.class, EventuateContractVerifierConfiguration.class})
   public static class TestConfiguration {
 

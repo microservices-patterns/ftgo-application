@@ -1,7 +1,9 @@
 package net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb;
 
 import io.eventuate.common.json.mapper.JSonMapper;
+import io.eventuate.common.spring.jdbc.EventuateTransactionTemplateConfiguration;
 import io.eventuate.tram.spring.inmemory.TramInMemoryConfiguration;
+import io.eventuate.util.spring.swagger.CommonSwaggerConfiguration;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.OrderHistory;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.OrderHistoryDao;
@@ -35,9 +37,9 @@ import static org.junit.Assert.assertTrue;
 public class OrderHistoryDaoDynamoDbTest {
 
   @Configuration
-  @EnableAutoConfiguration
+  @EnableAutoConfiguration(exclude = CommonSwaggerConfiguration.class)
   @ComponentScan
-  @Import({OrderHistoryDynamoDBConfiguration.class, TramInMemoryConfiguration.class})
+  @Import({OrderHistoryDynamoDBConfiguration.class, TramInMemoryConfiguration.class, EventuateTransactionTemplateConfiguration.class})
   static public class OrderHistoryDaoDynamoDbTestConfiguration {
 
   }

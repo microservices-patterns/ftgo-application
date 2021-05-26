@@ -4,6 +4,7 @@ import io.eventuate.tram.sagas.spring.inmemory.TramSagaInMemoryConfiguration;
 import io.eventuate.tram.sagas.spring.testing.contract.EventuateTramSagasSpringCloudContractSupportConfiguration;
 import io.eventuate.tram.sagas.spring.testing.contract.SagaMessagingTestHelper;
 import io.eventuate.tram.spring.cloudcontractsupport.EventuateTramRoutesConfigurer;
+import io.eventuate.util.spring.swagger.CommonSwaggerConfiguration;
 import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicket;
 import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicketReply;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;
@@ -40,7 +41,7 @@ public class KitchenServiceProxyIntegrationTest {
 
 
   @Configuration
-  @EnableAutoConfiguration
+  @EnableAutoConfiguration(exclude = CommonSwaggerConfiguration.class)
   @Import({TramSagaInMemoryConfiguration.class, EventuateTramSagasSpringCloudContractSupportConfiguration.class})
   public static class TestConfiguration {
 

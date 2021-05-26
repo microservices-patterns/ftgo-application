@@ -4,6 +4,7 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.config.ObjectMapperConfig;
 import com.jayway.restassured.config.RestAssuredConfig;
 import io.eventuate.common.json.mapper.JSonMapper;
+import io.eventuate.util.test.async.UrlTesting;
 import net.chrisrichardson.ftgo.apis.model.consumerservice.CreateConsumerRequest;
 import net.chrisrichardson.ftgo.apis.model.consumerservice.PersonName;
 import net.chrisrichardson.ftgo.apis.model.restaurantservice.CreateRestaurantRequest;
@@ -23,6 +24,7 @@ import net.chrisrichardson.ftgo.testutil.FtgoTestUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
@@ -146,6 +148,17 @@ public class EndToEndTests {
 
   }
 
+  @Test
+  public void testSwaggerUiUrls() throws IOException {
+    testSwaggerUiUrl(8081);
+    testSwaggerUiUrl(8082);
+    testSwaggerUiUrl(8084);
+    testSwaggerUiUrl(8086);
+  }
+
+  private void testSwaggerUiUrl(int port) throws IOException {
+    UrlTesting.assertUrlStatusIsOk("localhost", port, "/swagger-ui/index.html");
+  }
 
   private void reviseOrder() {
     reviseOrder(orderId);

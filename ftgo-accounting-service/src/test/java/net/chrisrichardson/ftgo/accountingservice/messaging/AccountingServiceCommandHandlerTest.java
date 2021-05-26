@@ -10,6 +10,7 @@ import io.eventuate.tram.sagas.common.SagaCommandHeaders;
 import io.eventuate.tram.sagas.spring.inmemory.TramSagaInMemoryConfiguration;
 import io.eventuate.tram.testutil.TestMessageConsumer;
 import io.eventuate.tram.testutil.TestMessageConsumerFactory;
+import io.eventuate.util.spring.swagger.CommonSwaggerConfiguration;
 import io.eventuate.util.test.async.Eventually;
 import net.chrisrichardson.ftgo.accountingservice.domain.Account;
 import net.chrisrichardson.ftgo.accountingservice.domain.AccountCommand;
@@ -36,7 +37,7 @@ import java.util.Map;
 public class AccountingServiceCommandHandlerTest {
 
   @Configuration
-  @EnableAutoConfiguration
+  @EnableAutoConfiguration(exclude = CommonSwaggerConfiguration.class)
   @Import({AccountingMessagingConfiguration.class,
           TramCommandProducerConfiguration.class,
           EmbeddedTestAggregateStoreConfiguration.class,
