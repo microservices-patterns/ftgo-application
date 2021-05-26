@@ -7,6 +7,7 @@ import io.eventuate.tram.sagas.common.SagaCommandHeaders;
 import io.eventuate.tram.sagas.spring.inmemory.TramSagaInMemoryConfiguration;
 import io.eventuate.tram.testutil.TestMessageConsumer;
 import io.eventuate.tram.testutil.TestMessageConsumerFactory;
+import io.eventuate.util.spring.swagger.CommonSwaggerConfiguration;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicket;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;
@@ -40,7 +41,7 @@ public class KitchenServiceInMemoryIntegrationTest {
   private int port;
 
   @Configuration
-  @EnableAutoConfiguration
+  @EnableAutoConfiguration(exclude = CommonSwaggerConfiguration.class)
   @Import({KitchenServiceWebConfiguration.class, KitchenServiceMessageHandlersConfiguration.class,
           TramCommandProducerConfiguration.class,
           TramSagaInMemoryConfiguration.class})

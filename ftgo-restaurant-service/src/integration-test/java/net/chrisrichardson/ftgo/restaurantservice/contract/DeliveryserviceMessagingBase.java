@@ -1,9 +1,11 @@
 package net.chrisrichardson.ftgo.restaurantservice.contract;
 
+import io.eventuate.common.spring.jdbc.EventuateTransactionTemplateConfiguration;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.spring.events.publisher.TramEventsPublisherConfiguration;
 import io.eventuate.tram.spring.inmemory.TramInMemoryConfiguration;
 import io.eventuate.tram.spring.cloudcontractsupport.EventuateContractVerifierConfiguration;
+import io.eventuate.util.spring.swagger.CommonSwaggerConfiguration;
 import net.chrisrichardson.ftgo.common.Address;
 import net.chrisrichardson.ftgo.restaurantservice.domain.Restaurant;
 import net.chrisrichardson.ftgo.restaurantservice.domain.RestaurantDomainEventPublisher;
@@ -27,8 +29,8 @@ import java.util.Collections;
 public abstract class DeliveryserviceMessagingBase {
 
   @Configuration
-  @EnableAutoConfiguration
-  @Import({EventuateContractVerifierConfiguration.class, TramEventsPublisherConfiguration.class, TramInMemoryConfiguration.class})
+  @EnableAutoConfiguration(exclude = CommonSwaggerConfiguration.class)
+  @Import({EventuateContractVerifierConfiguration.class, TramEventsPublisherConfiguration.class, TramInMemoryConfiguration.class, EventuateTransactionTemplateConfiguration.class})
   public static class TestConfiguration {
 
     @Bean

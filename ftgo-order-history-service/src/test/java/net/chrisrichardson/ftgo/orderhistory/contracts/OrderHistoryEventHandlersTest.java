@@ -6,6 +6,7 @@ import io.eventuate.tram.spring.inmemory.TramInMemoryCommonConfiguration;
 import io.eventuate.tram.messaging.common.ChannelMapping;
 import io.eventuate.tram.messaging.common.DefaultChannelMapping;
 import io.eventuate.tram.spring.cloudcontractsupport.EventuateContractVerifierConfiguration;
+import io.eventuate.util.spring.swagger.CommonSwaggerConfiguration;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.OrderHistoryDao;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb.Order;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb.SourceEvent;
@@ -43,7 +44,7 @@ import static org.mockito.Mockito.when;
 public class OrderHistoryEventHandlersTest {
 
   @Configuration
-  @EnableAutoConfiguration
+  @EnableAutoConfiguration(exclude = CommonSwaggerConfiguration.class)
   @Import({OrderHistoryServiceMessagingConfiguration.class,
           TramCommandProducerConfiguration.class,
           TramInMemoryCommonConfiguration.class,

@@ -38,7 +38,6 @@ task buildZip(type: Zip) {
 
 dockerCompose {
 
-    startedServices = ['not-used']
 
     integrationTests {
         startedServices = ['mysql']

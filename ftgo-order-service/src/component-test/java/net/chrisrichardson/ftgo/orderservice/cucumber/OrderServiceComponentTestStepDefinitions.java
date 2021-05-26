@@ -12,6 +12,7 @@ import io.eventuate.tram.sagas.testing.SagaParticipantChannels;
 import io.eventuate.tram.sagas.testing.SagaParticipantStubManager;
 import io.eventuate.tram.sagas.spring.testing.SagaParticipantStubManagerConfiguration;
 import io.eventuate.tram.testing.MessageTracker;
+import io.eventuate.util.spring.swagger.CommonSwaggerConfiguration;
 import io.restassured.response.Response;
 import net.chrisrichardson.ftgo.accountservice.api.AuthorizeCommand;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
@@ -67,7 +68,7 @@ public class OrderServiceComponentTestStepDefinitions {
   }
 
   @Configuration
-  @EnableAutoConfiguration
+  @EnableAutoConfiguration(exclude = CommonSwaggerConfiguration.class)
   @Import({TramJdbcKafkaConfiguration.class, SagaParticipantStubManagerConfiguration.class})
   @EnableJpaRepositories(basePackageClasses = RestaurantRepository.class) // Need to verify that the restaurant has been created. Replace with verifyRestaurantCreatedInOrderService
   @EntityScan(basePackageClasses = Order.class)

@@ -6,6 +6,7 @@ import io.eventuate.tram.spring.commands.producer.TramCommandProducerConfigurati
 import io.eventuate.tram.spring.inmemory.TramInMemoryConfiguration;
 import io.eventuate.tram.testutil.TestMessageConsumer;
 import io.eventuate.tram.testutil.TestMessageConsumerFactory;
+import io.eventuate.util.spring.swagger.CommonSwaggerConfiguration;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.common.PersonName;
 import net.chrisrichardson.ftgo.consumerservice.api.ValidateOrderByConsumer;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,6 +44,7 @@ public class ConsumerServiceInMemoryIntegrationTest {
   @Import({ConsumerWebConfiguration.class,
           TramCommandProducerConfiguration.class,
           TramInMemoryConfiguration.class})
+  @EnableAutoConfiguration(exclude = CommonSwaggerConfiguration.class)
   public static class TestConfiguration {
 
     @Bean

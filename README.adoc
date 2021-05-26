@@ -143,11 +143,11 @@ This can take a while.
 
 Use the services Swagger UIs to invoke the services.
 
-* Create consumer - `http://localhost:8081/swagger-ui.html`
-* Create a restaurant - `http://localhost:8084/swagger-ui.html`
-* Create an order - `http://localhost:8082/swagger-ui.html`
-* View the order - `http://localhost:8082/swagger-ui.html`
-* View the order history -  `http://localhost:8086/swagger-ui.html`
+* Create consumer - `http://localhost:8081/swagger-ui/index.html`
+* Create a restaurant - `http://localhost:8084/swagger-ui/index.html`
+* Create an order - `http://localhost:8082/swagger-ui/index.html`
+* View the order - `http://localhost:8082/swagger-ui/index.html`
+* View the order history -  `http://localhost:8086/swagger-ui/index.html`
 
 You can also access the application via the `API Gateway` at `http://localhost:8087`.
 However, currently it  doesn't have a Swagger UI so you will have to use `curl`, for example.
