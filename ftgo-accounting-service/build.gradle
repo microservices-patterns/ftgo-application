@@ -1,4 +1,3 @@
-
 apply plugin: FtgoServicePlugin
 
 
@@ -6,12 +5,12 @@ dependencies {
 
     compile project(":ftgo-accounting-service-api")
     compile project(":common-swagger")
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-event-sourcing-support:$eventuateTramSagasVersion"
+    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-event-sourcing-support"
 
-    compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka:$eventuateTramVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-events:$eventuateTramVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-messaging:$eventuateTramVersion"
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl:$eventuateTramSagasVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-events"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-messaging"
+    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl"
 
     compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
@@ -19,19 +18,19 @@ dependencies {
     compile 'javax.el:javax.el-api:2.2.5'
 
 
-    compile "io.eventuate.local.java:eventuate-client-java-spring:$eventuateLocalVersion"
-    compile "io.eventuate.local.java:eventuate-client-java-spring-jdbc:$eventuateLocalVersion"
-    compile "io.eventuate.local.java:eventuate-local-java-spring-jdbc:${eventuateLocalVersion}"
+    compile "io.eventuate.local.java:eventuate-client-java-spring"
+    compile "io.eventuate.local.java:eventuate-client-java-spring-jdbc"
+    compile "io.eventuate.local.java:eventuate-local-java-spring-jdbc"
     
     compile('org.apache.kafka:kafka-clients:2.3.0') {
         force = true
     }
     
-    testCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory:$eventuateTramVersion"
+    testCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory"
     testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
-    testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"
+    testCompile "io.eventuate.tram.core:eventuate-tram-test-util"
 
-    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory:$eventuateTramSagasVersion"
+    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory"
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
     testCompile "com.jayway.jsonpath:json-path:2.3.0"

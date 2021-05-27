@@ -2,15 +2,14 @@ apply plugin: IntegrationTestsPlugin
 apply plugin: 'docker-compose'
 
 dependencies {
-
     compile "com.amazonaws:aws-lambda-java-core:1.1.0"
     compile "com.amazonaws:aws-lambda-java-events:2.0.1"
 
-    compile ("io.eventuate.tram.core:eventuate-tram-spring-producer-jdbc:$eventuateTramVersion") {
+    compile ("io.eventuate.tram.core:eventuate-tram-spring-producer-jdbc") {
         exclude module: "org.springframework"
     }
-    compile "io.eventuate.tram.core:eventuate-tram-spring-events:$eventuateTramVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-messaging:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-events"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-messaging"
     compile project(":ftgo-restaurant-service-api")
     compile project(":ftgo-common-jpa")
     compile project(":ftgo-common")
@@ -20,12 +19,13 @@ dependencies {
     compile 'javax.el:javax.el-api:2.2.5'
 
     testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
-    testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"
+    testCompile "io.eventuate.tram.core:eventuate-tram-test-util"
 
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testCompile 'com.jayway.restassured:rest-assured:2.3.0'
     testCompile "com.jayway.jsonpath:json-path:2.3.0"
 
+    testCompile(platform("io.eventuate.platform:eventuate-platform-dependencies:$eventuatePlatformVersion"))
 }
 
 task buildZip(type: Zip) {
@@ -37,8 +37,6 @@ task buildZip(type: Zip) {
 }
 
 dockerCompose {
-
-
     integrationTests {
         startedServices = ['mysql']
         stopContainers = true

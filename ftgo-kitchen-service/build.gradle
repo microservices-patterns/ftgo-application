@@ -44,16 +44,16 @@ dependencies {
 
     ftgoApiSpecification project(":ftgo-restaurant-service-api-spec")
 
-    compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka:$eventuateTramVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-events:$eventuateTramVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-messaging:$eventuateTramVersion"
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl:$eventuateTramSagasVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-events"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-messaging"
+    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl"
 
     compile project(":common-swagger")
     compile project(":ftgo-common-jpa")
     compile project(":ftgo-kitchen-service-api")
     compile project(":ftgo-restaurant-service-api")
-    compile "io.eventuate.tram.core:eventuate-tram-aggregate-domain-events:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-aggregate-domain-events"
 
     compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
@@ -65,14 +65,14 @@ dependencies {
     }
 
     testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
-    testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"
+    testCompile "io.eventuate.tram.core:eventuate-tram-test-util"
 
-    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory:$eventuateTramSagasVersion"
-    testCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory:$eventuateTramVersion"
+    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory"
+    testCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory"
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
     testCompile "com.jayway.jsonpath:json-path:2.3.0"
-    testCompile "io.eventuate.tram.core:eventuate-tram-spring-testing-support-cloud-contract:$eventuateTramVersion"
+    testCompile "io.eventuate.tram.core:eventuate-tram-spring-testing-support-cloud-contract"
 
     testCompile 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
 }

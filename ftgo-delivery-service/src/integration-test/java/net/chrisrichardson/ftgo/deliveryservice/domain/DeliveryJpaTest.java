@@ -1,7 +1,6 @@
 package net.chrisrichardson.ftgo.deliveryservice.domain;
 
 import io.eventuate.tram.spring.consumer.jdbc.TramConsumerJdbcAutoConfiguration;
-import io.eventuate.util.spring.swagger.CommonSwaggerConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ public class DeliveryJpaTest {
 
   @Configuration
   @EnableJpaRepositories
-  @EnableAutoConfiguration(exclude = {TramConsumerJdbcAutoConfiguration.class, CommonSwaggerConfiguration.class})
+  @EnableAutoConfiguration(exclude = TramConsumerJdbcAutoConfiguration.class)
   public static class Config {
   }
 
