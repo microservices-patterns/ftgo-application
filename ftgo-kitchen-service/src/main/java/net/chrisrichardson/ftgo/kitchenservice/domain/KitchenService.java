@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class KitchenService {
 
@@ -39,12 +40,18 @@ public class KitchenService {
   }
 
   public Ticket createTicket(long restaurantId, Long ticketId, TicketDetails ticketDetails) {
-    if (restaurantRepository.findById(restaurantId).isPresent() &&  ticketDetails.getLineItems().stream().map(TicketLineItem::getQuantity).reduce(Integer::sum).isPresent() &&
-            (restaurantRepository.findById(restaurantId).get().getEfficiency() < ticketDetails.getLineItems().stream().map(TicketLineItem::getQuantity).reduce(Integer::sum).get())) {
-      logger.info("COS INNEGO NIZ DUPA");
+    Optional<Restaurant> restaurant = restaurantRepository.findById(restaurantId);
+    Optional<Integer> totalOrderQuantity = ticketDetails
+            .getLineItems()
+            .stream()
+            .map(TicketLineItem::getQuantity)
+            .reduce(Integer::sum);
+    if (restaurant.isPresent() && totalOrderQuantity.isPresent() &&
+            restaurant.get().getEfficiency() < totalOrderQuantity.get()) {
+      logger.info("Restaurant efficiency exceeded!");
       throw new RestaurantCapacityExceededException();
     }
-    logger.info("DUPA2");
+    logger.info("Creating ticket...");
     ResultWithDomainEvents<Ticket, TicketDomainEvent> rwe = Ticket.create(restaurantId, ticketId, ticketDetails);
     ticketRepository.save(rwe.result);
     domainEventPublisher.publish(rwe.result, rwe.events);
