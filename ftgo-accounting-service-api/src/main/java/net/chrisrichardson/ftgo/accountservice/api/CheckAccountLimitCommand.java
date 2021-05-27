@@ -12,7 +12,7 @@ public class CheckAccountLimitCommand implements Command {
     private CheckAccountLimitCommand() {
     }
 
-    public CheckAccountLimitCommand(Long consumerId, Money money, Long orderId) {
+    public CheckAccountLimitCommand(Long consumerId, Long orderId, Money money) {
         this.money = money;
         this.consumerId = consumerId;
         this.orderId = orderId;

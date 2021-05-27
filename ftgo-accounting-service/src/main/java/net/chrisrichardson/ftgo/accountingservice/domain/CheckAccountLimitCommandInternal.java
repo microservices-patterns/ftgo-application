@@ -11,7 +11,7 @@ public class CheckAccountLimitCommandInternal implements AccountCommand, Command
   private CheckAccountLimitCommandInternal() {
   }
 
-  public CheckAccountLimitCommandInternal(String consumerId, Money money, String orderId) {
+  public CheckAccountLimitCommandInternal(String consumerId, String orderId, Money money) {
     this.money = money;
     this.consumerId = consumerId;
     this.orderId = orderId;

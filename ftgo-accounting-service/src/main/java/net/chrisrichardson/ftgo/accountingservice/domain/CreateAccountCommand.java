@@ -5,6 +5,14 @@ import net.chrisrichardson.ftgo.common.Money;
 import java.math.BigDecimal;
 
 public class CreateAccountCommand implements AccountCommand {
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
     private Long customerId;
     private Money initialBalance;
 

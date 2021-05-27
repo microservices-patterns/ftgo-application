@@ -103,7 +103,7 @@ public class CreateOrderSagaState {
   }
 
   CheckAccountLimitCommand makeCheckAccountLimitCommand() {
-    return new CheckAccountLimitCommand(getOrderDetails().getConsumerId(), getOrderDetails().getOrderTotal(), getOrderId());
+    return new CheckAccountLimitCommand(getOrderDetails().getConsumerId(), getOrderId(), getOrderDetails().getOrderTotal());
   }
 
   AuthorizeCommand makeAuthorizeCommand() {

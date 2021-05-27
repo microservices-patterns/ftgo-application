@@ -18,7 +18,6 @@ public class AccountingService {
 
   public void create(Long consumerId, String aggregateId) {
     Money initialBalance = new Money(100);
-    EntityWithIdAndVersion<Account> account = accountRepository.save(new CreateAccountCommand(consumerId, initialBalance),
-            Optional.of(new SaveOptions().withId(aggregateId)));
+    accountRepository.save(new CreateAccountCommand(consumerId, initialBalance), Optional.of(new SaveOptions().withId(aggregateId)));
   }
 }
