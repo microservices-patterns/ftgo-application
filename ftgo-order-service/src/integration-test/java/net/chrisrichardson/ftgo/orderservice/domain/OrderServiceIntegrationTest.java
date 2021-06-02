@@ -7,7 +7,6 @@ import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.messaging.common.Message;
 import io.eventuate.tram.sagas.spring.inmemory.TramSagaInMemoryConfiguration;
 import io.eventuate.tram.testutil.TestMessageConsumerFactory;
-import io.eventuate.util.spring.swagger.CommonSwaggerConfiguration;
 import io.eventuate.util.test.async.Eventually;
 import net.chrisrichardson.ftgo.consumerservice.api.ConsumerServiceChannels;
 import net.chrisrichardson.ftgo.consumerservice.api.ValidateOrderByConsumer;
@@ -50,7 +49,7 @@ public class OrderServiceIntegrationTest {
   }
 
   @Configuration
-  @EnableAutoConfiguration(exclude = CommonSwaggerConfiguration.class)
+  @EnableAutoConfiguration
   @Import({OrderWebConfiguration.class, OrderServiceMessagingConfiguration.class,  OrderCommandHandlersConfiguration.class,
           TramCommandProducerConfiguration.class,
           TramSagaInMemoryConfiguration.class})

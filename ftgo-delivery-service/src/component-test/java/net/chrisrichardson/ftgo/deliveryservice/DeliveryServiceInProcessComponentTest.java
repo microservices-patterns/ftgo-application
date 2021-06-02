@@ -4,7 +4,6 @@ import io.eventuate.common.spring.jdbc.EventuateTransactionTemplateConfiguration
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.spring.events.publisher.TramEventsPublisherConfiguration;
 import io.eventuate.tram.spring.inmemory.TramInMemoryConfiguration;
-import io.eventuate.util.spring.swagger.CommonSwaggerConfiguration;
 import net.chrisrichardson.ftgo.deliveryservice.domain.DeliveryRepository;
 import net.chrisrichardson.ftgo.deliveryservice.domain.DeliveryServiceTestData;
 import net.chrisrichardson.ftgo.deliveryservice.domain.RestaurantRepository;
@@ -39,7 +38,7 @@ public class DeliveryServiceInProcessComponentTest {
   private long orderId;
 
   @Configuration
-  @EnableAutoConfiguration(exclude = CommonSwaggerConfiguration.class)
+  @EnableAutoConfiguration
   @Import({DeliveryServiceMessagingConfiguration.class,
           DeliveryServiceWebConfiguration.class,
           TramInMemoryConfiguration.class,

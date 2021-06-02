@@ -14,6 +14,7 @@ class FtgoServicePlugin implements Plugin<Project> {
             imports {
                 mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:${project.ext.springCloudContractDependenciesVersion}"
                 mavenBom "org.springframework.cloud:spring-cloud-sleuth:${project.ext.springCloudSleuthVersion}"
+                mavenBom "io.eventuate.platform:eventuate-platform-dependencies:${project.ext.eventuatePlatformVersion}"
             }
         }
 
@@ -27,7 +28,9 @@ class FtgoServicePlugin implements Plugin<Project> {
             compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
             compile "io.zipkin.brave:brave-bom:4.17.1"
 
-            compile "io.eventuate.tram.core:eventuate-tram-spring-cloud-sleuth-integration:${project.ext.eventuateTramVersion}"
+            compile "io.eventuate.tram.core:eventuate-tram-spring-cloud-sleuth-integration"
+
+            implementation(platform("io.eventuate.platform:eventuate-platform-dependencies:${project.ext.eventuatePlatformVersion}"))
         }
 
     }

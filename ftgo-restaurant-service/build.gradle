@@ -36,11 +36,11 @@ configurations.all {
 dependencies {
 
 
-    compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka:$eventuateTramVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-events:$eventuateTramVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-messaging:$eventuateTramVersion"
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl:$eventuateTramSagasVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-aggregate-domain-events:$eventuateTramVersion"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-events"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-messaging"
+    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl"
+    compile "io.eventuate.tram.core:eventuate-tram-aggregate-domain-events"
 
     compile project(":common-swagger")
     compile project(":ftgo-restaurant-service-api")
@@ -59,18 +59,18 @@ dependencies {
     }
 
     testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
-    testCompile "io.eventuate.tram.core:eventuate-tram-test-util:$eventuateTramVersion"
+    testCompile "io.eventuate.tram.core:eventuate-tram-test-util"
 
-    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory:$eventuateTramSagasVersion"
+    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory"
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
     testCompile "com.jayway.jsonpath:json-path:2.3.0"
-    testCompile "io.eventuate.tram.core:eventuate-tram-spring-testing-support-cloud-contract:$eventuateTramVersion"
+    testCompile "io.eventuate.tram.core:eventuate-tram-spring-testing-support-cloud-contract"
     testCompile project(":ftgo-test-util-json-schema")
 
     integrationTestCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
     integrationTestCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
-    integrationTestCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support:$eventuateTramSagasVersion"
-    integrationTestCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory:$eventuateTramVersion"
+    integrationTestCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support"
+    integrationTestCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory"
 
 }

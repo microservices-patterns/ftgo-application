@@ -1,7 +1,7 @@
 dependencies {
     compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant:$eventuateTramSagasVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-events:$eventuateTramVersion"
+    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant"
+    compile "io.eventuate.tram.core:eventuate-tram-spring-events"
     compile project(":ftgo-common")
 
 }

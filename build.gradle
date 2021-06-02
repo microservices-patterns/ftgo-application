@@ -7,8 +7,8 @@ buildscript {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "io.spring.gradle:dependency-management-plugin:$springDependencyManagementPluginVersion"
         classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
-        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractDependenciesVersion"    }
-
+        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractDependenciesVersion"
+    }
 }
 
 plugins {
@@ -45,6 +45,9 @@ subprojects {
 
     }
 
+    dependencies {
+        implementation(platform("io.eventuate.platform:eventuate-platform-dependencies:$eventuatePlatformVersion"))
+    }
 }
 
 task buildContracts(type: GradleBuild) {
@@ -60,5 +63,4 @@ dockerCompose {
   removeOrphans = true
   if (project.hasProperty('startedServices'))
     startedServices= project.ext.startedServices.split(',')
-
 }
