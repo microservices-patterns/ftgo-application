@@ -15,7 +15,7 @@ doforward() {
 
 
 doforward 'ftgo-accounting-service' 8085 8080
-
+doforward 'ftgo-order-history-service' 8086 8080
 doforward 'ftgo-consumer-service' 8081 8080
 doforward 'ftgo-api-gateway' 8087 8080
 doforward 'ftgo-order-service' 8082 8080

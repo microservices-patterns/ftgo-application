@@ -11,11 +11,14 @@ spec:
   selector:
     role: ftgo-kafka
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: ftgo-kafka
 spec:
+  selector:
+    matchLabels:
+      role: ftgo-kafka
   serviceName: "kafka"
   replicas: 1
   template:

@@ -17,13 +17,16 @@ spec:
   selector:
     svc: ftgo-order-service
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ftgo-order-service
   labels:
     application: ftgo
 spec:
+  selector:
+    matchLabels:
+      svc: ftgo-order-service
   replicas: 1
   strategy:
     rollingUpdate:
@@ -43,25 +46,21 @@ spec:
           name: httpport
         env:
           - name: JAVA_OPTS
-            value: "-Dsun.net.inetaddr.ttl=30"
+            value: "-Dsun.net.inetaddr.ttl=30 -Xmx192m"
           - name: SPRING_DATASOURCE_URL
-            value: jdbc:mysql://ftgo-mysql/eventuate
+            value: jdbc:mysql://ftgo-mysql/ftgo_order_service
           - name: SPRING_DATASOURCE_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: ftgo-db-secret
-                key: username
+            value: ftgo_order_service_user
           - name: SPRING_DATASOURCE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: ftgo-db-secret
-                key: password
+            value: ftgo_order_service_password
           - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
             value: com.mysql.jdbc.Driver
           - name: EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS
             value: ftgo-kafka:9092
           - name: EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING
             value: ftgo-zookeeper:2181
+          - name: EVENTUATE_DATABASE_SCHEMA
+            value: ftgo_order_service
         livenessProbe:
           httpGet:
             path: /actuator/health

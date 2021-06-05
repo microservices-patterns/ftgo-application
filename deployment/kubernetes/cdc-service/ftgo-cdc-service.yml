@@ -9,13 +9,16 @@ spec:
   selector:
     svc: ftgo-cdc-service
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ftgo-cdc-service
   labels:
     application: ftgo
 spec:
+  selector:
+    matchLabels:
+      svc: ftgo-cdc-service
   replicas: 1
   strategy:
     rollingUpdate:
@@ -27,7 +30,7 @@ spec:
     spec:
       containers:
       - name: ftgo-cdc-service
-        image: eventuateio/eventuate-cdc-service:0.4.0.RELEASE
+        image: eventuateio/eventuate-cdc-service:0.6.0.RC3
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -37,7 +40,7 @@ spec:
           - name: JAVA_OPTS
             value: "-Dsun.net.inetaddr.ttl=30"
           - name: EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS
-            value: ftgo-kafka:29092
+            value: ftgo-kafka:9092
           - name: EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING
             value: ftgo-zookeeper:2181
           - name: EVENTUATE_CDC_PIPELINE_PIPELINE1_TYPE
