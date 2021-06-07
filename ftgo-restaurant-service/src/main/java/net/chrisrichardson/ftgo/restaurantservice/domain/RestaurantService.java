@@ -19,9 +19,9 @@ public class RestaurantService {
   private RestaurantDomainEventPublisher restaurantDomainEventPublisher;
 
   public Restaurant create(CreateRestaurantRequest request) {
-    Restaurant restaurant = new Restaurant(request.getName(), request.getMenu());
+    Restaurant restaurant = new Restaurant(request.getName(), request.getMenu(), request.getEfficiency());
     restaurantRepository.save(restaurant);
-    restaurantDomainEventPublisher.publish(restaurant, Collections.singletonList(new RestaurantCreated(request.getName(), request.getAddress(), request.getMenu())));
+    restaurantDomainEventPublisher.publish(restaurant, Collections.singletonList(new RestaurantCreated(request.getName(), request.getAddress(), request.getMenu(), request.getEfficiency())));
     return restaurant;
   }
 

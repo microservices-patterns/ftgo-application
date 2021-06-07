@@ -3,13 +3,17 @@ package net.chrisrichardson.ftgo.kitchenservice.domain;
 import io.eventuate.tram.events.aggregates.ResultWithDomainEvents;
 import net.chrisrichardson.ftgo.common.RevisedOrderLineItem;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;
+import net.chrisrichardson.ftgo.kitchenservice.api.TicketLineItem;
 import net.chrisrichardson.ftgo.kitchenservice.api.events.TicketDomainEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class KitchenService {
 
@@ -22,8 +26,10 @@ public class KitchenService {
   @Autowired
   private RestaurantRepository restaurantRepository;
 
-  public void createMenu(long id, RestaurantMenu menu) {
-    Restaurant restaurant = new Restaurant(id, menu.getMenuItems());
+  private Logger logger = LoggerFactory.getLogger(getClass());
+
+  public void createMenu(long id, RestaurantMenu menu, long efficiency) {
+    Restaurant restaurant = new Restaurant(id, menu.getMenuItems(), efficiency);
     restaurantRepository.save(restaurant);
   }
 
@@ -34,6 +40,18 @@ public class KitchenService {
   }
 
   public Ticket createTicket(long restaurantId, Long ticketId, TicketDetails ticketDetails) {
+    Optional<Restaurant> restaurant = restaurantRepository.findById(restaurantId);
+    Optional<Integer> totalOrderQuantity = ticketDetails
+            .getLineItems()
+            .stream()
+            .map(TicketLineItem::getQuantity)
+            .reduce(Integer::sum);
+    if (restaurant.isPresent() && totalOrderQuantity.isPresent() &&
+            restaurant.get().getEfficiency() < totalOrderQuantity.get()) {
+      logger.info("Restaurant efficiency exceeded!");
+      throw new RestaurantCapacityExceededException();
+    }
+    logger.info("Creating ticket...");
     ResultWithDomainEvents<Ticket, TicketDomainEvent> rwe = Ticket.create(restaurantId, ticketId, ticketDetails);
     ticketRepository.save(rwe.result);
     domainEventPublisher.publish(rwe.result, rwe.events);

@@ -27,7 +27,7 @@ public class KitchenServiceEventConsumer {
     String restaurantIds = de.getAggregateId();
     long id = Long.parseLong(restaurantIds);
     RestaurantMenu menu = new RestaurantMenu(RestaurantEventMapper.toMenuItems(de.getEvent().getMenu().getMenuItems()));
-    kitchenService.createMenu(id, menu);
+    kitchenService.createMenu(id, menu, de.getEvent().getEfficiency());
   }
 
   public void reviseMenu(DomainEventEnvelope<RestaurantMenuRevised> de) {

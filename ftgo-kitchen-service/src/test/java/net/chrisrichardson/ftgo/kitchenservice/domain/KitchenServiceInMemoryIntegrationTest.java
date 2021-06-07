@@ -71,7 +71,7 @@ public class KitchenServiceInMemoryIntegrationTest {
   public void shouldCreateTicket() {
 
     long restaurantId = System.currentTimeMillis();
-    Restaurant restaurant = new Restaurant(restaurantId, Collections.emptyList());
+    Restaurant restaurant = new Restaurant(restaurantId, Collections.emptyList(), 50);
 
     restaurantRepository.save(restaurant);
 
