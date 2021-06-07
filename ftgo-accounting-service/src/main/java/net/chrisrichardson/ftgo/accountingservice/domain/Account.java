@@ -19,6 +19,9 @@ public class Account extends ReflectiveMutableCommandProcessingAggregate<Account
   public Money getBalance() {
     return balance;
   }
+  public boolean accountLimitSufficient(Money money){
+    return balance.isGreaterThanOrEqual(money);
+  }
 
   public void setBalance(Money balance) {
     this.balance = balance;
@@ -43,12 +46,11 @@ public class Account extends ReflectiveMutableCommandProcessingAggregate<Account
     if(balance.isGreaterThanOrEqual(command.getMoney())){
       return events(new AccountLimitSufficientEvent());
     }
-    //return events(new AccountLimitExceededEvent());
-    throw new AccountLimitExceededException();
+    return events(new AccountLimitExceededEvent());
   }
 
   public List<Event> process(AuthorizeCommandInternal command) {
-    return events(new AccountAuthorizedEvent());
+    return events(new AccountAuthorizedEvent(command.getOrderTotal()));
   }
 
   public List<Event> process(ReverseAuthorizationCommandInternal command) {
@@ -59,7 +61,9 @@ public class Account extends ReflectiveMutableCommandProcessingAggregate<Account
   }
 
   public void apply(AccountAuthorizedEvent event) {
-
+    if(balance.isGreaterThanOrEqual(event.getMoney())) {
+      setBalance(getBalance().subtract(event.getMoney()));
+    }
   }
 
   public void apply(AccountLimitSufficientEvent event) {

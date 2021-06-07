@@ -54,17 +54,12 @@ public class AccountingServiceCommandHandler {
     logger.info(command.getMoney().asString());
 
     logger.info(accountRepository.find(Long.toString(command.getConsumerId())).getEntity().getBalance().asString());
-
-    try {
-      accountRepository.update(Long.toString(command.getConsumerId()),
-              makeCheckAccountLimitCommandInternal(command),
-              replyingTo(cm)
-                      .catching(AccountLimitExceededException.class, () -> withFailure(new AccountLimitExceededReply()))
-                      .build());
-    } catch (Exception e) {
-      return withFailure(new AccountLimitExceededReply());
+    Account account = accountRepository.find(Long.toString(command.getConsumerId())).getEntity();
+    if(account.accountLimitSufficient(cm.getCommand().getMoney())){
+      return withSuccess();
+    } else {
+      return withFailure();
     }
-    return withSuccess();
   }
 
   public void reverseAuthorization(CommandMessage<ReverseAuthorizationCommand> cm) {
