@@ -8,6 +8,16 @@ public class RestaurantCreated implements RestaurantDomainEvent {
   private Address address;
   private RestaurantMenu menu;
 
+  public Long getEfficiency() {
+    return efficiency;
+  }
+
+  public void setEfficiency(Long efficiency) {
+    this.efficiency = efficiency;
+  }
+
+  private Long efficiency;
+
   public String getName() {
     return name;
   }
@@ -15,10 +25,11 @@ public class RestaurantCreated implements RestaurantDomainEvent {
   private RestaurantCreated() {
   }
 
-  public RestaurantCreated(String name, Address address, RestaurantMenu menu) {
+  public RestaurantCreated(String name, Address address, RestaurantMenu menu, Long efficiency) {
     this.name = name;
     this.address = address;
     this.menu = menu;
+    this.efficiency = efficiency;
   }
 
   public RestaurantMenu getMenu() {

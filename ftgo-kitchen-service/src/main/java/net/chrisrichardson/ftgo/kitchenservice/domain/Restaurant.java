@@ -26,12 +26,23 @@ public class Restaurant {
   @CollectionTable(name = "kitchen_service_restaurant_menu_items")
   private List<MenuItem> menuItems;
 
+  public Long getEfficiency() {
+    return efficiency;
+  }
+
+  public void setEfficiency(Long efficiency) {
+    this.efficiency = efficiency;
+  }
+
+  private Long efficiency;
+
   private Restaurant() {
   }
 
-  public Restaurant(long id, List<MenuItem> menuItems) {
+  public Restaurant(long id, List<MenuItem> menuItems, long efficiency) {
     this.id = id;
     this.menuItems = menuItems;
+    this.efficiency = efficiency;
   }
 
   public List<DomainEvent> reviseMenu(RestaurantMenu revisedMenu) {
@@ -40,6 +51,7 @@ public class Restaurant {
 
   public void verifyRestaurantDetails(TicketDetails ticketDetails) {
     // TODO - implement me
+
   }
 
   public Long getId() {

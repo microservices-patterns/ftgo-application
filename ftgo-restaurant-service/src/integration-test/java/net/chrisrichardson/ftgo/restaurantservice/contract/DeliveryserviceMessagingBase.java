@@ -42,11 +42,11 @@ public abstract class DeliveryserviceMessagingBase {
   private RestaurantDomainEventPublisher restaurantDomainEventPublisher;
 
   protected void restaurantCreated() {
-    Restaurant restaurant = new Restaurant("Yummy Indian", new RestaurantMenu(Collections.emptyList()));
+    Restaurant restaurant = new Restaurant("Yummy Indian", new RestaurantMenu(Collections.emptyList()), 10L);
     restaurant.setId(99L);
     restaurantDomainEventPublisher.publish(restaurant,
             Collections.singletonList(new RestaurantCreated(restaurant.getName(), new Address("1 Main Street", "Unit 99", "Oakland", "CA", "94611"),
-                    restaurant.getMenu())));
+                    restaurant.getMenu(), restaurant.getEfficiency())));
   }
 
 }

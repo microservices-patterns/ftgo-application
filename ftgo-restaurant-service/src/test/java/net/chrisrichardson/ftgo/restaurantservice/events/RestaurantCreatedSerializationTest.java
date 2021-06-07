@@ -34,7 +34,7 @@ public class RestaurantCreatedSerializationTest {
     ValidatingJSONMapper mapper = ValidatingJSONMapper.forSchema("/ftgo-restaurant-service-api-spec/messages/RestaurantCreated.json");
 
     RestaurantCreated event = new RestaurantCreated(AJANTA_RESTAURANT_NAME, RESTAURANT_ADDRESS,
-            new RestaurantMenu(Collections.singletonList(CHICKEN_VINDALOO_MENU_ITEM)));
+            new RestaurantMenu(Collections.singletonList(CHICKEN_VINDALOO_MENU_ITEM)), 10L);
     String json = mapper.toJSON(event);
     assertNotNull(json);
   }
