@@ -3,25 +3,54 @@ package net.chrisrichardson.ftgo.accountingservice.domain;
 import io.eventuate.Event;
 import io.eventuate.ReflectiveMutableCommandProcessingAggregate;
 import io.eventuate.tram.sagas.eventsourcingsupport.SagaReplyRequestedEvent;
+import net.chrisrichardson.ftgo.common.Money;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static io.eventuate.EventUtil.events;
 
 public class Account extends ReflectiveMutableCommandProcessingAggregate<Account, AccountCommand> {
 
+  public Money getBalance() {
+    return balance;
+  }
+  public boolean accountLimitSufficient(Money money){
+    return balance.isGreaterThanOrEqual(money);
+  }
+
+  public void setBalance(Money balance) {
+    this.balance = balance;
+  }
+
+  private final Logger logger = LoggerFactory.getLogger(getClass());
+
+  private Money balance;
+
   public List<Event> process(CreateAccountCommand command) {
-    return events(new AccountCreatedEvent());
+    logger.info(command.getCustomerId().toString());
+    return events(new AccountCreatedEvent(command.getCustomerId(), command.getInitialBalance()));
   }
 
   public void apply(AccountCreatedEvent event) {
-
+    this.balance = event.getInitialBalance();
+    logger.info(this.balance.asString());
+    logger.info(event.getCustomerId().toString());
   }
 
+  public List<Event> process(CheckAccountLimitCommandInternal command) {
+    if(balance.isGreaterThanOrEqual(command.getMoney())){
+      return events(new AccountLimitSufficientEvent());
+    }
+    return events(new AccountLimitExceededEvent());
+  }
 
   public List<Event> process(AuthorizeCommandInternal command) {
-    return events(new AccountAuthorizedEvent());
+    return events(new AccountAuthorizedEvent(command.getOrderTotal()));
   }
 
   public List<Event> process(ReverseAuthorizationCommandInternal command) {
@@ -32,7 +61,15 @@ public class Account extends ReflectiveMutableCommandProcessingAggregate<Account
   }
 
   public void apply(AccountAuthorizedEvent event) {
+    if(balance.isGreaterThanOrEqual(event.getMoney())) {
+      setBalance(getBalance().subtract(event.getMoney()));
+    }
+  }
 
+  public void apply(AccountLimitSufficientEvent event) {
+  }
+
+  public void apply(AccountLimitExceededEvent event) {
   }
 
   public void apply(SagaReplyRequestedEvent event) {

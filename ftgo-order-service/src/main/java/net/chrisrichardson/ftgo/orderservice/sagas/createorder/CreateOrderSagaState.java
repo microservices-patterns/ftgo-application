@@ -1,6 +1,7 @@
 package net.chrisrichardson.ftgo.orderservice.sagas.createorder;
 
 import net.chrisrichardson.ftgo.accountservice.api.AuthorizeCommand;
+import net.chrisrichardson.ftgo.accountservice.api.CheckAccountLimitCommand;
 import net.chrisrichardson.ftgo.consumerservice.api.ValidateOrderByConsumer;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDetails;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderLineItem;
@@ -99,6 +100,10 @@ public class CreateOrderSagaState {
     x.setOrderId(getOrderId());
     x.setOrderTotal(getOrderDetails().getOrderTotal().asString());
     return x;
+  }
+
+  CheckAccountLimitCommand makeCheckAccountLimitCommand() {
+    return new CheckAccountLimitCommand(getOrderDetails().getConsumerId(), getOrderId(), getOrderDetails().getOrderTotal());
   }
 
   AuthorizeCommand makeAuthorizeCommand() {

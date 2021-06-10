@@ -22,6 +22,8 @@ public class CreateOrderSaga implements SimpleSaga<CreateOrderSagaState> {
             .step()
               .invokeParticipant(consumerService.validateOrder, CreateOrderSagaState::makeValidateOrderByConsumerCommand)
             .step()
+              .invokeParticipant(accountingService.checkAccountLimit, CreateOrderSagaState::makeCheckAccountLimitCommand)
+            .step()
               .invokeParticipant(kitchenService.create, CreateOrderSagaState::makeCreateTicketCommand)
               .onReply(CreateTicketReply.class, CreateOrderSagaState::handleCreateTicketReply)
               .withCompensation(kitchenService.cancel, CreateOrderSagaState::makeCancelCreateTicketCommand)

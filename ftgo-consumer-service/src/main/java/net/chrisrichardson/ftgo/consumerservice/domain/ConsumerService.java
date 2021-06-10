@@ -20,7 +20,7 @@ public class ConsumerService {
 
   public void validateOrderForConsumer(long consumerId, Money orderTotal) {
     Optional<Consumer> consumer = consumerRepository.findById(consumerId);
-    consumer.orElseThrow(ConsumerNotFoundException::new).validateOrderByConsumer(orderTotal);
+    consumer.orElseThrow(ConsumerNotFoundException::new);//.validateOrderByConsumer(orderTotal);
   }
 
   @Transactional

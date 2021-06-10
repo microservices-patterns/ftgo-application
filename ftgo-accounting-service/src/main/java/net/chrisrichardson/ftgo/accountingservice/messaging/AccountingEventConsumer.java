@@ -5,6 +5,8 @@ import io.eventuate.tram.events.subscriber.DomainEventHandlers;
 import io.eventuate.tram.events.subscriber.DomainEventHandlersBuilder;
 import net.chrisrichardson.ftgo.accountingservice.domain.AccountingService;
 import net.chrisrichardson.ftgo.consumerservice.domain.ConsumerCreated;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -12,6 +14,8 @@ public class AccountingEventConsumer {
 
   @Autowired
   private AccountingService accountingService;
+
+  private Logger logger = LoggerFactory.getLogger(getClass());
 
   public DomainEventHandlers domainEventHandlers() {
     return DomainEventHandlersBuilder
@@ -21,8 +25,8 @@ public class AccountingEventConsumer {
   }
 
   private void createAccount(DomainEventEnvelope<ConsumerCreated> dee) {
-    accountingService.create(dee.getAggregateId());
+    String consumerId = dee.getAggregateId();
+    accountingService.create(Long.parseLong(consumerId), consumerId);
   }
-
 
 }

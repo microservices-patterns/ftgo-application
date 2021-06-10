@@ -1,6 +1,7 @@
 package net.chrisrichardson.ftgo.accountingservice.web;
 
 import io.eventuate.EntityNotFoundException;
+import io.eventuate.EntityWithMetadata;
 import io.eventuate.sync.AggregateRepository;
 import net.chrisrichardson.ftgo.accountingservice.domain.Account;
 import net.chrisrichardson.ftgo.accountingservice.domain.AccountCommand;
@@ -22,7 +23,9 @@ public class AccountsController {
   @RequestMapping(path="/{accountId}", method= RequestMethod.GET)
   public ResponseEntity<GetAccountResponse> getAccount(@PathVariable String accountId) {
        try {
-          return new ResponseEntity<>(new GetAccountResponse(accountId), HttpStatus.OK);
+           EntityWithMetadata<Account> accountEntity = accountRepository.find(accountId);
+           Account account = accountEntity.getEntity();
+          return new ResponseEntity<>(new GetAccountResponse(accountId, account.getBalance()), HttpStatus.OK);
        } catch (EntityNotFoundException e) {
          return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
        }

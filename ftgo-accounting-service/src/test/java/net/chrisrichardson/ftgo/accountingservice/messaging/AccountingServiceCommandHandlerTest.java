@@ -71,7 +71,7 @@ public class AccountingServiceCommandHandlerTest {
     long consumerId = System.currentTimeMillis();
     long orderId = 102L;
 
-    domainEventPublisher.publish("net.chrisrichardson.ftgo.consumerservice.domain.Consumer", consumerId, Collections.singletonList(new ConsumerCreated()));
+    domainEventPublisher.publish("net.chrisrichardson.ftgo.consumerservice.domain.Consumer", consumerId, Collections.singletonList(new ConsumerCreated(consumerId)));
 
     Eventually.eventually(() -> {
       accountRepository.find(Long.toString(consumerId));

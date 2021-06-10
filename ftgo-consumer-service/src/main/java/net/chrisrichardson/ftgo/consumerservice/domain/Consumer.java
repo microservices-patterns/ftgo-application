@@ -3,6 +3,8 @@ package net.chrisrichardson.ftgo.consumerservice.domain;
 import io.eventuate.tram.events.publisher.ResultWithEvents;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.common.PersonName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -23,6 +25,8 @@ public class Consumer {
 
   @Embedded
   private PersonName name;
+
+  private static final Logger logger = LoggerFactory.getLogger(Consumer.class);
 
   private Consumer() {
   }
@@ -45,6 +49,8 @@ public class Consumer {
   }
 
   public static ResultWithEvents<Consumer> create(PersonName name) {
-    return new ResultWithEvents<>(new Consumer(name), new ConsumerCreated());
+    Consumer newConsumer = new Consumer(name);
+//    return new ResultWithEvents<>(newConsumer, new ConsumerCreated(newConsumer.getId()));
+    return new ResultWithEvents<>(newConsumer, new ConsumerCreated());
   }
 }
