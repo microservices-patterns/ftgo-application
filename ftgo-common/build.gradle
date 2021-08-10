@@ -13,8 +13,12 @@ dependencies {
 
     compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.7"
 
-    runtime "javax.xml.bind:jaxb-api:2.2.11"
-    runtime "com.sun.xml.bind:jaxb-core:2.2.11"
-    runtime "com.sun.xml.bind:jaxb-impl:2.2.11"
+//    runtime "javax.xml.bind:jaxb-api:2.2.11"
+////    runtime "com.sun.xml.bind:jaxb-core:2.2.11"
+////    runtime "com.sun.xml.bind:jaxb-impl:2.2.11"
+
+    runtime "javax.xml.bind:jaxb-api:2.3.0"
+    runtime "com.sun.xml.bind:jaxb-core:2.3.0"
+    runtime "com.sun.xml.bind:jaxb-impl:2.3.0"
     runtime "javax.activation:activation:1.1.1"
 }

@@ -46,7 +46,8 @@ public class WaitForMySql extends DefaultTask {
       try {
         System.out.println("Trying to connect...");
 
-        String datasourceUrl = getenv("SPRING_DATASOURCE_URL", () -> String.format("jdbc:mysql://%s/eventuate", getenv("DOCKER_HOST_IP", "localhost")));
+        String datasourceUrl = getenv("SPRING_DATASOURCE_URL", () -> String.format("jdbc:mysql://%s:3306/eventuate", getenv("DOCKER_HOST_IP", "localhost")));
+        System.out.println(datasourceUrl);
         String datasourceUsername = getenv("SPRING_DATASOURCE_USERNAME", "mysqluser");
         String datasourcePassword = getenv("SPRING_DATASOURCE_PASSWORD", "mysqlpw");
 
@@ -56,6 +57,7 @@ public class WaitForMySql extends DefaultTask {
 
         break;
       } catch (SQLException e) {
+//        e.printStackTrace();
         System.out.println("Connection failed");
 
         sleep();
