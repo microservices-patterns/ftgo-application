@@ -64,10 +64,11 @@ if [ -z "$ASSEMBLE_ONLY" ] ; then
   ./gradlew infrastructureComposeDown
 
 else
-
   ./gradlew $* assemble
 
 fi
+
+./gradlew :composeUp
 
 ./run-end-to-end-tests.sh
 
