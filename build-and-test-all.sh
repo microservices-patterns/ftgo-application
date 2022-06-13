@@ -61,7 +61,7 @@ if [ -z "$ASSEMBLE_ONLY" ] ; then
   
   ./gradlew componentTest
 
-  ./gradlew infrastructureComposeDown
+  ./gradlew composeDown
 
 else
   ./gradlew $* assemble
