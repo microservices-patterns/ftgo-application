@@ -54,18 +54,18 @@ if [ -z "$ASSEMBLE_ONLY" ] ; then
   ./gradlew infrastructureComposeDown
   ./gradlew infrastructureComposeUp
 
-  ./gradlew cleanComponentTest componentTest
+  ./gradlew cleanComponentTest 
+
+  # ./gradlew :ftgo-delivery-service:componentTest
+  # ./gradlew :ftgo-order-service:componentTest
+  
+  ./gradlew componentTest
 
   ./gradlew infrastructureComposeDown
-
-  ./gradlew composeUp
-
 
 else
 
   ./gradlew $* assemble
-
-  ./gradlew composeUp
 
 fi
 

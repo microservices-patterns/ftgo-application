@@ -48,6 +48,8 @@ dockerCompose {
     environment.put "EVENTUATE_SAGA_VERSION", eventuateTramSagasImageVersion
     environment.put "EVENTUATE_JAVA_BASE_IMAGE_VERSION", eventuateExamplesBaseImageVersion
     environment.put "EVENTUATE_MESSAGING_KAFKA_IMAGE_VERSION", eventuateMessagingKafkaImageVersion
+    
+    projectName = null
 
     componentTests {
         projectName = null
