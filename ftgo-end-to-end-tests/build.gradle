@@ -43,7 +43,7 @@ dependencies {
     compile project(":ftgo-order-service-api")
     compile project(":ftgo-delivery-service-api")
 
-    compile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
+    compile "io.eventuate.util:eventuate-util-test"
 
     compile 'io.swagger:swagger-annotations:1.5.24'
 
@@ -56,6 +56,12 @@ dependencies {
 }
 
 dockerCompose {
+    environment.put "EVENTUATE_COMMON_VERSION", eventuateCommonImageVersion
+    environment.put "EVENTUATE_CDC_VERSION", eventuateCdcImageVersion
+    environment.put "EVENTUATE_SAGA_VERSION", eventuateTramSagasImageVersion
+    environment.put "EVENTUATE_JAVA_BASE_IMAGE_VERSION", eventuateExamplesBaseImageVersion
+    environment.put "EVENTUATE_MESSAGING_KAFKA_IMAGE_VERSION", eventuateMessagingKafkaImageVersion
+
     projectName = null
 }
 

@@ -61,16 +61,27 @@ componentTest.dependsOn(assemble)
 
 dockerCompose {
 
+    environment.put "EVENTUATE_COMMON_VERSION", eventuateCommonImageVersion
+    environment.put "EVENTUATE_CDC_VERSION", eventuateCdcImageVersion
+    environment.put "EVENTUATE_SAGA_VERSION", eventuateTramSagasImageVersion
+    environment.put "EVENTUATE_JAVA_BASE_IMAGE_VERSION", eventuateExamplesBaseImageVersion
+    environment.put "EVENTUATE_MESSAGING_KAFKA_IMAGE_VERSION", eventuateMessagingKafkaImageVersion
 
     integrationTests {
+        projectName = null
+        removeOrphans = true
+        retainContainersOnStartupFailure = true
         startedServices = [ 'mysql']
         stopContainers = true
     }
 
     componentTests {
+        projectName = null
+        removeOrphans = true
+        retainContainersOnStartupFailure = true
         startedServices = [ 'ftgo-order-service']
         //forceRecreate = true
-	stopContainers = true
+	    stopContainers = true
     }
 
 }
@@ -83,7 +94,7 @@ componentTest.dependsOn(componentTestsComposeUp)
 protobuf {
     protoc {
         // Download from repositories
-        artifact = 'com.google.protobuf:protoc:3.0.0'
+        artifact = "com.google.protobuf:protoc:$protocVersion"
     }
     plugins {
         grpc {
@@ -125,6 +136,13 @@ eclipse {
 
 dependencies {
 
+    compile ("io.netty:netty-codec-http2:4.1.72.Final")  
+    compile ("io.netty:netty-codec:4.1.72.Final")  
+    compile ("io.netty:netty-transport:4.1.72.Final")  
+    compile ("io.netty:netty-common:4.1.72.Final")  
+    compile ("io.netty:netty-buffer:4.1.72.Final")  
+    compile ("io.netty:netty-resolver:4.1.72.Final")  
+
     ftgoApiSpecification project(":ftgo-consumer-service-api-spec")
     ftgoApiSpecification project(":ftgo-accounting-service-api-spec")
     ftgoApiSpecification project(":ftgo-restaurant-service-api-spec")
@@ -162,10 +180,9 @@ dependencies {
 
     compile('org.apache.kafka:kafka-clients:2.3.0') {
         force = true
-    }
+    }    
 
-
-    testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
+    testCompile "io.eventuate.util:eventuate-util-test"
     testCompile "io.eventuate.tram.core:eventuate-tram-test-util"
 
     testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory"

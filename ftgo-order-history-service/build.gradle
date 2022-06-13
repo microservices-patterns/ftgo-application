@@ -45,7 +45,7 @@ dependencies {
     }
 
     testCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory"
-    testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
+    testCompile "io.eventuate.util:eventuate-util-test"
     testCompile "io.eventuate.tram.core:eventuate-tram-test-util"
 
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
@@ -63,8 +63,16 @@ dependencies {
 
 dockerCompose {
 
+    environment.put "EVENTUATE_COMMON_VERSION", eventuateCommonImageVersion
+    environment.put "EVENTUATE_CDC_VERSION", eventuateCdcImageVersion
+    environment.put "EVENTUATE_SAGA_VERSION", eventuateTramSagasImageVersion
+    environment.put "EVENTUATE_JAVA_BASE_IMAGE_VERSION", eventuateExamplesBaseImageVersion
+    environment.put "EVENTUATE_MESSAGING_KAFKA_IMAGE_VERSION", eventuateMessagingKafkaImageVersion
 
     integrationTests {
+        projectName = null
+        removeOrphans = true
+        retainContainersOnStartupFailure = true
         startedServices = ["dynamodblocal", "dynamodblocal-init"]
         stopContainers = false
         if (System.getenv("FTGO_DOCKER_COMPOSE_FILES") != null)

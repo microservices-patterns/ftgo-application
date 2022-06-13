@@ -19,6 +19,11 @@ public class RestaurantCreated implements RestaurantDomainEvent {
     this.name = name;
     this.address = address;
     this.menu = menu;
+
+    if (menu == null) 
+      throw new NullPointerException("Null Menu");
+    if (address == null) 
+      throw new NullPointerException("Null address");
   }
 
   public RestaurantMenu getMenu() {

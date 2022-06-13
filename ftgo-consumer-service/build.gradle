@@ -28,7 +28,7 @@ dependencies {
         force = true
     }
 
-    testCompile "io.eventuate.util:eventuate-util-test:$eventuateUtilVersion"
+    testCompile "io.eventuate.util:eventuate-util-test"
     testCompile "io.eventuate.tram.core:eventuate-tram-test-util"
 
     testCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory"

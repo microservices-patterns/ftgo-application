@@ -11,10 +11,6 @@ buildscript {
     }
 }
 
-plugins {
-    id "com.github.ben-manes.versions" version "0.20.0"
-}
-
 apply plugin: WaitForMySqlPlugin
 apply plugin: 'docker-compose'
 
@@ -46,7 +42,17 @@ subprojects {
     }
 
     dependencies {
+
         implementation(platform("io.eventuate.platform:eventuate-platform-dependencies:$eventuatePlatformVersion"))
+        constraints {
+                compile ("io.netty:netty-codec-http2") {
+                    version {
+                        strictly("4.1.72.Final")
+                    }
+                }
+        }
+
+
     }
 }
 
@@ -59,8 +65,36 @@ task compileAll(type: GradleBuild) {
 }
 
 dockerCompose {
+
+  environment.put "EVENTUATE_COMMON_VERSION", eventuateCommonImageVersion
+  environment.put "EVENTUATE_CDC_VERSION", eventuateCdcImageVersion
+  environment.put "EVENTUATE_SAGA_VERSION", eventuateTramSagasImageVersion
+  environment.put "EVENTUATE_JAVA_BASE_IMAGE_VERSION", eventuateExamplesBaseImageVersion
+  environment.put "EVENTUATE_MESSAGING_KAFKA_IMAGE_VERSION", eventuateMessagingKafkaImageVersion
+
   projectName = null
   removeOrphans = true
+  retainContainersOnStartupFailure = true
+
   if (project.hasProperty('startedServices'))
     startedServices= project.ext.startedServices.split(',')
+
+  infrastructure {
+      projectName = null
+      startedServices = ["mysql", "cdc-service", "dynamodblocal-init", "kafka", "zookeeper"]
+  }    
+  
+  kafkaGui {
+      projectName = null
+      startedServices = ["kafka-gui"]
+  }  
 }
+
+composeUp.dependsOn(infrastructureComposeUp)
+
+subprojects.each {
+  if (it.name.endsWith("-service") || it.name.endsWith("-gateway")) {
+    composeBuild.dependsOn(":" + it.name + ":assemble")
+    composeUp.dependsOn(":" + it.name + ":assemble")
+  }
+ }

@@ -1,39 +1,21 @@
-version:               2
+version: 2.1
+setup: true
+orbs:
+  eventuate-gradle-build-and-test: "eventuate_io/eventuate-gradle-build-and-test@0.2.1"
+  continuation: circleci/continuation@0.1.2
 jobs:
-  build:
-    machine:           true
-    working_directory: ~/ftgo-application
+  setup:
+    executor: continuation/default
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - ftgo-application-{{ checksum "gradle.properties" }}
-            - ftgo-application-
-      - run:           TERM=dumb ./gradlew buildContracts
-      - run:           TERM=dumb ./gradlew compileAll
-      - save_cache:
-          paths:
-            - ~/.gradle
-            - ~/.m2
-          key:         ftgo-application-{{ checksum "gradle.properties" }}
-      - run:
-          command:     |
-            ./.circleci/upgrade-docker-compose.sh
-            . .circleci/setenv-circle-ci.sh
-            ./build-and-test-all.sh
-      - run:
-          name:        Save test results
-          command:     |
-            mkdir -p ~/junit/
-            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/junit/ \;
-          when:        always
-      - store_test_results:
-          path:        ~/junit
-      - store_artifacts:
-          path:        ~/junit
-      - run:
-          command:     |
-            . .circleci/setenv-circle-ci.sh
-            ./gradlew assemble
-            docker-compose build
-            ./publish-docker-images.sh
+      - checkout # checkout code
+      - run: # run a command
+          name: Generate config
+          command: |
+            ./.circleci/generate-config.sh > generated_config.yml
+      - continuation/continue:
+          configuration_path: generated_config.yml
+
+workflows:
+  setup:
+    jobs:
+      - setup
