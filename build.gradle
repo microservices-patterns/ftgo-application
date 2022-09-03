@@ -79,6 +79,11 @@ dockerCompose {
   if (project.hasProperty('startedServices'))
     startedServices= project.ext.startedServices.split(',')
 
+  mysql {
+      projectName = null
+      startedServices = ["mysql"]
+  }    
+  
   infrastructure {
       projectName = null
       startedServices = ["mysql", "cdc-service", "dynamodblocal-init", "kafka", "zookeeper"]

@@ -29,12 +29,12 @@ echo KEEP_RUNNING=$KEEP_RUNNING
 
 # TODO Temporarily
 
-./gradlew buildContracts
+./gradlew --parallel buildContracts
 
-./gradlew compileAll
+./gradlew --parallel compileAll
 
 if [ -z "$USE_EXISTING_CONTAINERS" ] ; then
-    ./gradlew composeDown
+    ./gradlew :composeDown
 fi
 
 ./gradlew infrastructureComposeUp
@@ -61,7 +61,7 @@ if [ -z "$ASSEMBLE_ONLY" ] ; then
   
   ./gradlew componentTest
 
-  ./gradlew composeDown
+  ./gradlew :composeDown
 
 else
   ./gradlew $* assemble
@@ -77,5 +77,5 @@ fi
 # ./run-graphql-api-gateway-tests.sh
 
 if [ -z "$KEEP_RUNNING" ] ; then
-  ./gradlew composeDown
+  ./gradlew :composeDown
 fi

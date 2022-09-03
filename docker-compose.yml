@@ -23,11 +23,11 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_HEAP_OPTS: -Xmx192m
   mysql:
-    build: ./mysql
     build:
       context: ./mysql
       args:
         EVENTUATE_COMMON_VERSION: ${EVENTUATE_COMMON_VERSION?}
+        EVENTUATE_SAGA_VERSION: ${EVENTUATE_SAGA_VERSION?}
     ports:
       - 3306:3306
     environment:
