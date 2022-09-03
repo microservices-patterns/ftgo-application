@@ -9,13 +9,17 @@ spec:
   selector:
     svc: ftgo-kitchen-service
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ftgo-kitchen-service
   labels:
     application: ftgo
 spec:
+  selector:
+    matchLabels:
+      svc: ftgo-kitchen-service
+      application: ftgo
   replicas: 1
   strategy:
     rollingUpdate:
