@@ -22,6 +22,8 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
 
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+
     compile 'javax.el:javax.el-api:2.2.5'
 
     compile('org.apache.kafka:kafka-clients:2.3.0') {

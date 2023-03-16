@@ -3,6 +3,18 @@ package net.chrisrichardson.ftgo.consumerservice.web;
 import io.eventuate.tram.events.publisher.ResultWithEvents;
 import net.chrisrichardson.ftgo.consumerservice.domain.Consumer;
 import net.chrisrichardson.ftgo.consumerservice.domain.ConsumerService;
+import net.chrisrichardson.ftgo.consumerservice.domain.swagger.CourierAvailability;
+import net.chrisrichardson.ftgo.consumerservice.domain.swagger.CreateOrderRequest;
+import net.chrisrichardson.ftgo.consumerservice.domain.swagger.CreateOrderResponse;
+import net.chrisrichardson.ftgo.consumerservice.domain.swagger.DeliveryStatus;
+import net.chrisrichardson.ftgo.consumerservice.domain.swagger.GetAccountResponse;
+import net.chrisrichardson.ftgo.consumerservice.domain.swagger.GetOrderResponse;
+import net.chrisrichardson.ftgo.consumerservice.domain.swagger.GetOrderResponseNew;
+import net.chrisrichardson.ftgo.consumerservice.domain.swagger.GetOrdersResponse;
+import net.chrisrichardson.ftgo.consumerservice.domain.swagger.GetRestaurantResponse;
+import net.chrisrichardson.ftgo.consumerservice.domain.swagger.GetRestaurantResponseNew;
+import net.chrisrichardson.ftgo.consumerservice.domain.swagger.ReviseOrderRequest;
+import net.chrisrichardson.ftgo.consumerservice.domain.swagger.TicketAcceptance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,27 +49,31 @@ public class ConsumerController {
   }
 
   @RequestMapping(path = "account-service/accounts/{accountId}", method = RequestMethod.GET)
-  public Object accountServiceGetAccount(@PathVariable long accountId) throws Exception {
-
-    return restTemplate.getForObject("http://192.168.1.8:8085/accounts/" + accountId, Object.class);
+  public ResponseEntity<GetAccountResponse> accountServiceGetAccount(@PathVariable long accountId) {
+    return restTemplate.getForObject(
+        "http://192.168.1.8:8085/accounts/" + accountId, ResponseEntity.class);
   }
 
   @RequestMapping(path = "consumer-service/consumers", method = RequestMethod.POST)
-  public Object consumerServicePostConsumer(@RequestBody Object request) {
-    return restTemplate.postForEntity("http://192.168.1.8:8081/consumers", request, Object.class);
+  public CreateConsumerResponse consumerServicePostConsumer(
+      @RequestBody CreateConsumerRequest request) {
+    return restTemplate
+        .postForEntity("http://192.168.1.8:8081/consumers", request, CreateConsumerResponse.class)
+        .getBody();
   }
 
   @RequestMapping(path = "consumer-service/consumers/{consumerId}", method = RequestMethod.GET)
-  public Object consumerServiceGetConsumer(@PathVariable long consumerId) {
+  public ResponseEntity<GetConsumerResponse> consumerServiceGetConsumer(
+      @PathVariable long consumerId) {
     return restTemplate.getForObject(
-        "http://192.168.1.8:8081/consumers/" + consumerId, Object.class);
+        "http://192.168.1.8:8081/consumers/" + consumerId, ResponseEntity.class);
   }
 
   @RequestMapping(
       path = "delivery-service/couriers/{courierId}/availability",
       method = RequestMethod.POST)
   public void deliveryServiceUpdateCourierLocation(
-      @PathVariable long courierId, @RequestBody Object availability) {
+      @PathVariable long courierId, @RequestBody CourierAvailability availability) {
     restTemplate.postForEntity(
         "http://192.168.1.8:8089/couriers/" + courierId + "/availability",
         availability,
@@ -65,73 +81,90 @@ public class ConsumerController {
   }
 
   @RequestMapping(path = "delivery-service/deliveries/{deliveryId}", method = RequestMethod.GET)
-  public Object deliveryServiceGetDeliveryStatus(@PathVariable long deliveryId) {
+  public ResponseEntity<DeliveryStatus> deliveryServiceGetDeliveryStatus(
+      @PathVariable long deliveryId) {
     return restTemplate.getForObject(
-        "http://192.168.1.8:8089/deliveries/" + deliveryId, Object.class);
+        "http://192.168.1.8:8089/deliveries/" + deliveryId, ResponseEntity.class);
   }
 
   @RequestMapping(path = "kitchen-service/tickets/{ticketId}/accept", method = RequestMethod.POST)
-  public Object acceptTicket(@PathVariable long ticketId, @RequestBody Object ticketAcceptance) {
-    return restTemplate.postForEntity(
+  public void acceptTicket(
+      @PathVariable long ticketId, @RequestBody TicketAcceptance ticketAcceptance) {
+    restTemplate.postForEntity(
         "http://192.168.1.8:8083/tickets/" + ticketId + "/accept", ticketAcceptance, Object.class);
   }
 
   @RequestMapping(path = "kitchen-service/restaurants/{restaurantId}", method = RequestMethod.GET)
-  public Object getRestaurant(@PathVariable long restaurantId) {
+  public ResponseEntity<GetRestaurantResponse> getRestaurant(@PathVariable long restaurantId) {
     return restTemplate.getForObject(
-        "http://192.168.1.8:8083/restaurants" + restaurantId, Object.class);
+        "http://192.168.1.8:8083/restaurants" + restaurantId, ResponseEntity.class);
   }
 
   @RequestMapping(path = "order-history-service/orders/", method = RequestMethod.GET)
-  public Object orderHistoryServiceGetOrders(@RequestParam(name = "consumerId") String consumerId) {
+  public ResponseEntity<GetOrdersResponse> orderHistoryServiceGetOrders(
+      @RequestParam(name = "consumerId") String consumerId) {
     return restTemplate.getForObject(
-        "http://192.168.1.8:8086/orders?consumerId=" + consumerId, Object.class);
+        "http://192.168.1.8:8086/orders?consumerId=" + consumerId, ResponseEntity.class);
   }
 
   @RequestMapping(path = "order-history-service/orders/{orderId}", method = RequestMethod.GET)
-  public Object orderHistoryServiceGetOrder(@PathVariable String orderId) {
-    return restTemplate.getForObject("http://192.168.1.8:8086/orders/" + orderId, Object.class);
+  public ResponseEntity<GetOrderResponse> orderHistoryServiceGetOrder(
+      @PathVariable String orderId) {
+    return restTemplate.getForObject(
+        "http://192.168.1.8:8086/orders/" + orderId, ResponseEntity.class);
   }
 
   @RequestMapping(path = "order-service/orders", method = RequestMethod.POST)
-  public Object orderServiceCreate(@RequestBody Object request) {
-    return restTemplate.postForEntity("http://192.168.1.8:8082/orders/", request, Object.class);
+  public CreateOrderResponse orderServiceCreate(@RequestBody CreateOrderRequest request) {
+    return restTemplate
+        .postForEntity("http://192.168.1.8:8082/orders/", request, CreateOrderResponse.class)
+        .getBody();
   }
 
   @RequestMapping(path = "order-service/orders/{orderId}", method = RequestMethod.GET)
-  public Object orderServiceGetOrder(@PathVariable long orderId) {
-    return restTemplate.getForObject("http://192.168.1.8:8082/orders/" + orderId, Object.class);
+  public ResponseEntity<GetOrderResponseNew> orderServiceGetOrder(@PathVariable long orderId) {
+    return restTemplate.getForObject(
+        "http://192.168.1.8:8082/orders/" + orderId, ResponseEntity.class);
   }
 
   @RequestMapping(path = "order-service/orders/{orderId}/cancel", method = RequestMethod.POST)
-  public Object orderServiceCancel(@PathVariable long orderId) {
-    return restTemplate.postForEntity(
-        "http://192.168.1.8:8082/orders/" + orderId + "/cancel", null, Object.class);
+  public ResponseEntity<GetOrderResponseNew> orderServiceCancel(@PathVariable long orderId) {
+    return restTemplate
+        .postForEntity(
+            "http://192.168.1.8:8082/orders/" + orderId + "/cancel", null, ResponseEntity.class)
+        .getBody();
   }
 
   @RequestMapping(path = "order-service/orders/{orderId}/revise", method = RequestMethod.POST)
-  public Object orderServiceRevise(@PathVariable long orderId, @RequestBody Object request) {
-    return restTemplate.postForEntity(
-        "http://192.168.1.8:8082/orders/" + orderId + "revise", request, Object.class);
+  public ResponseEntity<GetOrderResponseNew> orderServiceRevise(
+      @PathVariable long orderId, @RequestBody ReviseOrderRequest request) {
+    return restTemplate
+        .postForEntity(
+            "http://192.168.1.8:8082/orders/" + orderId + "/revise", request, ResponseEntity.class)
+        .getBody();
   }
 
   @RequestMapping(path = "order-service/restaurants/{restaurantId}", method = RequestMethod.POST)
-  public Object orderServiceGetRestaurant(@PathVariable long restaurantId) {
+  public ResponseEntity<GetOrderResponseNew> orderServiceGetRestaurant(
+      @PathVariable long restaurantId) {
     return restTemplate.getForObject(
-        "http://192.168.1.8:8082/restaurants/" + restaurantId, Object.class);
+        "http://192.168.1.8:8082/restaurants/" + restaurantId, ResponseEntity.class);
   }
 
   @RequestMapping(path = "restaurant-service/restaurants", method = RequestMethod.POST)
-  public Object restaurantServiceCreate(@RequestBody Object request) {
-    return restTemplate.postForEntity(
-        "http://192.168.1.8:8084/restaurants/", request, Object.class);
+  public ResponseEntity<GetOrderResponse> restaurantServiceCreate(
+      @RequestBody ReviseOrderRequest request) {
+    return restTemplate
+        .postForEntity("http://192.168.1.8:8084/restaurants/", request, ResponseEntity.class)
+        .getBody();
   }
 
   @RequestMapping(
       path = "restaurant-service/restaurants/{restaurantId}",
       method = RequestMethod.GET)
-  public Object restaurantServiceGet(@PathVariable long restaurantId) {
+  public ResponseEntity<GetRestaurantResponseNew> restaurantServiceGet(
+      @PathVariable long restaurantId) {
     return restTemplate.getForObject(
-        "http://192.168.1.8:8084/restaurants/" + restaurantId, Object.class);
+        "http://192.168.1.8:8084/restaurants/" + restaurantId, ResponseEntity.class);
   }
 }
