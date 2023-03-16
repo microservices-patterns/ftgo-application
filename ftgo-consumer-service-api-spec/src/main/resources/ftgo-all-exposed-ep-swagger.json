@@ -70,7 +70,7 @@
             "description": "request",
             "required": true,
             "schema": {
-              "type": "object"
+              "$ref": "#/definitions/CreateConsumerRequest"
             }
           }
         ],
@@ -78,7 +78,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object"
+              "$ref": "#/definitions/CreateConsumerResponse"
             }
           }
         }
@@ -198,7 +198,7 @@
             "description": "availability",
             "required": true,
             "schema": {
-              "type": "object"
+              "$ref": "#/definitions/CourierAvailability"
             }
           },
           {
@@ -297,7 +297,7 @@
             "description": "ticketAcceptance",
             "required": true,
             "schema": {
-              "type": "object"
+              "$ref": "#/definitions/TicketAcceptance"
             }
           },
           {
@@ -311,10 +311,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object"
-            }
+            "description": "OK"
           }
         }
       }
@@ -397,7 +394,7 @@
             "description": "request",
             "required": true,
             "schema": {
-              "type": "object"
+              "$ref": "#/definitions/CreateOrderRequest"
             }
           }
         ],
@@ -405,7 +402,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object"
+              "$ref": "#/definitions/CreateOrderResponse"
             }
           }
         }
@@ -502,7 +499,7 @@
             "description": "request",
             "required": true,
             "schema": {
-              "type": "object"
+              "$ref": "#/definitions/ReviseOrderRequest"
             }
           }
         ],
@@ -569,7 +566,7 @@
             "description": "request",
             "required": true,
             "schema": {
-              "type": "object"
+              "$ref": "#/definitions/ReviseOrderRequest"
             }
           }
         ],
@@ -615,6 +612,36 @@
     }
   },
   "definitions": {
+    "Address": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "street1": {
+          "type": "string"
+        },
+        "street2": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        }
+      },
+      "title": "Address"
+    },
+    "CourierAvailability": {
+      "type": "object",
+      "properties": {
+        "available": {
+          "type": "boolean"
+        }
+      },
+      "title": "CourierAvailability"
+    },
     "CreateConsumerRequest": {
       "type": "object",
       "properties": {
@@ -634,6 +661,43 @@
       },
       "title": "CreateConsumerResponse"
     },
+    "CreateOrderRequest": {
+      "type": "object",
+      "properties": {
+        "consumerId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "deliveryAddress": {
+          "$ref": "#/definitions/Address"
+        },
+        "deliveryTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lineItems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LineItem"
+          }
+        },
+        "restaurantId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "CreateOrderRequest"
+    },
+    "CreateOrderResponse": {
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "CreateOrderResponse"
+    },
     "GetConsumerResponse": {
       "type": "object",
       "properties": {
@@ -647,6 +711,19 @@
       },
       "title": "GetConsumerResponse"
     },
+    "LineItem": {
+      "type": "object",
+      "properties": {
+        "menuItemId": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "LineItem"
+    },
     "PersonName": {
       "type": "object",
       "properties": {
@@ -658,6 +735,41 @@
         }
       },
       "title": "PersonName"
+    },
+    "ReviseOrderRequest": {
+      "type": "object",
+      "properties": {
+        "revisedOrderLineItems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RevisedOrderLineItem"
+          }
+        }
+      },
+      "title": "ReviseOrderRequest"
+    },
+    "RevisedOrderLineItem": {
+      "type": "object",
+      "properties": {
+        "menuItemId": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "RevisedOrderLineItem"
+    },
+    "TicketAcceptance": {
+      "type": "object",
+      "properties": {
+        "readyBy": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "TicketAcceptance"
     }
   }
 }
