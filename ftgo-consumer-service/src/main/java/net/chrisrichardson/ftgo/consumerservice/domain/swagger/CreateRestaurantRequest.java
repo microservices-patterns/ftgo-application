@@ -26,15 +26,19 @@ public class CreateRestaurantRequest {
     this.name = name;
   }
 
+  public Address getAddress() {
+    return address;
+  }
+
+  public void setAddress(Address address) {
+    this.address = address;
+  }
+
   public RestaurantMenu getMenu() {
     return menu;
   }
 
   public void setMenu(RestaurantMenu menu) {
     this.menu = menu;
-  }
-
-  public Address getAddress() {
-    return address;
   }
 }

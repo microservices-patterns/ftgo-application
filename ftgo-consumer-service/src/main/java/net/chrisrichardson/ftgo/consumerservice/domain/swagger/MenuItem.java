@@ -1,9 +1,8 @@
 package net.chrisrichardson.ftgo.consumerservice.domain.swagger;
 
-import net.chrisrichardson.ftgo.common.Money;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -15,12 +14,12 @@ public class MenuItem {
 
   private String id;
   private String name;
-  private Money price;
+  private Double price;
 
   private MenuItem() {
   }
 
-  public MenuItem(String id, String name, Money price) {
+  public MenuItem(String id, String name, Double price) {
     this.id = id;
     this.name = name;
     this.price = price;
@@ -57,11 +56,11 @@ public class MenuItem {
     this.name = name;
   }
 
-  public Money getPrice() {
+  public Double getPrice() {
     return price;
   }
 
-  public void setPrice(Money price) {
+  public void setPrice(Double price) {
     this.price = price;
   }
 }

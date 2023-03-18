@@ -50,70 +50,6 @@
         }
       }
     },
-    "/consumer-service/consumers": {
-      "post": {
-        "tags": [
-          "consumer-controller"
-        ],
-        "summary": "consumerServicePostConsumer",
-        "operationId": "consumerServicePostConsumerUsingPOST",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "*/*"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "request",
-            "description": "request",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/CreateConsumerRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/CreateConsumerResponse"
-            }
-          }
-        }
-      }
-    },
-    "/consumer-service/consumers/{consumerId}": {
-      "get": {
-        "tags": [
-          "consumer-controller"
-        ],
-        "summary": "consumerServiceGetConsumer",
-        "operationId": "consumerServiceGetConsumerUsingGET",
-        "produces": [
-          "*/*"
-        ],
-        "parameters": [
-          {
-            "name": "consumerId",
-            "in": "path",
-            "description": "consumerId",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object"
-            }
-          }
-        }
-      }
-    },
     "/consumers": {
       "post": {
         "tags": [
@@ -566,7 +502,7 @@
             "description": "request",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/ReviseOrderRequest"
+              "$ref": "#/definitions/CreateRestaurantRequest"
             }
           }
         ],
@@ -698,6 +634,21 @@
       },
       "title": "CreateOrderResponse"
     },
+    "CreateRestaurantRequest": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/Address"
+        },
+        "menu": {
+          "$ref": "#/definitions/RestaurantMenu"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "title": "CreateRestaurantRequest"
+    },
     "GetConsumerResponse": {
       "type": "object",
       "properties": {
@@ -724,6 +675,25 @@
       },
       "title": "LineItem"
     },
+    "MenuItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "price": {
+          "$ref": "#/definitions/Money"
+        }
+      },
+      "title": "MenuItem"
+    },
+    "Money": {
+      "type": "object",
+      "title": "Money"
+    },
     "PersonName": {
       "type": "object",
       "properties": {
@@ -735,6 +705,18 @@
         }
       },
       "title": "PersonName"
+    },
+    "RestaurantMenu": {
+      "type": "object",
+      "properties": {
+        "menuItems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MenuItem"
+          }
+        }
+      },
+      "title": "RestaurantMenu"
     },
     "ReviseOrderRequest": {
       "type": "object",
