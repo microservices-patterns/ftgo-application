@@ -4,17 +4,18 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 //@Embeddable
 //@Access(AccessType.FIELD)
-public class Money {
+public class Money implements Serializable{
 
   public static Money ZERO = new Money(0);
 
   private BigDecimal amount;
 
-  private Money() {
+  public Money() {
   }
 
   public Money(BigDecimal amount) {
