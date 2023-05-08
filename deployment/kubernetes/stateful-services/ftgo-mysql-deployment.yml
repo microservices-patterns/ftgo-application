@@ -12,22 +12,27 @@ spec:
   selector:
     role: ftgo-mysql
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: ftgo-mysql
 spec:
   serviceName: "mysql"
   replicas: 1
+  selector:
+    matchLabels:
+      app: ftgo-mysql
+      role: ftgo-mysql
   template:
     metadata:
       labels:
+        app: ftgo-mysql
         role: ftgo-mysql
     spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: ftgo-mysql
-          image: msapatterns/mysql:latest
+          image: mysql:latest
           imagePullPolicy: Always
           args:
               - "--ignore-db-dir=lost+found"

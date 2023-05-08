@@ -12,22 +12,27 @@ spec:
   selector:
     role: ftgo-zookeeper
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: ftgo-zookeeper
 spec:
   serviceName: "zookeeper"
   replicas: 1
+  selector:
+    matchLabels:
+      role: ftgo-zookeeper
+      app: ftgo-zookeeper
   template:
     metadata:
       labels:
+        app: ftgo-zookeeper
         role: ftgo-zookeeper
     spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: ftgo-zookeeper
-          image: confluentinc/cp-zookeeper:5.2.4
+          image: confluentinc/cp-zookeeper:latest
           ports:
               - containerPort: 2181
           env:

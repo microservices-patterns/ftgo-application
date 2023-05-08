@@ -9,7 +9,7 @@ spec:
   selector:
     svc: ftgo-dynamodb-local
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: ftgo-dynamodb-local
@@ -18,14 +18,19 @@ metadata:
 spec:
   serviceName: "ftgo-dynamodb"
   replicas: 1
+  selector:
+    matchLabels:
+      app: ftgo-dynamodb-local
+      svc: ftgo-dynamodb-local
   template:
     metadata:
       labels:
+        app: ftgo-dynamodb-local
         svc: ftgo-dynamodb-local
     spec:
       containers:
       - name: ftgo-dynamodb-local
-        image: cnadiminti/dynamodb-local:2017-04-22_beta
+        image: amazon/dynamodb-local:latest
         livenessProbe:
           tcpSocket:
             port: 8000

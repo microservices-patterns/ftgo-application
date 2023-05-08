@@ -9,7 +9,7 @@ spec:
   selector:
     svc: ftgo-order-history-service
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ftgo-order-history-service
@@ -17,12 +17,18 @@ metadata:
     application: ftgo
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: ftgo-order-history-service
+      svc: ftgo-order-history-service
+      application: ftgo
   strategy:
     rollingUpdate:
       maxUnavailable: 0
   template:
     metadata:
       labels:
+        app: ftgo-order-history-service
         svc: ftgo-order-history-service
         application: ftgo
     spec:
