@@ -17,7 +17,7 @@ spec:
   selector:
     svc: ftgo-order-service
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ftgo-order-service
@@ -25,12 +25,18 @@ metadata:
     application: ftgo
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: ftgo-order-service
+      svc: ftgo-order-service
+      application: ftgo
   strategy:
     rollingUpdate:
       maxUnavailable: 0
   template:
     metadata:
       labels:
+        app: ftgo-order-service
         svc: ftgo-order-service
         application: ftgo
     spec:

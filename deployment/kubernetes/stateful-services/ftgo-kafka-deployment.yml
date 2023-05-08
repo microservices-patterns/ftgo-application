@@ -11,22 +11,27 @@ spec:
   selector:
     role: ftgo-kafka
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: ftgo-kafka
 spec:
   serviceName: "kafka"
   replicas: 1
+  selector:
+    matchLabels:
+      app: ftgo-kafka
+      role: ftgo-kafka
   template:
     metadata:
       labels:
+        app: ftgo-kafka
         role: ftgo-kafka
     spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: ftgo-kafka
-          image: confluentinc/cp-kafka:5.2.4
+          image: confluentinc/cp-kafka:latest
           env:
             - name: KAFKA_ADVERTISED_LISTENERS
               value: PLAINTEXT://ftgo-kafka:9092
