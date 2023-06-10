@@ -3,18 +3,18 @@ dependencies {
     // TODO https://en.wikibooks.org/wiki/Java_Persistence/Embeddables#Example_of_an_Embeddable_object_XML
 
 //    compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
-    compile "org.springframework.boot:spring-boot-starter:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter:$springBootVersion"
 
     // compile "org.springframework.boot:spring-boot-starter:$springBootVersion"
 
-    compile "io.eventuate.common:eventuate-common-json-mapper:$eventuateCommonVersion"
+    implementation "io.eventuate.common:eventuate-common-json-mapper:$eventuateCommonVersion"
 
-    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+    testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
 
-    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.7"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.7"
 
-    runtime "javax.xml.bind:jaxb-api:2.2.11"
-    runtime "com.sun.xml.bind:jaxb-core:2.2.11"
-    runtime "com.sun.xml.bind:jaxb-impl:2.2.11"
-    runtime "javax.activation:activation:1.1.1"
+    runtimeOnly "javax.xml.bind:jaxb-api:2.2.11"
+    runtimeOnly "com.sun.xml.bind:jaxb-core:2.2.11"
+    runtimeOnly "com.sun.xml.bind:jaxb-impl:2.2.11"
+    runtimeOnly "javax.activation:activation:1.1.1"
 }

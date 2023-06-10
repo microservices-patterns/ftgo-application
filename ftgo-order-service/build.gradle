@@ -138,82 +138,82 @@ eclipse {
 
 dependencies {
 
-    compile ("io.netty:netty-codec-http2:4.1.72.Final")  
-    compile ("io.netty:netty-codec:4.1.72.Final")  
-    compile ("io.netty:netty-transport:4.1.72.Final")  
-    compile ("io.netty:netty-common:4.1.72.Final")  
-    compile ("io.netty:netty-buffer:4.1.72.Final")  
-    compile ("io.netty:netty-resolver:4.1.72.Final")  
+    implementation("io.netty:netty-codec-http2:4.1.72.Final")
+    implementation("io.netty:netty-codec:4.1.72.Final")
+    implementation("io.netty:netty-transport:4.1.72.Final")
+    implementation("io.netty:netty-common:4.1.72.Final")
+    implementation("io.netty:netty-buffer:4.1.72.Final")
+    implementation("io.netty:netty-resolver:4.1.72.Final")
 
     ftgoApiSpecification project(":ftgo-consumer-service-api-spec")
     ftgoApiSpecification project(":ftgo-accounting-service-api-spec")
     ftgoApiSpecification project(":ftgo-restaurant-service-api-spec")
 
-    compile project(":common-swagger")
-    compile project(":ftgo-common-jpa")
+    implementation project(":common-swagger")
+    implementation project(":ftgo-common-jpa")
 
-    compile "io.eventuate.tram.core:eventuate-tram-aggregate-domain-events"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-commands"
+    implementation "io.eventuate.tram.core:eventuate-tram-aggregate-domain-events"
+    implementation "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka"
+    implementation "io.eventuate.tram.core:eventuate-tram-spring-commands"
 
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl"
+    implementation "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl"
 
-    compile project(":ftgo-accounting-service-api")
-    compile project(":ftgo-consumer-service-api")
-    compile project(":ftgo-kitchen-service-api")
-    compile project(":ftgo-restaurant-service-api")
-    compile project(":ftgo-order-service-api")
+    implementation project(":ftgo-accounting-service-api")
+    implementation project(":ftgo-consumer-service-api")
+    implementation project(":ftgo-kitchen-service-api")
+    implementation project(":ftgo-restaurant-service-api")
+    implementation project(":ftgo-order-service-api")
 
 
-    compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
-    compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
-    compile "io.micrometer:micrometer-registry-prometheus:$micrometerVersion"
-    compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-    compile 'javax.el:javax.el-api:2.2.5'
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+    implementation "io.micrometer:micrometer-registry-prometheus:$micrometerVersion"
+    implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    implementation 'javax.el:javax.el-api:2.2.5'
 
-    compile "io.grpc:grpc-netty:${grpcVersion}"
-    compile "io.grpc:grpc-protobuf:${grpcVersion}"
-    compile "io.grpc:grpc-stub:${grpcVersion}"
+    implementation "io.grpc:grpc-netty:${grpcVersion}"
+    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+    implementation "io.grpc:grpc-stub:${grpcVersion}"
 
-    compile "io.microservices.tools.canvas:microservice-canvas-springmvc:$microserviceCanvasVersion"
-    compile "io.microservices.tools.canvas:microservice-canvas-extractor-tram-sagas:$microserviceCanvasVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-messaging"
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration"
+    implementation "io.microservices.tools.canvas:microservice-canvas-springmvc:$microserviceCanvasVersion"
+    implementation "io.microservices.tools.canvas:microservice-canvas-extractor-tram-sagas:$microserviceCanvasVersion"
+    implementation "io.eventuate.tram.core:eventuate-tram-spring-messaging"
+    implementation "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration"
 
-    compile('org.apache.kafka:kafka-clients:2.3.0') {
+    implementation('org.apache.kafka:kafka-clients:2.3.0') {
         force = true
-    }    
+    }
 
-    testCompile "io.eventuate.util:eventuate-util-test"
-    testCompile "io.eventuate.tram.core:eventuate-tram-test-util"
+    testImplementation "io.eventuate.util:eventuate-util-test"
+    testImplementation "io.eventuate.tram.core:eventuate-tram-test-util"
 
-    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory"
-    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+    testImplementation "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory"
+    testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
 
     // Added this stuff
 
-    testCompile "net.chrisrichardson.ftgo:ftgo-accounting-service-contracts:unspecified:stubs"
-    testCompile "net.chrisrichardson.ftgo:ftgo-consumer-service-contracts:unspecified:stubs"
-    testCompile "net.chrisrichardson.ftgo:ftgo-kitchen-service-contracts:unspecified:stubs"
-    testCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
-    testCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
-    testCompile 'io.rest-assured:rest-assured:3.0.6'
-    testCompile 'io.rest-assured:spring-mock-mvc:3.0.6'
-    testCompile "io.rest-assured:json-path:3.0.6"
+    testImplementation "net.chrisrichardson.ftgo:ftgo-accounting-service-contracts:unspecified:stubs"
+    testImplementation "net.chrisrichardson.ftgo:ftgo-consumer-service-contracts:unspecified:stubs"
+    testImplementation "net.chrisrichardson.ftgo:ftgo-kitchen-service-contracts:unspecified:stubs"
+    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
+    testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
+    testImplementation 'io.rest-assured:rest-assured:3.0.6'
+    testImplementation 'io.rest-assured:spring-mock-mvc:3.0.6'
+    testImplementation "io.rest-assured:json-path:3.0.6"
 
-    testCompile "io.eventuate.tram.core:eventuate-tram-spring-testing-support-cloud-contract"
+    testImplementation "io.eventuate.tram.core:eventuate-tram-spring-testing-support-cloud-contract"
 
-    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support"
+    testImplementation "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support"
 
-    componentTestCompile 'info.cukes:cucumber-java:1.2.5'
-    componentTestCompile 'info.cukes:cucumber-junit:1.2.5'
-    componentTestCompile 'info.cukes:cucumber-spring:1.2.5'
+    componentTestImplementation 'info.cukes:cucumber-java:1.2.5'
+    componentTestImplementation 'info.cukes:cucumber-junit:1.2.5'
+    componentTestImplementation 'info.cukes:cucumber-spring:1.2.5'
 
-    testCompile project(":ftgo-test-util")
-    testCompile "org.hamcrest:hamcrest:2.1"
+    testImplementation project(":ftgo-test-util")
+    testImplementation "org.hamcrest:hamcrest:2.1"
 
-    integrationTestCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support-cloud-contract"
-    integrationTestCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory"
+    integrationTestImplementation "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support-cloud-contract"
+    integrationTestImplementation "io.eventuate.tram.core:eventuate-tram-spring-in-memory"
 
 }
 

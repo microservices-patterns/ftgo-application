@@ -36,21 +36,21 @@ dependencies {
     ftgoApiSpecification project(":ftgo-consumer-service-api-spec")
     ftgoApiSpecification project(":ftgo-restaurant-service-api-spec")
 
-    compile project(":ftgo-accounting-service-api")
-    compile project(":ftgo-consumer-service-api")
-    compile project(":ftgo-kitchen-service-api")
-    compile project(":ftgo-restaurant-service-api")
-    compile project(":ftgo-order-service-api")
-    compile project(":ftgo-delivery-service-api")
+    implementation project(":ftgo-accounting-service-api")
+    implementation project(":ftgo-consumer-service-api")
+    implementation project(":ftgo-kitchen-service-api")
+    implementation project(":ftgo-restaurant-service-api")
+    implementation project(":ftgo-order-service-api")
+    implementation project(":ftgo-delivery-service-api")
 
-    compile "io.eventuate.util:eventuate-util-test"
+    implementation "io.eventuate.util:eventuate-util-test"
 
-    compile 'io.swagger:swagger-annotations:1.5.24'
+    implementation 'io.swagger:swagger-annotations:1.5.24'
 
-    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
-    testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
-    testCompile "com.jayway.jsonpath:json-path:2.3.0"
-    testCompile project(":ftgo-test-util")
+    testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+    testImplementation "com.jayway.restassured:rest-assured:$restAssuredVersion"
+    testImplementation "com.jayway.jsonpath:json-path:2.3.0"
+    testImplementation project(":ftgo-test-util")
 
 
 }

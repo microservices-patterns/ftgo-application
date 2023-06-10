@@ -3,36 +3,36 @@ apply plugin: FtgoServicePlugin
 
 dependencies {
 
-    compile project(":ftgo-accounting-service-api")
-    compile project(":common-swagger")
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-event-sourcing-support"
+    implementation project(":ftgo-accounting-service-api")
+    implementation project(":common-swagger")
+    implementation "io.eventuate.tram.sagas:eventuate-tram-sagas-event-sourcing-support"
 
-    compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-events"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-messaging"
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl"
+    implementation "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka"
+    implementation "io.eventuate.tram.core:eventuate-tram-spring-events"
+    implementation "io.eventuate.tram.core:eventuate-tram-spring-messaging"
+    implementation "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl"
 
-    compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
-    compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
-    compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-    compile 'javax.el:javax.el-api:2.2.5'
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    implementation 'javax.el:javax.el-api:2.2.5'
 
 
-    compile "io.eventuate.local.java:eventuate-client-java-spring"
-    compile "io.eventuate.local.java:eventuate-client-java-spring-jdbc"
-    compile "io.eventuate.local.java:eventuate-local-java-spring-jdbc"
-    
-    compile('org.apache.kafka:kafka-clients:2.3.0') {
+    implementation "io.eventuate.local.java:eventuate-client-java-spring"
+    implementation "io.eventuate.local.java:eventuate-client-java-spring-jdbc"
+    implementation "io.eventuate.local.java:eventuate-local-java-spring-jdbc"
+
+    implementation('org.apache.kafka:kafka-clients:2.3.0') {
         force = true
     }
-    
-    testCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory"
-    testCompile "io.eventuate.util:eventuate-util-test"
-    testCompile "io.eventuate.tram.core:eventuate-tram-test-util"
 
-    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory"
-    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
-    testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
-    testCompile "com.jayway.jsonpath:json-path:2.3.0"
+    testImplementation "io.eventuate.tram.core:eventuate-tram-spring-in-memory"
+    testImplementation "io.eventuate.util:eventuate-util-test"
+    testImplementation "io.eventuate.tram.core:eventuate-tram-test-util"
+
+    testImplementation "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory"
+    testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+    testImplementation "com.jayway.restassured:rest-assured:$restAssuredVersion"
+    testImplementation "com.jayway.jsonpath:json-path:2.3.0"
 
 }

@@ -9,37 +9,37 @@ configurations.all {
 
 dependencies {
 
-    compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-events"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-messaging"
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl"
+    implementation "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka"
+    implementation "io.eventuate.tram.core:eventuate-tram-spring-events"
+    implementation "io.eventuate.tram.core:eventuate-tram-spring-messaging"
+    implementation "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl"
 
-    compile project(":common-swagger")
-    compile project(":ftgo-consumer-service-api")
-    compile project(":ftgo-consumer-service-api-spec")
+    implementation project(":common-swagger")
+    implementation project(":ftgo-consumer-service-api")
+    implementation project(":ftgo-consumer-service-api-spec")
 
-    compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
-    compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-    compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
 
-    compile 'javax.el:javax.el-api:2.2.5'
+    implementation 'javax.el:javax.el-api:2.2.5'
 
-    compile('org.apache.kafka:kafka-clients:2.3.0') {
+    implementation('org.apache.kafka:kafka-clients:2.3.0') {
         force = true
     }
 
-    testCompile "io.eventuate.util:eventuate-util-test"
-    testCompile "io.eventuate.tram.core:eventuate-tram-test-util"
+    testImplementation "io.eventuate.util:eventuate-util-test"
+    testImplementation "io.eventuate.tram.core:eventuate-tram-test-util"
 
-    testCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory"
-    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory"
-    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
-    testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
-    testCompile "com.jayway.jsonpath:json-path:2.3.0"
-    testCompile "org.hamcrest:hamcrest:2.1"
+    testImplementation "io.eventuate.tram.core:eventuate-tram-spring-in-memory"
+    testImplementation "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory"
+    testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+    testImplementation "com.jayway.restassured:rest-assured:$restAssuredVersion"
+    testImplementation "com.jayway.jsonpath:json-path:2.3.0"
+    testImplementation "org.hamcrest:hamcrest:2.1"
 
-    testCompile "com.atlassian.oai:swagger-request-validator-springmvc:${swaggerRequestValidatorVersion}"
-    testCompile 'io.rest-assured:spring-mock-mvc:3.0.6'
-    testCompile project(":ftgo-test-util-json-schema")
+    testImplementation "com.atlassian.oai:swagger-request-validator-springmvc:${swaggerRequestValidatorVersion}"
+    testImplementation 'io.rest-assured:spring-mock-mvc:3.0.6'
+    testImplementation project(":ftgo-test-util-json-schema")
 
 }

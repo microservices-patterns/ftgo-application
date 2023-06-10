@@ -9,11 +9,11 @@ repositories {
 }
 
 dependencies {
-    compile 'mysql:mysql-connector-java:8.0.21'
-    compile 'com.amazonaws:aws-java-sdk-dynamodb:1.11.158'
-    compile 'commons-lang:commons-lang:2.6'
+    implementation('mysql:mysql-connector-java:8.0.21')
+    implementation('com.amazonaws:aws-java-sdk-dynamodb:1.11.158')
+    implementation('commons-lang:commons-lang:2.6')
 
-    compile 'org.jsonschema2pojo:jsonschema2pojo-core:1.0.1'
+    implementation('org.jsonschema2pojo:jsonschema2pojo-core:1.0.1')
 
-    compile "gradle.plugin.org.hidetake:gradle-swagger-generator-plugin:2.18.1"
+    implementation("gradle.plugin.org.hidetake:gradle-swagger-generator-plugin:2.18.1")
 }

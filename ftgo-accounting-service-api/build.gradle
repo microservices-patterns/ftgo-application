@@ -1,6 +1,6 @@
 dependencies {
 
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant"
-    compile project(":ftgo-common")
+    implementation "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant"
+    implementation project(":ftgo-common")
 
 }

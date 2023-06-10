@@ -24,12 +24,12 @@ class FtgoServicePlugin implements Plugin<Project> {
         }
 
         project.dependencies {
-            compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
-            compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
-            compile "io.zipkin.brave:brave-bom:4.17.1"
+            implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+            implementation 'org.springframework.cloud:spring-cloud-starter-zipkin'
+            implementation "io.zipkin.brave:brave-bom:4.17.1"
 
             // Temporarily disable
-            //compile "io.eventuate.tram.core:eventuate-tram-spring-cloud-sleuth-integration"
+            //implementation "io.eventuate.tram.core:eventuate-tram-spring-cloud-sleuth-integration"
 
             implementation(platform("io.eventuate.platform:eventuate-platform-dependencies:${project.ext.eventuatePlatformVersion}"))
         }

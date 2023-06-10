@@ -45,7 +45,7 @@ subprojects {
 
         implementation(platform("io.eventuate.platform:eventuate-platform-dependencies:$eventuatePlatformVersion"))
         constraints {
-                compile ("io.netty:netty-codec-http2") {
+            implementation ("io.netty:netty-codec-http2") {
                     version {
                         strictly("4.1.72.Final")
                     }
