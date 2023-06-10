@@ -20,8 +20,8 @@ subprojects {
 
     // TODO apply plugin: 'pmd'
 
-    sourceCompatibility = '17'
-    targetCompatibility = '17'
+    sourceCompatibility = '11'
+    targetCompatibility = '11'
 
     group = "net.chrisrichardson.ftgo"
 
@@ -93,6 +93,10 @@ dockerCompose {
       projectName = null
       startedServices = ["kafka-gui"]
   }  
+}
+
+dependencies {
+
 }
 
 composeUp.dependsOn(infrastructureComposeUp)

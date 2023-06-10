@@ -17,6 +17,9 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
 
     implementation 'javax.el:javax.el-api:2.2.5'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant:0.20.0.RELEASE'
 
     testImplementation "io.eventuate.util:eventuate-util-test"
     testImplementation "io.eventuate.tram.core:eventuate-tram-test-util"

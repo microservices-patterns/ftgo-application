@@ -10,6 +10,9 @@ apply plugin: ComponentTestsPlugin
 apply plugin: FtgoJSONSchema2PojoPlugin
 
 dependencies {
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant:0.20.0.RELEASE'
     ftgoApiSpecification project(":ftgo-restaurant-service-api-spec")
 
     implementation project(":ftgo-delivery-service-api")

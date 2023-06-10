@@ -144,6 +144,9 @@ dependencies {
     implementation("io.netty:netty-common:4.1.72.Final")
     implementation("io.netty:netty-buffer:4.1.72.Final")
     implementation("io.netty:netty-resolver:4.1.72.Final")
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant:0.20.0.RELEASE'
 
     ftgoApiSpecification project(":ftgo-consumer-service-api-spec")
     ftgoApiSpecification project(":ftgo-accounting-service-api-spec")

@@ -21,4 +21,7 @@ build.finalizedBy(publish)
 
 dependencies {
     implementation 'org.codehaus.groovy:groovy-all:2.4.6'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant:0.20.0.RELEASE'
 }

@@ -1,5 +1,8 @@
 dependencies {
 
     implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant:0.20.0.RELEASE'
 
 }

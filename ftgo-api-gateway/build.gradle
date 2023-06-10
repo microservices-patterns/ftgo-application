@@ -39,6 +39,9 @@ dependencies {
 
     implementation "io.micrometer:micrometer-registry-prometheus:$micrometerVersion"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant:0.20.0.RELEASE'
 
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "junit:junit:4.12"

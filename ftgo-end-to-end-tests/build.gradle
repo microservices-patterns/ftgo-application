@@ -33,6 +33,9 @@ swaggerSources {
 }
 
 dependencies {
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
     ftgoApiSpecification project(":ftgo-consumer-service-api-spec")
     ftgoApiSpecification project(":ftgo-restaurant-service-api-spec")
 
@@ -42,6 +45,7 @@ dependencies {
     implementation project(":ftgo-restaurant-service-api")
     implementation project(":ftgo-order-service-api")
     implementation project(":ftgo-delivery-service-api")
+    implementation project(path: ':ftgo-common')
 
     implementation "io.eventuate.util:eventuate-util-test"
 

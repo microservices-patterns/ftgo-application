@@ -27,6 +27,10 @@ dependencies {
     implementation('org.apache.kafka:kafka-clients:2.3.0') {
         force = true
     }
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant:0.20.0.RELEASE'
+    implementation project(path: ':ftgo-common')
 
     testImplementation "io.eventuate.util:eventuate-util-test"
     testImplementation "io.eventuate.tram.core:eventuate-tram-test-util"

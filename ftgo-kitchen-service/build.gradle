@@ -42,6 +42,10 @@ apply plugin: FtgoServicePlugin
 
 dependencies {
 
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-participant:0.20.0.RELEASE'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant:0.20.0.RELEASE'
+    implementation project(path: ':ftgo-common')
     ftgoApiSpecification project(":ftgo-restaurant-service-api-spec")
 
     implementation "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka"
