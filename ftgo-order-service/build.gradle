@@ -11,7 +11,7 @@ buildscript {
     dependencies {
         classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractDependenciesVersion"
         classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.10'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.9.3'
 
         classpath "org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:${js2pVersion}"
         classpath "io.eventuate.tram.core:eventuate-tram-spring-commands"
@@ -22,6 +22,7 @@ buildscript {
     }
 }
 
+
 apply plugin: FtgoServicePlugin
 
 apply plugin: 'spring-cloud-contract'
@@ -30,7 +31,6 @@ apply plugin: 'com.google.protobuf'
 
 apply plugin: IntegrationTestsPlugin
 apply plugin: ComponentTestsPlugin
-
 apply plugin: FtgoJSONSchema2PojoPlugin
 
 dependencyManagement {
