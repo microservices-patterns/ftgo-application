@@ -15,3 +15,4 @@ bin
 node_modules
 dist
 ftgo-api-gateway-graphql/jest_0
+/structure101-settings.java.hsw
