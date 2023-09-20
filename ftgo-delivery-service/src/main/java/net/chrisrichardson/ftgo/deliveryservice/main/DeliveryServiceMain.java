@@ -8,11 +8,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import io.eventuate.tram.spring.flyway.EventuateTramFlywayMigrationConfiguration;
 
 @Configuration
 @EnableAutoConfiguration
 @Import({DeliveryServiceMessagingConfiguration.class, DeliveryServiceWebConfiguration.class,
-        TramJdbcKafkaConfiguration.class, CommonSwaggerConfiguration.class
+        TramJdbcKafkaConfiguration.class, CommonSwaggerConfiguration.class,  EventuateTramFlywayMigrationConfiguration.class
 })
 public class DeliveryServiceMain {
 

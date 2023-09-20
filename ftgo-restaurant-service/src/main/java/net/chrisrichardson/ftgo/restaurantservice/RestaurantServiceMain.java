@@ -8,9 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
+import io.eventuate.tram.spring.flyway.EventuateTramFlywayMigrationConfiguration;
 
 @SpringBootApplication
-@Import(TramJdbcKafkaConfiguration.class)
+@Import({TramJdbcKafkaConfiguration.class, EventuateTramFlywayMigrationConfiguration.class})
 public class RestaurantServiceMain {
 
   @Bean
