@@ -1,7 +1,7 @@
 version: 2.1
 setup: true
 orbs:
-  eventuate-gradle-build-and-test: "eventuate_io/eventuate-gradle-build-and-test@0.2.7"
+  eventuate-gradle-build-and-test: "eventuate_io/eventuate-gradle-build-and-test@0.2.9"
   continuation: circleci/continuation@0.1.2
 jobs:
   setup:
