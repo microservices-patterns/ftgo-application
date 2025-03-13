@@ -11,11 +11,12 @@ import net.chrisrichardson.ftgo.orderservice.web.OrderWebConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
+import io.eventuate.tram.spring.flyway.EventuateTramFlywayMigrationConfiguration;
 
 @SpringBootApplication
 @Import({OrderWebConfiguration.class, OrderCommandHandlersConfiguration.class,  OrderServiceMessagingConfiguration.class,
         TramJdbcKafkaConfiguration.class, CommonSwaggerConfiguration.class, GrpcConfiguration.class,
-        MicroserviceCanvasWebConfiguration.class})
+        MicroserviceCanvasWebConfiguration.class, EventuateTramFlywayMigrationConfiguration.class})
 @ServiceDescription(description="Manages Orders", capabilities = "Order Management")
 public class OrderServiceMain {
 

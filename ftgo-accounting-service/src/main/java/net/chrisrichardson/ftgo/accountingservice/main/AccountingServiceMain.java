@@ -10,6 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import io.eventuate.tram.spring.flyway.EventuateTramFlywayMigrationConfiguration;
 
 @Configuration
 @EnableAutoConfiguration
@@ -17,7 +18,8 @@ import org.springframework.context.annotation.Import;
         TramCommandProducerConfiguration.class,
         EventuateDriverConfiguration.class,
         TramJdbcKafkaConfiguration.class,
-        CommonSwaggerConfiguration.class})
+        CommonSwaggerConfiguration.class,
+        EventuateTramFlywayMigrationConfiguration.class})
 public class AccountingServiceMain {
 
   public static void main(String[] args) {

@@ -86,7 +86,14 @@ dockerCompose {
   
   infrastructure {
       projectName = null
-      startedServices = ["mysql", "cdc-service", "dynamodblocal-init", "kafka", "zookeeper"]
+      startedServices = ["mysql", "dynamodblocal-init", "kafka", "zookeeper"]
+  }    
+  
+  // TODO with flyway - initialize after services
+  
+  eventuateCdcService {
+      projectName = null
+      startedServices = ["cdc-service"]
   }    
   
   kafkaGui {

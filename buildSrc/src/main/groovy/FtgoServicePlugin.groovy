@@ -28,6 +28,9 @@ class FtgoServicePlugin implements Plugin<Project> {
             compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
             compile "io.zipkin.brave:brave-bom:4.17.1"
 
+            implementation "io.eventuate.tram.core:eventuate-tram-spring-flyway"
+            runtimeOnly "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-flyway"
+
             // Temporarily disable
             //compile "io.eventuate.tram.core:eventuate-tram-spring-cloud-sleuth-integration"
 
