@@ -3,7 +3,7 @@
 cat > generated_config.yml <<END
 version: 2.1
 orbs:
-  eventuate-gradle-build-and-test: "eventuate_io/eventuate-gradle-build-and-test@0.2.7"
+  eventuate-gradle-build-and-test: "eventuate_io/eventuate-gradle-build-and-test@0.2.9"
 workflows:
   version: 2.1
   build-test-and-deploy:
