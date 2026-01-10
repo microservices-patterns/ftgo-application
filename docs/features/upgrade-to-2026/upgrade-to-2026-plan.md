@@ -111,11 +111,11 @@ Integration tests may exist in `ftgo-order-service/src/integrationTest/java/` or
 
 Component tests may exist in `ftgo-order-service/src/componentTest/java/`. Update them:
 
-- [ ] Convert to Testcontainers-based component tests:
-  - [ ] Use `eventuate-platform-testcontainer-support-service` for full stack
-  - [ ] Configure service container with proper environment
-- [ ] Update `javax.*` to `jakarta.*` in component test files
-- [ ] Verify `./gradlew componentTest` passes
+- [x] Convert to Testcontainers-based component tests:
+  - [x] Use `eventuate-platform-testcontainer-support-service` for full stack
+  - [x] Configure service container with proper environment
+- [x] Update `javax.*` to `jakarta.*` in component test files
+- [x] Verify `./gradlew componentTest` passes
 
 ### Task 1.8: Embed contract tests in Order Service
 
