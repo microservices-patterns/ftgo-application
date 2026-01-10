@@ -9,8 +9,8 @@ import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSaga;
 import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSaga;
 import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSagaState;
 import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSaga;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -21,7 +21,7 @@ import static net.chrisrichardson.ftgo.orderservice.OrderDetailsMother.CONSUMER_
 import static net.chrisrichardson.ftgo.orderservice.OrderDetailsMother.ORDER_ID;
 import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.AJANTA_ID;
 import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.AJANTA_RESTAURANT;
-import static org.mockito.Matchers.same;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -39,7 +39,7 @@ public class OrderServiceTest {
   private ReviseOrderSaga reviseOrderSaga;
   private OrderDomainEventPublisher orderAggregateEventPublisher;
 
-  @Before
+  @BeforeEach
   public void setup() {
     sagaInstanceFactory = mock(SagaInstanceFactory.class);
     orderRepository = mock(OrderRepository.class);

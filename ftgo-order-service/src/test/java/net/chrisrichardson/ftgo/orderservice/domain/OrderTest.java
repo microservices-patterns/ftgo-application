@@ -8,8 +8,8 @@ import net.chrisrichardson.ftgo.orderservice.api.events.OrderAuthorized;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDomainEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderState;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,14 +19,14 @@ import static java.util.Collections.singletonList;
 import static net.chrisrichardson.ftgo.orderservice.OrderDetailsMother.*;
 import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.AJANTA_RESTAURANT;
 import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.CHICKEN_VINDALOO_PRICE;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OrderTest {
 
   private ResultWithDomainEvents<Order, OrderDomainEvent> createResult;
   private Order order;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     createResult = Order.createOrder(CONSUMER_ID, AJANTA_RESTAURANT, OrderDetailsMother.DELIVERY_INFORMATION, chickenVindalooLineItems());
     order = createResult.result;

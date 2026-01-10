@@ -7,14 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestMessageConsumer2 {
 
@@ -45,7 +45,7 @@ public class TestMessageConsumer2 {
   public Message assertMessageReceived() {
     return assertMessageReceived((m) -> true);
   }
-  
+
   public Message assertMessageReceived(Predicate<Message> predicate) {
     return Eventually.eventuallyReturning(() -> {
       Message m = null;
@@ -56,7 +56,7 @@ public class TestMessageConsumer2 {
       }
       assertNotNull(m);
       System.out.println("Testing message: " + m);
-      assertTrue("Failed predicate", predicate.test(m));
+      assertTrue(predicate.test(m), "Failed predicate");
       return m;
     });
   }

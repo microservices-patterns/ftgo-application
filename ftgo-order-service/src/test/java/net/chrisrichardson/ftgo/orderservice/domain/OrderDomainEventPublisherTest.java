@@ -1,9 +1,9 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
 import net.chrisrichardson.ftgo.orderservice.api.OrderServiceChannels;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OrderDomainEventPublisherTest {
 

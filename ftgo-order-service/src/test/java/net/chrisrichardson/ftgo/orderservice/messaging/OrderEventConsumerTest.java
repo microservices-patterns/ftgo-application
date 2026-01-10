@@ -3,8 +3,8 @@ package net.chrisrichardson.ftgo.orderservice.messaging;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.orderservice.RestaurantMother;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderService;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static io.eventuate.tram.testing.DomainEventHandlerUnitTestSupport.given;
 import static net.chrisrichardson.ftgo.orderservice.RestaurantMother.AJANTA_ID;
@@ -17,7 +17,7 @@ public class OrderEventConsumerTest {
   private OrderService orderService;
   private OrderEventConsumer orderEventConsumer;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     orderService = mock(OrderService.class);
     orderEventConsumer = new OrderEventConsumer(orderService);

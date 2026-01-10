@@ -89,10 +89,10 @@ Update existing source files for compatibility:
 
 Unit tests already exist in `ftgo-order-service/src/test/java/`. Update them:
 
-- [ ] Update tests for JUnit 5 Platform (remove JUnit 4 annotations if present)
-- [ ] Update `javax.*` to `jakarta.*` in test files
-- [ ] Update test dependencies in `build.gradle`
-- [ ] Verify `./gradlew test` passes
+- [x] Update tests for JUnit 5 Platform (remove JUnit 4 annotations if present)
+- [x] Update `javax.*` to `jakarta.*` in test files
+- [x] Update test dependencies in `build.gradle`
+- [x] Verify `./gradlew test` passes
 
 ### Task 1.6: Migrate Order Service integration tests to Testcontainers
 
