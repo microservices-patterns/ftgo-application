@@ -1,244 +1,114 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'io.eventuate.plugins.gradle.testing.integration-tests'
+    id 'io.eventuate.plugins.gradle.testing.component-tests'
+}
 
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter()
-        maven {
-            url 'https://repo.spring.io/libs-milestone'
-        }
-        eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
-    }
-    dependencies {
-        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractDependenciesVersion"
-        classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.10'
+group = 'net.chrisrichardson.ftgo'
+version = project.findProperty('version') ?: '0.1.0-SNAPSHOT'
 
-        classpath "org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:${js2pVersion}"
-        classpath "io.eventuate.tram.core:eventuate-tram-spring-commands"
-        classpath "io.eventuate.tram.core:eventuate-tram-spring-events"
-
-        classpath(platform("io.eventuate.platform:eventuate-platform-dependencies:$eventuatePlatformVersion"))
-
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
-apply plugin: FtgoServicePlugin
-
-apply plugin: 'spring-cloud-contract'
-apply plugin: 'docker-compose'
-apply plugin: 'com.google.protobuf'
-
-apply plugin: IntegrationTestsPlugin
-apply plugin: ComponentTestsPlugin
-
-apply plugin: FtgoJSONSchema2PojoPlugin
+repositories {
+    mavenCentral()
+    eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
+}
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"
+        mavenBom "io.eventuate.platform:eventuate-platform-dependencies:$eventuatePlatformVersion"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
     }
-}
-
-contracts {
-    contractsDslDir = new File("../ftgo-order-service-contracts/src/main/resources/contracts")
-    packageWithBaseClasses = 'net.chrisrichardson.ftgo.orderservice.contract'
-    generatedTestSourcesDir = project.file("${project.buildDir}/generated-integration-test-sources/contracts")
-    sourceSet = "integrationTest"
-}
-
-sourceSets {
-    integrationTest {
-        java {
-            srcDir project.file("${project.buildDir}/generated-integration-test-sources/contracts")
-        }
-    }
-}
-
-compileTestGroovy.enabled=false
-
-componentTest.dependsOn(assemble)
-
-
-dockerCompose {
-
-    environment.put "EVENTUATE_COMMON_VERSION", eventuateCommonImageVersion
-    environment.put "EVENTUATE_CDC_VERSION", eventuateCdcImageVersion
-    environment.put "EVENTUATE_SAGA_VERSION", eventuateTramSagasImageVersion
-    environment.put "EVENTUATE_JAVA_BASE_IMAGE_VERSION", eventuateExamplesBaseImageVersion
-    environment.put "EVENTUATE_MESSAGING_KAFKA_IMAGE_VERSION", eventuateMessagingKafkaImageVersion
-
-    projectName = null
-
-    integrationTests {
-        projectName = null
-        removeOrphans = true
-        retainContainersOnStartupFailure = true
-        startedServices = [ 'mysql']
-        stopContainers = true
-    }
-
-    componentTests {
-        projectName = null
-        removeOrphans = true
-        retainContainersOnStartupFailure = true
-        startedServices = [ 'ftgo-order-service']
-        //forceRecreate = true
-	    stopContainers = true
-    }
-
-}
-
-integrationTest.dependsOn(integrationTestsComposeUp)
-componentTestsComposeUp.dependsOn(integrationTestsComposeUp)
-componentTest.dependsOn(componentTestsComposeUp)
-
-
-protobuf {
-    protoc {
-        // Download from repositories
-        artifact = "com.google.protobuf:protoc:$protocVersion"
-    }
-    plugins {
-        grpc {
-            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
-        }
-    }
-    generateProtoTasks {
-        all()*.plugins {
-            grpc {
-                // To generate deprecated interfaces and static bindService method,
-                // turn the enable_deprecated option to true below:
-                option 'enable_deprecated=false'
-            }
-        }
-    }
-}
-
-apply plugin: 'idea'
-
-idea {
-    module {
-        sourceDirs += file("${projectDir}/build/generated/source/proto/main/java");
-        sourceDirs += file("${projectDir}/build/generated/source/proto/main/grpc");
-    }
-}
-
-// This is already done by ComponentTestsPlugin
-// apply plugin: 'eclipse'
-
-eclipse {
-  sourceSets {
-    main {
-      java {
-         srcDirs += ["build/generated/source/proto/main/java", "build/generated/source/proto/main/grpc"]
-      }
-    }
-  }
 }
 
 dependencies {
+    // Spring Boot starters
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    compile ("io.netty:netty-codec-http2:4.1.72.Final")  
-    compile ("io.netty:netty-codec:4.1.72.Final")  
-    compile ("io.netty:netty-transport:4.1.72.Final")  
-    compile ("io.netty:netty-common:4.1.72.Final")  
-    compile ("io.netty:netty-buffer:4.1.72.Final")  
-    compile ("io.netty:netty-resolver:4.1.72.Final")  
+    // SpringDoc OpenAPI (replaces Swagger)
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiUiVersion"
 
-    ftgoApiSpecification project(":ftgo-consumer-service-api-spec")
-    ftgoApiSpecification project(":ftgo-accounting-service-api-spec")
-    ftgoApiSpecification project(":ftgo-restaurant-service-api-spec")
+    // Eventuate Tram for messaging
+    implementation 'io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka'
+    implementation 'io.eventuate.tram.core:eventuate-tram-spring-commands'
+    implementation 'io.eventuate.tram.core:eventuate-tram-aggregate-domain-events'
+    implementation 'io.eventuate.tram.core:eventuate-tram-spring-messaging'
 
-    compile project(":common-swagger")
-    compile project(":ftgo-common-jpa")
+    // Eventuate Sagas
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration'
 
-    compile "io.eventuate.tram.core:eventuate-tram-aggregate-domain-events"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-commands"
+    // Database
+    runtimeOnly 'org.postgresql:postgresql'
 
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl"
+    // Test dependencies
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.eventuate.util:eventuate-util-test'
+    testImplementation 'io.eventuate.tram.core:eventuate-tram-test-util'
+    testImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory'
+    testImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support'
+    testImplementation 'io.rest-assured:rest-assured'
+    testImplementation 'io.rest-assured:spring-mock-mvc'
+    testImplementation 'org.assertj:assertj-core'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    compile project(":ftgo-accounting-service-api")
-    compile project(":ftgo-consumer-service-api")
-    compile project(":ftgo-kitchen-service-api")
-    compile project(":ftgo-restaurant-service-api")
-    compile project(":ftgo-order-service-api")
+    // Integration test dependencies
+    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+    integrationTestImplementation 'org.testcontainers:postgresql'
+    integrationTestImplementation 'org.testcontainers:junit-jupiter'
+    integrationTestImplementation 'io.eventuate.messaging.kafka:eventuate-messaging-kafka-testcontainers'
+    integrationTestImplementation 'io.eventuate.common:eventuate-common-testcontainers'
+    integrationTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-in-memory'
+    integrationTestImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support'
+    integrationTestImplementation 'org.postgresql:postgresql'
 
-
-    compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
-    compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
-    compile "io.micrometer:micrometer-registry-prometheus:$micrometerVersion"
-    compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-    compile 'javax.el:javax.el-api:2.2.5'
-
-    compile "io.grpc:grpc-netty:${grpcVersion}"
-    compile "io.grpc:grpc-protobuf:${grpcVersion}"
-    compile "io.grpc:grpc-stub:${grpcVersion}"
-
-    compile "io.microservices.tools.canvas:microservice-canvas-springmvc:$microserviceCanvasVersion"
-    compile "io.microservices.tools.canvas:microservice-canvas-extractor-tram-sagas:$microserviceCanvasVersion"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-messaging"
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration"
-
-    compile('org.apache.kafka:kafka-clients:2.3.0') {
-        force = true
-    }    
-
-    testCompile "io.eventuate.util:eventuate-util-test"
-    testCompile "io.eventuate.tram.core:eventuate-tram-test-util"
-
-    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory"
-    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
-
-    // Added this stuff
-
-    testCompile "net.chrisrichardson.ftgo:ftgo-accounting-service-contracts:unspecified:stubs"
-    testCompile "net.chrisrichardson.ftgo:ftgo-consumer-service-contracts:unspecified:stubs"
-    testCompile "net.chrisrichardson.ftgo:ftgo-kitchen-service-contracts:unspecified:stubs"
-    testCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
-    testCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
-    testCompile 'io.rest-assured:rest-assured:3.0.6'
-    testCompile 'io.rest-assured:spring-mock-mvc:3.0.6'
-    testCompile "io.rest-assured:json-path:3.0.6"
-
-    testCompile "io.eventuate.tram.core:eventuate-tram-spring-testing-support-cloud-contract"
-
-    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support"
-
-    componentTestCompile 'info.cukes:cucumber-java:1.2.5'
-    componentTestCompile 'info.cukes:cucumber-junit:1.2.5'
-    componentTestCompile 'info.cukes:cucumber-spring:1.2.5'
-
-    testCompile project(":ftgo-test-util")
-    testCompile "org.hamcrest:hamcrest:2.1"
-
-    integrationTestCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support-cloud-contract"
-    integrationTestCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory"
-
+    // Component test dependencies
+    componentTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+    componentTestImplementation 'io.rest-assured:rest-assured'
+    componentTestImplementation 'org.testcontainers:postgresql'
+    componentTestImplementation 'org.testcontainers:junit-jupiter'
+    componentTestImplementation 'org.testcontainers:testcontainers'
+    componentTestImplementation 'io.eventuate.messaging.kafka:eventuate-messaging-kafka-testcontainers'
+    componentTestImplementation 'io.eventuate.common:eventuate-common-testcontainers'
+    componentTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-commands-starter'
+    componentTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka'
+    componentTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-consumer-kafka'
+    componentTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-testing-support-producer-kafka'
+    componentTestImplementation 'io.eventuate.tram.core:eventuate-tram-test-util'
+    componentTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-testing-support-outbox'
+    componentTestImplementation "io.eventuate.platform.testcontainer.support:eventuate-platform-testcontainer-support-service:$eventuatePlatformTestContainerSupportVersion"
+    componentTestImplementation 'org.postgresql:postgresql'
 }
 
-ftgoJsonSchema2Pojo {
+tasks.withType(JavaCompile) {
+    options.compilerArgs += '-parameters'
+}
 
-    ftgoConsumerService {
-        source = files("${ftgoApiSpecsDir}/ValidateOrderByConsumer.json")
-        targetPackage = "net.chrisrichardson.ftgo.consumerservice.api"
-        includeAdditionalProperties = false
-        generateBuilders = true
-        useLongIntegers = true
-    }
-    ftgoAccountingService {
-        source = files("${ftgoApiSpecsDir}/messages")
-        targetPackage = "net.chrisrichardson.ftgo.accountservice.api"
-        includeAdditionalProperties = false
-        generateBuilders = true
-        useLongIntegers = true
-    }
-    ftgoRestaurantService {
-        source = files("${ftgoApiSpecsDir}/ftgo-restaurant-service-api-spec/messages")
-        targetPackage = "net.chrisrichardson.ftgo.restaurantservice.events"
-        includeAdditionalProperties = false
-        generateBuilders = true
-        useLongIntegers = true
-    }
+tasks.named('test') {
+    useJUnitPlatform()
+}
 
+componentTest {
+    systemProperty "spring.profiles.active", "test,postgres"
+}
+
+integrationTest {
+    systemProperty "spring.profiles.active", "test,postgres"
+}
+
+bootJar {
+    enabled = true
+}
+
+jar {
+    enabled = true
 }

@@ -41,25 +41,25 @@ This steel thread establishes the new project structure and migrates the Order S
 
 The `ftgo-order-service/` directory already exists. Transform it into a self-contained project:
 
-- [ ] Create `ftgo-order-service/settings.gradle` with:
-  - [ ] `pluginManagement` block for Eventuate testing plugins
-  - [ ] `rootProject.name = 'ftgo-order-service'`
-- [ ] Create `ftgo-order-service/gradle.properties` with version properties from reference projects:
-  - [ ] `eventuatePlatformVersion=2025.1.BUILD-SNAPSHOT`
-  - [ ] `springBootVersion=3.4.0`
-  - [ ] `springCloudVersion=2024.0.0`
-  - [ ] `eventuateTestPluginsVersion` from reference project
-  - [ ] `eventuateMavenRepoUrl`
-- [ ] Rewrite `ftgo-order-service/build.gradle` to be self-contained (not dependent on root build):
-  - [ ] Java 17 toolchain configuration
-  - [ ] Spring Boot 3.4.0 plugin
-  - [ ] Eventuate testing plugins (integration-tests, component-tests)
-  - [ ] Platform BOMs for dependency management
-  - [ ] Maven Central repository only (no JCenter)
-  - [ ] All dependencies declared directly (not inherited from root)
-- [ ] Copy Gradle wrapper from reference project to `ftgo-order-service/gradle/`
-- [ ] Create `ftgo-order-service/gradlew` and `ftgo-order-service/gradlew.bat`
-- [ ] Verify `./gradlew tasks` runs successfully in `ftgo-order-service/`
+- [x] Create `ftgo-order-service/settings.gradle` with:
+  - [x] `pluginManagement` block for Eventuate testing plugins
+  - [x] `rootProject.name = 'ftgo-order-service'`
+- [x] Create `ftgo-order-service/gradle.properties` with version properties from reference projects:
+  - [x] `eventuatePlatformVersion=2025.1.BUILD-SNAPSHOT`
+  - [x] `springBootVersion=3.4.0`
+  - [x] `springCloudVersion=2024.0.0`
+  - [x] `eventuateTestPluginsVersion` from reference project
+  - [x] `eventuateMavenRepoUrl`
+- [x] Rewrite `ftgo-order-service/build.gradle` to be self-contained (not dependent on root build):
+  - [x] Java 17 toolchain configuration
+  - [x] Spring Boot 3.4.0 plugin
+  - [x] Eventuate testing plugins (integration-tests, component-tests)
+  - [x] Platform BOMs for dependency management
+  - [x] Maven Central repository only (no JCenter)
+  - [x] All dependencies declared directly (not inherited from root)
+- [x] Copy Gradle wrapper from reference project to `ftgo-order-service/gradle/`
+- [x] Create `ftgo-order-service/gradlew` and `ftgo-order-service/gradlew.bat`
+- [x] Verify `./gradlew tasks` runs successfully in `ftgo-order-service/`
 
 ### Task 1.3: Embed API and shared classes into Order Service
 
