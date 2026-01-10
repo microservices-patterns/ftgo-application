@@ -6,7 +6,7 @@ import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.common.UnsupportedStateTransitionException;
 import net.chrisrichardson.ftgo.orderservice.api.events.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 
 import static net.chrisrichardson.ftgo.orderservice.api.events.OrderState.APPROVED;

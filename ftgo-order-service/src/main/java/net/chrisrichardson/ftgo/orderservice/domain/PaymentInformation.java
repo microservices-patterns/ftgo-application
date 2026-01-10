@@ -1,7 +1,7 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 
 @Access(AccessType.FIELD)
 public class PaymentInformation {

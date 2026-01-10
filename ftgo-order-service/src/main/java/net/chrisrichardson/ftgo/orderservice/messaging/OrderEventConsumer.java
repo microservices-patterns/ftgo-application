@@ -27,13 +27,13 @@ public class OrderEventConsumer {
   private void createMenu(DomainEventEnvelope<RestaurantCreated> de) {
     String restaurantIds = de.getAggregateId();
     long id = Long.parseLong(restaurantIds);
-    orderService.createMenu(id, de.getEvent().getName(), RestaurantEventMapper.toMenuItems(de.getEvent().getMenu().getMenuItems()));
+    orderService.createMenu(id, de.getEvent().getName(), RestaurantEventMapper.toMenuItems(de.getEvent().getMenu()));
   }
 
   public void reviseMenu(DomainEventEnvelope<RestaurantMenuRevised> de) {
     String restaurantIds = de.getAggregateId();
     long id = Long.parseLong(restaurantIds);
-    orderService.reviseMenu(id, RestaurantEventMapper.toMenuItems(de.getEvent().getMenu().getMenuItems()));
+    orderService.reviseMenu(id, RestaurantEventMapper.toMenuItems(de.getEvent().getRevisedMenu()));
   }
 
 }

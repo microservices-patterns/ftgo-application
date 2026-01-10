@@ -3,7 +3,7 @@ package net.chrisrichardson.ftgo.orderservice.domain;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDomainEvent;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 import java.util.Optional;
 

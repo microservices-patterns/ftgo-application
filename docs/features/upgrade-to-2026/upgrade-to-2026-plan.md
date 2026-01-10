@@ -75,13 +75,15 @@ Copy external dependencies into the service to make it self-contained:
 
 Update existing source files for compatibility:
 
-- [ ] Perform `javax.*` to `jakarta.*` migration on all source files:
-  - [ ] `javax.persistence.*` → `jakarta.persistence.*`
-  - [ ] `javax.validation.*` → `jakarta.validation.*`
-  - [ ] `javax.servlet.*` → `jakarta.servlet.*`
-- [ ] Update deprecated Spring Boot 2.x APIs to Spring Boot 3.x equivalents
-- [ ] Replace Swagger/SpringFox annotations with SpringDoc OpenAPI
-- [ ] Update `application.properties` / `application.yml` for Spring Boot 3.x
+- [x] Perform `javax.*` to `jakarta.*` migration on all source files:
+  - [x] `javax.persistence.*` → `jakarta.persistence.*`
+  - [x] `javax.annotation.*` → `jakarta.annotation.*`
+  - [x] `javax.servlet.*` → `jakarta.servlet.*`
+- [x] Update deprecated Spring Boot 2.x APIs to Spring Boot 3.x equivalents
+  - [x] Removed TraceIdResponseFilter (used deprecated Spring Cloud Sleuth)
+- [x] Replace Swagger/SpringFox annotations with SpringDoc OpenAPI (none found)
+- [x] Update `application.properties` for Spring Boot 3.x (PostgreSQL, removed Sleuth config)
+- [x] Update orm.xml to Jakarta Persistence 3.0 namespace
 
 ### Task 1.5: Migrate Order Service unit tests
 

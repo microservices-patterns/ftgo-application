@@ -2,7 +2,7 @@ package net.chrisrichardson.ftgo.kitchenservice.api;
 
 import io.eventuate.tram.commands.CommandDestination;
 import io.eventuate.tram.commands.common.Command;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @CommandDestination("restaurantService")
 public class CreateTicket implements Command {

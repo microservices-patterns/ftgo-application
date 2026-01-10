@@ -4,9 +4,9 @@ import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderLineItem;
 import net.chrisrichardson.ftgo.common.RevisedOrderLineItem;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embeddable;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embeddable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;

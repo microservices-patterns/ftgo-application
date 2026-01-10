@@ -15,7 +15,7 @@ import net.chrisrichardson.ftgo.kitchenservice.api.KitchenServiceChannels;
 import net.chrisrichardson.ftgo.kitchenservice.api.UndoBeginCancelTicketCommand;
 import org.springframework.util.Assert;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import static io.eventuate.tram.commands.consumer.CommandWithDestinationBuilder.send;
 
@@ -94,7 +94,7 @@ public class CancelOrderSaga implements SimpleSaga<CancelOrderSagaData> {
 
   @Override
   public SagaDefinition<CancelOrderSagaData> getSagaDefinition() {
-    Assert.notNull(sagaDefinition);
+    Assert.notNull(sagaDefinition, "sagaDefinition must not be null");
     return sagaDefinition;
   }
 

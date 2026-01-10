@@ -1,6 +1,5 @@
 package net.chrisrichardson.ftgo.orderservice.web;
 
-import brave.sampler.Sampler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.eventuate.common.json.mapper.JSonMapper;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderServiceWithRepositoriesConfiguration;
@@ -15,11 +14,6 @@ public class OrderWebConfiguration {
   @Primary
   public ObjectMapper objectMapper() {
     return JSonMapper.objectMapper;
-  }
-
-  @Bean
-  public Sampler defaultSampler() {
-    return Sampler.ALWAYS_SAMPLE;
   }
 
 }

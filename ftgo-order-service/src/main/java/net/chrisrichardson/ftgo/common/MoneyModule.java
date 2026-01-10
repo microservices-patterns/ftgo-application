@@ -29,8 +29,9 @@ public class MoneyModule extends SimpleModule {
           return null;
         else
           return new Money(str);
-      } else
-        throw ctxt.mappingException(getValueClass());
+      } else {
+        return (Money) ctxt.handleUnexpectedToken(getValueClass(), jp);
+      }
     }
   }
 

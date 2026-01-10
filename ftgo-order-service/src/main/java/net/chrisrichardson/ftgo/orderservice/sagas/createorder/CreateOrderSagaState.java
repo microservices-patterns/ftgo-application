@@ -7,8 +7,8 @@ import net.chrisrichardson.ftgo.orderservice.api.events.OrderLineItem;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.ApproveOrderCommand;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.RejectOrderCommand;
 import net.chrisrichardson.ftgo.kitchenservice.api.*;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,15 +94,17 @@ public class CreateOrderSagaState {
   }
 
   ValidateOrderByConsumer makeValidateOrderByConsumerCommand() {
-    ValidateOrderByConsumer x = new ValidateOrderByConsumer();
-    x.setConsumerId(getOrderDetails().getConsumerId());
-    x.setOrderId(getOrderId());
-    x.setOrderTotal(getOrderDetails().getOrderTotal().asString());
-    return x;
+    return new ValidateOrderByConsumer(
+            getOrderDetails().getConsumerId(),
+            getOrderId(),
+            getOrderDetails().getOrderTotal());
   }
 
   AuthorizeCommand makeAuthorizeCommand() {
-    return new AuthorizeCommand().withConsumerId(getOrderDetails().getConsumerId()).withOrderId(getOrderId()).withOrderTotal(getOrderDetails().getOrderTotal().asString());
+    return new AuthorizeCommand(
+            getOrderDetails().getConsumerId(),
+            getOrderId(),
+            getOrderDetails().getOrderTotal());
   }
 
   ApproveOrderCommand makeApproveOrderCommand() {

@@ -46,9 +46,17 @@ dependencies {
     // Eventuate Sagas
     implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl'
     implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant'
+
+    // Utilities
+    implementation 'org.apache.commons:commons-lang3:3.14.0'
 
     // Database
     runtimeOnly 'org.postgresql:postgresql'
+
+    // Flyway
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
 
     // Test dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

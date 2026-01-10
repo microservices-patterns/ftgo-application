@@ -45,7 +45,7 @@ public class Result {
     }
 
     public Result build() {
-      Assert.notNull(allowed);
+      Assert.notNull(allowed, "allowed must not be null");
       return new Result(events, allowed);
     }
 
