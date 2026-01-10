@@ -98,14 +98,14 @@ Unit tests already exist in `ftgo-order-service/src/test/java/`. Update them:
 
 Integration tests may exist in `ftgo-order-service/src/integrationTest/java/` or need to be created:
 
-- [ ] Convert Docker Compose-based tests to Testcontainers:
-  - [ ] Add Testcontainers dependencies to `build.gradle`
-  - [ ] Create base test class with `@Testcontainers` annotation
-  - [ ] Configure PostgreSQL testcontainer
-  - [ ] Configure Kafka testcontainer using Eventuate modules
-- [ ] Remove Docker Compose plugin dependencies
-- [ ] Update `javax.*` to `jakarta.*` in integration test files
-- [ ] Verify `./gradlew integrationTest` passes
+- [x] Convert Docker Compose-based tests to Testcontainers:
+  - [x] Add Testcontainers dependencies to `build.gradle`
+  - [x] Create base test class with `@Testcontainers` annotation
+  - [x] Configure PostgreSQL testcontainer
+  - [x] Configure Kafka testcontainer using Eventuate modules
+- [x] Remove Docker Compose plugin dependencies
+- [x] Update `javax.*` to `jakarta.*` in integration test files
+- [x] Verify `./gradlew integrationTest` passes
 
 ### Task 1.7: Migrate Order Service component tests to Testcontainers
 
