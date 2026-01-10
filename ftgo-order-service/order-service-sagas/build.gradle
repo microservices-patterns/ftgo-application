@@ -1,0 +1,24 @@
+plugins {
+    id 'io.eventuate.plugins.gradle.testing.integration-tests'
+}
+
+dependencies {
+    api project(':order-service-domain')
+    api project(':order-service-proxies-kitchen-service')
+    api project(':order-service-proxies-accounting-service')
+    api project(':order-service-proxies-consumer-service')
+
+    api 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl'
+    api 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant'
+
+    testImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support'
+    testImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory'
+    testImplementation project(':order-service-domain').sourceSets.test.output
+
+    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+    integrationTestImplementation project(':order-service-domain').sourceSets.test.output
+    integrationTestImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support'
+    integrationTestImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory'
+    integrationTestImplementation 'org.springframework.cloud:spring-cloud-contract-stub-runner'
+    integrationTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-cloud-contract-support'
+}

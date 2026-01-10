@@ -10,3 +10,14 @@ pluginManagement {
 }
 
 rootProject.name = 'ftgo-order-service'
+
+include 'order-service-domain'
+include 'order-service-persistence'
+include 'order-service-sagas'
+include 'order-service-event-publishing'
+include 'order-service-event-handling'
+include 'order-service-proxies-kitchen-service'
+include 'order-service-proxies-accounting-service'
+include 'order-service-proxies-consumer-service'
+include 'order-service-restapi'
+include 'order-service-main'

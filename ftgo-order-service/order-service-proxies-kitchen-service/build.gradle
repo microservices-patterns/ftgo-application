@@ -1,0 +1,7 @@
+dependencies {
+    api project(':order-service-domain')
+
+    api 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+}

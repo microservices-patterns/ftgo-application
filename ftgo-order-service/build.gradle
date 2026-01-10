@@ -1,122 +1,49 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.4.0'
-    id 'io.spring.dependency-management' version '1.1.7'
-    id 'io.eventuate.plugins.gradle.testing.integration-tests'
-    id 'io.eventuate.plugins.gradle.testing.component-tests'
+    id 'org.springframework.boot' version '3.4.0' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
+    id 'io.eventuate.plugins.gradle.testing.integration-tests' apply false
+    id 'io.eventuate.plugins.gradle.testing.component-tests' apply false
 }
 
-group = 'net.chrisrichardson.ftgo'
-version = project.findProperty('version') ?: '0.1.0-SNAPSHOT'
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'io.spring.dependency-management'
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+    group = 'net.chrisrichardson.ftgo'
+    version = project.findProperty('version') ?: '0.1.0-SNAPSHOT'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
     }
-}
 
-repositories {
-    mavenCentral()
-    eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
-}
-
-dependencyManagement {
-    imports {
-        mavenBom "io.eventuate.platform:eventuate-platform-dependencies:$eventuatePlatformVersion"
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+    repositories {
+        mavenCentral()
+        eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
     }
-}
 
-dependencies {
-    // Spring Boot starters
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
+            mavenBom "io.eventuate.platform:eventuate-platform-dependencies:$eventuatePlatformVersion"
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+        }
+    }
 
-    // SpringDoc OpenAPI (replaces Swagger)
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiUiVersion"
+    dependencies {
+        implementation 'org.apache.commons:commons-lang3:3.14.0'
 
-    // Eventuate Tram for messaging
-    implementation 'io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka'
-    implementation 'io.eventuate.tram.core:eventuate-tram-spring-commands'
-    implementation 'io.eventuate.tram.core:eventuate-tram-aggregate-domain-events'
-    implementation 'io.eventuate.tram.core:eventuate-tram-spring-messaging'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.assertj:assertj-core'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
 
-    // Eventuate Sagas
-    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl'
-    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration'
-    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant'
+    tasks.withType(JavaCompile) {
+        options.compilerArgs += '-parameters'
+    }
 
-    // Utilities
-    implementation 'org.apache.commons:commons-lang3:3.14.0'
-
-    // Database
-    runtimeOnly 'org.postgresql:postgresql'
-
-    // Flyway
-    implementation 'org.flywaydb:flyway-core'
-    implementation 'org.flywaydb:flyway-database-postgresql'
-
-    // Test dependencies
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.eventuate.util:eventuate-util-test'
-    testImplementation 'io.eventuate.tram.core:eventuate-tram-test-util'
-    testImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory'
-    testImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support'
-    testImplementation 'io.rest-assured:rest-assured'
-    testImplementation 'io.rest-assured:spring-mock-mvc'
-    testImplementation 'org.assertj:assertj-core'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-    // Integration test dependencies
-    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
-    integrationTestImplementation 'org.testcontainers:postgresql'
-    integrationTestImplementation 'org.testcontainers:junit-jupiter'
-    integrationTestImplementation 'io.eventuate.messaging.kafka:eventuate-messaging-kafka-testcontainers'
-    integrationTestImplementation 'io.eventuate.common:eventuate-common-testcontainers'
-    integrationTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-in-memory'
-    integrationTestImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support'
-    integrationTestImplementation 'org.postgresql:postgresql'
-
-    // Component test dependencies
-    componentTestImplementation 'org.springframework.boot:spring-boot-starter-test'
-    componentTestImplementation 'io.rest-assured:rest-assured'
-    componentTestImplementation 'org.testcontainers:postgresql'
-    componentTestImplementation 'org.testcontainers:junit-jupiter'
-    componentTestImplementation 'org.testcontainers:testcontainers'
-    componentTestImplementation 'io.eventuate.messaging.kafka:eventuate-messaging-kafka-testcontainers'
-    componentTestImplementation 'io.eventuate.common:eventuate-common-testcontainers'
-    componentTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-commands-starter'
-    componentTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka'
-    componentTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-consumer-kafka'
-    componentTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-testing-support-producer-kafka'
-    componentTestImplementation 'io.eventuate.tram.core:eventuate-tram-test-util'
-    componentTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-testing-support-outbox'
-    componentTestImplementation "io.eventuate.platform.testcontainer.support:eventuate-platform-testcontainer-support-service:$eventuatePlatformTestContainerSupportVersion"
-    componentTestImplementation 'org.postgresql:postgresql'
-}
-
-tasks.withType(JavaCompile) {
-    options.compilerArgs += '-parameters'
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
-}
-
-componentTest {
-    systemProperty "spring.profiles.active", "test,postgres"
-}
-
-integrationTest {
-    systemProperty "spring.profiles.active", "test,postgres"
-}
-
-bootJar {
-    enabled = true
-}
-
-jar {
-    enabled = true
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
 }

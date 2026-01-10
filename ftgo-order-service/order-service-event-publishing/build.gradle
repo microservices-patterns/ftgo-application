@@ -1,0 +1,6 @@
+dependencies {
+    implementation project(':order-service-domain')
+
+    implementation 'io.eventuate.tram.core:eventuate-tram-spring-events-publisher-starter'
+    implementation 'io.eventuate.tram.core:eventuate-tram-aggregate-domain-events'
+}
