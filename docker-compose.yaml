@@ -1,0 +1,64 @@
+services:
+  order-service-db:
+    image: eventuateio/eventuate-vanilla-postgres:0.21.0.BUILD-SNAPSHOT
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgresuser
+      POSTGRES_PASSWORD: postgrespw
+      POSTGRES_DB: eventuate
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      # KRaft mode configuration
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:9093'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+
+      # Listeners configuration
+      KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://0.0.0.0:9092,CONTROLLER://kafka:9093'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+
+      # Log directories
+      KAFKA_LOG_DIRS: '/var/lib/kafka/data'
+
+      # Cluster ID (must be set for KRaft mode)
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qg'
+
+      # Other settings
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+
+  cdc-service:
+    image: eventuateio/eventuate-cdc-service:0.19.0.BUILD-SNAPSHOT
+    ports:
+      - "8099:8080"
+    environment:
+      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_PROFILES_ACTIVE: "KafkaLeadership"
+
+      # Order Service database pipeline
+      EVENTUATE_CDC_PIPELINE_PIPELINE1_TYPE: eventuate-tram
+      EVENTUATE_CDC_PIPELINE_PIPELINE1_READER: reader1
+      EVENTUATE_CDC_PIPELINE_PIPELINE1_EVENTUATEDATABASESCHEMA: public
+
+      # Reader 1 - Order Service database
+      EVENTUATE_CDC_READER_READER1_TYPE: postgres-wal
+      EVENTUATE_CDC_READER_READER1_DATASOURCEURL: jdbc:postgresql://order-service-db:5432/eventuate
+      EVENTUATE_CDC_READER_READER1_DATASOURCEUSERNAME: postgresuser
+      EVENTUATE_CDC_READER_READER1_DATASOURCEPASSWORD: postgrespw
+      EVENTUATE_CDC_READER_READER1_DATASOURCEDRIVERCLASSNAME: org.postgresql.Driver
+      EVENTUATE_CDC_READER_READER1_LEADERSHIPLOCKPATH: /eventuate/cdc/leader/order
+      EVENTUATE_CDC_READER_READER1_OFFSETSTORAGETOPICNAME: order_schema.cdc_offset_store
+      EVENTUATE_CDC_READER_READER1_OUTBOXID: "1"
+      EVENTUATE_CDC_READER_READER1_MONITORINGSCHEMA: public
+    depends_on:
+      - kafka
+      - order-service-db

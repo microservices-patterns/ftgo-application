@@ -25,17 +25,17 @@ This steel thread establishes the new project structure and migrates the Order S
 
 ### Task 1.1: Create root-level orchestration infrastructure
 
-- [ ] Create `build-and-test-all.sh` script at project root
-  - [ ] Script iterates over migrated service directories
-  - [ ] Runs `./gradlew build` in each service directory
-  - [ ] Exits with error if any service build fails
-  - [ ] Initially contains only `ftgo-order-service`
-- [ ] Create initial `docker-compose.yaml` at project root
-  - [ ] Define `order-service-db` PostgreSQL container
-  - [ ] Define `kafka` container (Confluent Kafka, KRaft mode)
-  - [ ] Define `cdc-service` for Eventuate CDC
-  - [ ] Reference realguardio docker-compose.yaml for configuration patterns
-- [ ] Verify `build-and-test-all.sh` executes (will fail until Order Service is migrated)
+- [x] Create `build-and-test-all.sh` script at project root
+  - [x] Script iterates over migrated service directories
+  - [x] Runs `./gradlew build` in each service directory
+  - [x] Exits with error if any service build fails
+  - [x] Initially contains only `ftgo-order-service`
+- [x] Create initial `docker-compose.yaml` at project root
+  - [x] Define `order-service-db` PostgreSQL container
+  - [x] Define `kafka` container (Confluent Kafka, KRaft mode)
+  - [x] Define `cdc-service` for Eventuate CDC
+  - [x] Reference realguardio docker-compose.yaml for configuration patterns
+- [x] Verify `build-and-test-all.sh` executes (will fail until Order Service is migrated)
 
 ### Task 1.2: Transform ftgo-order-service into self-contained Gradle project
 
