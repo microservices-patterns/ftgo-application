@@ -15,3 +15,5 @@ bin
 node_modules
 dist
 ftgo-api-gateway-graphql/jest_0
+.claude/issues
+.claude/sessions

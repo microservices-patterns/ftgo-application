@@ -1,0 +1,60 @@
+FTGO Application Upgrade to 2026
+
+GOAL:
+Modernize the FTGO example application to use current technologies and best practices,
+keeping it relevant for readers of the Microservices Patterns book.
+
+TARGET STATE:
+- Java 17 (via Gradle toolchain)
+- Gradle 8.13
+- Spring Boot 3.4.0
+- Spring Cloud 2024.0.0
+- Eventuate Platform 2025.1.BUILD-SNAPSHOT
+- JUnit 5 Platform
+- SpringDoc OpenAPI (replacing Swagger)
+
+ARCHITECTURAL CHANGES:
+- Each Spring Boot service becomes a self-contained Gradle project
+  (own settings.gradle, build.gradle, gradlew, gradle.properties)
+- No root-level Gradle build - services are independent
+- Root level contains only docker-compose.yaml for orchestration
+- end-to-end-tests as a standalone Gradle project using Testcontainers
+- Shared code (Money, Address, etc.) duplicated into each service
+- API classes embedded within each service (no cross-service compile dependencies)
+- Contract tests embedded in each service (src/contractTest/)
+
+SERVICES IN SCOPE (8 applications, in migration order based on CreateOrderSaga):
+
+Phase 1 - Saga participants:
+1. ftgo-order-service (saga orchestrator - start here)
+2. ftgo-consumer-service (validateOrder)
+3. ftgo-kitchen-service (create/confirmCreate ticket)
+4. ftgo-accounting-service (authorize)
+
+Phase 2 - Remaining services:
+5. ftgo-restaurant-service
+6. ftgo-delivery-service
+7. ftgo-order-history-service (DynamoDB)
+8. ftgo-api-gateway
+
+EXCLUDED (deferred to later phases):
+- ftgo-restaurant-service-aws-lambda
+- ftgo-api-gateway-graphql
+
+TESTING APPROACH:
+- End-to-end tests written incrementally as each service is migrated
+- Tests grow progressively to cover more of the saga flow
+- Early validation that migrated services integrate correctly
+- A service is NOT tested until it is migrated (no testing old versions)
+- build-and-test-all.sh script at root to build/test all migrated services
+
+SUCCESS CRITERIA:
+- All tests pass (unit, integration, component, contract, end-to-end)
+- Each service builds and runs independently
+- docker-compose.yaml orchestrates all services
+- Code reflects modern best practices for educational purposes
+
+REFERENCE PROJECTS:
+- /Users/cer/src/eventuate-examples/eventuate-tram-examples-customers-and-orders
+- /Users/cer/src/eventuate-examples/eventuate-tram-sagas-examples-customers-and-orders
+- /Users/cer/src/eventuate-examples/eventuate-examples-realguardio
