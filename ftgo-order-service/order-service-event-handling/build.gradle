@@ -1,7 +1,22 @@
+plugins {
+    id 'io.eventuate.plugins.gradle.testing.integration-tests'
+}
+
 dependencies {
     api project(':order-service-domain')
 
     api 'io.eventuate.tram.core:eventuate-tram-spring-events-subscriber-starter'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'io.eventuate.tram.core:eventuate-tram-testing-support'
+    testImplementation project(':order-service-domain').sourceSets.test.output
+
+    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+    integrationTestImplementation(platform("org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"))
+    integrationTestImplementation 'org.springframework.cloud:spring-cloud-contract-stub-runner'
+    integrationTestImplementation 'io.eventuate.tram.testingsupport.springcloudcontract:eventuate-tram-spring-testing-support-cloud-contract'
+    integrationTestImplementation project(':order-service-domain').sourceSets.test.output
 }

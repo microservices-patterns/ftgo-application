@@ -1,3 +1,7 @@
+plugins {
+    id 'io.eventuate.plugins.gradle.testing.integration-tests'
+}
+
 dependencies {
     implementation project(':order-service-domain')
     implementation project(':order-service-persistence')
@@ -7,4 +11,9 @@ dependencies {
 
     testImplementation 'io.rest-assured:spring-mock-mvc'
     testImplementation project(':order-service-domain').sourceSets.test.output
+
+    integrationTestImplementation 'io.rest-assured:spring-mock-mvc'
+    integrationTestImplementation(platform("org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"))
+    integrationTestImplementation 'org.springframework.cloud:spring-cloud-contract-stub-runner'
+    integrationTestImplementation project(':order-service-domain').sourceSets.test.output
 }
