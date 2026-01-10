@@ -65,11 +65,11 @@ The `ftgo-order-service/` directory already exists. Transform it into a self-con
 
 Copy external dependencies into the service to make it self-contained:
 
-- [ ] Copy classes from `ftgo-order-service-api/` into `ftgo-order-service/src/main/java/`
-- [ ] Copy required classes from `ftgo-common/` (Money, Address, PersonName, etc.) into `ftgo-order-service/src/main/java/`
-- [ ] Copy required classes from `ftgo-common-jpa/` into `ftgo-order-service/src/main/java/`
-- [ ] Update package declarations if needed
-- [ ] Remove compile dependencies on `ftgo-order-service-api`, `ftgo-common`, `ftgo-common-jpa` from build.gradle
+- [x] Copy classes from `ftgo-order-service-api/` into `ftgo-order-service/src/main/java/`
+- [x] Copy required classes from `ftgo-common/` (Money, Address, PersonName, etc.) into `ftgo-order-service/src/main/java/`
+- [x] Copy required classes from `ftgo-common-jpa/` into `ftgo-order-service/src/main/java/`
+- [x] Update package declarations if needed
+- [x] Remove compile dependencies on `ftgo-order-service-api`, `ftgo-common`, `ftgo-common-jpa` from build.gradle
 
 ### Task 1.4: Migrate Order Service source code to Spring Boot 3.x / Jakarta EE
 
