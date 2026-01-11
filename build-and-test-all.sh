@@ -2,6 +2,12 @@
 
 # Build and test all migrated services
 # This script iterates over migrated service directories and runs their builds
+#
+# Usage: ./build-and-test-all.sh [gradle-args...]
+# Example: ./build-and-test-all.sh --build-cache
+
+# Capture any arguments to pass to gradlew
+GRADLE_ARGS="$@"
 
 # Contract projects to publish before building services
 CONTRACT_PROJECTS=(
@@ -22,7 +28,7 @@ echo "Publishing contract stubs..."
 for project in "${CONTRACT_PROJECTS[@]}"; do
   echo "Publishing: $project"
   if [ -d "$project" ] && [ -f "$project/gradlew" ]; then
-    (cd "$project" && ./gradlew publishStubsPublicationToLocalRepository)
+    (cd "$project" && ./gradlew publishStubsPublicationToLocalRepository $GRADLE_ARGS)
   else
     echo "WARNING: Contract project '$project' not found or missing gradlew"
   fi
@@ -48,7 +54,7 @@ for service in "${MIGRATED_SERVICES[@]}"; do
     exit 1
   fi
 
-  (cd "$service" && ./gradlew build)
+  (cd "$service" && ./gradlew build $GRADLE_ARGS)
 
   if [ $? -ne 0 ]; then
     echo "ERROR: Build failed for $service"

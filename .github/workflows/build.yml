@@ -30,7 +30,7 @@ jobs:
         cache-read-only: false
 
     - name: Build and test all services
-      run: ./build-and-test-all.sh
+      run: ./build-and-test-all.sh --build-cache
 
     - name: Save test results
       if: ${{ always() }}
