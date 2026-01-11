@@ -1,15 +1,13 @@
 package net.chrisrichardson.ftgo.consumerservice.main;
 
 import io.eventuate.tram.spring.jdbckafka.TramJdbcKafkaConfiguration;
-import net.chrisrichardson.eventstore.examples.customersandorders.commonswagger.CommonSwaggerConfiguration;
 import net.chrisrichardson.ftgo.consumerservice.web.ConsumerWebConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
-import io.eventuate.tram.spring.flyway.EventuateTramFlywayMigrationConfiguration;
 
 @SpringBootApplication
-@Import({ConsumerWebConfiguration.class, TramJdbcKafkaConfiguration.class, CommonSwaggerConfiguration.class,  EventuateTramFlywayMigrationConfiguration.class})
+@Import({ConsumerWebConfiguration.class, TramJdbcKafkaConfiguration.class})
 public class ConsumerServiceMain {
 
   public static void main(String[] args) {

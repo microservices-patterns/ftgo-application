@@ -176,40 +176,40 @@ Migrate the Consumer Service as the first saga participant that Order Service co
 
 The `ftgo-consumer-service/` directory already exists. Transform it:
 
-- [ ] Create `settings.gradle` with pluginManagement block
-- [ ] Create `gradle.properties` with version properties (copy from Order Service)
-- [ ] Rewrite `build.gradle` to be self-contained (copy patterns from Order Service)
-- [ ] Copy Gradle wrapper from Order Service
-- [ ] Verify `./gradlew tasks` runs successfully
+- [x] Create `settings.gradle` with pluginManagement block
+- [x] Create `gradle.properties` with version properties (copy from Order Service)
+- [x] Rewrite `build.gradle` to be self-contained (copy patterns from Order Service)
+- [x] Copy Gradle wrapper from Order Service
+- [x] Verify `./gradlew tasks` runs successfully
 
 ### Task 2.2: Embed API and shared classes into Consumer Service
 
-- [ ] Copy classes from `ftgo-consumer-service-api/` into `ftgo-consumer-service/src/main/java/`
-- [ ] Copy Order Service API classes needed to receive commands into `ftgo-consumer-service/src/main/java/`
-- [ ] Copy required shared classes (Money, PersonName, etc.) into `ftgo-consumer-service/src/main/java/`
-- [ ] Remove compile dependencies on external API modules from build.gradle
+- [x] Copy classes from `ftgo-consumer-service-api/` into `ftgo-consumer-service/src/main/java/`
+- [x] Copy Order Service API classes needed to receive commands into `ftgo-consumer-service/src/main/java/`
+- [x] Copy required shared classes (Money, PersonName, etc.) into `ftgo-consumer-service/src/main/java/`
+- [x] Remove compile dependencies on external API modules from build.gradle
 
 ### Task 2.3: Migrate Consumer Service source code to Spring Boot 3.x / Jakarta EE
 
-- [ ] Perform `javax.*` to `jakarta.*` migration on all source files
-- [ ] Update for Spring Boot 3.x compatibility
-- [ ] Replace Swagger annotations with SpringDoc OpenAPI
+- [x] Perform `javax.*` to `jakarta.*` migration on all source files
+- [x] Update for Spring Boot 3.x compatibility
+- [x] Replace Swagger annotations with SpringDoc OpenAPI
 
 ### Task 2.4: Migrate Consumer Service tests to Testcontainers
 
 **IMPORTANT:** Migrate tests in place - never delete tests during restructuring.
 
-- [ ] Migrate unit tests in place:
-  - [ ] Update JUnit 4 annotations to JUnit 5 equivalents
-  - [ ] Update `javax.*` to `jakarta.*` imports
-  - [ ] Update `Mockito.Matchers` to `Mockito.ArgumentMatchers`
-  - [ ] Verify `./gradlew test` passes
-- [ ] Migrate integration tests in place:
-  - [ ] Move test files to appropriate module if restructuring
-  - [ ] Convert Docker Compose-based tests to Testcontainers
-  - [ ] Configure PostgreSQL and Kafka testcontainers
-  - [ ] Update imports and dependencies
-  - [ ] Verify `./gradlew integrationTest` passes
+- [x] Migrate unit tests in place:
+  - [x] Update JUnit 4 annotations to JUnit 5 equivalents
+  - [x] Update `javax.*` to `jakarta.*` imports
+  - [x] Update `Mockito.Matchers` to `Mockito.ArgumentMatchers`
+  - [x] Verify `./gradlew test` passes
+- [x] Migrate integration tests in place:
+  - [x] Move test files to appropriate module if restructuring
+  - [x] Convert Docker Compose-based tests to Testcontainers
+  - [x] Configure PostgreSQL and Kafka testcontainers
+  - [x] Update imports and dependencies
+  - [x] Verify `./gradlew integrationTest` passes
 - [ ] Migrate component tests in place:
   - [ ] Move test files to appropriate module if restructuring
   - [ ] Convert to Testcontainers-based component tests
