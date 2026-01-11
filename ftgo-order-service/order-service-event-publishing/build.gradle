@@ -20,7 +20,7 @@ dependencies {
     implementation 'io.eventuate.tram.core:eventuate-tram-aggregate-domain-events'
 
     contractTestImplementation project(':order-service-domain')
-    contractTestImplementation project(':order-service-domain').sourceSets.test.output
+    contractTestImplementation testFixtures(project(':order-service-domain'))
     contractTestImplementation 'org.springframework.boot:spring-boot-starter-test'
     contractTestImplementation 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
     contractTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-events-publisher-starter'

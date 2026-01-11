@@ -13,10 +13,10 @@ dependencies {
 
     testImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support'
     testImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory'
-    testImplementation project(':order-service-domain').sourceSets.test.output
+    testImplementation testFixtures(project(':order-service-domain'))
 
     integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
-    integrationTestImplementation project(':order-service-domain').sourceSets.test.output
+    integrationTestImplementation testFixtures(project(':order-service-domain'))
     integrationTestImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support'
     integrationTestImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory'
     integrationTestImplementation(platform("org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"))

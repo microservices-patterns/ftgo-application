@@ -12,7 +12,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'io.eventuate.tram.core:eventuate-tram-testing-support'
-    testImplementation project(':order-service-domain').sourceSets.test.output
+    testImplementation testFixtures(project(':order-service-domain'))
     testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner'
     testImplementation 'io.eventuate.tram.core:eventuate-tram-spring-in-memory'
     testImplementation 'io.eventuate.tram.testingsupport.springcloudcontract:eventuate-tram-spring-testing-support-cloud-contract'
@@ -21,7 +21,7 @@ dependencies {
     integrationTestImplementation(platform("org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"))
     integrationTestImplementation 'org.springframework.cloud:spring-cloud-contract-stub-runner'
     integrationTestImplementation 'io.eventuate.tram.testingsupport.springcloudcontract:eventuate-tram-spring-testing-support-cloud-contract'
-    integrationTestImplementation project(':order-service-domain').sourceSets.test.output
+    integrationTestImplementation testFixtures(project(':order-service-domain'))
 }
 
 test {

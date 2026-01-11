@@ -10,7 +10,7 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
 
     integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
-    integrationTestImplementation project(':order-service-domain').sourceSets.test.output
+    integrationTestImplementation testFixtures(project(':order-service-domain'))
     integrationTestImplementation 'org.testcontainers:postgresql'
     integrationTestImplementation 'org.testcontainers:junit-jupiter'
     integrationTestImplementation 'org.postgresql:postgresql'

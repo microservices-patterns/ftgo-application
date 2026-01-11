@@ -10,10 +10,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     testImplementation 'io.rest-assured:spring-mock-mvc'
-    testImplementation project(':order-service-domain').sourceSets.test.output
+    testImplementation testFixtures(project(':order-service-domain'))
 
     integrationTestImplementation 'io.rest-assured:spring-mock-mvc'
     integrationTestImplementation(platform("org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"))
     integrationTestImplementation 'org.springframework.cloud:spring-cloud-contract-stub-runner'
-    integrationTestImplementation project(':order-service-domain').sourceSets.test.output
+    integrationTestImplementation testFixtures(project(':order-service-domain'))
 }
