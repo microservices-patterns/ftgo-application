@@ -1,6 +1,46 @@
+plugins {
+    id 'org.springframework.cloud.contract' version "$springCloudContractDependenciesVersion"
+}
+
+sourceSets {
+    contractTest {
+        java {
+            srcDir 'src/contractTest/java'
+        }
+        resources {
+            srcDir 'src/contractTest/resources'
+        }
+    }
+}
+
 dependencies {
     implementation project(':order-service-domain')
 
     implementation 'io.eventuate.tram.core:eventuate-tram-spring-events-publisher-starter'
     implementation 'io.eventuate.tram.core:eventuate-tram-aggregate-domain-events'
+
+    contractTestImplementation project(':order-service-domain')
+    contractTestImplementation project(':order-service-domain').sourceSets.test.output
+    contractTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+    contractTestImplementation 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
+    contractTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-events-publisher-starter'
+    contractTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-in-memory'
+    contractTestImplementation 'io.eventuate.tram.testingsupport.springcloudcontract:eventuate-tram-spring-testing-support-cloud-contract'
+}
+
+contracts {
+    testFramework = org.springframework.cloud.contract.verifier.config.TestFramework.JUNIT5
+    contractsDslDir = file("${projectDir}/src/contractTest/resources/contracts")
+    baseClassMappings {
+        baseClassMapping('.*delivery-service.*', 'net.chrisrichardson.ftgo.orderservice.contract.DeliveryServiceMessagingBase')
+        baseClassMapping('.*other-consumers.*', 'net.chrisrichardson.ftgo.orderservice.contract.MessagingBase')
+    }
+}
+
+contractTest {
+    useJUnitPlatform()
+}
+
+tasks.named('processContractTestResources') {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

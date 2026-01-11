@@ -2,4 +2,13 @@ dependencies {
     api project(':order-service-domain')
 
     api 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl'
+
+    testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner'
+    testImplementation 'io.eventuate.tram.core:eventuate-tram-spring-in-memory'
+    testImplementation 'io.eventuate.tram.testingsupport.springcloudcontract:eventuate-tram-spring-testing-support-cloud-contract'
+}
+
+test {
+    def repoDir = file("${rootProject.projectDir}/../build/repo").absolutePath
+    systemProperty "stubrunner.repositoryRoot", "file://${repoDir}"
 }

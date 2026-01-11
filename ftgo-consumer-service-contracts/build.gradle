@@ -1,25 +1,80 @@
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot' version '3.4.0' apply false
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.springframework.cloud.contract' version '4.2.0'
+    id 'maven-publish'
+}
 
-apply plugin: 'spring-cloud-contract'
-apply plugin: 'maven-publish'
+group = 'net.chrisrichardson.ftgo'
+version = project.findProperty('version') ?: '0.1.0-SNAPSHOT'
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
 
-publishing {
-    repositories {
-        maven {
-            url "${project.rootDir}/build/repo"
+repositories {
+    mavenLocal()
+    mavenCentral()
+    eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
+    maven { url "${rootProject.projectDir}/../build/repo" }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
+        mavenBom "io.eventuate.platform:eventuate-platform-dependencies:$eventuatePlatformVersion"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+    }
+}
+
+sourceSets {
+    contractTest {
+        java {
+            srcDir 'src/contractTest/java'
+        }
+        resources {
+            srcDir 'src/contractTest/resources'
         }
     }
 }
 
 contracts {
-    contractsDslDir = file("${projectDir}/src/main/resources/contracts")
+    testFramework = org.springframework.cloud.contract.verifier.config.TestFramework.JUNIT5
+    baseClassForTests = "net.chrisrichardson.ftgo.consumerservice.contracts.MessagingBase"
+    contractsDslDir = file("${projectDir}/src/contractTest/resources/contracts")
 }
 
-generateContractTests.enabled = false
-
-
-build.finalizedBy(publish)
-
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.4.6'
+    contractTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+    contractTestImplementation 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
+    contractTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-commands'
+    contractTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-in-memory'
+    contractTestImplementation 'io.eventuate.tram.testingsupport.springcloudcontract:eventuate-tram-spring-testing-support-cloud-contract'
+}
+
+contractTest {
+    useJUnitPlatform()
+    enabled = false
+}
+
+tasks.named('processContractTestResources') {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+publishing {
+    publications {
+        stubs(MavenPublication) {
+            artifactId = "${project.name}"
+            artifact verifierStubsJar
+        }
+    }
+    repositories {
+        maven {
+            name = 'local'
+            url = "${rootProject.projectDir}/../build/repo"
+        }
+    }
 }

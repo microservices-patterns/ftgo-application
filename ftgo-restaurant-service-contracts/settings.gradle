@@ -1,0 +1,9 @@
+pluginManagement {
+    repositories {
+        mavenLocal()
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+rootProject.name = 'ftgo-restaurant-service-contracts'

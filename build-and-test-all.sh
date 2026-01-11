@@ -3,10 +3,32 @@
 # Build and test all migrated services
 # This script iterates over migrated service directories and runs their builds
 
+# Contract projects to publish before building services
+CONTRACT_PROJECTS=(
+  "ftgo-kitchen-service-contracts"
+  "ftgo-accounting-service-contracts"
+  "ftgo-consumer-service-contracts"
+  "ftgo-restaurant-service-contracts"
+  "ftgo-order-service-contracts"
+)
+
 # List of migrated services (add services as they are migrated)
 MIGRATED_SERVICES=(
   "ftgo-order-service"
 )
+
+# Publish contract stubs first
+echo "Publishing contract stubs..."
+for project in "${CONTRACT_PROJECTS[@]}"; do
+  echo "Publishing: $project"
+  if [ -d "$project" ] && [ -f "$project/gradlew" ]; then
+    (cd "$project" && ./gradlew publishStubsPublicationToLocalRepository)
+  else
+    echo "WARNING: Contract project '$project' not found or missing gradlew"
+  fi
+done
+echo "Contract stubs published."
+echo ""
 
 echo "Building and testing ${#MIGRATED_SERVICES[@]} migrated service(s)..."
 
