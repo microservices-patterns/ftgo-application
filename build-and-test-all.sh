@@ -21,6 +21,7 @@ CONTRACT_PROJECTS=(
 # List of migrated services (add services as they are migrated)
 MIGRATED_SERVICES=(
   "ftgo-order-service"
+  "ftgo-consumer-service"
 )
 
 # Publish contract stubs first
