@@ -1,5 +1,9 @@
 # Project Guidelines
 
+## Executing bash commands
+
+IMPORTANT: Use simple commands that you have permission to execute. Avoid complex commands that may fail due to permission issues.
+
 ## Skills
 
 Always invoke the relevant skill before performing these actions:
