@@ -199,14 +199,13 @@ The `ftgo-consumer-service/` directory already exists. Transform it into a multi
 
 ### Task 2.3: Move source files to subprojects and migrate to Spring Boot 3.x / Jakarta EE
 
-- [ ] Move domain classes (Consumer, events) to `consumer-service-domain/`
-- [ ] Move persistence classes (ConsumerRepository) to `consumer-service-persistence/`
-- [ ] Move command handlers to `consumer-service-command-handlers/`
-- [ ] Move REST controllers to `consumer-service-restapi/`
-- [ ] Move main class to `consumer-service-main/`
-- [ ] Perform `javax.*` to `jakarta.*` migration on all source files
-- [ ] Update for Spring Boot 3.x compatibility
-- [ ] Replace Swagger annotations with SpringDoc OpenAPI
+- [x] Move domain classes (Consumer, events, ConsumerService, ConsumerRepository) to `consumer-service-domain/`
+- [x] Move command handlers to `consumer-service-command-handlers/`
+- [x] Move REST controllers to `consumer-service-restapi/`
+- [x] Move main class and configuration to `consumer-service-main/`
+- [x] Perform `javax.*` to `jakarta.*` migration on all source files
+- [x] Update for Spring Boot 3.x compatibility
+- [x] Replace Swagger annotations with SpringDoc OpenAPI (none were present)
 
 ### Task 2.4: Migrate Consumer Service tests to appropriate subprojects
 

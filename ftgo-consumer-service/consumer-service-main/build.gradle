@@ -11,6 +11,7 @@ dependencies {
     implementation project(':consumer-service-persistence')
 
     implementation 'io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka'
+    implementation 'io.eventuate.tram.core:eventuate-tram-spring-events-publisher-starter'
     implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant'
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
