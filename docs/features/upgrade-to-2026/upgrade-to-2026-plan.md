@@ -222,10 +222,10 @@ The `ftgo-consumer-service/` directory already exists. Transform it into a multi
 
 ### Task 2.5: Embed contract tests in consumer-service-event-publishing
 
-- [ ] Copy contracts from `ftgo-consumer-service-contracts/` to `consumer-service-event-publishing/src/contractTest/`
-- [ ] Configure Spring Cloud Contract 4.x in `consumer-service-event-publishing/build.gradle`
-- [ ] Configure stub publishing
-- [ ] Verify `./gradlew contractTest` passes
+- [x] Move contracts to `consumer-service-event-publishing/src/contractTest/`
+- [x] Configure Spring Cloud Contract 4.x in `consumer-service-event-publishing/build.gradle`
+- [x] Configure stub publishing
+- [x] Verify `./gradlew contractTest` passes
 
 ### Task 2.6: Update Consumer Service Dockerfile and infrastructure
 

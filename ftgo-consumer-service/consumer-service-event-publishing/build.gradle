@@ -33,7 +33,6 @@ contracts {
     testFramework = org.springframework.cloud.contract.verifier.config.TestFramework.JUNIT5
     contractsDslDir = file("${projectDir}/src/contractTest/resources/contracts")
     baseClassForTests = "net.chrisrichardson.ftgo.consumerservice.contracts.MessagingBase"
-    failOnNoContracts = false
 }
 
 contractTest {
