@@ -8,6 +8,7 @@ import io.eventuate.tram.testutil.TestMessageConsumerFactory;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.common.PersonName;
 import net.chrisrichardson.ftgo.consumerservice.api.ValidateOrderByConsumer;
+import net.chrisrichardson.ftgo.consumerservice.domain.ConsumerServiceConfiguration;
 import net.chrisrichardson.ftgo.consumerservice.web.CreateConsumerRequest;
 import net.chrisrichardson.ftgo.consumerservice.web.ConsumerWebConfiguration;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,8 @@ class ConsumerServiceIntegrationTest {
   private int port;
 
   @Configuration
-  @Import({ConsumerWebConfiguration.class,
+  @Import({ConsumerServiceConfiguration.class,
+          ConsumerWebConfiguration.class,
           TramCommandProducerConfiguration.class,
           TramInMemoryConfiguration.class})
   @EnableAutoConfiguration

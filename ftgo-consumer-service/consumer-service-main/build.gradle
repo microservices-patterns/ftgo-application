@@ -29,6 +29,7 @@ dependencies {
     // Integration test dependencies
     integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
     integrationTestImplementation testFixtures(project(':consumer-service-domain'))
+    integrationTestImplementation 'io.rest-assured:rest-assured'
     integrationTestImplementation 'org.testcontainers:postgresql'
     integrationTestImplementation 'org.testcontainers:junit-jupiter'
     integrationTestImplementation 'io.eventuate.messaging.kafka:eventuate-messaging-kafka-testcontainers'

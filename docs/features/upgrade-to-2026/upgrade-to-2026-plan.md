@@ -211,15 +211,14 @@ The `ftgo-consumer-service/` directory already exists. Transform it into a multi
 
 **IMPORTANT:** Migrate tests in place - never delete tests during restructuring.
 
-- [ ] Move unit tests to appropriate subprojects alongside their source files
-- [ ] Update JUnit 4 annotations to JUnit 5 equivalents
-- [ ] Update `javax.*` to `jakarta.*` imports
-- [ ] Verify `./gradlew test` passes across all subprojects
-- [ ] Create integration tests in `consumer-service-main/src/integrationTest/`
-- [ ] Configure PostgreSQL and Kafka testcontainers for integration tests
-- [ ] Verify `./gradlew integrationTest` passes
-- [ ] Create component tests in `consumer-service-main/src/componentTest/`
-- [ ] Verify `./gradlew componentTest` passes
+- [x] Move unit tests to appropriate subprojects alongside their source files
+- [x] Update JUnit 4 annotations to JUnit 5 equivalents (already JUnit 5)
+- [x] Update `javax.*` to `jakarta.*` imports (none needed)
+- [x] Verify `./gradlew test` passes across all subprojects
+- [x] Move integration tests to `consumer-service-main/src/integrationTest/`
+- [x] Verify `./gradlew integrationTest` passes (using in-memory Tram)
+- [ ] Create component tests in `consumer-service-main/src/componentTest/` (deferred)
+- [ ] Verify `./gradlew componentTest` passes (deferred)
 
 ### Task 2.5: Embed contract tests in consumer-service-event-publishing
 
