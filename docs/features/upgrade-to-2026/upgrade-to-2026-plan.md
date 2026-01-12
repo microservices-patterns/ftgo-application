@@ -429,51 +429,55 @@ The `ftgo-accounting-service/` directory already exists. Transform it into a mul
 
 Migrate the Restaurant Service which provides menu data for order creation.
 
-### Task 5.1: Transform ftgo-restaurant-service into self-contained Gradle project
+### Task 5.1: Transform ftgo-restaurant-service into self-contained multi-module Gradle project
 
-The `ftgo-restaurant-service/` directory already exists. Transform it:
+The `ftgo-restaurant-service/` directory already exists. Transform it into a multi-module project:
 
-- [ ] Create `settings.gradle` with pluginManagement block
+- [ ] Create `settings.gradle` with pluginManagement block and subproject includes:
+  - [ ] `restaurant-service-domain` - Core domain model (Restaurant, Menu) and events
+  - [ ] `restaurant-service-persistence` - JPA repositories and orm.xml
+  - [ ] `restaurant-service-event-publishing` - Publishes restaurant events + provider contract tests
+  - [ ] `restaurant-service-restapi` - REST controllers
+  - [ ] `restaurant-service-main` - Spring Boot application, component tests
 - [ ] Create `gradle.properties` with version properties
-- [ ] Rewrite `build.gradle` to be self-contained
+- [ ] Create root `build.gradle` with common configuration
+- [ ] Create each subproject's `build.gradle`
 - [ ] Copy Gradle wrapper
+- [ ] Configure `java-test-fixtures` plugin in domain module
 - [ ] Verify `./gradlew tasks` runs successfully
 
-### Task 5.2: Embed API and shared classes into Restaurant Service
+### Task 5.2: Embed API and shared classes into Restaurant Service subprojects
 
-- [ ] Copy classes from `ftgo-restaurant-service-api/` into `ftgo-restaurant-service/src/main/java/`
-- [ ] Copy required shared classes
-- [ ] Remove compile dependencies on external API modules
+- [ ] Copy shared classes into `restaurant-service-domain/src/main/java/`
+- [ ] Copy API classes from `ftgo-restaurant-service-api/` into appropriate subprojects
+- [ ] Update subproject dependencies
 
-### Task 5.3: Migrate Restaurant Service source code to Spring Boot 3.x / Jakarta EE
+### Task 5.3: Move source files to subprojects and migrate to Spring Boot 3.x / Jakarta EE
 
-- [ ] Perform `javax.*` to `jakarta.*` migration on all source files
+- [ ] Move domain classes to `restaurant-service-domain/`
+- [ ] Move persistence classes to `restaurant-service-persistence/`
+- [ ] Move REST controllers to `restaurant-service-restapi/`
+- [ ] Move main class to `restaurant-service-main/`
+- [ ] Perform `javax.*` to `jakarta.*` migration
 - [ ] Update for Spring Boot 3.x compatibility
 
-### Task 5.4: Migrate Restaurant Service tests to Testcontainers
+### Task 5.4: Migrate Restaurant Service tests to appropriate subprojects
 
-**IMPORTANT:** Migrate tests in place - never delete tests during restructuring.
+- [ ] Move unit tests alongside source files in each subproject
+- [ ] Update JUnit 4 to JUnit 5
+- [ ] Update `javax.*` to `jakarta.*` imports
+- [ ] Verify `./gradlew test` passes
+- [ ] Create integration tests in `restaurant-service-main/src/integrationTest/`
+- [ ] Verify `./gradlew integrationTest` passes
+- [ ] Create component tests in `restaurant-service-main/src/componentTest/`
+- [ ] Verify `./gradlew componentTest` passes
 
-- [ ] Migrate unit tests in place:
-  - [ ] Update JUnit 4 annotations to JUnit 5 equivalents
-  - [ ] Update `javax.*` to `jakarta.*` imports
-  - [ ] Update `Mockito.Matchers` to `Mockito.ArgumentMatchers`
-  - [ ] Verify `./gradlew test` passes
-- [ ] Migrate integration tests in place:
-  - [ ] Move test files to appropriate module if restructuring
-  - [ ] Convert Docker Compose-based tests to Testcontainers
-  - [ ] Configure PostgreSQL and Kafka testcontainers
-  - [ ] Verify `./gradlew integrationTest` passes
-- [ ] Migrate component tests in place:
-  - [ ] Move test files to appropriate module if restructuring
-  - [ ] Convert to Testcontainers-based component tests
-  - [ ] Verify `./gradlew componentTest` passes
+### Task 5.5: Embed contract tests in restaurant-service-event-publishing
 
-### Task 5.5: Embed contract tests in Restaurant Service (if applicable)
-
-- [ ] Check for existing contracts
-- [ ] If contracts exist, copy to `src/contractTest/` and configure Spring Cloud Contract 4.x
-- [ ] Verify contract tests pass
+- [ ] Copy contracts from `ftgo-restaurant-service-contracts/` to `restaurant-service-event-publishing/src/contractTest/`
+- [ ] Configure Spring Cloud Contract 4.x
+- [ ] Configure stub publishing
+- [ ] Verify `./gradlew contractTest` passes
 
 ### Task 5.6: Update Restaurant Service Dockerfile and infrastructure
 
@@ -489,23 +493,7 @@ The `ftgo-restaurant-service/` directory already exists. Transform it:
 - [ ] Verify restaurant events are published and consumed by Kitchen Service
 - [ ] Verify `./gradlew endToEndTest` passes
 
-### Task 5.8: Restructure into multi-module Gradle project
-
-Following the Order Service architecture, split into focused subprojects:
-
-- [ ] Create subproject structure in `settings.gradle`:
-  - [ ] `restaurant-service-domain` - Core domain model (Restaurant, Menu) and events
-  - [ ] `restaurant-service-persistence` - JPA repositories and orm.xml
-  - [ ] `restaurant-service-event-publishing` - Publishes restaurant events + provider contract tests
-  - [ ] `restaurant-service-restapi` - REST controllers
-  - [ ] `restaurant-service-main` - Spring Boot application, component tests
-- [ ] Move source files to appropriate subprojects
-- [ ] **Migrate tests in place** - move test files alongside their source files to the correct subproject
-- [ ] Configure `java-test-fixtures` plugin in domain module for shared test utilities
-- [ ] Update inter-module dependencies in each `build.gradle`
-- [ ] Verify all tests pass after restructuring: `./gradlew build`
-
-### Task 5.9: Verify Restaurant Service integration
+### Task 5.8: Verify Restaurant Service integration
 
 - [ ] Run `./build-and-test-all.sh` and verify all five services build
 - [ ] Commit all changes for Steel Thread 5
@@ -516,47 +504,51 @@ Following the Order Service architecture, split into focused subprojects:
 
 Migrate the Delivery Service for delivery scheduling.
 
-### Task 6.1: Transform ftgo-delivery-service into self-contained Gradle project
+### Task 6.1: Transform ftgo-delivery-service into self-contained multi-module Gradle project
 
-The `ftgo-delivery-service/` directory already exists. Transform it:
+The `ftgo-delivery-service/` directory already exists. Transform it into a multi-module project:
 
-- [ ] Create `settings.gradle` with pluginManagement block
+- [ ] Create `settings.gradle` with pluginManagement block and subproject includes:
+  - [ ] `delivery-service-domain` - Core domain model (Delivery, Courier) and events
+  - [ ] `delivery-service-persistence` - JPA repositories and orm.xml
+  - [ ] `delivery-service-event-handling-order` - Consumes Order events + consumer contract tests
+  - [ ] `delivery-service-event-handling-restaurant` - Consumes Restaurant events + consumer contract tests
+  - [ ] `delivery-service-restapi` - REST controllers
+  - [ ] `delivery-service-main` - Spring Boot application, component tests
 - [ ] Create `gradle.properties` with version properties
-- [ ] Rewrite `build.gradle` to be self-contained
+- [ ] Create root `build.gradle` with common configuration
+- [ ] Create each subproject's `build.gradle`
 - [ ] Copy Gradle wrapper
+- [ ] Configure `java-test-fixtures` plugin in domain module
 - [ ] Verify `./gradlew tasks` runs successfully
 
-### Task 6.2: Embed API and shared classes into Delivery Service
+### Task 6.2: Embed API and shared classes into Delivery Service subprojects
 
-- [ ] Copy classes from `ftgo-delivery-service-api/` (if exists) into `ftgo-delivery-service/src/main/java/`
-- [ ] Copy Order Service API classes needed for order events
-- [ ] Copy Restaurant Service API classes needed
-- [ ] Copy required shared classes
-- [ ] Remove compile dependencies on external API modules
+- [ ] Copy shared classes into `delivery-service-domain/src/main/java/`
+- [ ] Copy Order Service API classes into `delivery-service-event-handling-order/`
+- [ ] Copy Restaurant Service API classes into `delivery-service-event-handling-restaurant/`
+- [ ] Update subproject dependencies
 
-### Task 6.3: Migrate Delivery Service source code to Spring Boot 3.x / Jakarta EE
+### Task 6.3: Move source files to subprojects and migrate to Spring Boot 3.x / Jakarta EE
 
-- [ ] Perform `javax.*` to `jakarta.*` migration on all source files
+- [ ] Move domain classes to `delivery-service-domain/`
+- [ ] Move persistence classes to `delivery-service-persistence/`
+- [ ] Move event handling to appropriate subprojects
+- [ ] Move REST controllers to `delivery-service-restapi/`
+- [ ] Move main class to `delivery-service-main/`
+- [ ] Perform `javax.*` to `jakarta.*` migration
 - [ ] Update for Spring Boot 3.x compatibility
 
-### Task 6.4: Migrate Delivery Service tests to Testcontainers
+### Task 6.4: Migrate Delivery Service tests to appropriate subprojects
 
-**IMPORTANT:** Migrate tests in place - never delete tests during restructuring.
-
-- [ ] Migrate unit tests in place:
-  - [ ] Update JUnit 4 annotations to JUnit 5 equivalents
-  - [ ] Update `javax.*` to `jakarta.*` imports
-  - [ ] Update `Mockito.Matchers` to `Mockito.ArgumentMatchers`
-  - [ ] Verify `./gradlew test` passes
-- [ ] Migrate integration tests in place:
-  - [ ] Move test files to appropriate module if restructuring
-  - [ ] Convert Docker Compose-based tests to Testcontainers
-  - [ ] Configure PostgreSQL and Kafka testcontainers
-  - [ ] Verify `./gradlew integrationTest` passes
-- [ ] Migrate component tests in place:
-  - [ ] Move test files to appropriate module if restructuring
-  - [ ] Convert to Testcontainers-based component tests
-  - [ ] Verify `./gradlew componentTest` passes
+- [ ] Move unit tests alongside source files in each subproject
+- [ ] Update JUnit 4 to JUnit 5
+- [ ] Update `javax.*` to `jakarta.*` imports
+- [ ] Verify `./gradlew test` passes
+- [ ] Create integration tests in `delivery-service-main/src/integrationTest/`
+- [ ] Verify `./gradlew integrationTest` passes
+- [ ] Create component tests in `delivery-service-main/src/componentTest/`
+- [ ] Verify `./gradlew componentTest` passes
 
 ### Task 6.5: Update Delivery Service Dockerfile and infrastructure
 
@@ -571,24 +563,7 @@ The `ftgo-delivery-service/` directory already exists. Transform it:
 - [ ] Add end-to-end test that verifies delivery is scheduled for approved order
 - [ ] Verify `./gradlew endToEndTest` passes
 
-### Task 6.7: Restructure into multi-module Gradle project
-
-Following the Order Service architecture, split into focused subprojects:
-
-- [ ] Create subproject structure in `settings.gradle`:
-  - [ ] `delivery-service-domain` - Core domain model (Delivery, Courier) and events
-  - [ ] `delivery-service-persistence` - JPA repositories and orm.xml
-  - [ ] `delivery-service-event-handling-order` - Consumes Order events + consumer contract tests
-  - [ ] `delivery-service-event-handling-restaurant` - Consumes Restaurant events + consumer contract tests
-  - [ ] `delivery-service-restapi` - REST controllers
-  - [ ] `delivery-service-main` - Spring Boot application, component tests
-- [ ] Move source files to appropriate subprojects
-- [ ] **Migrate tests in place** - move test files alongside their source files to the correct subproject
-- [ ] Configure `java-test-fixtures` plugin in domain module for shared test utilities
-- [ ] Update inter-module dependencies in each `build.gradle`
-- [ ] Verify all tests pass after restructuring: `./gradlew build`
-
-### Task 6.8: Verify Delivery Service integration
+### Task 6.7: Verify Delivery Service integration
 
 - [ ] Run `./build-and-test-all.sh` and verify all six services build
 - [ ] Commit all changes for Steel Thread 6
@@ -599,48 +574,51 @@ Following the Order Service architecture, split into focused subprojects:
 
 Migrate the Order History Service which maintains a DynamoDB read model.
 
-### Task 7.1: Transform ftgo-order-history-service into self-contained Gradle project
+### Task 7.1: Transform ftgo-order-history-service into self-contained multi-module Gradle project
 
-The `ftgo-order-history-service/` directory already exists. Transform it:
+The `ftgo-order-history-service/` directory already exists. Transform it into a multi-module project:
 
-- [ ] Create `settings.gradle` with pluginManagement block
+- [ ] Create `settings.gradle` with pluginManagement block and subproject includes:
+  - [ ] `order-history-service-domain` - Core domain model and query DTOs
+  - [ ] `order-history-service-persistence` - DynamoDB repositories
+  - [ ] `order-history-service-event-handling` - Consumes Order events + consumer contract tests
+  - [ ] `order-history-service-restapi` - REST controllers for queries
+  - [ ] `order-history-service-main` - Spring Boot application, component tests
 - [ ] Create `gradle.properties` with version properties
-- [ ] Rewrite `build.gradle` to be self-contained
+- [ ] Create root `build.gradle` with common configuration
+- [ ] Create each subproject's `build.gradle`
 - [ ] Add AWS DynamoDB dependencies compatible with Java 17
 - [ ] Copy Gradle wrapper
+- [ ] Configure `java-test-fixtures` plugin in domain module
 - [ ] Verify `./gradlew tasks` runs successfully
 
-### Task 7.2: Embed API and shared classes into Order History Service
+### Task 7.2: Embed API and shared classes into Order History Service subprojects
 
-- [ ] Copy Order Service API classes needed for order events into `ftgo-order-history-service/src/main/java/`
-- [ ] Copy required shared classes
-- [ ] Remove compile dependencies on external API modules
+- [ ] Copy shared classes into `order-history-service-domain/src/main/java/`
+- [ ] Copy Order Service API classes into `order-history-service-event-handling/`
+- [ ] Update subproject dependencies
 
-### Task 7.3: Migrate Order History Service source code to Spring Boot 3.x / Jakarta EE
+### Task 7.3: Move source files to subprojects and migrate to Spring Boot 3.x / Jakarta EE
 
-- [ ] Perform `javax.*` to `jakarta.*` migration on all source files
+- [ ] Move domain classes to `order-history-service-domain/`
+- [ ] Move persistence classes to `order-history-service-persistence/`
+- [ ] Move event handling to `order-history-service-event-handling/`
+- [ ] Move REST controllers to `order-history-service-restapi/`
+- [ ] Move main class to `order-history-service-main/`
+- [ ] Perform `javax.*` to `jakarta.*` migration
 - [ ] Update AWS SDK dependencies for Java 17 compatibility
 - [ ] Update for Spring Boot 3.x compatibility
 
-### Task 7.4: Migrate Order History Service tests to Testcontainers
+### Task 7.4: Migrate Order History Service tests to appropriate subprojects
 
-**IMPORTANT:** Migrate tests in place - never delete tests during restructuring.
-
-- [ ] Migrate unit tests in place:
-  - [ ] Update JUnit 4 annotations to JUnit 5 equivalents
-  - [ ] Update `javax.*` to `jakarta.*` imports
-  - [ ] Update `Mockito.Matchers` to `Mockito.ArgumentMatchers`
-  - [ ] Verify `./gradlew test` passes
-- [ ] Migrate integration tests in place:
-  - [ ] Move test files to appropriate module if restructuring
-  - [ ] Configure DynamoDB Local testcontainer
-  - [ ] Configure Kafka testcontainers
-  - [ ] Update imports and dependencies
-  - [ ] Verify `./gradlew integrationTest` passes
-- [ ] Migrate component tests in place:
-  - [ ] Move test files to appropriate module if restructuring
-  - [ ] Convert to Testcontainers-based component tests
-  - [ ] Verify `./gradlew componentTest` passes
+- [ ] Move unit tests alongside source files in each subproject
+- [ ] Update JUnit 4 to JUnit 5
+- [ ] Update `javax.*` to `jakarta.*` imports
+- [ ] Verify `./gradlew test` passes
+- [ ] Create integration tests with DynamoDB Local testcontainer
+- [ ] Verify `./gradlew integrationTest` passes
+- [ ] Create component tests in `order-history-service-main/src/componentTest/`
+- [ ] Verify `./gradlew componentTest` passes
 
 ### Task 7.5: Update Order History Service Dockerfile and infrastructure
 
@@ -656,23 +634,7 @@ The `ftgo-order-history-service/` directory already exists. Transform it:
 - [ ] Verify order history query returns correct data
 - [ ] Verify `./gradlew endToEndTest` passes
 
-### Task 7.7: Restructure into multi-module Gradle project
-
-Following the Order Service architecture, split into focused subprojects:
-
-- [ ] Create subproject structure in `settings.gradle`:
-  - [ ] `order-history-service-domain` - Core domain model and query DTOs
-  - [ ] `order-history-service-persistence` - DynamoDB repositories
-  - [ ] `order-history-service-event-handling` - Consumes Order events + consumer contract tests
-  - [ ] `order-history-service-restapi` - REST controllers for queries
-  - [ ] `order-history-service-main` - Spring Boot application, component tests
-- [ ] Move source files to appropriate subprojects
-- [ ] **Migrate tests in place** - move test files alongside their source files to the correct subproject
-- [ ] Configure `java-test-fixtures` plugin in domain module for shared test utilities
-- [ ] Update inter-module dependencies in each `build.gradle`
-- [ ] Verify all tests pass after restructuring: `./gradlew build`
-
-### Task 7.8: Verify Order History Service integration
+### Task 7.7: Verify Order History Service integration
 
 - [ ] Run `./build-and-test-all.sh` and verify all seven services build
 - [ ] Commit all changes for Steel Thread 7
@@ -683,35 +645,36 @@ Following the Order Service architecture, split into focused subprojects:
 
 Migrate the API Gateway as the final service.
 
-### Task 8.1: Transform ftgo-api-gateway into self-contained Gradle project
+### Task 8.1: Transform ftgo-api-gateway into self-contained multi-module Gradle project
 
-The `ftgo-api-gateway/` directory already exists. Transform it:
+The `ftgo-api-gateway/` directory already exists. Transform it into a multi-module project:
 
-- [ ] Create `settings.gradle` with pluginManagement block
+- [ ] Create `settings.gradle` with pluginManagement block and subproject includes:
+  - [ ] `api-gateway-routing` - Route configurations and filters
+  - [ ] `api-gateway-main` - Spring Boot application
 - [ ] Create `gradle.properties` with version properties
-- [ ] Rewrite `build.gradle` to be self-contained
+- [ ] Create root `build.gradle` with common configuration
+- [ ] Create each subproject's `build.gradle`
 - [ ] Add Spring Cloud Gateway dependencies for Spring Boot 3.x
 - [ ] Copy Gradle wrapper
 - [ ] Verify `./gradlew tasks` runs successfully
 
-### Task 8.2: Migrate API Gateway source code to Spring Boot 3.x / Jakarta EE
+### Task 8.2: Move source files to subprojects and migrate to Spring Boot 3.x / Jakarta EE
 
+- [ ] Move routing configuration to `api-gateway-routing/`
+- [ ] Move main class to `api-gateway-main/`
 - [ ] Update Spring Cloud Gateway configuration for Spring Boot 3.x
 - [ ] Perform `javax.*` to `jakarta.*` migration (if applicable)
 - [ ] Update route configurations for new service structure
 
-### Task 8.3: Migrate API Gateway tests
+### Task 8.3: Migrate API Gateway tests to appropriate subprojects
 
-**IMPORTANT:** Migrate tests in place - never delete tests during restructuring.
-
-- [ ] Migrate unit tests in place:
-  - [ ] Update JUnit 4 annotations to JUnit 5 equivalents
-  - [ ] Update `javax.*` to `jakarta.*` imports
-  - [ ] Verify `./gradlew test` passes
-- [ ] Migrate integration tests in place (if any):
-  - [ ] Move test files to appropriate module if restructuring
-  - [ ] Update imports and dependencies
-  - [ ] Verify `./gradlew integrationTest` passes
+- [ ] Move unit tests alongside source files
+- [ ] Update JUnit 4 to JUnit 5
+- [ ] Update `javax.*` to `jakarta.*` imports
+- [ ] Verify `./gradlew test` passes
+- [ ] Create integration tests (if needed)
+- [ ] Verify `./gradlew integrationTest` passes
 
 ### Task 8.4: Update API Gateway Dockerfile and infrastructure
 
@@ -727,19 +690,7 @@ The `ftgo-api-gateway/` directory already exists. Transform it:
 - [ ] Verify all routes work correctly
 - [ ] Verify `./gradlew endToEndTest` passes
 
-### Task 8.6: Restructure into multi-module Gradle project
-
-Following the Order Service architecture, split into focused subprojects:
-
-- [ ] Create subproject structure in `settings.gradle`:
-  - [ ] `api-gateway-routing` - Route configurations and filters
-  - [ ] `api-gateway-main` - Spring Boot application
-- [ ] Move source files to appropriate subprojects
-- [ ] **Migrate tests in place** - move test files alongside their source files to the correct subproject
-- [ ] Update inter-module dependencies in each `build.gradle`
-- [ ] Verify all tests pass after restructuring: `./gradlew build`
-
-### Task 8.7: Verify API Gateway integration
+### Task 8.6: Verify API Gateway integration
 
 - [ ] Run `./build-and-test-all.sh` and verify all eight services build
 - [ ] Commit all changes for Steel Thread 8
