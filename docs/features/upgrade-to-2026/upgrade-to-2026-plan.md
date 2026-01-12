@@ -238,6 +238,8 @@ The `ftgo-consumer-service/` directory already exists. Transform it into a multi
 
 ### Task 2.7: Add end-to-end test for Order + Consumer validation
 
+(Deferred - end-to-end test project setup will be more valuable once more services are migrated)
+
 - [ ] Add end-to-end test that creates an order and verifies consumer validation step
 - [ ] Test should start both Order Service and Consumer Service containers
 - [ ] Verify CreateOrderSaga reaches consumer validation step
@@ -245,9 +247,9 @@ The `ftgo-consumer-service/` directory already exists. Transform it into a multi
 
 ### Task 2.8: Verify Consumer Service integration
 
-- [ ] Run `./build-and-test-all.sh` and verify both services build
-- [ ] Verify Docker Compose starts both services
-- [ ] Commit all changes for Steel Thread 2
+- [x] Run `./build-and-test-all.sh` and verify both services build
+- [ ] Verify Docker Compose starts both services (deferred)
+- [x] Commit all changes for Steel Thread 2
 
 ---
 
