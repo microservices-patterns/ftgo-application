@@ -172,54 +172,60 @@ The Dockerfile may already exist. Update it for Java 17:
 
 Migrate the Consumer Service as the first saga participant that Order Service communicates with.
 
-### Task 2.1: Transform ftgo-consumer-service into self-contained Gradle project
+### Task 2.1: Transform ftgo-consumer-service into self-contained multi-module Gradle project
 
-The `ftgo-consumer-service/` directory already exists. Transform it:
+The `ftgo-consumer-service/` directory already exists. Transform it into a multi-module project following the Order Service architecture:
 
-- [x] Create `settings.gradle` with pluginManagement block
-- [x] Create `gradle.properties` with version properties (copy from Order Service)
-- [x] Rewrite `build.gradle` to be self-contained (copy patterns from Order Service)
-- [x] Copy Gradle wrapper from Order Service
-- [x] Verify `./gradlew tasks` runs successfully
+- [ ] Create `settings.gradle` with pluginManagement block and subproject includes:
+  - [ ] `consumer-service-domain` - Core domain model (Consumer) and events
+  - [ ] `consumer-service-persistence` - JPA repositories and orm.xml
+  - [ ] `consumer-service-command-handlers` - Handles commands from Order Service (ValidateOrderByConsumer)
+  - [ ] `consumer-service-event-publishing` - Publishes consumer events + provider contract tests
+  - [ ] `consumer-service-restapi` - REST controllers
+  - [ ] `consumer-service-main` - Spring Boot application, component tests
+- [ ] Create `gradle.properties` with version properties (copy from Order Service)
+- [ ] Create root `build.gradle` with common configuration for all subprojects
+- [ ] Create each subproject's `build.gradle` with appropriate dependencies
+- [ ] Copy Gradle wrapper from Order Service
+- [ ] Configure `java-test-fixtures` plugin in domain module for shared test utilities
+- [ ] Verify `./gradlew tasks` runs successfully
 
-### Task 2.2: Embed API and shared classes into Consumer Service
+### Task 2.2: Embed API and shared classes into Consumer Service subprojects
 
-- [x] Copy classes from `ftgo-consumer-service-api/` into `ftgo-consumer-service/src/main/java/`
-- [x] Copy Order Service API classes needed to receive commands into `ftgo-consumer-service/src/main/java/`
-- [x] Copy required shared classes (Money, PersonName, etc.) into `ftgo-consumer-service/src/main/java/`
-- [x] Remove compile dependencies on external API modules from build.gradle
+- [ ] Copy shared classes (Money, PersonName, etc.) into `consumer-service-domain/src/main/java/`
+- [ ] Copy API classes from `ftgo-consumer-service-api/` into appropriate subprojects
+- [ ] Copy Order Service API classes needed to receive commands into `consumer-service-command-handlers/`
+- [ ] Update subproject dependencies (no external API module dependencies)
 
-### Task 2.3: Migrate Consumer Service source code to Spring Boot 3.x / Jakarta EE
+### Task 2.3: Move source files to subprojects and migrate to Spring Boot 3.x / Jakarta EE
 
-- [x] Perform `javax.*` to `jakarta.*` migration on all source files
-- [x] Update for Spring Boot 3.x compatibility
-- [x] Replace Swagger annotations with SpringDoc OpenAPI
+- [ ] Move domain classes (Consumer, events) to `consumer-service-domain/`
+- [ ] Move persistence classes (ConsumerRepository) to `consumer-service-persistence/`
+- [ ] Move command handlers to `consumer-service-command-handlers/`
+- [ ] Move REST controllers to `consumer-service-restapi/`
+- [ ] Move main class to `consumer-service-main/`
+- [ ] Perform `javax.*` to `jakarta.*` migration on all source files
+- [ ] Update for Spring Boot 3.x compatibility
+- [ ] Replace Swagger annotations with SpringDoc OpenAPI
 
-### Task 2.4: Migrate Consumer Service tests to Testcontainers
+### Task 2.4: Migrate Consumer Service tests to appropriate subprojects
 
 **IMPORTANT:** Migrate tests in place - never delete tests during restructuring.
 
-- [x] Migrate unit tests in place:
-  - [x] Update JUnit 4 annotations to JUnit 5 equivalents
-  - [x] Update `javax.*` to `jakarta.*` imports
-  - [x] Update `Mockito.Matchers` to `Mockito.ArgumentMatchers`
-  - [x] Verify `./gradlew test` passes
-- [x] Migrate integration tests in place:
-  - [x] Move test files to appropriate module if restructuring
-  - [x] Convert Docker Compose-based tests to Testcontainers
-  - [x] Configure PostgreSQL and Kafka testcontainers
-  - [x] Update imports and dependencies
-  - [x] Verify `./gradlew integrationTest` passes
-- [ ] Migrate component tests in place:
-  - [ ] Move test files to appropriate module if restructuring
-  - [ ] Convert to Testcontainers-based component tests
-  - [ ] Update imports and dependencies
-  - [ ] Verify `./gradlew componentTest` passes
+- [ ] Move unit tests to appropriate subprojects alongside their source files
+- [ ] Update JUnit 4 annotations to JUnit 5 equivalents
+- [ ] Update `javax.*` to `jakarta.*` imports
+- [ ] Verify `./gradlew test` passes across all subprojects
+- [ ] Create integration tests in `consumer-service-main/src/integrationTest/`
+- [ ] Configure PostgreSQL and Kafka testcontainers for integration tests
+- [ ] Verify `./gradlew integrationTest` passes
+- [ ] Create component tests in `consumer-service-main/src/componentTest/`
+- [ ] Verify `./gradlew componentTest` passes
 
-### Task 2.5: Embed contract tests in Consumer Service
+### Task 2.5: Embed contract tests in consumer-service-event-publishing
 
-- [ ] Copy contracts from `ftgo-consumer-service-contracts/` to `src/contractTest/`
-- [ ] Configure Spring Cloud Contract 4.x
+- [ ] Copy contracts from `ftgo-consumer-service-contracts/` to `consumer-service-event-publishing/src/contractTest/`
+- [ ] Configure Spring Cloud Contract 4.x in `consumer-service-event-publishing/build.gradle`
 - [ ] Configure stub publishing
 - [ ] Verify `./gradlew contractTest` passes
 
@@ -238,24 +244,7 @@ The `ftgo-consumer-service/` directory already exists. Transform it:
 - [ ] Verify CreateOrderSaga reaches consumer validation step
 - [ ] Verify `./gradlew endToEndTest` passes in `end-to-end-tests/`
 
-### Task 2.8: Restructure into multi-module Gradle project
-
-Following the Order Service architecture, split into focused subprojects:
-
-- [ ] Create subproject structure in `settings.gradle`:
-  - [ ] `consumer-service-domain` - Core domain model (Consumer) and events
-  - [ ] `consumer-service-persistence` - JPA repositories and orm.xml
-  - [ ] `consumer-service-command-handlers` - Handles commands from Order Service (ValidateOrderByConsumer)
-  - [ ] `consumer-service-event-publishing` - Publishes consumer events + provider contract tests
-  - [ ] `consumer-service-restapi` - REST controllers
-  - [ ] `consumer-service-main` - Spring Boot application, component tests
-- [ ] Move source files to appropriate subprojects
-- [ ] **Migrate tests in place** - move test files alongside their source files to the correct subproject
-- [ ] Configure `java-test-fixtures` plugin in domain module for shared test utilities
-- [ ] Update inter-module dependencies in each `build.gradle`
-- [ ] Verify all tests pass after restructuring: `./gradlew build`
-
-### Task 2.9: Verify Consumer Service integration
+### Task 2.8: Verify Consumer Service integration
 
 - [ ] Run `./build-and-test-all.sh` and verify both services build
 - [ ] Verify Docker Compose starts both services
@@ -267,51 +256,58 @@ Following the Order Service architecture, split into focused subprojects:
 
 Migrate the Kitchen Service for ticket creation in the CreateOrderSaga.
 
-### Task 3.1: Transform ftgo-kitchen-service into self-contained Gradle project
+### Task 3.1: Transform ftgo-kitchen-service into self-contained multi-module Gradle project
 
-The `ftgo-kitchen-service/` directory already exists. Transform it:
+The `ftgo-kitchen-service/` directory already exists. Transform it into a multi-module project:
 
-- [ ] Create `settings.gradle` with pluginManagement block
+- [ ] Create `settings.gradle` with pluginManagement block and subproject includes:
+  - [ ] `kitchen-service-domain` - Core domain model (Ticket, Restaurant) and events
+  - [ ] `kitchen-service-persistence` - JPA repositories and orm.xml
+  - [ ] `kitchen-service-command-handlers` - Handles commands from Order Service
+  - [ ] `kitchen-service-event-handling` - Consumes Restaurant events + consumer contract tests
+  - [ ] `kitchen-service-event-publishing` - Publishes ticket events + provider contract tests
+  - [ ] `kitchen-service-restapi` - REST controllers
+  - [ ] `kitchen-service-main` - Spring Boot application, component tests
 - [ ] Create `gradle.properties` with version properties
-- [ ] Rewrite `build.gradle` to be self-contained
-- [ ] Copy Gradle wrapper
+- [ ] Create root `build.gradle` with common configuration for all subprojects
+- [ ] Create each subproject's `build.gradle` with appropriate dependencies
+- [ ] Copy Gradle wrapper from Order Service
+- [ ] Configure `java-test-fixtures` plugin in domain module
 - [ ] Verify `./gradlew tasks` runs successfully
 
-### Task 3.2: Embed API and shared classes into Kitchen Service
+### Task 3.2: Embed API and shared classes into Kitchen Service subprojects
 
-- [ ] Copy classes from `ftgo-kitchen-service-api/` into `ftgo-kitchen-service/src/main/java/`
-- [ ] Copy Order Service API classes needed to receive commands
-- [ ] Copy Restaurant Service API classes needed (restaurant events)
-- [ ] Copy required shared classes
-- [ ] Remove compile dependencies on external API modules
+- [ ] Copy shared classes into `kitchen-service-domain/src/main/java/`
+- [ ] Copy API classes from `ftgo-kitchen-service-api/` into appropriate subprojects
+- [ ] Copy Order Service API classes into `kitchen-service-command-handlers/`
+- [ ] Copy Restaurant Service API classes into `kitchen-service-event-handling/`
+- [ ] Update subproject dependencies
 
-### Task 3.3: Migrate Kitchen Service source code to Spring Boot 3.x / Jakarta EE
+### Task 3.3: Move source files to subprojects and migrate to Spring Boot 3.x / Jakarta EE
 
-- [ ] Perform `javax.*` to `jakarta.*` migration on all source files
+- [ ] Move domain classes to `kitchen-service-domain/`
+- [ ] Move persistence classes to `kitchen-service-persistence/`
+- [ ] Move command handlers to `kitchen-service-command-handlers/`
+- [ ] Move event handling to `kitchen-service-event-handling/`
+- [ ] Move REST controllers to `kitchen-service-restapi/`
+- [ ] Move main class to `kitchen-service-main/`
+- [ ] Perform `javax.*` to `jakarta.*` migration
 - [ ] Update for Spring Boot 3.x compatibility
 
-### Task 3.4: Migrate Kitchen Service tests to Testcontainers
+### Task 3.4: Migrate Kitchen Service tests to appropriate subprojects
 
-**IMPORTANT:** Migrate tests in place - never delete tests during restructuring.
+- [ ] Move unit tests alongside source files in each subproject
+- [ ] Update JUnit 4 to JUnit 5
+- [ ] Update `javax.*` to `jakarta.*` imports
+- [ ] Verify `./gradlew test` passes
+- [ ] Create integration tests in `kitchen-service-main/src/integrationTest/`
+- [ ] Verify `./gradlew integrationTest` passes
+- [ ] Create component tests in `kitchen-service-main/src/componentTest/`
+- [ ] Verify `./gradlew componentTest` passes
 
-- [ ] Migrate unit tests in place:
-  - [ ] Update JUnit 4 annotations to JUnit 5 equivalents
-  - [ ] Update `javax.*` to `jakarta.*` imports
-  - [ ] Update `Mockito.Matchers` to `Mockito.ArgumentMatchers`
-  - [ ] Verify `./gradlew test` passes
-- [ ] Migrate integration tests in place:
-  - [ ] Move test files to appropriate module if restructuring
-  - [ ] Convert Docker Compose-based tests to Testcontainers
-  - [ ] Configure PostgreSQL and Kafka testcontainers
-  - [ ] Verify `./gradlew integrationTest` passes
-- [ ] Migrate component tests in place:
-  - [ ] Move test files to appropriate module if restructuring
-  - [ ] Convert to Testcontainers-based component tests
-  - [ ] Verify `./gradlew componentTest` passes
+### Task 3.5: Embed contract tests in kitchen-service-event-publishing
 
-### Task 3.5: Embed contract tests in Kitchen Service
-
-- [ ] Copy contracts from `ftgo-kitchen-service-contracts/` to `src/contractTest/`
+- [ ] Copy contracts from `ftgo-kitchen-service-contracts/` to `kitchen-service-event-publishing/src/contractTest/`
 - [ ] Configure Spring Cloud Contract 4.x
 - [ ] Configure stub publishing
 - [ ] Verify `./gradlew contractTest` passes
@@ -332,25 +328,7 @@ The `ftgo-kitchen-service/` directory already exists. Transform it:
 - [ ] Verify ticket is created in Kitchen Service
 - [ ] Verify `./gradlew endToEndTest` passes
 
-### Task 3.8: Restructure into multi-module Gradle project
-
-Following the Order Service architecture, split into focused subprojects:
-
-- [ ] Create subproject structure in `settings.gradle`:
-  - [ ] `kitchen-service-domain` - Core domain model (Ticket, Restaurant) and events
-  - [ ] `kitchen-service-persistence` - JPA repositories and orm.xml
-  - [ ] `kitchen-service-command-handlers` - Handles commands from Order Service (CreateTicket, ConfirmCreateTicket, etc.)
-  - [ ] `kitchen-service-event-handling` - Consumes Restaurant events + consumer contract tests
-  - [ ] `kitchen-service-event-publishing` - Publishes ticket events + provider contract tests
-  - [ ] `kitchen-service-restapi` - REST controllers
-  - [ ] `kitchen-service-main` - Spring Boot application, component tests
-- [ ] Move source files to appropriate subprojects
-- [ ] **Migrate tests in place** - move test files alongside their source files to the correct subproject
-- [ ] Configure `java-test-fixtures` plugin in domain module for shared test utilities
-- [ ] Update inter-module dependencies in each `build.gradle`
-- [ ] Verify all tests pass after restructuring: `./gradlew build`
-
-### Task 3.9: Verify Kitchen Service integration
+### Task 3.8: Verify Kitchen Service integration
 
 - [ ] Run `./build-and-test-all.sh` and verify all three services build
 - [ ] Verify Docker Compose starts all services
@@ -362,51 +340,57 @@ Following the Order Service architecture, split into focused subprojects:
 
 Migrate the Accounting Service to complete the CreateOrderSaga flow.
 
-### Task 4.1: Transform ftgo-accounting-service into self-contained Gradle project
+### Task 4.1: Transform ftgo-accounting-service into self-contained multi-module Gradle project
 
-The `ftgo-accounting-service/` directory already exists. Transform it:
+The `ftgo-accounting-service/` directory already exists. Transform it into a multi-module project:
 
-- [ ] Create `settings.gradle` with pluginManagement block
+- [ ] Create `settings.gradle` with pluginManagement block and subproject includes:
+  - [ ] `accounting-service-domain` - Core domain model (Account) and events
+  - [ ] `accounting-service-persistence` - JPA repositories and orm.xml
+  - [ ] `accounting-service-command-handlers` - Handles commands from Order Service
+  - [ ] `accounting-service-event-handling` - Consumes Consumer events + consumer contract tests
+  - [ ] `accounting-service-restapi` - REST controllers
+  - [ ] `accounting-service-main` - Spring Boot application, component tests
 - [ ] Create `gradle.properties` with version properties
-- [ ] Rewrite `build.gradle` to be self-contained
+- [ ] Create root `build.gradle` with common configuration
+- [ ] Create each subproject's `build.gradle`
 - [ ] Copy Gradle wrapper
+- [ ] Configure `java-test-fixtures` plugin in domain module
 - [ ] Verify `./gradlew tasks` runs successfully
 
-### Task 4.2: Embed API and shared classes into Accounting Service
+### Task 4.2: Embed API and shared classes into Accounting Service subprojects
 
-- [ ] Copy classes from `ftgo-accounting-service-api/` into `ftgo-accounting-service/src/main/java/`
-- [ ] Copy Order Service API classes needed to receive commands
-- [ ] Copy Consumer Service API classes needed (consumer events)
-- [ ] Copy required shared classes
-- [ ] Remove compile dependencies on external API modules
+- [ ] Copy shared classes into `accounting-service-domain/src/main/java/`
+- [ ] Copy API classes from `ftgo-accounting-service-api/` into appropriate subprojects
+- [ ] Copy Order Service API classes into `accounting-service-command-handlers/`
+- [ ] Copy Consumer Service API classes into `accounting-service-event-handling/`
+- [ ] Update subproject dependencies
 
-### Task 4.3: Migrate Accounting Service source code to Spring Boot 3.x / Jakarta EE
+### Task 4.3: Move source files to subprojects and migrate to Spring Boot 3.x / Jakarta EE
 
-- [ ] Perform `javax.*` to `jakarta.*` migration on all source files
+- [ ] Move domain classes to `accounting-service-domain/`
+- [ ] Move persistence classes to `accounting-service-persistence/`
+- [ ] Move command handlers to `accounting-service-command-handlers/`
+- [ ] Move event handling to `accounting-service-event-handling/`
+- [ ] Move REST controllers to `accounting-service-restapi/`
+- [ ] Move main class to `accounting-service-main/`
+- [ ] Perform `javax.*` to `jakarta.*` migration
 - [ ] Update for Spring Boot 3.x compatibility
 
-### Task 4.4: Migrate Accounting Service tests to Testcontainers
+### Task 4.4: Migrate Accounting Service tests to appropriate subprojects
 
-**IMPORTANT:** Migrate tests in place - never delete tests during restructuring.
+- [ ] Move unit tests alongside source files in each subproject
+- [ ] Update JUnit 4 to JUnit 5
+- [ ] Update `javax.*` to `jakarta.*` imports
+- [ ] Verify `./gradlew test` passes
+- [ ] Create integration tests in `accounting-service-main/src/integrationTest/`
+- [ ] Verify `./gradlew integrationTest` passes
+- [ ] Create component tests in `accounting-service-main/src/componentTest/`
+- [ ] Verify `./gradlew componentTest` passes
 
-- [ ] Migrate unit tests in place:
-  - [ ] Update JUnit 4 annotations to JUnit 5 equivalents
-  - [ ] Update `javax.*` to `jakarta.*` imports
-  - [ ] Update `Mockito.Matchers` to `Mockito.ArgumentMatchers`
-  - [ ] Verify `./gradlew test` passes
-- [ ] Migrate integration tests in place:
-  - [ ] Move test files to appropriate module if restructuring
-  - [ ] Convert Docker Compose-based tests to Testcontainers
-  - [ ] Configure PostgreSQL and Kafka testcontainers
-  - [ ] Verify `./gradlew integrationTest` passes
-- [ ] Migrate component tests in place:
-  - [ ] Move test files to appropriate module if restructuring
-  - [ ] Convert to Testcontainers-based component tests
-  - [ ] Verify `./gradlew componentTest` passes
+### Task 4.5: Embed contract tests in accounting-service-event-handling
 
-### Task 4.5: Embed contract tests in Accounting Service
-
-- [ ] Copy contracts from `ftgo-accounting-service-contracts/` to `src/contractTest/`
+- [ ] Copy contracts from `ftgo-accounting-service-contracts/` to `accounting-service-event-handling/src/contractTest/`
 - [ ] Configure Spring Cloud Contract 4.x
 - [ ] Configure stub publishing
 - [ ] Verify `./gradlew contractTest` passes
@@ -432,24 +416,7 @@ The `ftgo-accounting-service/` directory already exists. Transform it:
 - [ ] Verify order reaches APPROVED state
 - [ ] Verify `./gradlew endToEndTest` passes
 
-### Task 4.8: Restructure into multi-module Gradle project
-
-Following the Order Service architecture, split into focused subprojects:
-
-- [ ] Create subproject structure in `settings.gradle`:
-  - [ ] `accounting-service-domain` - Core domain model (Account) and events
-  - [ ] `accounting-service-persistence` - JPA repositories and orm.xml
-  - [ ] `accounting-service-command-handlers` - Handles commands from Order Service (Authorize, ReverseAuthorization, etc.)
-  - [ ] `accounting-service-event-handling` - Consumes Consumer events + consumer contract tests
-  - [ ] `accounting-service-restapi` - REST controllers
-  - [ ] `accounting-service-main` - Spring Boot application, component tests
-- [ ] Move source files to appropriate subprojects
-- [ ] **Migrate tests in place** - move test files alongside their source files to the correct subproject
-- [ ] Configure `java-test-fixtures` plugin in domain module for shared test utilities
-- [ ] Update inter-module dependencies in each `build.gradle`
-- [ ] Verify all tests pass after restructuring: `./gradlew build`
-
-### Task 4.9: Verify full saga integration
+### Task 4.8: Verify full saga integration
 
 - [ ] Run `./build-and-test-all.sh` and verify all four services build
 - [ ] Verify Docker Compose starts all services
