@@ -192,10 +192,10 @@ The `ftgo-consumer-service/` directory already exists. Transform it into a multi
 
 ### Task 2.2: Embed API and shared classes into Consumer Service subprojects
 
-- [ ] Copy shared classes (Money, PersonName, etc.) into `consumer-service-domain/src/main/java/`
-- [ ] Copy API classes from `ftgo-consumer-service-api/` into appropriate subprojects
-- [ ] Copy Order Service API classes needed to receive commands into `consumer-service-command-handlers/`
-- [ ] Update subproject dependencies (no external API module dependencies)
+- [x] Copy shared classes (Money, PersonName, etc.) into `consumer-service-domain/src/main/java/`
+- [x] Copy API classes from `ftgo-consumer-service-api/` into appropriate subprojects
+- [x] Copy Order Service API classes needed to receive commands into `consumer-service-command-handlers/`
+- [x] Update subproject dependencies (no external API module dependencies)
 
 ### Task 2.3: Move source files to subprojects and migrate to Spring Boot 3.x / Jakarta EE
 
