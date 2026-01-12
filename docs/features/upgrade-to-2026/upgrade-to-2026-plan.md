@@ -128,22 +128,22 @@ Component tests may exist in `ftgo-order-service/src/componentTest/java/`. Updat
 
 ### Task 1.8: Embed contract tests in Order Service
 
-- [ ] Create `ftgo-order-service/src/contractTest/` directory structure
-- [ ] Copy contract definitions from `ftgo-order-service-contracts/src/main/resources/contracts/`
-- [ ] Copy contract test base classes from `ftgo-order-service-contracts/`
-- [ ] Configure Spring Cloud Contract 4.x plugin in `build.gradle`
-- [ ] Configure stub publishing to `build/repos/contracts/`
-- [ ] Update contract base classes for Spring Boot 3.x
-- [ ] Verify `./gradlew contractTest` passes
-- [ ] Verify stubs are published to `build/repos/contracts/`
+- [x] Create `ftgo-order-service/src/contractTest/` directory structure
+- [x] Copy contract definitions from `ftgo-order-service-contracts/src/main/resources/contracts/`
+- [x] Copy contract test base classes from `ftgo-order-service-contracts/`
+- [x] Configure Spring Cloud Contract 4.x plugin in `build.gradle`
+- [x] Configure stub publishing to `build/repos/contracts/`
+- [x] Update contract base classes for Spring Boot 3.x
+- [x] Verify `./gradlew contractTest` passes
+- [x] Verify stubs are published to `build/repos/contracts/`
 
 ### Task 1.9: Update Order Service Dockerfile and verify Docker build
 
 The Dockerfile may already exist. Update it for Java 17:
 
-- [ ] Update `ftgo-order-service/Dockerfile` to use Eventuate base image pattern with Java 17
-- [ ] Add health check configuration if not present
-- [ ] Update root `docker-compose.yaml` to include `ftgo-order-service`
+- [x] Update `ftgo-order-service/Dockerfile` to use Eventuate base image pattern with Java 17
+- [x] Add health check configuration if not present
+- [x] Update root `docker-compose.yaml` to include `ftgo-order-service`
 - [ ] Verify Docker image builds: `docker build -t ftgo-order-service .`
 - [ ] Verify service starts in Docker and health check passes
 
@@ -161,10 +161,10 @@ The Dockerfile may already exist. Update it for Java 17:
 
 ### Task 1.11: Verify full Order Service build pipeline
 
-- [ ] Run `./build-and-test-all.sh` and verify it completes successfully
-- [ ] Verify all test types pass: unit, integration, component, contract
-- [ ] Verify Docker Compose can start Order Service with dependencies
-- [ ] Commit all changes for Steel Thread 1
+- [x] Run `./build-and-test-all.sh` and verify it completes successfully
+- [x] Verify all test types pass: unit, integration, component, contract
+- [ ] Verify Docker Compose can start Order Service with dependencies (deferred)
+- [x] Commit all changes for Steel Thread 1
 
 ---
 

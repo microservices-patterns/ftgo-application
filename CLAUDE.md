@@ -4,6 +4,11 @@
 
 IMPORTANT: Use simple commands that you have permission to execute. Avoid complex commands that may fail due to permission issues.
 
+When copying or moving files:
+- Avoid compound commands with `&&` - run commands separately
+- Avoid wildcard patterns (`*.java`) - copy files individually
+- Single-file operations are more reliable with Bash permission system
+
 ## Skills
 
 Always invoke the relevant skill before performing these actions:
@@ -32,3 +37,40 @@ The specialized tools are faster, have correct permissions, and provide better o
 ## Git Commands
 
 Always run git commands from the project root directory. If you need to operate on the repository, cd to the root directory first rather than using `git -C`. This prevents accidentally committing files outside the project root.
+
+## Pattern-Based Fixes
+
+When fixing issues caused by naming conventions or patterns:
+1. Search the entire codebase for similar occurrences before making any changes
+2. Fix ALL instances in a single commit
+3. Never commit partial fixes for pattern-based problems
+
+## Migration Complete Criteria
+
+When migrating a service to a multi-module structure, verify the following before marking migration complete:
+
+1. **TEST*.xml files exist**: Check that up-to-date TEST*.xml files exist for all test types (unit, integration, contract). This confirms tests actually executed rather than being silently skipped.
+   ```bash
+   find <service>/*/build/test-results -name "TEST-*.xml" -newer <service>/build.gradle
+   ```
+
+2. **No tests deleted**: Compare test files before and after migration to ensure no tests were accidentally deleted:
+   ```bash
+   # List tests before migration
+   git ls-tree -r <commit-before-migration>^ -- <service>/src/test <service>/src/integrationTest <service>/src/contractTest
+
+   # Compare with current test locations in submodules
+   ```
+   All original tests should exist in their new locations (possibly renamed/modernized to JUnit 5).
+
+3. **Service added to build-and-test-all.sh**: The migrated service must be added to the `MIGRATED_SERVICES` array in `build-and-test-all.sh` and the script must complete successfully:
+   ```bash
+   ./build-and-test-all.sh
+   ```
+
+4. **Contracts published**: If the service has contracts (in a corresponding `*-contracts` project), verify they are published to the local repository:
+   - The contract project should be in the `CONTRACT_PROJECTS` array in `build-and-test-all.sh`
+   - Run `./gradlew publishStubsPublicationToLocalRepository` in the contract project
+   - Verify stubs JAR exists in `../build/repo/`
+
+<!-- claude-config-files-sha: f8e6469fd91735ffcae2dc46f979cfb0677ec5b6 -->

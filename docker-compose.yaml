@@ -105,3 +105,21 @@ services:
       - consumer-service-db
       - kafka
       - cdc-service
+
+  ftgo-order-service:
+    build:
+      context: ./ftgo-order-service
+      args:
+        baseImageVersion: "0.21.0.BUILD-SNAPSHOT"
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://order-service-db:5432/eventuate
+      SPRING_DATASOURCE_USERNAME: postgresuser
+      SPRING_DATASOURCE_PASSWORD: postgrespw
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - order-service-db
+      - kafka
+      - cdc-service
