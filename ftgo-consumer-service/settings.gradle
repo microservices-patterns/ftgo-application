@@ -10,3 +10,10 @@ pluginManagement {
 }
 
 rootProject.name = 'ftgo-consumer-service'
+
+include 'consumer-service-domain'
+include 'consumer-service-persistence'
+include 'consumer-service-command-handlers'
+include 'consumer-service-event-publishing'
+include 'consumer-service-restapi'
+include 'consumer-service-main'

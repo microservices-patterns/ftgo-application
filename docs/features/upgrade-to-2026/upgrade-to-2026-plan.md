@@ -176,19 +176,19 @@ Migrate the Consumer Service as the first saga participant that Order Service co
 
 The `ftgo-consumer-service/` directory already exists. Transform it into a multi-module project following the Order Service architecture:
 
-- [ ] Create `settings.gradle` with pluginManagement block and subproject includes:
-  - [ ] `consumer-service-domain` - Core domain model (Consumer) and events
-  - [ ] `consumer-service-persistence` - JPA repositories and orm.xml
-  - [ ] `consumer-service-command-handlers` - Handles commands from Order Service (ValidateOrderByConsumer)
-  - [ ] `consumer-service-event-publishing` - Publishes consumer events + provider contract tests
-  - [ ] `consumer-service-restapi` - REST controllers
-  - [ ] `consumer-service-main` - Spring Boot application, component tests
-- [ ] Create `gradle.properties` with version properties (copy from Order Service)
-- [ ] Create root `build.gradle` with common configuration for all subprojects
-- [ ] Create each subproject's `build.gradle` with appropriate dependencies
-- [ ] Copy Gradle wrapper from Order Service
-- [ ] Configure `java-test-fixtures` plugin in domain module for shared test utilities
-- [ ] Verify `./gradlew tasks` runs successfully
+- [x] Create `settings.gradle` with pluginManagement block and subproject includes:
+  - [x] `consumer-service-domain` - Core domain model (Consumer) and events
+  - [x] `consumer-service-persistence` - JPA repositories and orm.xml
+  - [x] `consumer-service-command-handlers` - Handles commands from Order Service (ValidateOrderByConsumer)
+  - [x] `consumer-service-event-publishing` - Publishes consumer events + provider contract tests
+  - [x] `consumer-service-restapi` - REST controllers
+  - [x] `consumer-service-main` - Spring Boot application, component tests
+- [x] Create `gradle.properties` with version properties (copy from Order Service)
+- [x] Create root `build.gradle` with common configuration for all subprojects
+- [x] Create each subproject's `build.gradle` with appropriate dependencies
+- [x] Copy Gradle wrapper from Order Service
+- [x] Configure `java-test-fixtures` plugin in domain module for shared test utilities
+- [x] Verify `./gradlew tasks` runs successfully
 
 ### Task 2.2: Embed API and shared classes into Consumer Service subprojects
 

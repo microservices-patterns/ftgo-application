@@ -1,0 +1,10 @@
+dependencies {
+    api project(':consumer-service-domain')
+    api project(':consumer-service-persistence')
+
+    implementation 'io.eventuate.tram.core:eventuate-tram-spring-commands'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant'
+
+    testImplementation 'io.eventuate.tram.core:eventuate-tram-spring-in-memory'
+    testImplementation testFixtures(project(':consumer-service-domain'))
+}

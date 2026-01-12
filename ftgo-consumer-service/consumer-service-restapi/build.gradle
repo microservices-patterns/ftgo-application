@@ -1,0 +1,18 @@
+plugins {
+    id 'io.eventuate.plugins.gradle.testing.integration-tests'
+}
+
+dependencies {
+    implementation project(':consumer-service-domain')
+    implementation project(':consumer-service-persistence')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiUiVersion"
+
+    testImplementation 'io.rest-assured:spring-mock-mvc'
+    testImplementation testFixtures(project(':consumer-service-domain'))
+
+    integrationTestImplementation 'io.rest-assured:spring-mock-mvc'
+    integrationTestImplementation testFixtures(project(':consumer-service-domain'))
+}

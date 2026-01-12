@@ -1,94 +1,51 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.4.0'
-    id 'io.spring.dependency-management' version '1.1.7'
-    id 'io.eventuate.plugins.gradle.testing.integration-tests'
-    id 'io.eventuate.plugins.gradle.testing.component-tests'
+    id 'org.springframework.boot' version '3.4.0' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
+    id 'io.eventuate.plugins.gradle.testing.integration-tests' apply false
+    id 'io.eventuate.plugins.gradle.testing.component-tests' apply false
 }
 
-group = 'net.chrisrichardson.ftgo'
-version = project.findProperty('version') ?: '0.1.0-SNAPSHOT'
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'io.spring.dependency-management'
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+    group = 'net.chrisrichardson.ftgo'
+    version = project.findProperty('version') ?: '0.1.0-SNAPSHOT'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
     }
-}
 
-repositories {
-    mavenCentral()
-    eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
-}
-
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
-        mavenBom "io.eventuate.platform:eventuate-platform-dependencies:$eventuatePlatformVersion"
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
+        maven { url "${rootProject.projectDir}/../build/repo" }
     }
-}
 
-dependencies {
-    implementation 'org.apache.commons:commons-lang3:3.14.0'
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
+            mavenBom "io.eventuate.platform:eventuate-platform-dependencies:$eventuatePlatformVersion"
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+        }
+    }
 
-    // Eventuate Tram
-    implementation 'io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka'
-    implementation 'io.eventuate.tram.core:eventuate-tram-spring-events'
-    implementation 'io.eventuate.tram.core:eventuate-tram-spring-messaging'
-    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant'
+    dependencies {
+        implementation 'org.apache.commons:commons-lang3:3.14.0'
 
-    // Spring Boot
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.assertj:assertj-core'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
 
-    // SpringDoc OpenAPI
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiUiVersion"
+    tasks.withType(JavaCompile) {
+        options.compilerArgs += '-parameters'
+    }
 
-    // Database
-    runtimeOnly 'org.postgresql:postgresql'
-
-    // Unit Tests
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.assertj:assertj-core'
-    testImplementation 'io.rest-assured:rest-assured'
-    testImplementation 'io.rest-assured:spring-mock-mvc'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-    // Integration Tests
-    integrationTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-in-memory'
-    integrationTestImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory'
-    integrationTestImplementation 'io.eventuate.tram.core:eventuate-tram-test-util'
-    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
-    integrationTestImplementation 'io.rest-assured:rest-assured'
-    integrationTestImplementation "org.testcontainers:testcontainers:$testContainersVersion"
-    integrationTestImplementation "org.testcontainers:junit-jupiter:$testContainersVersion"
-    integrationTestImplementation "org.testcontainers:postgresql:$testContainersVersion"
-    integrationTestImplementation "org.testcontainers:kafka:$testContainersVersion"
-    integrationTestRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    integrationTestRuntimeOnly 'com.h2database:h2'
-
-    // Component Tests
-    componentTestImplementation "io.eventuate.platform:eventuate-platform-testcontainer-support-service:$eventuatePlatformTestContainerSupportVersion"
-    componentTestImplementation 'org.springframework.boot:spring-boot-starter-test'
-    componentTestImplementation 'io.rest-assured:rest-assured'
-    componentTestImplementation "org.testcontainers:testcontainers:$testContainersVersion"
-    componentTestImplementation "org.testcontainers:junit-jupiter:$testContainersVersion"
-    componentTestRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-}
-
-tasks.withType(JavaCompile) {
-    options.compilerArgs += '-parameters'
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
-}
-
-tasks.named('integrationTest') {
-    useJUnitPlatform()
-}
-
-tasks.named('componentTest') {
-    useJUnitPlatform()
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
 }

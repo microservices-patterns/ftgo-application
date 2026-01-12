@@ -1,0 +1,15 @@
+plugins {
+    id 'java-test-fixtures'
+}
+
+dependencies {
+    api 'io.eventuate.tram.core:eventuate-tram-events'
+    api 'io.eventuate.tram.core:eventuate-tram-aggregate-domain-events'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    // Test fixtures need access to domain classes and JUnit
+    testFixturesImplementation project(':consumer-service-domain')
+    testFixturesImplementation 'org.junit.jupiter:junit-jupiter-api'
+}
