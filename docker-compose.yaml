@@ -8,6 +8,15 @@ services:
       POSTGRES_PASSWORD: postgrespw
       POSTGRES_DB: eventuate
 
+  consumer-service-db:
+    image: eventuateio/eventuate-vanilla-postgres:0.21.0.BUILD-SNAPSHOT
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgresuser
+      POSTGRES_PASSWORD: postgrespw
+      POSTGRES_DB: eventuate
+
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     ports:
@@ -59,6 +68,40 @@ services:
       EVENTUATE_CDC_READER_READER1_OFFSETSTORAGETOPICNAME: order_schema.cdc_offset_store
       EVENTUATE_CDC_READER_READER1_OUTBOXID: "1"
       EVENTUATE_CDC_READER_READER1_MONITORINGSCHEMA: public
+      # Consumer Service database pipeline
+      EVENTUATE_CDC_PIPELINE_PIPELINE2_TYPE: eventuate-tram
+      EVENTUATE_CDC_PIPELINE_PIPELINE2_READER: reader2
+      EVENTUATE_CDC_PIPELINE_PIPELINE2_EVENTUATEDATABASESCHEMA: public
+
+      # Reader 2 - Consumer Service database
+      EVENTUATE_CDC_READER_READER2_TYPE: postgres-wal
+      EVENTUATE_CDC_READER_READER2_DATASOURCEURL: jdbc:postgresql://consumer-service-db:5432/eventuate
+      EVENTUATE_CDC_READER_READER2_DATASOURCEUSERNAME: postgresuser
+      EVENTUATE_CDC_READER_READER2_DATASOURCEPASSWORD: postgrespw
+      EVENTUATE_CDC_READER_READER2_DATASOURCEDRIVERCLASSNAME: org.postgresql.Driver
+      EVENTUATE_CDC_READER_READER2_LEADERSHIPLOCKPATH: /eventuate/cdc/leader/consumer
+      EVENTUATE_CDC_READER_READER2_OFFSETSTORAGETOPICNAME: consumer_schema.cdc_offset_store
+      EVENTUATE_CDC_READER_READER2_OUTBOXID: "2"
+      EVENTUATE_CDC_READER_READER2_MONITORINGSCHEMA: public
     depends_on:
       - kafka
       - order-service-db
+      - consumer-service-db
+
+  ftgo-consumer-service:
+    build:
+      context: ./ftgo-consumer-service
+      args:
+        baseImageVersion: "0.21.0.BUILD-SNAPSHOT"
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://consumer-service-db:5432/eventuate
+      SPRING_DATASOURCE_USERNAME: postgresuser
+      SPRING_DATASOURCE_PASSWORD: postgrespw
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - consumer-service-db
+      - kafka
+      - cdc-service

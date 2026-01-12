@@ -229,11 +229,12 @@ The `ftgo-consumer-service/` directory already exists. Transform it into a multi
 
 ### Task 2.6: Update Consumer Service Dockerfile and infrastructure
 
-- [ ] Update `ftgo-consumer-service/Dockerfile` for Java 17
-- [ ] Add `consumer-service-db` to root `docker-compose.yaml`
-- [ ] Add `ftgo-consumer-service` to root `docker-compose.yaml`
-- [ ] Update `build-and-test-all.sh` to include Consumer Service
-- [ ] Verify Docker build and service startup
+- [x] Update `ftgo-consumer-service/Dockerfile` for multi-module structure
+- [x] Add `consumer-service-db` to root `docker-compose.yaml`
+- [x] Add `ftgo-consumer-service` to root `docker-compose.yaml`
+- [x] Add CDC pipeline configuration for consumer-service-db
+- [x] `build-and-test-all.sh` already includes Consumer Service
+- [ ] Verify Docker build and service startup (deferred to end-to-end testing)
 
 ### Task 2.7: Add end-to-end test for Order + Consumer validation
 
