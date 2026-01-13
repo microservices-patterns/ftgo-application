@@ -1,0 +1,8 @@
+dependencies {
+    api project(':kitchen-service-domain')
+
+    implementation 'io.eventuate.tram.core:eventuate-tram-spring-commands'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant'
+
+    testImplementation testFixtures(project(':kitchen-service-domain'))
+}

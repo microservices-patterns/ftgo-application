@@ -22,6 +22,7 @@ CONTRACT_PROJECTS=(
 MIGRATED_SERVICES=(
   "ftgo-order-service"
   "ftgo-consumer-service"
+  "ftgo-kitchen-service"
 )
 
 # Publish contract stubs first

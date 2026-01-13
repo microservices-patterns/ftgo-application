@@ -17,6 +17,15 @@ services:
       POSTGRES_PASSWORD: postgrespw
       POSTGRES_DB: eventuate
 
+  kitchen-service-db:
+    image: eventuateio/eventuate-vanilla-postgres:0.21.0.BUILD-SNAPSHOT
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: postgresuser
+      POSTGRES_PASSWORD: postgrespw
+      POSTGRES_DB: eventuate
+
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     ports:
@@ -83,10 +92,26 @@ services:
       EVENTUATE_CDC_READER_READER2_OFFSETSTORAGETOPICNAME: consumer_schema.cdc_offset_store
       EVENTUATE_CDC_READER_READER2_OUTBOXID: "2"
       EVENTUATE_CDC_READER_READER2_MONITORINGSCHEMA: public
+      # Kitchen Service database pipeline
+      EVENTUATE_CDC_PIPELINE_PIPELINE3_TYPE: eventuate-tram
+      EVENTUATE_CDC_PIPELINE_PIPELINE3_READER: reader3
+      EVENTUATE_CDC_PIPELINE_PIPELINE3_EVENTUATEDATABASESCHEMA: public
+
+      # Reader 3 - Kitchen Service database
+      EVENTUATE_CDC_READER_READER3_TYPE: postgres-wal
+      EVENTUATE_CDC_READER_READER3_DATASOURCEURL: jdbc:postgresql://kitchen-service-db:5432/eventuate
+      EVENTUATE_CDC_READER_READER3_DATASOURCEUSERNAME: postgresuser
+      EVENTUATE_CDC_READER_READER3_DATASOURCEPASSWORD: postgrespw
+      EVENTUATE_CDC_READER_READER3_DATASOURCEDRIVERCLASSNAME: org.postgresql.Driver
+      EVENTUATE_CDC_READER_READER3_LEADERSHIPLOCKPATH: /eventuate/cdc/leader/kitchen
+      EVENTUATE_CDC_READER_READER3_OFFSETSTORAGETOPICNAME: kitchen_schema.cdc_offset_store
+      EVENTUATE_CDC_READER_READER3_OUTBOXID: "3"
+      EVENTUATE_CDC_READER_READER3_MONITORINGSCHEMA: public
     depends_on:
       - kafka
       - order-service-db
       - consumer-service-db
+      - kitchen-service-db
 
   ftgo-consumer-service:
     build:
@@ -121,5 +146,23 @@ services:
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     depends_on:
       - order-service-db
+      - kafka
+      - cdc-service
+
+  ftgo-kitchen-service:
+    build:
+      context: ./ftgo-kitchen-service
+      args:
+        baseImageVersion: "0.21.0.BUILD-SNAPSHOT"
+    ports:
+      - "8083:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://kitchen-service-db:5432/eventuate
+      SPRING_DATASOURCE_USERNAME: postgresuser
+      SPRING_DATASOURCE_PASSWORD: postgrespw
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - kitchen-service-db
       - kafka
       - cdc-service

@@ -1,0 +1,9 @@
+dependencies {
+    api project(':kitchen-service-domain')
+    implementation project(':kitchen-service-persistence')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    testImplementation 'io.rest-assured:spring-mock-mvc'
+    testImplementation 'org.mockito:mockito-core'
+}

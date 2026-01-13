@@ -1,0 +1,20 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url 'https://snapshots.repositories.eventuate.io/repository' }
+    }
+    plugins {
+        id 'io.eventuate.plugins.gradle.testing.integration-tests' version "${eventuateTestPluginsVersion}"
+        id 'io.eventuate.plugins.gradle.testing.component-tests' version "${eventuateTestPluginsVersion}"
+    }
+}
+
+rootProject.name = 'ftgo-kitchen-service'
+
+include 'kitchen-service-domain'
+include 'kitchen-service-persistence'
+include 'kitchen-service-command-handlers'
+include 'kitchen-service-event-handling'
+include 'kitchen-service-event-publishing'
+include 'kitchen-service-restapi'
+include 'kitchen-service-main'
