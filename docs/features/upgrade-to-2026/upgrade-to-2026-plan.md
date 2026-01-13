@@ -433,58 +433,58 @@ Migrate the Restaurant Service which provides menu data for order creation.
 
 The `ftgo-restaurant-service/` directory already exists. Transform it into a multi-module project:
 
-- [ ] Create `settings.gradle` with pluginManagement block and subproject includes:
-  - [ ] `restaurant-service-domain` - Core domain model (Restaurant, Menu) and events
-  - [ ] `restaurant-service-persistence` - JPA repositories and orm.xml
-  - [ ] `restaurant-service-event-publishing` - Publishes restaurant events + provider contract tests
-  - [ ] `restaurant-service-restapi` - REST controllers
-  - [ ] `restaurant-service-main` - Spring Boot application, component tests
-- [ ] Create `gradle.properties` with version properties
-- [ ] Create root `build.gradle` with common configuration
-- [ ] Create each subproject's `build.gradle`
-- [ ] Generate Gradle wrapper using `gradle wrapper`
-- [ ] Configure `java-test-fixtures` plugin in domain module
-- [ ] Verify `./gradlew tasks` runs successfully
+- [x] Create `settings.gradle` with pluginManagement block and subproject includes:
+  - [x] `restaurant-service-domain` - Core domain model (Restaurant, Menu) and events
+  - [x] `restaurant-service-persistence` - JPA repositories and orm.xml
+  - [x] `restaurant-service-event-publishing` - Publishes restaurant events + provider contract tests
+  - [x] `restaurant-service-restapi` - REST controllers
+  - [x] `restaurant-service-main` - Spring Boot application, component tests
+- [x] Create `gradle.properties` with version properties
+- [x] Create root `build.gradle` with common configuration
+- [x] Create each subproject's `build.gradle`
+- [x] Generate Gradle wrapper using `gradle wrapper`
+- [x] Configure `java-test-fixtures` plugin in domain module
+- [x] Verify `./gradlew tasks` runs successfully
 
 ### Task 5.2: Embed API and shared classes into Restaurant Service subprojects
 
-- [ ] Copy shared classes into `restaurant-service-domain/src/main/java/`
-- [ ] Move API classes from `ftgo-restaurant-service-api/` into appropriate subprojects
-- [ ] Update subproject dependencies
+- [x] Copy shared classes into `restaurant-service-domain/src/main/java/`
+- [x] Move API classes from `ftgo-restaurant-service-api/` into appropriate subprojects
+- [x] Update subproject dependencies
 
 ### Task 5.3: Move source files to subprojects and migrate to Spring Boot 3.x / Jakarta EE
 
-- [ ] Move domain classes to `restaurant-service-domain/`
-- [ ] Move persistence classes to `restaurant-service-persistence/`
-- [ ] Move REST controllers to `restaurant-service-restapi/`
-- [ ] Move main class to `restaurant-service-main/`
-- [ ] Perform `javax.*` to `jakarta.*` migration
-- [ ] Update for Spring Boot 3.x compatibility
+- [x] Move domain classes to `restaurant-service-domain/`
+- [x] Move persistence classes to `restaurant-service-persistence/`
+- [x] Move REST controllers to `restaurant-service-restapi/`
+- [x] Move main class to `restaurant-service-main/`
+- [x] Perform `javax.*` to `jakarta.*` migration
+- [x] Update for Spring Boot 3.x compatibility
 
 ### Task 5.4: Migrate Restaurant Service tests to appropriate subprojects
 
-- [ ] Move unit tests alongside source files in each subproject
-- [ ] Update JUnit 4 to JUnit 5
-- [ ] Update `javax.*` to `jakarta.*` imports
-- [ ] Verify `./gradlew test` passes
-- [ ] Create integration tests in `restaurant-service-main/src/integrationTest/`
-- [ ] Verify `./gradlew integrationTest` passes
+- [x] Move unit tests alongside source files in each subproject
+- [x] Update JUnit 4 to JUnit 5
+- [x] Update `javax.*` to `jakarta.*` imports
+- [x] Verify `./gradlew test` passes
+- [x] Create integration tests in `restaurant-service-main/src/integrationTest/`
+- [x] Verify `./gradlew integrationTest` passes
 - [ ] Create component tests in `restaurant-service-main/src/componentTest/`
 - [ ] Verify `./gradlew componentTest` passes
 
 ### Task 5.5: Embed contract tests in restaurant-service-event-publishing
 
-- [ ] Move contracts from `ftgo-restaurant-service-contracts/` to `restaurant-service-event-publishing/src/contractTest/`
-- [ ] Configure Spring Cloud Contract 4.x
-- [ ] Configure stub publishing
-- [ ] Verify `./gradlew contractTest` passes
+- [x] Move contracts from `ftgo-restaurant-service-contracts/` to `restaurant-service-event-publishing/src/contractTest/`
+- [x] Configure Spring Cloud Contract 4.x
+- [x] Configure stub publishing
+- [x] Verify `./gradlew contractTest` passes
 
 ### Task 5.6: Update Restaurant Service Dockerfile and infrastructure
 
-- [ ] Update `ftgo-restaurant-service/Dockerfile` for Java 17
-- [ ] Add `restaurant-service-db` to root `docker-compose.yaml`
-- [ ] Add `ftgo-restaurant-service` to root `docker-compose.yaml`
-- [ ] Update `build-and-test-all.sh` to include Restaurant Service
+- [x] Update `ftgo-restaurant-service/Dockerfile` for Java 17
+- [x] Add `restaurant-service-db` to root `docker-compose.yaml`
+- [x] Add `ftgo-restaurant-service` to root `docker-compose.yaml`
+- [x] Update `build-and-test-all.sh` to include Restaurant Service
 - [ ] Verify Docker build and service startup
 
 ### Task 5.7: Add end-to-end test for restaurant data integration
@@ -495,7 +495,7 @@ The `ftgo-restaurant-service/` directory already exists. Transform it into a mul
 
 ### Task 5.8: Verify Restaurant Service integration
 
-- [ ] Run `./build-and-test-all.sh` and verify all five services build
+- [x] Run `./build-and-test-all.sh` and verify all five services build
 - [ ] Commit all changes for Steel Thread 5
 
 ---

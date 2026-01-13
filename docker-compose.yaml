@@ -35,6 +35,15 @@ services:
       POSTGRES_PASSWORD: postgrespw
       POSTGRES_DB: eventuate
 
+  restaurant-service-db:
+    image: eventuateio/eventuate-vanilla-postgres:0.21.0.BUILD-SNAPSHOT
+    ports:
+      - "5436:5432"
+    environment:
+      POSTGRES_USER: postgresuser
+      POSTGRES_PASSWORD: postgrespw
+      POSTGRES_DB: eventuate
+
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     ports:
@@ -131,12 +140,28 @@ services:
       EVENTUATE_CDC_READER_READER4_OFFSETSTORAGETOPICNAME: accounting_schema.cdc_offset_store
       EVENTUATE_CDC_READER_READER4_OUTBOXID: "4"
       EVENTUATE_CDC_READER_READER4_MONITORINGSCHEMA: public
+      # Restaurant Service database pipeline
+      EVENTUATE_CDC_PIPELINE_PIPELINE5_TYPE: eventuate-tram
+      EVENTUATE_CDC_PIPELINE_PIPELINE5_READER: reader5
+      EVENTUATE_CDC_PIPELINE_PIPELINE5_EVENTUATEDATABASESCHEMA: public
+
+      # Reader 5 - Restaurant Service database
+      EVENTUATE_CDC_READER_READER5_TYPE: postgres-wal
+      EVENTUATE_CDC_READER_READER5_DATASOURCEURL: jdbc:postgresql://restaurant-service-db:5432/eventuate
+      EVENTUATE_CDC_READER_READER5_DATASOURCEUSERNAME: postgresuser
+      EVENTUATE_CDC_READER_READER5_DATASOURCEPASSWORD: postgrespw
+      EVENTUATE_CDC_READER_READER5_DATASOURCEDRIVERCLASSNAME: org.postgresql.Driver
+      EVENTUATE_CDC_READER_READER5_LEADERSHIPLOCKPATH: /eventuate/cdc/leader/restaurant
+      EVENTUATE_CDC_READER_READER5_OFFSETSTORAGETOPICNAME: restaurant_schema.cdc_offset_store
+      EVENTUATE_CDC_READER_READER5_OUTBOXID: "5"
+      EVENTUATE_CDC_READER_READER5_MONITORINGSCHEMA: public
     depends_on:
       - kafka
       - order-service-db
       - consumer-service-db
       - kitchen-service-db
       - accounting-service-db
+      - restaurant-service-db
 
   ftgo-consumer-service:
     build:
@@ -207,5 +232,23 @@ services:
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     depends_on:
       - accounting-service-db
+      - kafka
+      - cdc-service
+
+  ftgo-restaurant-service:
+    build:
+      context: ./ftgo-restaurant-service
+      args:
+        baseImageVersion: "0.21.0.BUILD-SNAPSHOT"
+    ports:
+      - "8085:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://restaurant-service-db:5432/eventuate
+      SPRING_DATASOURCE_USERNAME: postgresuser
+      SPRING_DATASOURCE_PASSWORD: postgrespw
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - restaurant-service-db
       - kafka
       - cdc-service

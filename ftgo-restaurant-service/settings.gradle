@@ -1,0 +1,18 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url 'https://snapshots.repositories.eventuate.io/repository' }
+    }
+    plugins {
+        id 'io.eventuate.plugins.gradle.testing.integration-tests' version "${eventuateTestPluginsVersion}"
+        id 'io.eventuate.plugins.gradle.testing.component-tests' version "${eventuateTestPluginsVersion}"
+    }
+}
+
+rootProject.name = 'ftgo-restaurant-service'
+
+include 'restaurant-service-domain'
+include 'restaurant-service-persistence'
+include 'restaurant-service-event-publishing'
+include 'restaurant-service-restapi'
+include 'restaurant-service-main'

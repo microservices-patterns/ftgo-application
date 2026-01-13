@@ -1,76 +1,51 @@
-
-apply plugin: FtgoServicePlugin
-
-apply plugin: IntegrationTestsPlugin
-
-apply plugin: 'spring-cloud-contract'
-
-contracts {
-    contractsDslDir = new File("../ftgo-restaurant-service-contracts/src/main/resources/contracts")
-    packageWithBaseClasses = 'net.chrisrichardson.ftgo.restaurantservice.contract'
-    generatedTestSourcesDir = project.file("${project.buildDir}/generated-integration-test-sources/contracts")
-    sourceSet = "integrationTest"
+plugins {
+    id 'org.springframework.boot' version '3.4.0' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
+    id 'io.eventuate.plugins.gradle.testing.integration-tests' apply false
+    id 'io.eventuate.plugins.gradle.testing.component-tests' apply false
 }
 
-sourceSets {
-    integrationTest {
-        java {
-            srcDir project.file("${project.buildDir}/generated-integration-test-sources/contracts")
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'io.spring.dependency-management'
+
+    group = 'net.chrisrichardson.ftgo'
+    version = project.findProperty('version') ?: '0.1.0-SNAPSHOT'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
         }
     }
-}
 
-compileTestGroovy.enabled=false
-
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"
-    }
-}
-
-configurations.all {
-    // Out of date, conflicting JSON library
-    exclude  group: "com.vaadin.external.google"
-}
-
-dependencies {
-
-
-    compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-events"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-messaging"
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl"
-    compile "io.eventuate.tram.core:eventuate-tram-aggregate-domain-events"
-
-    compile project(":common-swagger")
-    compile project(":ftgo-restaurant-service-api")
-    compile project(":ftgo-restaurant-service-api-spec")
-    compile project(":ftgo-common-jpa")
-    compile project(":ftgo-common")
-
-    compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
-    compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-    compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
-
-    compile 'javax.el:javax.el-api:2.2.5'
-
-    compile('org.apache.kafka:kafka-clients:2.3.0') {
-        force = true
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
+        maven { url "${rootProject.projectDir}/../build/repo" }
     }
 
-    testCompile "io.eventuate.util:eventuate-util-test"
-    testCompile "io.eventuate.tram.core:eventuate-tram-test-util"
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
+            mavenBom "io.eventuate.platform:eventuate-platform-dependencies:$eventuatePlatformVersion"
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+        }
+    }
 
-    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory"
-    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
-    testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
-    testCompile "com.jayway.jsonpath:json-path:2.3.0"
-    testCompile "io.eventuate.tram.core:eventuate-tram-spring-testing-support-cloud-contract"
-    testCompile project(":ftgo-test-util-json-schema")
+    dependencies {
+        implementation 'org.apache.commons:commons-lang3:3.14.0'
 
-    integrationTestCompile "org.springframework.cloud:spring-cloud-contract-wiremock"
-    integrationTestCompile "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
-    integrationTestCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support"
-    integrationTestCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory"
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.assertj:assertj-core'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
 
+    tasks.withType(JavaCompile) {
+        options.compilerArgs += '-parameters'
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
 }

@@ -1,0 +1,17 @@
+plugins {
+    id 'io.eventuate.plugins.gradle.testing.integration-tests'
+}
+
+dependencies {
+    api project(':restaurant-service-domain')
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    runtimeOnly 'org.postgresql:postgresql'
+
+    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+    integrationTestImplementation testFixtures(project(':restaurant-service-domain'))
+    integrationTestImplementation 'org.testcontainers:postgresql'
+    integrationTestImplementation 'org.testcontainers:junit-jupiter'
+    integrationTestImplementation 'org.postgresql:postgresql'
+}
