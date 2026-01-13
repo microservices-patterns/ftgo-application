@@ -71,9 +71,9 @@ The `ftgo-order-service/` directory already exists. Transform it into a self-con
 
 ### Task 1.3: Embed API and shared classes into Order Service
 
-Copy external dependencies into the service to make it self-contained:
+Move external dependencies into the service to make it self-contained:
 
-- [x] Copy classes from `ftgo-order-service-api/` into `ftgo-order-service/src/main/java/`
+- [x] Move classes from `ftgo-order-service-api/` into `ftgo-order-service/src/main/java/`
 - [x] Copy required classes from `ftgo-common/` (Money, Address, PersonName, etc.) into `ftgo-order-service/src/main/java/`
 - [x] Copy required classes from `ftgo-common-jpa/` into `ftgo-order-service/src/main/java/`
 - [x] Update package declarations if needed
@@ -128,8 +128,8 @@ Component tests may exist in `ftgo-order-service/src/componentTest/java/`. Updat
 ### Task 1.8: Embed contract tests in Order Service
 
 - [x] Create `ftgo-order-service/src/contractTest/` directory structure
-- [x] Copy contract definitions from `ftgo-order-service-contracts/src/main/resources/contracts/`
-- [x] Copy contract test base classes from `ftgo-order-service-contracts/`
+- [x] Move contract definitions from `ftgo-order-service-contracts/src/main/resources/contracts/`
+- [x] Move contract test base classes from `ftgo-order-service-contracts/`
 - [x] Configure Spring Cloud Contract 4.x plugin in `build.gradle`
 - [x] Configure stub publishing to `build/repos/contracts/`
 - [x] Update contract base classes for Spring Boot 3.x
@@ -192,7 +192,7 @@ The `ftgo-consumer-service/` directory already exists. Transform it into a multi
 ### Task 2.2: Embed API and shared classes into Consumer Service subprojects
 
 - [x] Copy shared classes (Money, PersonName, etc.) into `consumer-service-domain/src/main/java/`
-- [x] Copy API classes from `ftgo-consumer-service-api/` into appropriate subprojects
+- [x] Move API classes from `ftgo-consumer-service-api/` into appropriate subprojects
 - [x] Copy Order Service API classes needed to receive commands into `consumer-service-command-handlers/`
 - [x] Update subproject dependencies (no external API module dependencies)
 
@@ -278,7 +278,7 @@ The `ftgo-kitchen-service/` directory already exists. Transform it into a multi-
 ### Task 3.2: Embed API and shared classes into Kitchen Service subprojects
 
 - [x] Copy shared classes into `kitchen-service-domain/src/main/java/`
-- [x] Copy API classes from `ftgo-kitchen-service-api/` into appropriate subprojects
+- [x] Move API classes from `ftgo-kitchen-service-api/` into appropriate subprojects
 - [x] Copy Order Service API classes into `kitchen-service-command-handlers/`
 - [x] Copy Restaurant Service API classes into `kitchen-service-event-handling/`
 - [x] Update subproject dependencies
@@ -307,7 +307,7 @@ The `ftgo-kitchen-service/` directory already exists. Transform it into a multi-
 
 ### Task 3.5: Embed contract tests in kitchen-service-event-publishing
 
-- [x] Copy contracts from `ftgo-kitchen-service-contracts/` to `kitchen-service-event-publishing/src/contractTest/`
+- [x] Move contracts from `ftgo-kitchen-service-contracts/` to `kitchen-service-event-publishing/src/contractTest/`
 - [x] Configure Spring Cloud Contract 4.x
 - [x] Configure stub publishing
 - [x] Verify `./gradlew contractTest` passes
@@ -361,7 +361,7 @@ The `ftgo-accounting-service/` directory already exists. Transform it into a mul
 ### Task 4.2: Embed API and shared classes into Accounting Service subprojects
 
 - [x] Copy shared classes into `accounting-service-domain/src/main/java/`
-- [x] Copy API classes from `ftgo-accounting-service-api/` into appropriate subprojects
+- [x] Move API classes from `ftgo-accounting-service-api/` into appropriate subprojects
 - [x] Copy Order Service API classes into `accounting-service-command-handlers/`
 - [x] Copy Consumer Service API classes into `accounting-service-event-handling/`
 - [x] Update subproject dependencies
@@ -390,7 +390,7 @@ The `ftgo-accounting-service/` directory already exists. Transform it into a mul
 
 ### Task 4.5: Embed contract tests in accounting-service-command-handlers
 
-- [x] Copy contracts from `ftgo-accounting-service-contracts/` to `accounting-service-command-handlers/src/contractTest/`
+- [x] Move contracts from `ftgo-accounting-service-contracts/` to `accounting-service-command-handlers/src/contractTest/`
 - [x] Configure Spring Cloud Contract 4.x
 - [x] Configure stub publishing
 - [x] Verify `./gradlew contractTest` passes
@@ -449,7 +449,7 @@ The `ftgo-restaurant-service/` directory already exists. Transform it into a mul
 ### Task 5.2: Embed API and shared classes into Restaurant Service subprojects
 
 - [ ] Copy shared classes into `restaurant-service-domain/src/main/java/`
-- [ ] Copy API classes from `ftgo-restaurant-service-api/` into appropriate subprojects
+- [ ] Move API classes from `ftgo-restaurant-service-api/` into appropriate subprojects
 - [ ] Update subproject dependencies
 
 ### Task 5.3: Move source files to subprojects and migrate to Spring Boot 3.x / Jakarta EE
@@ -474,7 +474,7 @@ The `ftgo-restaurant-service/` directory already exists. Transform it into a mul
 
 ### Task 5.5: Embed contract tests in restaurant-service-event-publishing
 
-- [ ] Copy contracts from `ftgo-restaurant-service-contracts/` to `restaurant-service-event-publishing/src/contractTest/`
+- [ ] Move contracts from `ftgo-restaurant-service-contracts/` to `restaurant-service-event-publishing/src/contractTest/`
 - [ ] Configure Spring Cloud Contract 4.x
 - [ ] Configure stub publishing
 - [ ] Verify `./gradlew contractTest` passes
