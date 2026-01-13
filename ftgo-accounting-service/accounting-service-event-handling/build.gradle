@@ -1,0 +1,6 @@
+dependencies {
+    api project(':accounting-service-domain')
+
+    implementation 'io.eventuate.tram.core:eventuate-tram-spring-events-subscriber-starter'
+    implementation 'org.springframework:spring-context'
+}

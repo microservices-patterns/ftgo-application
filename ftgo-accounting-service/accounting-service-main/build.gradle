@@ -1,0 +1,41 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'io.eventuate.plugins.gradle.testing.integration-tests'
+}
+
+dependencies {
+    implementation project(':accounting-service-domain')
+    implementation project(':accounting-service-persistence')
+    implementation project(':accounting-service-command-handlers')
+    implementation project(':accounting-service-event-handling')
+    implementation project(':accounting-service-restapi')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation 'io.eventuate.local.java:eventuate-client-java-spring'
+    implementation 'io.eventuate.local.java:eventuate-client-java-spring-jdbc'
+    implementation 'io.eventuate.local.java:eventuate-local-java-spring-jdbc'
+
+    implementation 'io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka'
+    implementation 'io.eventuate.tram.core:eventuate-tram-spring-events'
+    implementation 'io.eventuate.tram.core:eventuate-tram-spring-messaging'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
+
+    runtimeOnly 'org.postgresql:postgresql'
+
+    integrationTestImplementation 'io.eventuate.local.java:eventuate-client-java-spring-jdbc'
+    integrationTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-in-memory'
+    integrationTestImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory'
+    integrationTestImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-common'
+    integrationTestImplementation 'io.eventuate.tram.core:eventuate-tram-test-util'
+    integrationTestImplementation 'io.eventuate.util:eventuate-util-test'
+
+    integrationTestRuntimeOnly 'com.h2database:h2'
+}
+
+integrationTest {
+    useJUnitPlatform()
+}

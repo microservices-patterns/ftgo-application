@@ -1,0 +1,19 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url 'https://snapshots.repositories.eventuate.io/repository' }
+    }
+    plugins {
+        id 'io.eventuate.plugins.gradle.testing.integration-tests' version "${eventuateTestPluginsVersion}"
+        id 'io.eventuate.plugins.gradle.testing.component-tests' version "${eventuateTestPluginsVersion}"
+    }
+}
+
+rootProject.name = 'ftgo-accounting-service'
+
+include 'accounting-service-domain'
+include 'accounting-service-persistence'
+include 'accounting-service-command-handlers'
+include 'accounting-service-event-handling'
+include 'accounting-service-restapi'
+include 'accounting-service-main'

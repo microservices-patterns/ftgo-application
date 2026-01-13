@@ -26,6 +26,15 @@ services:
       POSTGRES_PASSWORD: postgrespw
       POSTGRES_DB: eventuate
 
+  accounting-service-db:
+    image: eventuateio/eventuate-vanilla-postgres:0.21.0.BUILD-SNAPSHOT
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_USER: postgresuser
+      POSTGRES_PASSWORD: postgrespw
+      POSTGRES_DB: eventuate
+
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     ports:
@@ -107,11 +116,27 @@ services:
       EVENTUATE_CDC_READER_READER3_OFFSETSTORAGETOPICNAME: kitchen_schema.cdc_offset_store
       EVENTUATE_CDC_READER_READER3_OUTBOXID: "3"
       EVENTUATE_CDC_READER_READER3_MONITORINGSCHEMA: public
+      # Accounting Service database pipeline
+      EVENTUATE_CDC_PIPELINE_PIPELINE4_TYPE: eventuate-tram
+      EVENTUATE_CDC_PIPELINE_PIPELINE4_READER: reader4
+      EVENTUATE_CDC_PIPELINE_PIPELINE4_EVENTUATEDATABASESCHEMA: public
+
+      # Reader 4 - Accounting Service database
+      EVENTUATE_CDC_READER_READER4_TYPE: postgres-wal
+      EVENTUATE_CDC_READER_READER4_DATASOURCEURL: jdbc:postgresql://accounting-service-db:5432/eventuate
+      EVENTUATE_CDC_READER_READER4_DATASOURCEUSERNAME: postgresuser
+      EVENTUATE_CDC_READER_READER4_DATASOURCEPASSWORD: postgrespw
+      EVENTUATE_CDC_READER_READER4_DATASOURCEDRIVERCLASSNAME: org.postgresql.Driver
+      EVENTUATE_CDC_READER_READER4_LEADERSHIPLOCKPATH: /eventuate/cdc/leader/accounting
+      EVENTUATE_CDC_READER_READER4_OFFSETSTORAGETOPICNAME: accounting_schema.cdc_offset_store
+      EVENTUATE_CDC_READER_READER4_OUTBOXID: "4"
+      EVENTUATE_CDC_READER_READER4_MONITORINGSCHEMA: public
     depends_on:
       - kafka
       - order-service-db
       - consumer-service-db
       - kitchen-service-db
+      - accounting-service-db
 
   ftgo-consumer-service:
     build:
@@ -164,5 +189,23 @@ services:
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     depends_on:
       - kitchen-service-db
+      - kafka
+      - cdc-service
+
+  ftgo-accounting-service:
+    build:
+      context: ./ftgo-accounting-service
+      args:
+        baseImageVersion: "0.21.0.BUILD-SNAPSHOT"
+    ports:
+      - "8084:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://accounting-service-db:5432/eventuate
+      SPRING_DATASOURCE_USERNAME: postgresuser
+      SPRING_DATASOURCE_PASSWORD: postgrespw
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - accounting-service-db
       - kafka
       - cdc-service

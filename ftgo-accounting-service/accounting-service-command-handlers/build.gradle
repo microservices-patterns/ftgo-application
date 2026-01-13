@@ -1,0 +1,59 @@
+plugins {
+    id 'org.springframework.cloud.contract' version "$springCloudContractDependenciesVersion"
+    id 'maven-publish'
+}
+
+sourceSets {
+    contractTest {
+        java {
+            srcDir 'src/contractTest/java'
+        }
+        resources {
+            srcDir 'src/contractTest/resources'
+        }
+    }
+}
+
+dependencies {
+    api project(':accounting-service-domain')
+
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-event-sourcing-support'
+    implementation 'org.springframework:spring-context'
+
+    contractTestImplementation project(':accounting-service-domain')
+    contractTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+    contractTestImplementation 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
+    contractTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-in-memory'
+    contractTestImplementation 'io.eventuate.tram.testingsupport.springcloudcontract:eventuate-tram-spring-testing-support-cloud-contract'
+}
+
+contracts {
+    testFramework = org.springframework.cloud.contract.verifier.config.TestFramework.JUNIT5
+    contractsDslDir = file("${projectDir}/src/contractTest/resources/contracts")
+    baseClassForTests = "net.chrisrichardson.ftgo.accountingservice.contracts.MessagingBase"
+}
+
+contractTest {
+    useJUnitPlatform()
+}
+
+tasks.named('processContractTestResources') {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+// Publish stubs for consumer contract testing
+publishing {
+    publications {
+        stubs(MavenPublication) {
+            artifactId = "ftgo-accounting-service"
+            artifact verifierStubsJar
+        }
+    }
+    repositories {
+        maven {
+            name = 'local'
+            url = "${rootProject.projectDir}/../build/repo"
+        }
+    }
+}

@@ -1,38 +1,51 @@
-apply plugin: FtgoServicePlugin
+plugins {
+    id 'org.springframework.boot' version '3.4.0' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
+    id 'io.eventuate.plugins.gradle.testing.integration-tests' apply false
+    id 'io.eventuate.plugins.gradle.testing.component-tests' apply false
+}
 
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'io.spring.dependency-management'
 
-dependencies {
+    group = 'net.chrisrichardson.ftgo'
+    version = project.findProperty('version') ?: '0.1.0-SNAPSHOT'
 
-    compile project(":ftgo-accounting-service-api")
-    compile project(":common-swagger")
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-event-sourcing-support"
-
-    compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-events"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-messaging"
-    compile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl"
-
-    compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
-    compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
-    compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-    compile 'javax.el:javax.el-api:2.2.5'
-
-
-    compile "io.eventuate.local.java:eventuate-client-java-spring"
-    compile "io.eventuate.local.java:eventuate-client-java-spring-jdbc"
-    compile "io.eventuate.local.java:eventuate-local-java-spring-jdbc"
-    
-    compile('org.apache.kafka:kafka-clients:2.3.0') {
-        force = true
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
     }
-    
-    testCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory"
-    testCompile "io.eventuate.util:eventuate-util-test"
-    testCompile "io.eventuate.tram.core:eventuate-tram-test-util"
 
-    testCompile "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory"
-    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
-    testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
-    testCompile "com.jayway.jsonpath:json-path:2.3.0"
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
+        maven { url "${rootProject.projectDir}/../build/repo" }
+    }
 
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
+            mavenBom "io.eventuate.platform:eventuate-platform-dependencies:$eventuatePlatformVersion"
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+        }
+    }
+
+    dependencies {
+        implementation 'org.apache.commons:commons-lang3:3.14.0'
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.assertj:assertj-core'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs += '-parameters'
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
 }

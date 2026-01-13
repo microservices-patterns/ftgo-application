@@ -1,0 +1,6 @@
+dependencies {
+    implementation project(':accounting-service-domain')
+    implementation project(':accounting-service-persistence')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+}

@@ -1,0 +1,13 @@
+plugins {
+    id 'java-test-fixtures'
+}
+
+dependencies {
+    api 'io.eventuate.local.java:eventuate-client-java'
+    api 'io.eventuate.tram.sagas:eventuate-tram-sagas-event-sourcing-support'
+    api 'io.eventuate.tram.core:eventuate-tram-spring-commands'
+
+    implementation 'org.springframework:spring-context'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+}
