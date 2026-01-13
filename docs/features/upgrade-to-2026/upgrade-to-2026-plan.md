@@ -66,8 +66,7 @@ The `ftgo-order-service/` directory already exists. Transform it into a self-con
   - [x] Platform BOMs for dependency management
   - [x] Maven Central repository only (no JCenter)
   - [x] All dependencies declared directly (not inherited from root)
-- [x] Copy Gradle wrapper from reference project to `ftgo-order-service/gradle/`
-- [x] Create `ftgo-order-service/gradlew` and `ftgo-order-service/gradlew.bat`
+- [x] Generate Gradle wrapper using `gradle wrapper`
 - [x] Verify `./gradlew tasks` runs successfully in `ftgo-order-service/`
 
 ### Task 1.3: Embed API and shared classes into Order Service
@@ -155,7 +154,7 @@ The Dockerfile may already exist. Update it for Java 17:
   - [ ] JUnit 5, RestAssured, Testcontainers dependencies
   - [ ] Eventuate testcontainer support
   - [ ] Task to assemble dependent services
-- [ ] Copy Gradle wrapper to `end-to-end-tests/`
+- [ ] Generate Gradle wrapper using `gradle wrapper`
 - [ ] Create basic end-to-end test that verifies Order Service starts and responds to health check
 - [ ] Verify `./gradlew endToEndTest` passes
 
@@ -186,7 +185,7 @@ The `ftgo-consumer-service/` directory already exists. Transform it into a multi
 - [x] Create `gradle.properties` with version properties (copy from Order Service)
 - [x] Create root `build.gradle` with common configuration for all subprojects
 - [x] Create each subproject's `build.gradle` with appropriate dependencies
-- [x] Copy Gradle wrapper from Order Service
+- [x] Generate Gradle wrapper using `gradle wrapper`
 - [x] Configure `java-test-fixtures` plugin in domain module for shared test utilities
 - [x] Verify `./gradlew tasks` runs successfully
 
@@ -272,7 +271,7 @@ The `ftgo-kitchen-service/` directory already exists. Transform it into a multi-
 - [x] Create `gradle.properties` with version properties
 - [x] Create root `build.gradle` with common configuration for all subprojects
 - [x] Create each subproject's `build.gradle` with appropriate dependencies
-- [x] Copy Gradle wrapper from Order Service
+- [x] Generate Gradle wrapper using `gradle wrapper`
 - [x] Configure `java-test-fixtures` plugin in domain module
 - [x] Verify `./gradlew tasks` runs successfully
 
@@ -355,7 +354,7 @@ The `ftgo-accounting-service/` directory already exists. Transform it into a mul
 - [ ] Create `gradle.properties` with version properties
 - [ ] Create root `build.gradle` with common configuration
 - [ ] Create each subproject's `build.gradle`
-- [ ] Copy Gradle wrapper
+- [ ] Generate Gradle wrapper using `gradle wrapper`
 - [ ] Configure `java-test-fixtures` plugin in domain module
 - [ ] Verify `./gradlew tasks` runs successfully
 
@@ -443,7 +442,7 @@ The `ftgo-restaurant-service/` directory already exists. Transform it into a mul
 - [ ] Create `gradle.properties` with version properties
 - [ ] Create root `build.gradle` with common configuration
 - [ ] Create each subproject's `build.gradle`
-- [ ] Copy Gradle wrapper
+- [ ] Generate Gradle wrapper using `gradle wrapper`
 - [ ] Configure `java-test-fixtures` plugin in domain module
 - [ ] Verify `./gradlew tasks` runs successfully
 
@@ -519,7 +518,7 @@ The `ftgo-delivery-service/` directory already exists. Transform it into a multi
 - [ ] Create `gradle.properties` with version properties
 - [ ] Create root `build.gradle` with common configuration
 - [ ] Create each subproject's `build.gradle`
-- [ ] Copy Gradle wrapper
+- [ ] Generate Gradle wrapper using `gradle wrapper`
 - [ ] Configure `java-test-fixtures` plugin in domain module
 - [ ] Verify `./gradlew tasks` runs successfully
 
@@ -589,7 +588,7 @@ The `ftgo-order-history-service/` directory already exists. Transform it into a 
 - [ ] Create root `build.gradle` with common configuration
 - [ ] Create each subproject's `build.gradle`
 - [ ] Add AWS DynamoDB dependencies compatible with Java 17
-- [ ] Copy Gradle wrapper
+- [ ] Generate Gradle wrapper using `gradle wrapper`
 - [ ] Configure `java-test-fixtures` plugin in domain module
 - [ ] Verify `./gradlew tasks` runs successfully
 
@@ -657,7 +656,7 @@ The `ftgo-api-gateway/` directory already exists. Transform it into a multi-modu
 - [ ] Create root `build.gradle` with common configuration
 - [ ] Create each subproject's `build.gradle`
 - [ ] Add Spring Cloud Gateway dependencies for Spring Boot 3.x
-- [ ] Copy Gradle wrapper
+- [ ] Generate Gradle wrapper using `gradle wrapper`
 - [ ] Verify `./gradlew tasks` runs successfully
 
 ### Task 8.2: Move source files to subprojects and migrate to Spring Boot 3.x / Jakarta EE
