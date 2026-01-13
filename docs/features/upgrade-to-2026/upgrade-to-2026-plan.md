@@ -332,8 +332,8 @@ The `ftgo-kitchen-service/` directory already exists. Transform it into a multi-
 ### Task 3.8: Verify Kitchen Service integration
 
 - [x] Run `./build-and-test-all.sh` and verify all three services build
-- [ ] Verify Docker Compose starts all services
-- [ ] Commit all changes for Steel Thread 3
+- [ ] Verify Docker Compose starts all services (deferred)
+- [x] Commit all changes for Steel Thread 3
 
 ---
 
