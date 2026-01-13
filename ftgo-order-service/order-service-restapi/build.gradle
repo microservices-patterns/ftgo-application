@@ -1,5 +1,17 @@
 plugins {
     id 'io.eventuate.plugins.gradle.testing.integration-tests'
+    id 'org.springframework.cloud.contract' version "$springCloudContractDependenciesVersion"
+}
+
+sourceSets {
+    contractTest {
+        java {
+            srcDir 'src/contractTest/java'
+        }
+        resources {
+            srcDir 'src/contractTest/resources'
+        }
+    }
 }
 
 dependencies {
@@ -16,4 +28,26 @@ dependencies {
     integrationTestImplementation(platform("org.springframework.cloud:spring-cloud-contract-dependencies:$springCloudContractDependenciesVersion"))
     integrationTestImplementation 'org.springframework.cloud:spring-cloud-contract-stub-runner'
     integrationTestImplementation testFixtures(project(':order-service-domain'))
+
+    contractTestImplementation project(':order-service-domain')
+    contractTestImplementation project(':order-service-persistence')
+    contractTestImplementation testFixtures(project(':order-service-domain'))
+    contractTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+    contractTestImplementation 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
+    contractTestImplementation 'io.rest-assured:spring-mock-mvc'
+    contractTestImplementation 'io.eventuate.common:eventuate-common-json-mapper'
+}
+
+contracts {
+    testFramework = org.springframework.cloud.contract.verifier.config.TestFramework.JUNIT5
+    contractsDslDir = file("${projectDir}/src/contractTest/resources/contracts")
+    baseClassForTests = "net.chrisrichardson.ftgo.orderservice.contracts.HttpBase"
+}
+
+contractTest {
+    useJUnitPlatform()
+}
+
+tasks.named('processContractTestResources') {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
