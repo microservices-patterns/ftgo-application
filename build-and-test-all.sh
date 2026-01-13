@@ -9,6 +9,13 @@
 # Capture any arguments to pass to gradlew
 GRADLE_ARGS="$@"
 
+# Get script directory
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Clean local contract repository first
+"$SCRIPT_DIR/clean-repo.sh"
+echo ""
+
 # Contract projects to publish before building services
 CONTRACT_PROJECTS=(
   "ftgo-kitchen-service-contracts"
