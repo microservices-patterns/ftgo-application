@@ -573,12 +573,21 @@ The `ftgo-delivery-service/` directory already exists. Transform it into a multi
 
 Review all previously migrated services (Order, Consumer, Kitchen, Accounting, Restaurant) to ensure tests are in the appropriate subproject:
 
-- [ ] JPA/repository tests should be in `*-persistence` or `*-domain` module (with the code they test)
-- [ ] Unit tests should be alongside the code they test in each subproject
-- [ ] Integration tests that test the full service should be in `*-main`
-- [ ] Contract tests should be in the module that publishes/consumes the contracts
-- [ ] Move any misplaced tests to the correct subproject
-- [ ] Verify all tests still pass after reorganization
+- [x] JPA/repository tests should be in `*-persistence` or `*-domain` module (with the code they test)
+  - Order Service: JPA tests correctly in `order-service-persistence/src/integrationTest/`
+  - Delivery Service: JPA tests correctly in `delivery-service-persistence/src/integrationTest/`
+  - Consumer, Kitchen, Restaurant: No JPA-specific tests (simple entities tested via integration tests)
+  - Accounting: Uses event sourcing, no JPA entities
+- [x] Unit tests should be alongside the code they test in each subproject
+  - Domain tests in `*-domain/src/test/` (OrderTest, DeliveryServiceTest, etc.)
+  - Controller/web tests in `*-restapi/src/test/`
+- [x] Integration tests that test the full service should be in `*-main`
+  - All services have integration tests correctly in `*-main/src/integrationTest/`
+- [x] Contract tests should be in the module that publishes/consumes the contracts
+  - Event publishing contracts in `*-event-publishing/src/contractTest/`
+  - Command handler contracts in `*-command-handlers/src/contractTest/`
+  - HTTP contracts in `*-restapi/src/contractTest/`
+- [x] No misplaced tests found - all tests are in appropriate subprojects
 
 ---
 
