@@ -567,7 +567,7 @@ The `ftgo-delivery-service/` directory already exists. Transform it into a multi
 ### Task 6.7: Verify Delivery Service integration
 
 - [x] Run `./build-and-test-all.sh` and verify all six services build
-- [ ] Commit all changes for Steel Thread 6
+- [x] Commit all changes for Steel Thread 6
 
 ### Task 6.8: Review test placement in previously migrated services
 
