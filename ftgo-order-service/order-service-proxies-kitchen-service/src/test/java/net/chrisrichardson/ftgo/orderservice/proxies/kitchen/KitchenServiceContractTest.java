@@ -13,7 +13,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @AutoConfigureStubRunner(
-        ids = "net.chrisrichardson.ftgo:ftgo-kitchen-service-contracts:+:stubs",
+        ids = "net.chrisrichardson.ftgo:ftgo-kitchen-service:+:stubs",
         stubsMode = StubRunnerProperties.StubsMode.REMOTE
 )
 @DirtiesContext

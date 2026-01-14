@@ -599,45 +599,45 @@ Migrate the Order History Service which maintains a DynamoDB read model.
 
 The `ftgo-order-history-service/` directory already exists. Transform it into a multi-module project:
 
-- [ ] Create `settings.gradle` with pluginManagement block and subproject includes:
-  - [ ] `order-history-service-domain` - Core domain model and query DTOs
-  - [ ] `order-history-service-persistence` - DynamoDB repositories
-  - [ ] `order-history-service-event-handling` - Consumes Order events + consumer contract tests
-  - [ ] `order-history-service-restapi` - REST controllers for queries
-  - [ ] `order-history-service-main` - Spring Boot application, component tests
-- [ ] Create `gradle.properties` with version properties
-- [ ] Create root `build.gradle` with common configuration
-- [ ] Create each subproject's `build.gradle`
-- [ ] Add AWS DynamoDB dependencies compatible with Java 17
-- [ ] Generate Gradle wrapper using `gradle wrapper`
-- [ ] Configure `java-test-fixtures` plugin in domain module
-- [ ] Verify `./gradlew tasks` runs successfully
+- [x] Create `settings.gradle` with pluginManagement block and subproject includes:
+  - [x] `order-history-service-domain` - Core domain model and query DTOs
+  - [x] `order-history-service-dynamodb` - DynamoDB repositories (renamed from persistence)
+  - [x] `order-history-service-event-handling` - Consumes Order events + consumer contract tests
+  - [x] `order-history-service-restapi` - REST controllers for queries
+  - [x] `order-history-service-main` - Spring Boot application, component tests
+- [x] Create `gradle.properties` with version properties
+- [x] Create root `build.gradle` with common configuration
+- [x] Create each subproject's `build.gradle`
+- [x] Add AWS DynamoDB dependencies compatible with Java 17
+- [x] Generate Gradle wrapper using `gradle wrapper`
+- [x] Configure `java-test-fixtures` plugin in domain module
+- [x] Verify `./gradlew tasks` runs successfully
 
 ### Task 7.2: Embed API and shared classes into Order History Service subprojects
 
-- [ ] Copy shared classes into `order-history-service-domain/src/main/java/`
-- [ ] Copy Order Service API classes into `order-history-service-event-handling/`
-- [ ] Update subproject dependencies
+- [x] Copy shared classes into `order-history-service-domain/src/main/java/`
+- [x] Copy Order Service API classes into `order-history-service-event-handling/`
+- [x] Update subproject dependencies
 
 ### Task 7.3: Move source files to subprojects and migrate to Spring Boot 3.x / Jakarta EE
 
-- [ ] Move domain classes to `order-history-service-domain/`
-- [ ] Move persistence classes to `order-history-service-persistence/`
-- [ ] Move event handling to `order-history-service-event-handling/`
-- [ ] Move REST controllers to `order-history-service-restapi/`
-- [ ] Move main class to `order-history-service-main/`
-- [ ] Perform `javax.*` to `jakarta.*` migration
-- [ ] Update AWS SDK dependencies for Java 17 compatibility
-- [ ] Update for Spring Boot 3.x compatibility
+- [x] Move domain classes to `order-history-service-domain/`
+- [x] Move persistence classes to `order-history-service-dynamodb/`
+- [x] Move event handling to `order-history-service-event-handling/`
+- [x] Move REST controllers to `order-history-service-restapi/`
+- [x] Move main class to `order-history-service-main/`
+- [x] Perform `javax.*` to `jakarta.*` migration
+- [x] Update AWS SDK dependencies for Java 17 compatibility
+- [x] Update for Spring Boot 3.x compatibility
 
 ### Task 7.4: Migrate Order History Service tests to appropriate subprojects
 
-- [ ] Move unit tests alongside source files in each subproject
-- [ ] Update JUnit 4 to JUnit 5
-- [ ] Update `javax.*` to `jakarta.*` imports
-- [ ] Verify `./gradlew test` passes
-- [ ] Create integration tests with DynamoDB Local testcontainer
-- [ ] Verify `./gradlew integrationTest` passes
+- [x] Move unit tests alongside source files in each subproject
+- [x] Update JUnit 4 to JUnit 5
+- [x] Update `javax.*` to `jakarta.*` imports
+- [x] Verify `./gradlew test` passes
+- [x] Create integration tests with DynamoDB Local testcontainer
+- [x] Verify `./gradlew integrationTest` passes
 - [ ] Create component tests in `order-history-service-main/src/componentTest/`
 - [ ] Verify `./gradlew componentTest` passes
 
@@ -646,7 +646,7 @@ The `ftgo-order-history-service/` directory already exists. Transform it into a 
 - [ ] Update `ftgo-order-history-service/Dockerfile` for Java 17
 - [ ] Add `dynamodb-local` to root `docker-compose.yaml`
 - [ ] Add `ftgo-order-history-service` to root `docker-compose.yaml`
-- [ ] Update `build-and-test-all.sh` to include Order History Service
+- [x] Update `build-and-test-all.sh` to include Order History Service
 - [ ] Verify Docker build and service startup
 
 ### Task 7.6: Add end-to-end test for CQRS query
@@ -659,6 +659,37 @@ The `ftgo-order-history-service/` directory already exists. Transform it into a 
 
 - [ ] Run `./build-and-test-all.sh` and verify all seven services build
 - [ ] Commit all changes for Steel Thread 7
+
+### Task 7.8: Standardize artifact coordinates for contract stubs
+
+After all services are migrated, update the Maven coordinates for consistency:
+
+1. **Update group ID to include service name:**
+   - Change `group = 'net.chrisrichardson.ftgo'` to `group = 'net.chrisrichardson.ftgo.<service-name>'`
+   - Example: `group = 'net.chrisrichardson.ftgo.order-service'`
+   - This makes the group ID unique per service
+
+2. **Remove artifactId override when publishing stubs:**
+   - Currently: `artifactId = "ftgo-restaurant-service"` (explicit override)
+   - Change to: Use the natural module name (e.g., `restaurant-service-event-publishing`)
+   - The unique group ID makes the explicit artifactId unnecessary
+
+3. **Update all contract consumers:**
+   - Change stub references from `net.chrisrichardson.ftgo:ftgo-{service}`
+   - To `net.chrisrichardson.ftgo.{service}:{module-name}`
+
+**Benefits:**
+- Each service publishes with a unique group ID
+- No need for artifactId overrides
+- Natural module names reflect what actually publishes the contracts
+- Consistent with Maven best practices
+
+- [ ] Update all migrated services with service-specific group IDs
+- [ ] Remove artifactId overrides from publishing configurations
+- [ ] Update all `@AutoConfigureStubRunner` annotations with new coordinates
+- [ ] Update `build-and-test-all.sh` if needed
+- [ ] Verify `./build-and-test-all.sh` passes with new coordinates
+- [ ] Commit changes
 
 ---
 
@@ -732,10 +763,13 @@ Remove legacy modules and validate the complete system.
 
 ### Task 9.2: Remove legacy contract modules
 
-- [ ] Delete `ftgo-order-service-contracts/` directory
-- [ ] Delete `ftgo-consumer-service-contracts/` directory
-- [ ] Delete `ftgo-kitchen-service-contracts/` directory
-- [ ] Delete `ftgo-accounting-service-contracts/` directory
+- [x] Delete `ftgo-order-service-contracts/` directory
+- [x] Delete `ftgo-consumer-service-contracts/` directory
+- [x] Delete `ftgo-kitchen-service-contracts/` directory
+- [x] Delete `ftgo-accounting-service-contracts/` directory
+- [x] Delete `ftgo-restaurant-service-contracts/` directory
+- [x] Update `settings.gradle` to remove contract module includes
+- [x] Update contract consumer tests to use new artifact IDs (service name instead of *-contracts)
 
 ### Task 9.3: Remove legacy API spec modules
 

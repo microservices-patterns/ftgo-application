@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest(classes= KitchenServiceProxyIntegrationTest.TestConfiguration.class,
         webEnvironment= SpringBootTest.WebEnvironment.NONE)
 @AutoConfigureStubRunner(ids =
-        {"net.chrisrichardson.ftgo:ftgo-kitchen-service-contracts"}
+        {"net.chrisrichardson.ftgo:ftgo-kitchen-service"}
         )
 @DirtiesContext
 @Disabled("Needs update to current Eventuate contract testing APIs")

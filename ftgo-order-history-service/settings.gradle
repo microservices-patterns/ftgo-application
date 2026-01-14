@@ -1,0 +1,17 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url 'https://snapshots.repositories.eventuate.io/repository' }
+    }
+    plugins {
+        id 'io.eventuate.plugins.gradle.testing.integration-tests' version "${eventuateTestPluginsVersion}"
+    }
+}
+
+rootProject.name = 'ftgo-order-history-service'
+
+include 'order-history-service-domain'
+include 'order-history-service-dynamodb'
+include 'order-history-service-event-handling'
+include 'order-history-service-restapi'
+include 'order-history-service-main'

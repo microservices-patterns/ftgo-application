@@ -1,0 +1,10 @@
+dependencies {
+    api 'io.eventuate.tram.core:eventuate-tram-events'
+    api 'joda-time:joda-time'
+
+    // Order Service API for OrderLineItem, OrderState, OrderCreatedEvent, etc.
+    api files("${rootProject.projectDir}/../ftgo-order-service/order-service-domain/build/libs/order-service-domain-${version}.jar")
+
+    // Common module for Money
+    api files("${rootProject.projectDir}/../ftgo-common/build/libs/ftgo-common-${version}.jar")
+}

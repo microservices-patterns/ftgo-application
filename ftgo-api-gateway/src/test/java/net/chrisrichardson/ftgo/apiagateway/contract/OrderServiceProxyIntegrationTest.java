@@ -20,12 +20,12 @@ import static org.junit.Assert.assertEquals;
 @SpringBootTest(classes=TestConfiguration.class,
         webEnvironment= SpringBootTest.WebEnvironment.NONE)
 @AutoConfigureStubRunner(ids =
-        {"net.chrisrichardson.ftgo:ftgo-order-service-contracts"}
+        {"net.chrisrichardson.ftgo:ftgo-order-service"}
 )
 @DirtiesContext
 public class OrderServiceProxyIntegrationTest {
 
-  @Value("${stubrunner.runningstubs.ftgo-order-service-contracts.port}")
+  @Value("${stubrunner.runningstubs.ftgo-order-service.port}")
   private int port;
   private OrderDestinations orderDestinations;
   private OrderServiceProxy orderService;

@@ -1,0 +1,30 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'io.eventuate.plugins.gradle.testing.integration-tests'
+}
+
+dependencies {
+    implementation project(':order-history-service-restapi')
+    implementation project(':order-history-service-event-handling')
+    implementation project(':order-history-service-dynamodb')
+
+    implementation 'io.eventuate.tram.core:eventuate-tram-spring-consumer-kafka'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Integration test dependencies
+    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+    integrationTestImplementation 'io.rest-assured:rest-assured'
+    integrationTestImplementation 'org.testcontainers:localstack'
+    integrationTestImplementation 'org.testcontainers:junit-jupiter'
+    integrationTestImplementation 'io.eventuate.messaging.kafka:eventuate-messaging-kafka-testcontainers'
+    integrationTestImplementation 'io.eventuate.common:eventuate-common-testcontainers'
+    integrationTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-in-memory'
+    integrationTestImplementation 'io.eventuate.tram.core:eventuate-tram-test-util'
+}
+
+bootJar {
+    enabled = true
+}

@@ -1,0 +1,16 @@
+plugins {
+    id 'io.eventuate.plugins.gradle.testing.integration-tests'
+}
+
+dependencies {
+    api project(':order-history-service-domain')
+
+    implementation 'com.amazonaws:aws-java-sdk-dynamodb:1.12.767'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+    integrationTestImplementation 'org.testcontainers:localstack'
+    integrationTestImplementation 'org.testcontainers:junit-jupiter'
+    integrationTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-in-memory'
+    integrationTestImplementation 'io.eventuate.common:eventuate-common-testcontainers'
+}

@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: ftgo-order-history-service
+
+aws:
+  region: ${AWS_REGION:us-west-2}
+  dynamodb:
+    endpoint:
+      url: ${AWS_DYNAMODB_ENDPOINT_URL:}
+  access:
+    key_id: ${AWS_ACCESS_KEY_ID:}
+  secret:
+    access:
+      key: ${AWS_SECRET_ACCESS_KEY:}
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always

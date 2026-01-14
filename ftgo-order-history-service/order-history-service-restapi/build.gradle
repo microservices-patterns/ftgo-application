@@ -1,0 +1,8 @@
+dependencies {
+    api project(':order-history-service-domain')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiUiVersion"
+
+    testImplementation 'io.rest-assured:spring-mock-mvc'
+}
