@@ -73,4 +73,22 @@ When migrating a service to a multi-module structure, verify the following befor
    - Run `./gradlew publishStubsPublicationToLocalRepository` in the contract project
    - Verify stubs JAR exists in `../build/repo/`
 
+## Test Location in Multi-Module Projects
+
+Tests should live in the module containing the code they test:
+
+| Test Type | Location | Example |
+|-----------|----------|---------|
+| Domain unit tests | `*-domain/src/test/` | `ConsumerTest.java` |
+| JPA/Repository tests | `*-persistence/src/integrationTest/` or `*-domain/src/integrationTest/` | `ConsumerJpaTest.java` |
+| Command handler tests | `*-command-handlers/src/test/` | `ConsumerCommandHandlersTest.java` |
+| Event handler tests | `*-event-handling/src/test/` | `KitchenServiceEventHandlerTest.java` |
+| REST controller tests | `*-restapi/src/test/` | `ConsumerControllerTest.java` |
+| Full service integration tests | `*-main/src/integrationTest/` | `ConsumerServiceIntegrationTest.java` |
+| Component tests (out-of-process) | `*-main/src/componentTest/` | `ConsumerServiceComponentTest.java` |
+| Provider contract tests | Module that publishes events/responses | `MessagingBase.java` |
+| Consumer contract tests | Module that consumes events/requests | In `*-event-handling/` |
+
+**Principle**: A test should be in the same module as the code it exercises.
+
 <!-- claude-config-files-sha: f8e6469fd91735ffcae2dc46f979cfb0677ec5b6 -->

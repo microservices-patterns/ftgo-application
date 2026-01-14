@@ -1,79 +1,51 @@
-
-apply plugin: FtgoServicePlugin
-
-// apply plugin: 'spring-cloud-contract'
-
-apply plugin: 'docker-compose'
-
-apply plugin: IntegrationTestsPlugin
-apply plugin: ComponentTestsPlugin
-apply plugin: FtgoJSONSchema2PojoPlugin
-
-dependencies {
-    ftgoApiSpecification project(":ftgo-restaurant-service-api-spec")
-
-    compile project(":ftgo-delivery-service-api")
-    compile project(":ftgo-kitchen-service-api")
-    compile project(":ftgo-restaurant-service-api")
-    compile project(":ftgo-order-service-api")
-    compile project(":ftgo-common")
-    compile project(":ftgo-common-jpa")
-    compile project(":common-swagger")
-
-    compile "io.eventuate.tram.core:eventuate-tram-spring-events"
-    compile "org.springframework.boot:spring-boot-starter-data-jpa"
-    compile "io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka"
-
-    compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
-    compile "io.micrometer:micrometer-registry-prometheus:$micrometerVersion"
-
-    compile('org.apache.kafka:kafka-clients:2.3.0') {
-        force = true
-    }
-
-    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
-    testCompile "io.eventuate.tram.core:eventuate-tram-spring-in-memory"
-    testCompile "io.eventuate.util:eventuate-util-test"
-
-    componentTestCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
-    componentTestCompile "com.jayway.jsonpath:json-path:2.3.0"
-    componentTestCompile "org.hamcrest:hamcrest:2.1"
-    componentTestCompile project(":ftgo-test-util")
-
+plugins {
+    id 'org.springframework.boot' version '3.4.0' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
+    id 'io.eventuate.plugins.gradle.testing.integration-tests' apply false
+    id 'io.eventuate.plugins.gradle.testing.component-tests' apply false
 }
 
-dockerCompose {
-    environment.put "EVENTUATE_COMMON_VERSION", eventuateCommonImageVersion
-    environment.put "EVENTUATE_CDC_VERSION", eventuateCdcImageVersion
-    environment.put "EVENTUATE_SAGA_VERSION", eventuateTramSagasImageVersion
-    environment.put "EVENTUATE_JAVA_BASE_IMAGE_VERSION", eventuateExamplesBaseImageVersion
-    environment.put "EVENTUATE_MESSAGING_KAFKA_IMAGE_VERSION", eventuateMessagingKafkaImageVersion
-    
-    projectName = null
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'io.spring.dependency-management'
 
-    componentTests {
-        projectName = null
-        removeOrphans = true
-        retainContainersOnStartupFailure = true
+    group = 'net.chrisrichardson.ftgo'
+    version = project.findProperty('version') ?: '0.1.0-SNAPSHOT'
 
-        startedServices = [ 'ftgo-delivery-service']
-        stopContainers = true
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
     }
 
-}
-
-componentTestsComposeUp.dependsOn(assemble)
-dockerCompose.componentTests.isRequiredBy(componentTest)
-
-ftgoJsonSchema2Pojo {
-
-    ftgoRestaurantService {
-        source = files("${ftgoApiSpecsDir}/ftgo-restaurant-service-api-spec/messages")
-        targetPackage = "net.chrisrichardson.ftgo.restaurantservice.events"
-        includeAdditionalProperties = false
-        generateBuilders = true
-        useLongIntegers = true
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
+        maven { url "${rootProject.projectDir}/../build/repo" }
     }
 
-}
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
+            mavenBom "io.eventuate.platform:eventuate-platform-dependencies:$eventuatePlatformVersion"
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+        }
+    }
 
+    dependencies {
+        implementation 'org.apache.commons:commons-lang3:3.14.0'
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.assertj:assertj-core'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs += '-parameters'
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+}

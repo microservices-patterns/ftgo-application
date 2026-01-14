@@ -44,6 +44,15 @@ services:
       POSTGRES_PASSWORD: postgrespw
       POSTGRES_DB: eventuate
 
+  delivery-service-db:
+    image: eventuateio/eventuate-vanilla-postgres:0.21.0.BUILD-SNAPSHOT
+    ports:
+      - "5437:5432"
+    environment:
+      POSTGRES_USER: postgresuser
+      POSTGRES_PASSWORD: postgrespw
+      POSTGRES_DB: eventuate
+
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     ports:
@@ -155,6 +164,21 @@ services:
       EVENTUATE_CDC_READER_READER5_OFFSETSTORAGETOPICNAME: restaurant_schema.cdc_offset_store
       EVENTUATE_CDC_READER_READER5_OUTBOXID: "5"
       EVENTUATE_CDC_READER_READER5_MONITORINGSCHEMA: public
+      # Delivery Service database pipeline
+      EVENTUATE_CDC_PIPELINE_PIPELINE6_TYPE: eventuate-tram
+      EVENTUATE_CDC_PIPELINE_PIPELINE6_READER: reader6
+      EVENTUATE_CDC_PIPELINE_PIPELINE6_EVENTUATEDATABASESCHEMA: public
+
+      # Reader 6 - Delivery Service database
+      EVENTUATE_CDC_READER_READER6_TYPE: postgres-wal
+      EVENTUATE_CDC_READER_READER6_DATASOURCEURL: jdbc:postgresql://delivery-service-db:5432/eventuate
+      EVENTUATE_CDC_READER_READER6_DATASOURCEUSERNAME: postgresuser
+      EVENTUATE_CDC_READER_READER6_DATASOURCEPASSWORD: postgrespw
+      EVENTUATE_CDC_READER_READER6_DATASOURCEDRIVERCLASSNAME: org.postgresql.Driver
+      EVENTUATE_CDC_READER_READER6_LEADERSHIPLOCKPATH: /eventuate/cdc/leader/delivery
+      EVENTUATE_CDC_READER_READER6_OFFSETSTORAGETOPICNAME: delivery_schema.cdc_offset_store
+      EVENTUATE_CDC_READER_READER6_OUTBOXID: "6"
+      EVENTUATE_CDC_READER_READER6_MONITORINGSCHEMA: public
     depends_on:
       - kafka
       - order-service-db
@@ -162,6 +186,7 @@ services:
       - kitchen-service-db
       - accounting-service-db
       - restaurant-service-db
+      - delivery-service-db
 
   ftgo-consumer-service:
     build:
@@ -250,5 +275,23 @@ services:
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     depends_on:
       - restaurant-service-db
+      - kafka
+      - cdc-service
+
+  ftgo-delivery-service:
+    build:
+      context: ./ftgo-delivery-service
+      args:
+        baseImageVersion: "0.21.0.BUILD-SNAPSHOT"
+    ports:
+      - "8086:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://delivery-service-db:5432/eventuate
+      SPRING_DATASOURCE_USERNAME: postgresuser
+      SPRING_DATASOURCE_PASSWORD: postgrespw
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - delivery-service-db
       - kafka
       - cdc-service
