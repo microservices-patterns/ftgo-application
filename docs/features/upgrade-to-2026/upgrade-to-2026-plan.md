@@ -734,7 +734,33 @@ Remove legacy modules and validate the complete system.
 - [ ] Verify end-to-end tests pass (see Steel Thread 10 for full e2e test implementation)
 - [ ] Commit final cleanup changes
 
-### Task 9.7: Update documentation
+### Task 9.7: Reorganize integration tests from *-main to adapter subprojects
+
+Review all `*-main/src/integrationTest/` directories and move tests to appropriate adapter subprojects:
+
+**Current state:** Integration tests in `*-main/src/integrationTest/` often test multiple concerns (REST API + messaging) in a single test class.
+
+**Target state:** Tests should be co-located with the code they test:
+- REST API tests → `*-restapi/src/integrationTest/`
+- Command handler tests → `*-command-handlers/src/integrationTest/`
+- Event handling tests → `*-event-handling/src/integrationTest/`
+
+**Services to review:**
+- [ ] `ftgo-consumer-service/consumer-service-main/src/integrationTest/` - split REST vs messaging tests
+- [ ] `ftgo-kitchen-service/kitchen-service-main/src/integrationTest/` - move messaging test to command-handlers
+- [ ] `ftgo-accounting-service/accounting-service-main/src/integrationTest/` - review test placement
+- [ ] `ftgo-restaurant-service/restaurant-service-main/src/integrationTest/` - review test placement
+- [ ] `ftgo-delivery-service/delivery-service-main/src/integrationTest/` - review test placement
+- [ ] `ftgo-order-history-service/order-history-service-main/src/integrationTest/` - review test placement
+
+**Guidelines:**
+- Tests that exercise REST controllers → `*-restapi/src/integrationTest/`
+- Tests that exercise command handlers via messaging → `*-command-handlers/src/integrationTest/`
+- Tests that exercise event handlers → `*-event-handling/src/integrationTest/`
+- Tests that require the full application context (cross-cutting) → remain in `*-main/src/integrationTest/`
+- Use `@MockitoBean` to isolate adapter-specific tests from other layers
+
+### Task 9.8: Update documentation
 
 - [ ] Update root README.md with new build instructions
 - [ ] Document the self-contained service structure
