@@ -126,6 +126,8 @@ public class OrderServiceImpl implements OrderService {
             .orElseThrow(() -> new OrderNotFoundException(orderId));
     CancelOrderSagaData sagaData = new CancelOrderSagaData(order.getConsumerId(), orderId, order.getOrderTotal());
     sagaInstanceFactory.create(cancelOrderSaga, sagaData);
+    // Access lazy-loaded collections within transaction to avoid LazyInitializationException
+    order.getOrderTotal();
     return order;
   }
 
@@ -163,6 +165,8 @@ public class OrderServiceImpl implements OrderService {
     Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
     ReviseOrderSagaData sagaData = new ReviseOrderSagaData(order.getConsumerId(), orderId, null, orderRevision);
     sagaInstanceFactory.create(reviseOrderSaga, sagaData);
+    // Access lazy-loaded collections within transaction to avoid LazyInitializationException
+    order.getOrderTotal();
     return order;
   }
 

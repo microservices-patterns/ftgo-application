@@ -47,7 +47,7 @@ public class KitchenServiceCommandHandler {
     try {
       Ticket ticket = kitchenService.createTicket(restaurantId, ticketId, ticketDetails);
       CreateTicketReply reply = new CreateTicketReply(ticket.getId());
-      return withLock(Ticket.class, ticket.getId()).withSuccess(reply);
+      return withSuccess(reply);
     } catch (RestaurantDetailsVerificationException e) {
       return withFailure();
     }
