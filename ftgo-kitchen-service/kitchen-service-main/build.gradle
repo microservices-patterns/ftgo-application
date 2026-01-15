@@ -31,4 +31,11 @@ dependencies {
     integrationTestImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory'
     integrationTestImplementation 'io.rest-assured:rest-assured'
     integrationTestImplementation 'com.h2database:h2'
+
+    // Component test dependencies
+    componentTestImplementation 'io.rest-assured:rest-assured'
+    componentTestImplementation 'org.testcontainers:testcontainers'
+    componentTestImplementation 'io.eventuate.messaging.kafka:eventuate-messaging-kafka-testcontainers'
+    componentTestImplementation 'io.eventuate.common:eventuate-common-testcontainers'
+    componentTestImplementation "io.eventuate.platform.testcontainer.support:eventuate-platform-testcontainer-support-service:$eventuatePlatformTestContainerSupportVersion"
 }
