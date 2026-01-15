@@ -9,7 +9,7 @@ import reactor.util.function.Tuple4;
 
 import java.util.Optional;
 
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 public class OrderHandlers {
 
@@ -55,7 +55,7 @@ public class OrderHandlers {
 
     return orderDetails.flatMap(od -> ServerResponse.ok()
             .contentType(MediaType.APPLICATION_JSON)
-            .body(fromObject(od)))
+            .body(fromValue(od)))
             .onErrorResume(OrderNotFoundException.class, e -> ServerResponse.notFound().build());
   }
 

@@ -657,8 +657,8 @@ The `ftgo-order-history-service/` directory already exists. Transform it into a 
 
 ### Task 7.7: Verify Order History Service integration
 
-- [ ] Run `./build-and-test-all.sh` and verify all seven services build
-- [ ] Commit all changes for Steel Thread 7
+- [x] Run `./build-and-test-all.sh` and verify all seven services build
+- [x] Commit all changes for Steel Thread 7
 
 ### Task 7.8: Standardize artifact coordinates for contract stubs
 
@@ -701,30 +701,30 @@ Migrate the API Gateway as the final service.
 
 The `ftgo-api-gateway/` directory already exists. Transform it into a multi-module project:
 
-- [ ] Create `settings.gradle` with pluginManagement block and subproject includes:
-  - [ ] `api-gateway-routing` - Route configurations and filters
-  - [ ] `api-gateway-main` - Spring Boot application
-- [ ] Create `gradle.properties` with version properties
-- [ ] Create root `build.gradle` with common configuration
-- [ ] Create each subproject's `build.gradle`
-- [ ] Add Spring Cloud Gateway dependencies for Spring Boot 3.x
-- [ ] Generate Gradle wrapper using `gradle wrapper`
-- [ ] Verify `./gradlew tasks` runs successfully
+- [x] Create `settings.gradle` with pluginManagement block and subproject includes:
+  - [x] `api-gateway-routing` - Route configurations and filters
+  - [x] `api-gateway-main` - Spring Boot application
+- [x] Create `gradle.properties` with version properties
+- [x] Create root `build.gradle` with common configuration
+- [x] Create each subproject's `build.gradle`
+- [x] Add Spring Cloud Gateway dependencies for Spring Boot 3.x
+- [x] Generate Gradle wrapper using `gradle wrapper`
+- [x] Verify `./gradlew tasks` runs successfully
 
 ### Task 8.2: Move source files to subprojects and migrate to Spring Boot 3.x / Jakarta EE
 
-- [ ] Move routing configuration to `api-gateway-routing/`
-- [ ] Move main class to `api-gateway-main/`
-- [ ] Update Spring Cloud Gateway configuration for Spring Boot 3.x
-- [ ] Perform `javax.*` to `jakarta.*` migration (if applicable)
-- [ ] Update route configurations for new service structure
+- [x] Move routing configuration to `api-gateway-routing/`
+- [x] Move main class to `api-gateway-main/`
+- [x] Update Spring Cloud Gateway configuration for Spring Boot 3.x
+- [x] Perform `javax.*` to `jakarta.*` migration (if applicable)
+- [x] Update route configurations for new service structure
 
 ### Task 8.3: Migrate API Gateway tests to appropriate subprojects
 
-- [ ] Move unit tests alongside source files
-- [ ] Update JUnit 4 to JUnit 5
-- [ ] Update `javax.*` to `jakarta.*` imports
-- [ ] Verify `./gradlew test` passes
+- [x] Move unit tests alongside source files
+- [x] Update JUnit 4 to JUnit 5
+- [x] Update `javax.*` to `jakarta.*` imports
+- [x] Verify `./gradlew test` passes
 - [ ] Create integration tests (if needed)
 - [ ] Verify `./gradlew integrationTest` passes
 
@@ -733,7 +733,7 @@ The `ftgo-api-gateway/` directory already exists. Transform it into a multi-modu
 - [ ] Update `ftgo-api-gateway/Dockerfile` for Java 17
 - [ ] Add `ftgo-api-gateway` to root `docker-compose.yaml`
 - [ ] Configure routing to all backend services
-- [ ] Update `build-and-test-all.sh` to include API Gateway
+- [x] Update `build-and-test-all.sh` to include API Gateway
 - [ ] Verify Docker build and service startup
 
 ### Task 8.5: Add end-to-end test for full system via gateway
@@ -744,8 +744,8 @@ The `ftgo-api-gateway/` directory already exists. Transform it into a multi-modu
 
 ### Task 8.6: Verify API Gateway integration
 
-- [ ] Run `./build-and-test-all.sh` and verify all eight services build
-- [ ] Commit all changes for Steel Thread 8
+- [x] Run `./build-and-test-all.sh` and verify all eight services build
+- [x] Commit all changes for Steel Thread 8
 
 ---
 

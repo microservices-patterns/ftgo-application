@@ -25,13 +25,12 @@ public class OrderServiceProxy {
             .uri(orderDestinations.getOrderServiceUrl() + "/orders/{orderId}", orderId)
             .exchange();
     return response.flatMap(resp -> {
-      switch (resp.statusCode()) {
-        case OK:
-          return resp.bodyToMono(OrderInfo.class);
-        case NOT_FOUND:
-          return Mono.error(new OrderNotFoundException());
-        default:
-          return Mono.error(new RuntimeException("Unknown" + resp.statusCode()));
+      if (resp.statusCode().is2xxSuccessful()) {
+        return resp.bodyToMono(OrderInfo.class);
+      } else if (resp.statusCode().value() == 404) {
+        return Mono.error(new OrderNotFoundException());
+      } else {
+        return Mono.error(new RuntimeException("Unknown " + resp.statusCode()));
       }
     });
   }

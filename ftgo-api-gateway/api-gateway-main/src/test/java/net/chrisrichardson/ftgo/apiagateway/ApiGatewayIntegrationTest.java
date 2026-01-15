@@ -3,20 +3,15 @@ package net.chrisrichardson.ftgo.apiagateway;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import net.chrisrichardson.ftgo.apiagateway.orders.OrderDetails;
 import net.chrisrichardson.ftgo.apiagateway.proxies.OrderInfo;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -29,10 +24,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = ApiGatewayIntegrationTestConfiguration.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties={"order.destinations.orderServiceUrl=http://localhost:${wiremock.server.port}",
@@ -61,7 +55,7 @@ public class ApiGatewayIntegrationTest {
 
         ResponseEntity<String> z = client
                 .post()
-                .body(BodyInserters.fromObject("{}"))
+                .body(BodyInserters.fromValue("{}"))
                 .exchange()
                 .flatMap(r -> r.toEntity(String.class))
                 .block();
@@ -103,7 +97,7 @@ public class ApiGatewayIntegrationTest {
 
         assertNotNull(z);
         assertEquals(HttpStatus.OK, z.getStatusCode());
-        assertEquals(body, expectedOrderDetails, z.getBody());
+        assertEquals(expectedOrderDetails, z.getBody());
 
         verify(getRequestedFor(urlMatching(expectedPath)));
 

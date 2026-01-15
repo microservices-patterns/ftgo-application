@@ -17,13 +17,12 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 echo ""
 
 # Services that publish contract stubs (must be built first)
-# Format: "service-dir:submodule-with-stubs"
 STUB_PUBLISHERS=(
-  "ftgo-order-service:order-service-event-publishing"
-  "ftgo-consumer-service:consumer-service-event-publishing"
-  "ftgo-kitchen-service:kitchen-service-event-publishing"
-  "ftgo-accounting-service:accounting-service-command-handlers"
-  "ftgo-restaurant-service:restaurant-service-event-publishing"
+  "ftgo-order-service"
+  "ftgo-consumer-service"
+  "ftgo-kitchen-service"
+  "ftgo-accounting-service"
+  "ftgo-restaurant-service"
 )
 
 # List of migrated services (add services as they are migrated)
@@ -35,16 +34,15 @@ MIGRATED_SERVICES=(
   "ftgo-restaurant-service"
   "ftgo-delivery-service"
   "ftgo-order-history-service"
+  "ftgo-api-gateway"
 )
 
 # Publish contract stubs from migrated services first
 echo "Publishing contract stubs from migrated services..."
-for entry in "${STUB_PUBLISHERS[@]}"; do
-  service="${entry%%:*}"
-  submodule="${entry##*:}"
-  echo "Publishing stubs: $service ($submodule)"
+for service in "${STUB_PUBLISHERS[@]}"; do
+  echo "Publishing stubs: $service"
   if [ -d "$service" ] && [ -f "$service/gradlew" ]; then
-    (cd "$service" && ./gradlew ":${submodule}:publishStubsPublicationToLocalRepository" $GRADLE_ARGS)
+    (cd "$service" && ./gradlew publishStubsPublicationToLocalRepository $GRADLE_ARGS)
   else
     echo "WARNING: Service '$service' not found or missing gradlew"
   fi

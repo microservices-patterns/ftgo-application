@@ -1,0 +1,11 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url 'https://snapshots.repositories.eventuate.io/repository' }
+    }
+}
+
+rootProject.name = 'ftgo-api-gateway'
+
+include 'api-gateway-routing'
+include 'api-gateway-main'

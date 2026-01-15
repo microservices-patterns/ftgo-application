@@ -1,0 +1,20 @@
+plugins {
+    id 'org.springframework.boot'
+}
+
+dependencies {
+    implementation project(':api-gateway-routing')
+
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+    testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner'
+    testImplementation 'io.projectreactor:reactor-test'
+}
+
+test {
+    def repoDir = file("${rootProject.projectDir}/../build/repo").absolutePath
+    systemProperty "stubrunner.repositoryRoot", "file://${repoDir}"
+}

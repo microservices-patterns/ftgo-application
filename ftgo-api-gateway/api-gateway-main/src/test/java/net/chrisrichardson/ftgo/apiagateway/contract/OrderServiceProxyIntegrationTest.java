@@ -4,33 +4,33 @@ import net.chrisrichardson.ftgo.apiagateway.orders.OrderDestinations;
 import net.chrisrichardson.ftgo.apiagateway.proxies.OrderInfo;
 import net.chrisrichardson.ftgo.apiagateway.proxies.OrderNotFoundException;
 import net.chrisrichardson.ftgo.apiagateway.proxies.OrderServiceProxy;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRunner;
+import org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes=TestConfiguration.class,
         webEnvironment= SpringBootTest.WebEnvironment.NONE)
 @AutoConfigureStubRunner(ids =
-        {"net.chrisrichardson.ftgo:ftgo-order-service"}
+        {"net.chrisrichardson.ftgo:order-service-restapi"},
+        stubsMode = StubRunnerProperties.StubsMode.REMOTE
 )
 @DirtiesContext
 public class OrderServiceProxyIntegrationTest {
 
-  @Value("${stubrunner.runningstubs.ftgo-order-service.port}")
+  @Value("${stubrunner.runningstubs.order-service-restapi.port}")
   private int port;
   private OrderDestinations orderDestinations;
   private OrderServiceProxy orderService;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     orderDestinations = new OrderDestinations();
     String orderServiceUrl = "http://localhost:" + port;
@@ -45,9 +45,11 @@ public class OrderServiceProxyIntegrationTest {
     assertEquals("APPROVAL_PENDING", result.getState());
   }
 
-  @Test(expected = OrderNotFoundException.class)
+  @Test
   public void shouldFailToFindMissingOrder() {
-    orderService.findOrderById("555").block();
+    assertThrows(OrderNotFoundException.class, () -> {
+      orderService.findOrderById("555").block();
+    });
   }
 
 }

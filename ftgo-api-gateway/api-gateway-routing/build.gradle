@@ -1,0 +1,10 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    api 'org.springframework.boot:spring-boot-starter-webflux'
+    api 'org.springframework.boot:spring-boot-starter-validation'
+    api 'org.springframework.cloud:spring-cloud-starter-gateway'
+    api 'org.apache.commons:commons-lang3'
+}

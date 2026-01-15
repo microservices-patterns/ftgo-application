@@ -1,6 +1,7 @@
 plugins {
     id 'io.eventuate.plugins.gradle.testing.integration-tests'
     id 'org.springframework.cloud.contract' version "$springCloudContractDependenciesVersion"
+    id 'maven-publish'
 }
 
 sourceSets {
@@ -50,4 +51,19 @@ contractTest {
 
 tasks.named('processContractTestResources') {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+// Publish stubs for consumer contract testing
+publishing {
+    publications {
+        stubs(MavenPublication) {
+            artifact verifierStubsJar
+        }
+    }
+    repositories {
+        maven {
+            name = 'local'
+            url = "${rootProject.projectDir}/../build/repo"
+        }
+    }
 }
