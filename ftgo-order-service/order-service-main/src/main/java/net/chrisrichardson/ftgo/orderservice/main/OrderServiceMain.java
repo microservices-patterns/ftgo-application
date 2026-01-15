@@ -1,6 +1,7 @@
 package net.chrisrichardson.ftgo.orderservice.main;
 
 import io.eventuate.tram.spring.jdbckafka.TramJdbcKafkaConfiguration;
+import net.chrisrichardson.ftgo.orderservice.domain.OrderServiceWithRepositoriesConfiguration;
 import net.chrisrichardson.ftgo.orderservice.messaging.OrderServiceMessagingConfiguration;
 import net.chrisrichardson.ftgo.orderservice.service.OrderCommandHandlersConfiguration;
 import net.chrisrichardson.ftgo.orderservice.web.OrderWebConfiguration;
@@ -10,7 +11,7 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @Import({OrderWebConfiguration.class, OrderCommandHandlersConfiguration.class, OrderServiceMessagingConfiguration.class,
-        TramJdbcKafkaConfiguration.class})
+        TramJdbcKafkaConfiguration.class, OrderServiceWithRepositoriesConfiguration.class})
 public class OrderServiceMain {
 
   public static void main(String[] args) {

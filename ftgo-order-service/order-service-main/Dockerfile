@@ -1,3 +1,3 @@
 ARG baseImageVersion
 FROM eventuateio/eventuate-examples-docker-images-spring-example-base-image:$baseImageVersion
-COPY order-service-main/build/libs/order-service-main-*.jar service.jar
+COPY build/libs/order-service-main-0.1.0-SNAPSHOT.jar service.jar

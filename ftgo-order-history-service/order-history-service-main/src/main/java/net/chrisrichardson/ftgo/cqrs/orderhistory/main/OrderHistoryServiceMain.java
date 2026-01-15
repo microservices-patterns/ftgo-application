@@ -1,5 +1,6 @@
 package net.chrisrichardson.ftgo.cqrs.orderhistory.main;
 
+import io.eventuate.tram.spring.consumer.common.TramNoopDuplicateMessageDetectorConfiguration;
 import io.eventuate.tram.spring.consumer.kafka.EventuateTramKafkaMessageConsumerConfiguration;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb.OrderHistoryDynamoDBConfiguration;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.messaging.OrderHistoryServiceMessagingConfiguration;
@@ -12,7 +13,8 @@ import org.springframework.context.annotation.Import;
 @Import({OrderHistoryWebConfiguration.class,
         OrderHistoryServiceMessagingConfiguration.class,
         OrderHistoryDynamoDBConfiguration.class,
-        EventuateTramKafkaMessageConsumerConfiguration.class})
+        EventuateTramKafkaMessageConsumerConfiguration.class,
+        TramNoopDuplicateMessageDetectorConfiguration.class})
 public class OrderHistoryServiceMain {
 
   public static void main(String[] args) {
