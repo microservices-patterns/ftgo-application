@@ -26,7 +26,8 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = ConsumerServiceIntegrationTest.TestConfiguration.class,
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = "spring.flyway.enabled=false")
 class ConsumerServiceIntegrationTest {
 
   @Value("${local.server.port}")

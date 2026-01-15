@@ -28,7 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SpringBootTest(classes = KitchenServiceInMemoryIntegrationTest.TestConfiguration.class,
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = "spring.flyway.enabled=false")
 class KitchenServiceInMemoryIntegrationTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
