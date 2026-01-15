@@ -22,6 +22,7 @@ Before starting any work on this plan:
 - `/Users/cer/src/eventuate-examples/eventuate-tram-examples-customers-and-orders` - Build configuration, contract tests
 - `/Users/cer/src/eventuate-examples/eventuate-tram-sagas-examples-customers-and-orders` - Saga patterns
 - `/Users/cer/src/eventuate-examples/eventuate-examples-realguardio` - Self-contained service structure
+- `/Users/cer/src/eventuate-examples/eventuate-examples-realguardio/end-to-end-tests` - End-to-end test patterns (TestContainers, ApplicationUnderTest abstraction)
 
 **Reference Documentation:**
 - `docs/features/upgrade-to-2026/ftgo-order-service.md` - Analysis of Order Service migration patterns and lessons learned
@@ -146,19 +147,7 @@ The Dockerfile may already exist. Update it for Java 17:
 - [ ] Verify Docker image builds: `docker build -t ftgo-order-service .`
 - [ ] Verify service starts in Docker and health check passes
 
-### Task 1.10: Create end-to-end-tests project foundation
-
-- [ ] Create `end-to-end-tests/` directory as standalone Gradle project
-- [ ] Create `end-to-end-tests/settings.gradle` with plugin management
-- [ ] Create `end-to-end-tests/build.gradle` with:
-  - [ ] JUnit 5, RestAssured, Testcontainers dependencies
-  - [ ] Eventuate testcontainer support
-  - [ ] Task to assemble dependent services
-- [ ] Generate Gradle wrapper using `gradle wrapper`
-- [ ] Create basic end-to-end test that verifies Order Service starts and responds to health check
-- [ ] Verify `./gradlew endToEndTest` passes
-
-### Task 1.11: Verify full Order Service build pipeline
+### Task 1.10: Verify full Order Service build pipeline
 
 - [x] Run `./build-and-test-all.sh` and verify it completes successfully
 - [x] Verify all test types pass: unit, integration, component, contract
@@ -235,16 +224,7 @@ The `ftgo-consumer-service/` directory already exists. Transform it into a multi
 - [x] `build-and-test-all.sh` already includes Consumer Service
 - [ ] Verify Docker build and service startup (deferred to end-to-end testing)
 
-### Task 2.7: Add end-to-end test for Order + Consumer validation
-
-(Deferred - end-to-end test project setup will be more valuable once more services are migrated)
-
-- [ ] Add end-to-end test that creates an order and verifies consumer validation step
-- [ ] Test should start both Order Service and Consumer Service containers
-- [ ] Verify CreateOrderSaga reaches consumer validation step
-- [ ] Verify `./gradlew endToEndTest` passes in `end-to-end-tests/`
-
-### Task 2.8: Verify Consumer Service integration
+### Task 2.7: Verify Consumer Service integration
 
 - [x] Run `./build-and-test-all.sh` and verify both services build
 - [ ] Verify Docker Compose starts both services (deferred)
@@ -320,15 +300,7 @@ The `ftgo-kitchen-service/` directory already exists. Transform it into a multi-
 - [x] Update `build-and-test-all.sh` to include Kitchen Service
 - [ ] Verify Docker build and service startup
 
-### Task 3.7: Add end-to-end test for Order + Consumer + Kitchen
-
-- [ ] Add end-to-end test that verifies ticket creation step
-- [ ] Test should start Order, Consumer, and Kitchen Service containers
-- [ ] Verify CreateOrderSaga reaches ticket creation step
-- [ ] Verify ticket is created in Kitchen Service
-- [ ] Verify `./gradlew endToEndTest` passes
-
-### Task 3.8: Verify Kitchen Service integration
+### Task 3.7: Verify Kitchen Service integration
 
 - [x] Run `./build-and-test-all.sh` and verify all three services build
 - [ ] Verify Docker Compose starts all services (deferred)
@@ -403,20 +375,7 @@ The `ftgo-accounting-service/` directory already exists. Transform it into a mul
 - [x] Update `build-and-test-all.sh` to include Accounting Service
 - [ ] Verify Docker build and service startup (deferred)
 
-### Task 4.7: Add end-to-end test for complete CreateOrderSaga happy path
-
-- [ ] Add end-to-end test that exercises the full CreateOrderSaga:
-  - [ ] Create order request
-  - [ ] Consumer validation succeeds
-  - [ ] Ticket created
-  - [ ] Payment authorized
-  - [ ] Ticket confirmed
-  - [ ] Order approved
-- [ ] Test should start all four saga participant services
-- [ ] Verify order reaches APPROVED state
-- [ ] Verify `./gradlew endToEndTest` passes
-
-### Task 4.8: Verify full saga integration
+### Task 4.7: Verify full saga integration
 
 - [x] Run `./build-and-test-all.sh` and verify all four services build
 - [ ] Verify Docker Compose starts all services (deferred)
@@ -487,13 +446,7 @@ The `ftgo-restaurant-service/` directory already exists. Transform it into a mul
 - [x] Update `build-and-test-all.sh` to include Restaurant Service
 - [ ] Verify Docker build and service startup
 
-### Task 5.7: Add end-to-end test for restaurant data integration
-
-- [ ] Add end-to-end test that creates a restaurant and verifies order can use restaurant data
-- [ ] Verify restaurant events are published and consumed by Kitchen Service
-- [ ] Verify `./gradlew endToEndTest` passes
-
-### Task 5.8: Verify Restaurant Service integration
+### Task 5.7: Verify Restaurant Service integration
 
 - [x] Run `./build-and-test-all.sh` and verify all five services build
 - [x] Commit all changes for Steel Thread 5
@@ -559,12 +512,7 @@ The `ftgo-delivery-service/` directory already exists. Transform it into a multi
 - [x] Update `build-and-test-all.sh` to include Delivery Service
 - [ ] Verify Docker build and service startup (deferred to end-to-end testing)
 
-### Task 6.6: Add end-to-end test for delivery scheduling
-
-- [ ] Add end-to-end test that verifies delivery is scheduled for approved order
-- [ ] Verify `./gradlew endToEndTest` passes
-
-### Task 6.7: Verify Delivery Service integration
+### Task 6.6: Verify Delivery Service integration
 
 - [x] Run `./build-and-test-all.sh` and verify all six services build
 - [x] Commit all changes for Steel Thread 6
@@ -649,13 +597,7 @@ The `ftgo-order-history-service/` directory already exists. Transform it into a 
 - [x] Update `build-and-test-all.sh` to include Order History Service
 - [ ] Verify Docker build and service startup
 
-### Task 7.6: Add end-to-end test for CQRS query
-
-- [ ] Add end-to-end test that creates an order and verifies it appears in Order History
-- [ ] Verify order history query returns correct data
-- [ ] Verify `./gradlew endToEndTest` passes
-
-### Task 7.7: Verify Order History Service integration
+### Task 7.6: Verify Order History Service integration
 
 - [x] Run `./build-and-test-all.sh` and verify all seven services build
 - [x] Commit all changes for Steel Thread 7
@@ -736,13 +678,7 @@ The `ftgo-api-gateway/` directory already exists. Transform it into a multi-modu
 - [x] Update `build-and-test-all.sh` to include API Gateway
 - [ ] Verify Docker build and service startup
 
-### Task 8.5: Add end-to-end test for full system via gateway
-
-- [ ] Add end-to-end test that exercises CreateOrderSaga through API Gateway
-- [ ] Verify all routes work correctly
-- [ ] Verify `./gradlew endToEndTest` passes
-
-### Task 8.6: Verify API Gateway integration
+### Task 8.5: Verify API Gateway integration
 
 - [x] Run `./build-and-test-all.sh` and verify all eight services build
 - [x] Commit all changes for Steel Thread 8
@@ -794,15 +730,8 @@ Remove legacy modules and validate the complete system.
 ### Task 9.6: Final system validation
 
 - [ ] Run `./build-and-test-all.sh` and verify all services build and test
-- [ ] Run `docker-compose up` and verify all services start
-- [ ] Run full end-to-end test suite
-- [ ] Verify complete CreateOrderSaga flow:
-  - [ ] Order created via API Gateway
-  - [ ] Consumer validated
-  - [ ] Ticket created
-  - [ ] Payment authorized
-  - [ ] Order approved
-  - [ ] Order appears in Order History
+- [ ] Run `docker-compose up` and verify all services start and are healthy
+- [ ] Verify end-to-end tests pass (see Steel Thread 10 for full e2e test implementation)
 - [ ] Commit final cleanup changes
 
 ### Task 9.7: Update documentation
@@ -810,7 +739,98 @@ Remove legacy modules and validate the complete system.
 - [ ] Update root README.md with new build instructions
 - [ ] Document the self-contained service structure
 - [ ] Document how to build and run individual services
-- [ ] Document how to run end-to-end tests
+- [ ] Document how to run end-to-end tests:
+  - TestContainers mode (automatic container management)
+  - Docker Compose mode (pre-started containers)
+
+---
+
+## Steel Thread 10: End-to-End Tests
+
+Transform `ftgo-end-to-end-tests/` into a standalone self-contained Gradle project using the realguardio end-to-end-tests model. The existing EndToEndTests.java test methods will be preserved and updated to modern technology.
+
+### Task 10.1: Create standalone end-to-end-tests Gradle project
+
+Transform the existing `ftgo-end-to-end-tests/` into a self-contained project:
+
+- [ ] Create `ftgo-end-to-end-tests/settings.gradle` with:
+  - [ ] `pluginManagement` block for Eventuate testing plugins
+  - [ ] `rootProject.name = 'ftgo-end-to-end-tests'`
+- [ ] Create `ftgo-end-to-end-tests/gradle.properties` with version properties
+- [ ] Rewrite `ftgo-end-to-end-tests/build.gradle`:
+  - [ ] Java 17 toolchain configuration
+  - [ ] Spring Boot 3.4.0 plugin
+  - [ ] Custom `endToEndTest` source set (separate from `test`)
+  - [ ] Modern dependencies:
+    - REST Assured 5.x (`io.rest-assured:rest-assured`)
+    - Awaitility 4.x
+    - JUnit 5
+    - Testcontainers 1.19+
+    - Eventuate Testcontainers support
+  - [ ] Remove legacy dependencies (com.jayway.restassured, swagger-codegen)
+  - [ ] Remove dependencies on *-api projects (not self-contained)
+- [ ] Generate Gradle wrapper using `gradle wrapper`
+- [ ] Verify `./gradlew tasks` runs successfully
+
+### Task 10.2: Create ApplicationUnderTest abstraction
+
+Following the realguardio pattern, create an abstraction for launching the system under test:
+
+- [ ] Create `ApplicationUnderTest` interface:
+  ```java
+  public interface ApplicationUnderTest {
+      void start();
+      void stop();
+      String getApiGatewayUrl();
+  }
+  ```
+- [ ] Create `ApplicationUnderTestUsingTestContainers` implementation:
+  - Uses Testcontainers to programmatically start all service containers
+  - Uses `EventuateKafkaNativeCluster` for Kafka
+  - Uses `EventuateCdcContainer` for CDC service
+  - Starts all FTGO service containers with proper networking
+- [ ] Create `ApplicationUnderTestUsingDockerCompose` implementation:
+  - Connects to pre-started docker-compose services
+  - Reads service URLs from environment or configuration
+- [ ] Create factory to select implementation based on system property or environment variable
+
+### Task 10.3: Update EndToEndTests.java to modern tech
+
+Update the existing test class while preserving all test methods:
+
+- [ ] Move `EndToEndTests.java` from `src/test/java/` to `src/endToEndTest/java/`
+- [ ] Update JUnit 4 annotations to JUnit 5:
+  - `@Before` → `@BeforeEach` / `@BeforeAll`
+  - `@Test` → `@Test` (JUnit 5 version)
+- [ ] Update REST Assured imports:
+  - `com.jayway.restassured` → `io.restassured`
+- [ ] Update Awaitility imports to version 4.x
+- [ ] Integrate with `ApplicationUnderTest`:
+  - Use `@BeforeAll` to start `ApplicationUnderTest`
+  - Get service URLs from `ApplicationUnderTest` instead of hardcoded ports
+  - Use `@AfterAll` to stop `ApplicationUnderTest`
+- [ ] Preserve existing test methods:
+  - `shouldCreateReviseAndCancelOrder()`
+  - `shouldDeliverOrder()`
+  - `testSwaggerUiUrls()`
+- [ ] Verify all tests compile
+
+### Task 10.4: Verify end-to-end tests pass
+
+- [ ] Verify TestContainers mode works:
+  ```bash
+  cd ftgo-end-to-end-tests && ./gradlew endToEndTest
+  ```
+- [ ] Verify Docker Compose mode works:
+  ```bash
+  docker-compose up -d
+  cd ftgo-end-to-end-tests && ./gradlew endToEndTest -DendToEndTestMode=DockerCompose
+  ```
+- [ ] Verify all existing tests pass:
+  - `shouldCreateReviseAndCancelOrder()` - Order lifecycle
+  - `shouldDeliverOrder()` - Delivery workflow
+  - `testSwaggerUiUrls()` - API documentation
+- [ ] Commit all changes for Steel Thread 10
 
 ---
 
@@ -827,6 +847,7 @@ Remove legacy modules and validate the complete system.
 | 7 | + Order History Service | CQRS query works (multi-module) |
 | 8 | + API Gateway | Full system via gateway (multi-module) |
 | 9 | Cleanup | Legacy modules removed, final validation |
+| 10 | End-to-End Tests | Full system validation with ApplicationUnderTest pattern |
 
 ## Architecture Pattern
 
