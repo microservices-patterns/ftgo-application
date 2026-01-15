@@ -1,6 +1,7 @@
 plugins {
     id 'org.springframework.boot'
     id 'io.eventuate.plugins.gradle.testing.integration-tests'
+    id 'io.eventuate.plugins.gradle.testing.component-tests'
 }
 
 dependencies {
@@ -34,6 +35,13 @@ dependencies {
     integrationTestImplementation 'io.eventuate.util:eventuate-util-test'
 
     integrationTestRuntimeOnly 'com.h2database:h2'
+
+    // Component test dependencies
+    componentTestImplementation 'io.rest-assured:rest-assured'
+    componentTestImplementation 'org.testcontainers:testcontainers'
+    componentTestImplementation 'io.eventuate.messaging.kafka:eventuate-messaging-kafka-testcontainers'
+    componentTestImplementation 'io.eventuate.common:eventuate-common-testcontainers'
+    componentTestImplementation "io.eventuate.platform.testcontainer.support:eventuate-platform-testcontainer-support-service:$eventuatePlatformTestContainerSupportVersion"
 }
 
 integrationTest {
