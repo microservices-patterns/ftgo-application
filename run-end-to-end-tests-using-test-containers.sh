@@ -7,6 +7,7 @@ echo ""
 
 cd ftgo-end-to-end-tests
 
+./gradlew cleanEndToEndTest
 ./gradlew endToEndTest -PendToEndTestMode=TestContainers "$@"
 
 echo ""
