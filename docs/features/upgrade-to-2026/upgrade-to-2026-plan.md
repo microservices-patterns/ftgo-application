@@ -753,67 +753,59 @@ Transform `ftgo-end-to-end-tests/` into a standalone self-contained Gradle proje
 
 Transform the existing `ftgo-end-to-end-tests/` into a self-contained project:
 
-- [ ] Create `ftgo-end-to-end-tests/settings.gradle` with:
-  - [ ] `pluginManagement` block for Eventuate testing plugins
-  - [ ] `rootProject.name = 'ftgo-end-to-end-tests'`
-- [ ] Create `ftgo-end-to-end-tests/gradle.properties` with version properties
-- [ ] Rewrite `ftgo-end-to-end-tests/build.gradle`:
-  - [ ] Java 17 toolchain configuration
-  - [ ] Spring Boot 3.4.0 plugin
-  - [ ] Custom `endToEndTest` source set (separate from `test`)
-  - [ ] Modern dependencies:
+- [x] Create `ftgo-end-to-end-tests/settings.gradle` with:
+  - [x] `rootProject.name = 'ftgo-end-to-end-tests'`
+- [x] Create `ftgo-end-to-end-tests/gradle.properties` with version properties
+- [x] Rewrite `ftgo-end-to-end-tests/build.gradle`:
+  - [x] Java 17 toolchain configuration
+  - [x] Custom `endToEndTest` source set (separate from `test`)
+  - [x] Modern dependencies:
     - REST Assured 5.x (`io.rest-assured:rest-assured`)
     - Awaitility 4.x
     - JUnit 5
     - Testcontainers 1.19+
     - Eventuate Testcontainers support
-  - [ ] Remove legacy dependencies (com.jayway.restassured, swagger-codegen)
-  - [ ] Remove dependencies on *-api projects (not self-contained)
-- [ ] Generate Gradle wrapper using `gradle wrapper`
-- [ ] Verify `./gradlew tasks` runs successfully
+  - [x] Remove legacy dependencies (com.jayway.restassured, swagger-codegen)
+  - [x] Remove dependencies on *-api projects (not self-contained)
+- [x] Generate Gradle wrapper using `gradle wrapper`
+- [x] Verify `./gradlew tasks` runs successfully
 
 ### Task 10.2: Create ApplicationUnderTest abstraction
 
 Following the realguardio pattern, create an abstraction for launching the system under test:
 
-- [ ] Create `ApplicationUnderTest` interface:
-  ```java
-  public interface ApplicationUnderTest {
-      void start();
-      void stop();
-      String getApiGatewayUrl();
-  }
-  ```
-- [ ] Create `ApplicationUnderTestUsingTestContainers` implementation:
+- [x] Create `ApplicationUnderTest` interface with factory method and port accessors
+- [x] Create `ApplicationUnderTestUsingTestContainers` implementation:
   - Uses Testcontainers to programmatically start all service containers
   - Uses `EventuateKafkaNativeCluster` for Kafka
   - Uses `EventuateCdcContainer` for CDC service
   - Starts all FTGO service containers with proper networking
-- [ ] Create `ApplicationUnderTestUsingDockerCompose` implementation:
+- [x] Create `ApplicationUnderTestUsingDockerCompose` implementation:
   - Connects to pre-started docker-compose services
-  - Reads service URLs from environment or configuration
-- [ ] Create factory to select implementation based on system property or environment variable
+  - Returns hardcoded ports for docker-compose setup
+- [x] Factory method in interface selects implementation based on `endToEndTestMode` system property
 
 ### Task 10.3: Update EndToEndTests.java to modern tech
 
 Update the existing test class while preserving all test methods:
 
-- [ ] Move `EndToEndTests.java` from `src/test/java/` to `src/endToEndTest/java/`
-- [ ] Update JUnit 4 annotations to JUnit 5:
-  - `@Before` → `@BeforeEach` / `@BeforeAll`
+- [x] Create new `EndToEndTests.java` in `src/endToEndTest/java/`
+- [x] Update JUnit 4 annotations to JUnit 5:
+  - `@BeforeClass` → `@BeforeAll`
   - `@Test` → `@Test` (JUnit 5 version)
-- [ ] Update REST Assured imports:
+- [x] Update REST Assured imports:
   - `com.jayway.restassured` → `io.restassured`
-- [ ] Update Awaitility imports to version 4.x
-- [ ] Integrate with `ApplicationUnderTest`:
+- [x] Replace `Eventually` with Awaitility 4.x
+- [x] Integrate with `ApplicationUnderTest`:
   - Use `@BeforeAll` to start `ApplicationUnderTest`
   - Get service URLs from `ApplicationUnderTest` instead of hardcoded ports
   - Use `@AfterAll` to stop `ApplicationUnderTest`
-- [ ] Preserve existing test methods:
+- [x] Create self-contained DTO classes (no external dependencies)
+- [x] Preserve existing test methods:
   - `shouldCreateReviseAndCancelOrder()`
   - `shouldDeliverOrder()`
   - `testSwaggerUiUrls()`
-- [ ] Verify all tests compile
+- [x] Verify all tests compile
 
 ### Task 10.4: Verify end-to-end tests pass
 

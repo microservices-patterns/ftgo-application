@@ -1,68 +1,118 @@
-apply plugin: FtgoOpenApiCodeGenPlugin
-
-/*
 plugins {
-  id 'org.hidetake.swagger.generator' version '2.18.1'
+    id 'java'
 }
-*/
 
-apply plugin: 'docker-compose'
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url eventuateMavenRepoUrl }
+}
+
+sourceSets {
+    endToEndTest {
+        java {
+            srcDir 'src/endToEndTest/java'
+        }
+        resources {
+            srcDir 'src/endToEndTest/resources'
+        }
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+configurations {
+    endToEndTestImplementation.extendsFrom implementation
+    endToEndTestRuntimeOnly.extendsFrom runtimeOnly
+}
 
 dependencies {
-  swaggerCodegen 'org.openapitools:openapi-generator-cli:3.3.4'     // or OpenAPI Generator
+    // Eventuate Platform BOM
+    endToEndTestImplementation platform("io.eventuate.platform:eventuate-platform-dependencies:$eventuatePlatformVersion")
+
+    // Test Framework - JUnit 5
+    endToEndTestImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    endToEndTestRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // REST Assured for API Testing (modern groupId)
+    endToEndTestImplementation 'io.rest-assured:rest-assured:5.4.0'
+
+    // Testcontainers
+    endToEndTestImplementation "org.testcontainers:testcontainers:$testContainersVersion"
+    endToEndTestImplementation "org.testcontainers:junit-jupiter:$testContainersVersion"
+
+    // Eventuate Testcontainers support
+    endToEndTestImplementation 'io.eventuate.common:eventuate-common-testcontainers'
+    endToEndTestImplementation 'io.eventuate.messaging.kafka:eventuate-messaging-kafka-testcontainers'
+    endToEndTestImplementation 'io.eventuate.cdc:eventuate-cdc-testcontainers'
+    endToEndTestImplementation "io.eventuate.platform.testcontainer.support:eventuate-platform-testcontainer-support-service:$eventuatePlatformTestContainerSupportVersion"
+
+    // Eventuate JSON mapper for object mapping
+    endToEndTestImplementation 'io.eventuate.common:eventuate-common-json-mapper'
+
+    // Spring Core for ClassUtils (used in ApplicationUnderTest factory)
+    endToEndTestImplementation "org.springframework:spring-core:6.2.1"
+
+    // Awaitility for polling/waiting (replaces Eventuate Eventually)
+    endToEndTestImplementation 'org.awaitility:awaitility:4.2.0'
+
+    // Assertions
+    endToEndTestImplementation 'org.assertj:assertj-core:3.24.2'
+
+    // Logging
+    endToEndTestImplementation 'org.slf4j:slf4j-api:2.0.9'
+    endToEndTestImplementation 'ch.qos.logback:logback-classic:1.4.14'
+
+    // JSON Processing
+    endToEndTestImplementation 'com.fasterxml.jackson.core:jackson-databind'
+    endToEndTestImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    // Main dependencies (for shared DTOs if any)
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
 }
 
-swaggerSources {
-  consumerService {
-    inputFile = file("${ftgoApiSpecsDir}/ftgo-consumer-service-swagger.json")
-    code {
-      language = 'java'
-      configFile = file('swagger-codegen-config/consumer-service.json')
-      components = ['models']
-      // Supports additionalProperties: https://github.com/swagger-api/swagger-codegen#to-generate-a-sample-client-library
+task endToEndTest(type: Test) {
+    description = 'Runs end-to-end tests'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.endToEndTest.output.classesDirs
+    classpath = sourceSets.endToEndTest.runtimeClasspath
+
+    useJUnitPlatform()
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
     }
-  }
-  restaurantService {
-    inputFile = file("${ftgoApiSpecsDir}/ftgo-restaurant-service-api-spec/web/ftgo-restaurant-service-swagger.json")
-    code {
-      language = 'java'
-      configFile = file('swagger-codegen-config/restaurant-service.json')
-      components = ['models']
-    }
-  }
+
+    // Increase heap size for Testcontainers
+    maxHeapSize = '2g'
+    jvmArgs '-XX:MaxMetaspaceSize=512m'
+
+    // Fork a new JVM for each test class
+    forkEvery = 1
+
+    // Pass system properties
+    if (project.hasProperty('endToEndTestMode'))
+        systemProperty "endToEndTestMode", endToEndTestMode
 }
 
-dependencies {
-    ftgoApiSpecification project(":ftgo-consumer-service-api-spec")
-    ftgoApiSpecification project(":ftgo-restaurant-service-api-spec")
+check.dependsOn endToEndTest
 
-    compile project(":ftgo-accounting-service-api")
-    compile project(":ftgo-consumer-service-api")
-    compile project(":ftgo-kitchen-service-api")
-    compile project(":ftgo-restaurant-service-api")
-    compile project(":ftgo-order-service-api")
-    compile project(":ftgo-delivery-service-api")
+// Docker Compose mode support
+task dockerComposeUp(type: Exec) {
+    description = 'Starts all services using docker compose'
+    group = 'application'
 
-    compile "io.eventuate.util:eventuate-util-test"
-
-    compile 'io.swagger:swagger-annotations:1.5.24'
-
-    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
-    testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
-    testCompile "com.jayway.jsonpath:json-path:2.3.0"
-    testCompile project(":ftgo-test-util")
-
-
+    workingDir = '../'
+    commandLine 'docker', 'compose', 'up', '-d', '--wait'
 }
 
-dockerCompose {
-    environment.put "EVENTUATE_COMMON_VERSION", eventuateCommonImageVersion
-    environment.put "EVENTUATE_CDC_VERSION", eventuateCdcImageVersion
-    environment.put "EVENTUATE_SAGA_VERSION", eventuateTramSagasImageVersion
-    environment.put "EVENTUATE_JAVA_BASE_IMAGE_VERSION", eventuateExamplesBaseImageVersion
-    environment.put "EVENTUATE_MESSAGING_KAFKA_IMAGE_VERSION", eventuateMessagingKafkaImageVersion
-
-    projectName = null
+if (project.hasProperty('endToEndTestMode') && endToEndTestMode == 'DockerCompose') {
+    endToEndTest.dependsOn dockerComposeUp
 }
-
-test.dependsOn(composeUp)
