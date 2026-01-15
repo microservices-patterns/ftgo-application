@@ -60,4 +60,9 @@ public class OrderHistoryDynamoDBConfiguration {
   public HealthIndicator dynamoDBHealthIndicator(DynamoDB dynamoDB) {
     return new DynamoDBHealthIndicator(dynamoDB);
   }
+
+  @Bean
+  public DynamoDBTableInitializer dynamoDBTableInitializer(AmazonDynamoDB amazonDynamoDB) {
+    return new DynamoDBTableInitializer(amazonDynamoDB);
+  }
 }

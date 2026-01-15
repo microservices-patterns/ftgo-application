@@ -1,15 +1,5 @@
 package net.chrisrichardson.ftgo.cqrs.orderhistory.dynamodb;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
-import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
-import com.amazonaws.services.dynamodbv2.model.GlobalSecondaryIndex;
-import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
-import com.amazonaws.services.dynamodbv2.model.KeyType;
-import com.amazonaws.services.dynamodbv2.model.Projection;
-import com.amazonaws.services.dynamodbv2.model.ProjectionType;
-import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
-import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType;
 import io.eventuate.common.json.mapper.JSonMapper;
 import net.chrisrichardson.ftgo.common.Money;
 import net.chrisrichardson.ftgo.cqrs.orderhistory.Order;
@@ -35,7 +25,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,9 +59,6 @@ class OrderHistoryDaoDynamoDbTest {
     registry.add("aws.secret.access.key", localstack::getSecretKey);
   }
 
-  @Autowired
-  private AmazonDynamoDB amazonDynamoDB;
-
   private String consumerId;
   private Order order1;
   private String orderId;
@@ -83,12 +69,8 @@ class OrderHistoryDaoDynamoDbTest {
   private Optional<SourceEvent> eventSource;
   private long restaurantId;
 
-  private static boolean tableCreated = false;
-
   @BeforeEach
   void setup() {
-    createTableIfNotExists();
-
     consumerId = "consumerId" + System.currentTimeMillis();
     orderId = "orderId" + System.currentTimeMillis();
     restaurantName = "Ajanta" + System.currentTimeMillis();
@@ -100,39 +82,6 @@ class OrderHistoryDaoDynamoDbTest {
     eventSource = Optional.of(new SourceEvent("Order", orderId, "11212-34343"));
 
     dao.addOrder(order1, eventSource);
-  }
-
-  private void createTableIfNotExists() {
-    if (tableCreated) {
-      return;
-    }
-
-    try {
-      CreateTableRequest request = new CreateTableRequest()
-              .withTableName("ftgo-order-history")
-              .withKeySchema(new KeySchemaElement("orderId", KeyType.HASH))
-              .withAttributeDefinitions(Arrays.asList(
-                      new AttributeDefinition("orderId", ScalarAttributeType.S),
-                      new AttributeDefinition("consumerId", ScalarAttributeType.S),
-                      new AttributeDefinition("creationDate", ScalarAttributeType.N)
-              ))
-              .withGlobalSecondaryIndexes(new GlobalSecondaryIndex()
-                      .withIndexName("ftgo-order-history-by-consumer-id-and-creation-time")
-                      .withKeySchema(Arrays.asList(
-                              new KeySchemaElement("consumerId", KeyType.HASH),
-                              new KeySchemaElement("creationDate", KeyType.RANGE)
-                      ))
-                      .withProjection(new Projection().withProjectionType(ProjectionType.ALL))
-                      .withProvisionedThroughput(new ProvisionedThroughput(3L, 3L))
-              )
-              .withProvisionedThroughput(new ProvisionedThroughput(3L, 3L));
-
-      amazonDynamoDB.createTable(request);
-      tableCreated = true;
-    } catch (Exception e) {
-      // Table might already exist
-      tableCreated = true;
-    }
   }
 
   @Test

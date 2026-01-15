@@ -1,19 +1,5 @@
 package net.chrisrichardson.ftgo.cqrs.orderhistory;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
-import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
-import com.amazonaws.services.dynamodbv2.model.GlobalSecondaryIndex;
-import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
-import com.amazonaws.services.dynamodbv2.model.KeyType;
-import com.amazonaws.services.dynamodbv2.model.Projection;
-import com.amazonaws.services.dynamodbv2.model.ProjectionType;
-import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
-import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType;
 import io.eventuate.messaging.kafka.testcontainers.EventuateKafkaNativeCluster;
 import io.eventuate.messaging.kafka.testcontainers.EventuateKafkaNativeContainer;
 import io.eventuate.testcontainers.service.ServiceContainer;
@@ -31,7 +17,6 @@ import org.testcontainers.lifecycle.Startables;
 import org.testcontainers.utility.DockerImageName;
 
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.DYNAMODB;
@@ -70,45 +55,8 @@ public class OrderHistoryServiceOutOfProcessComponentTest {
 
     @BeforeAll
     static void startContainers() {
-        // Start infrastructure first
         Startables.deepStart(kafka, dynamodb).join();
-
-        // Create DynamoDB table before starting the service
-        createDynamoDBTable();
-
-        // Now start the service
         service.start();
-    }
-
-    private static void createDynamoDBTable() {
-        String endpoint = dynamodb.getEndpointOverride(DYNAMODB).toString();
-        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint, dynamodb.getRegion()))
-                .withCredentials(new AWSStaticCredentialsProvider(
-                        new BasicAWSCredentials(dynamodb.getAccessKey(), dynamodb.getSecretKey())))
-                .build();
-
-        CreateTableRequest request = new CreateTableRequest()
-                .withTableName("ftgo-order-history")
-                .withKeySchema(new KeySchemaElement("orderId", KeyType.HASH))
-                .withAttributeDefinitions(Arrays.asList(
-                        new AttributeDefinition("orderId", ScalarAttributeType.S),
-                        new AttributeDefinition("consumerId", ScalarAttributeType.S),
-                        new AttributeDefinition("creationDate", ScalarAttributeType.N)
-                ))
-                .withGlobalSecondaryIndexes(new GlobalSecondaryIndex()
-                        .withIndexName("ftgo-order-history-by-consumer-id-and-creation-time")
-                        .withKeySchema(Arrays.asList(
-                                new KeySchemaElement("consumerId", KeyType.HASH),
-                                new KeySchemaElement("creationDate", KeyType.RANGE)
-                        ))
-                        .withProjection(new Projection().withProjectionType(ProjectionType.ALL))
-                        .withProvisionedThroughput(new ProvisionedThroughput(3L, 3L))
-                )
-                .withProvisionedThroughput(new ProvisionedThroughput(3L, 3L));
-
-        client.createTable(request);
-        logger.info("Created DynamoDB table: ftgo-order-history");
     }
 
     @BeforeEach
