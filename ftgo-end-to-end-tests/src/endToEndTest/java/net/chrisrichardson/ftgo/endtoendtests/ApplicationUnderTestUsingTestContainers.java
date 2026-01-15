@@ -1,8 +1,8 @@
 package net.chrisrichardson.ftgo.endtoendtests;
 
 import io.eventuate.cdc.testcontainers.EventuateCdcContainer;
-import io.eventuate.common.testcontainers.DatabaseContainerFactory;
 import io.eventuate.common.testcontainers.EventuateDatabaseContainer;
+import io.eventuate.common.testcontainers.EventuateVanillaPostgresContainer;
 import io.eventuate.messaging.kafka.testcontainers.EventuateKafkaNativeCluster;
 import io.eventuate.messaging.kafka.testcontainers.EventuateKafkaNativeContainer;
 import io.eventuate.testcontainers.service.ServiceContainer;
@@ -23,6 +23,7 @@ public class ApplicationUnderTestUsingTestContainers implements ApplicationUnder
 
     private static final Logger logger = LoggerFactory.getLogger(ApplicationUnderTestUsingTestContainers.class);
     private static final String NETWORK_NAME = "ftgo-e2e-test";
+    private static final String BASE_IMAGE_VERSION = "BUILD-15";
 
     private final EventuateKafkaNativeCluster eventuateKafkaCluster;
     private final EventuateKafkaNativeContainer kafka;
@@ -105,7 +106,7 @@ public class ApplicationUnderTestUsingTestContainers implements ApplicationUnder
     }
 
     private EventuateDatabaseContainer<?> createDatabase(String alias) {
-        return DatabaseContainerFactory.makeVanillaDatabaseContainer()
+        return new EventuateVanillaPostgresContainer()
                 .withNetwork(eventuateKafkaCluster.network)
                 .withNetworkAliases(alias)
                 .withReuse(true);
@@ -113,8 +114,9 @@ public class ApplicationUnderTestUsingTestContainers implements ApplicationUnder
 
     private GenericContainer<?> createServiceContainer(String serviceDir, String mainModule, EventuateDatabaseContainer<?> database, int port) {
         return new ServiceContainer(new ImageFromDockerfile()
-                .withFileFromPath(".", Paths.get("..", serviceDir).toAbsolutePath())
-                .withDockerfilePath("Dockerfile"))
+                .withFileFromPath(".", Paths.get("..", serviceDir, mainModule).toAbsolutePath())
+                .withDockerfilePath("Dockerfile")
+                .withBuildArg("baseImageVersion", BASE_IMAGE_VERSION))
                 .withNetwork(eventuateKafkaCluster.network)
                 .withNetworkAliases(serviceDir)
                 .withDatabase(database)
@@ -128,8 +130,9 @@ public class ApplicationUnderTestUsingTestContainers implements ApplicationUnder
 
     private GenericContainer<?> createOrderHistoryServiceContainer() {
         return new ServiceContainer(new ImageFromDockerfile()
-                .withFileFromPath(".", Paths.get("..", "ftgo-order-history-service").toAbsolutePath())
-                .withDockerfilePath("Dockerfile"))
+                .withFileFromPath(".", Paths.get("..", "ftgo-order-history-service", "order-history-service-main").toAbsolutePath())
+                .withDockerfilePath("Dockerfile")
+                .withBuildArg("baseImageVersion", BASE_IMAGE_VERSION))
                 .withNetwork(eventuateKafkaCluster.network)
                 .withNetworkAliases("ftgo-order-history-service")
                 .withKafka(kafka)
@@ -146,8 +149,9 @@ public class ApplicationUnderTestUsingTestContainers implements ApplicationUnder
 
     private GenericContainer<?> createApiGatewayContainer() {
         return new ServiceContainer(new ImageFromDockerfile()
-                .withFileFromPath(".", Paths.get("..", "ftgo-api-gateway").toAbsolutePath())
-                .withDockerfilePath("Dockerfile"))
+                .withFileFromPath(".", Paths.get("..", "ftgo-api-gateway", "api-gateway-main").toAbsolutePath())
+                .withDockerfilePath("Dockerfile")
+                .withBuildArg("baseImageVersion", BASE_IMAGE_VERSION))
                 .withNetwork(eventuateKafkaCluster.network)
                 .withNetworkAliases("ftgo-api-gateway")
                 .withEnv("SPRING_PROFILES_ACTIVE", "docker")

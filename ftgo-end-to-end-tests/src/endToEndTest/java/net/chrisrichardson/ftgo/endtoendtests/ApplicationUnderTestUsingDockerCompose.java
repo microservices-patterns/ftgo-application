@@ -25,43 +25,44 @@ public class ApplicationUnderTestUsingDockerCompose implements ApplicationUnderT
         return "localhost";
     }
 
+    // Port mappings from docker-compose.yaml
     @Override
     public int getConsumerServicePort() {
-        return 8081;
+        return 8082;  // ftgo-consumer-service: 8082:8080
     }
 
     @Override
     public int getOrderServicePort() {
-        return 8082;
+        return 8081;  // ftgo-order-service: 8081:8080
     }
 
     @Override
     public int getKitchenServicePort() {
-        return 8083;
+        return 8083;  // ftgo-kitchen-service: 8083:8080
     }
 
     @Override
     public int getRestaurantServicePort() {
-        return 8084;
+        return 8085;  // ftgo-restaurant-service: 8085:8080
     }
 
     @Override
     public int getAccountingServicePort() {
-        return 8085;
+        return 8084;  // ftgo-accounting-service: 8084:8080
     }
 
     @Override
     public int getOrderHistoryServicePort() {
-        return 8086;
+        return 8088;  // ftgo-order-history-service (not yet in docker-compose)
     }
 
     @Override
     public int getApiGatewayPort() {
-        return 8087;
+        return 8087;  // ftgo-api-gateway (not yet in docker-compose)
     }
 
     @Override
     public int getDeliveryServicePort() {
-        return 8089;
+        return 8086;  // ftgo-delivery-service: 8086:8080
     }
 }

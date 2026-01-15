@@ -1,3 +1,3 @@
 ARG baseImageVersion
 FROM eventuateio/eventuate-examples-docker-images-spring-example-base-image:$baseImageVersion
-COPY kitchen-service-main/build/libs/kitchen-service-main-*.jar service.jar
+COPY build/libs/kitchen-service-main-0.1.0-SNAPSHOT.jar service.jar
