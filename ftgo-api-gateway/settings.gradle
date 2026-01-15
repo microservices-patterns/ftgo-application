@@ -3,6 +3,9 @@ pluginManagement {
         gradlePluginPortal()
         maven { url 'https://snapshots.repositories.eventuate.io/repository' }
     }
+    plugins {
+        id 'io.eventuate.plugins.gradle.testing.component-tests' version "${eventuateTestPluginsVersion}"
+    }
 }
 
 rootProject.name = 'ftgo-api-gateway'

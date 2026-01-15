@@ -1,5 +1,6 @@
 plugins {
     id 'org.springframework.boot'
+    id 'io.eventuate.plugins.gradle.testing.component-tests'
 }
 
 dependencies {
@@ -12,6 +13,12 @@ dependencies {
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner'
     testImplementation 'io.projectreactor:reactor-test'
+
+    // Component test dependencies
+    componentTestImplementation 'io.rest-assured:rest-assured'
+    componentTestImplementation 'org.testcontainers:testcontainers'
+    componentTestImplementation 'io.eventuate.common:eventuate-common-testcontainers'
+    componentTestImplementation "io.eventuate.platform.testcontainer.support:eventuate-platform-testcontainer-support-service:$eventuatePlatformTestContainerSupportVersion"
 }
 
 test {
