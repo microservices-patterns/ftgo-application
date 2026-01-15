@@ -18,6 +18,7 @@ dependencies {
 
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-database-postgresql'
+    implementation 'io.eventuate.tram.core:eventuate-tram-spring-flyway'
 
     runtimeOnly 'org.postgresql:postgresql'
 

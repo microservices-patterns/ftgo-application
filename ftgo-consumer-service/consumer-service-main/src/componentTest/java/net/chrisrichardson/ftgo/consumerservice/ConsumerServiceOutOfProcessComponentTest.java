@@ -17,7 +17,12 @@ import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.lifecycle.Startables;
 
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
+import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConsumerServiceOutOfProcessComponentTest {
@@ -34,6 +39,7 @@ public class ConsumerServiceOutOfProcessComponentTest {
     static EventuateDatabaseContainer<?> database = new EventuateVanillaPostgresContainer()
             .withNetwork(eventuateKafkaCluster.network)
             .withNetworkAliases("database")
+            .withExposedPorts(5432)
             .withReuse(false);
 
     static GenericContainer<?> service =
@@ -77,5 +83,69 @@ public class ConsumerServiceOutOfProcessComponentTest {
                 .body()
                 .asString()
                 .contains("UP");
+    }
+
+    @Test
+    void exploreDatabase() throws Exception {
+        String jdbcUrl = "jdbc:postgresql://localhost:" + database.getMappedPort(5432) + "/eventuate";
+        logger.info("JDBC URL: {}", jdbcUrl);
+        // Use standard eventuate vanilla postgres credentials
+        try (Connection conn = DriverManager.getConnection(jdbcUrl, "postgresuser", "postgrespw");
+             Statement stmt = conn.createStatement()) {
+
+            // List all schemas
+            logger.info("=== SCHEMAS ===");
+            ResultSet schemas = stmt.executeQuery("SELECT schema_name FROM information_schema.schemata");
+            while (schemas.next()) {
+                logger.info("Schema: {}", schemas.getString(1));
+            }
+
+            // List all tables in all schemas
+            logger.info("=== TABLES ===");
+            ResultSet tables = stmt.executeQuery(
+                "SELECT table_schema, table_name FROM information_schema.tables " +
+                "WHERE table_schema NOT IN ('pg_catalog', 'information_schema') ORDER BY table_schema, table_name");
+            while (tables.next()) {
+                logger.info("Table: {}.{}", tables.getString(1), tables.getString(2));
+            }
+
+            // Check specifically for message table in any schema
+            logger.info("=== MESSAGE TABLE SEARCH ===");
+            ResultSet messageTables = stmt.executeQuery(
+                "SELECT table_schema, table_name FROM information_schema.tables WHERE table_name = 'message'");
+            boolean found = false;
+            while (messageTables.next()) {
+                logger.info("Found message table in schema: {}", messageTables.getString(1));
+                found = true;
+            }
+            if (!found) {
+                logger.info("No message table found in any schema");
+            }
+        }
+    }
+
+    @Test
+    void shouldCreateConsumer() {
+        String requestBody = """
+                {
+                    "name": {
+                        "firstName": "John",
+                        "lastName": "Doe"
+                    }
+                }
+                """;
+
+        Integer consumerId = given()
+                .baseUri(baseUri)
+                .contentType("application/json")
+                .body(requestBody)
+                .when()
+                .post("/consumers")
+                .then()
+                .statusCode(200)
+                .extract()
+                .path("consumerId");
+
+        assertThat(consumerId).isNotNull();
     }
 }

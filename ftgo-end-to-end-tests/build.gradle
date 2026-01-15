@@ -104,6 +104,26 @@ task endToEndTest(type: Test) {
 
 check.dependsOn endToEndTest
 
+// Assemble all services before running E2E tests
+task assembleServices {
+    description = 'Assembles all dependent services'
+    group = 'build setup'
+}
+
+['ftgo-consumer-service', 'ftgo-order-service', 'ftgo-kitchen-service', 'ftgo-restaurant-service',
+ 'ftgo-accounting-service', 'ftgo-delivery-service', 'ftgo-order-history-service', 'ftgo-api-gateway'].each { serviceDir ->
+    def taskName = "assemble${serviceDir.replaceAll(/(^\w|-\w)/) { it[0].toUpperCase() }.replaceAll('-', '')}"
+    task "$taskName"(type: Exec) {
+        workingDir = "../$serviceDir"
+        commandLine "./gradlew", "assemble"
+    }
+    assembleServices.dependsOn taskName
+}
+
+if (project.hasProperty('endToEndTestMode') && endToEndTestMode == 'TestContainers') {
+    endToEndTest.dependsOn assembleServices
+}
+
 // Docker Compose mode support
 task dockerComposeUp(type: Exec) {
     description = 'Starts all services using docker compose'

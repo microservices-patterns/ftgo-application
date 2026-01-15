@@ -2,6 +2,7 @@ package net.chrisrichardson.ftgo.consumerservice.domain;
 
 import io.eventuate.tram.commands.consumer.CommandDispatcher;
 import io.eventuate.tram.spring.events.publisher.TramEventsPublisherConfiguration;
+import io.eventuate.tram.spring.flyway.EventuateTramFlywayMigrationConfiguration;
 import io.eventuate.tram.sagas.participant.SagaCommandDispatcherFactory;
 import io.eventuate.tram.sagas.spring.participant.SagaParticipantConfiguration;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableJpaRepositories
 @EnableAutoConfiguration
-@Import({SagaParticipantConfiguration.class, TramEventsPublisherConfiguration.class, CommonConfiguration.class, SagaParticipantConfiguration.class})
+@Import({SagaParticipantConfiguration.class, TramEventsPublisherConfiguration.class, CommonConfiguration.class, EventuateTramFlywayMigrationConfiguration.class})
 @EnableTransactionManagement
 @ComponentScan
 public class ConsumerServiceConfiguration {

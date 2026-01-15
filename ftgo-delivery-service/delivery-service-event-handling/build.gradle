@@ -2,6 +2,7 @@ dependencies {
     api project(':delivery-service-domain')
 
     implementation 'io.eventuate.tram.core:eventuate-tram-spring-events-subscriber-starter'
+    implementation 'io.eventuate.tram.core:eventuate-tram-spring-flyway'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.apache.commons:commons-lang3'
 }

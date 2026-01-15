@@ -1,6 +1,7 @@
 package net.chrisrichardson.ftgo.kitchenservice.main;
 
 import io.eventuate.tram.spring.events.subscriber.TramEventSubscriberConfiguration;
+import io.eventuate.tram.spring.flyway.EventuateTramFlywayMigrationConfiguration;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcher;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcherFactory;
 import io.eventuate.tram.sagas.participant.SagaCommandDispatcher;
@@ -15,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({KitchenDomainConfiguration.class, SagaParticipantConfiguration.class, CommonConfiguration.class, TramEventSubscriberConfiguration.class})
+@Import({KitchenDomainConfiguration.class, SagaParticipantConfiguration.class, CommonConfiguration.class, TramEventSubscriberConfiguration.class, EventuateTramFlywayMigrationConfiguration.class})
 public class KitchenServiceMessageHandlersConfiguration {
 
   @Bean

@@ -157,9 +157,10 @@ public class ApplicationUnderTestUsingTestContainers implements ApplicationUnder
                 .withEnv("SPRING_PROFILES_ACTIVE", "docker")
                 .withEnv("ORDER_DESTINATIONS_ORDERSERVICEURL", "http://ftgo-order-service:8080")
                 .withEnv("ORDER_DESTINATIONS_ORDERHISTORYSERVICEURL", "http://ftgo-order-history-service:8080")
+                .withEnv("CONSUMER_DESTINATIONS_CONSUMERSERVICEURL", "http://ftgo-consumer-service:8080")
                 .withExposedPorts(8080)
                 .withReuse(false)
-                .dependsOn(orderService, orderHistoryService)
+                .dependsOn(consumerService, orderService, orderHistoryService)
                 .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("api-gateway:"));
     }
 

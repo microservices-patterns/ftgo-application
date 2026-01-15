@@ -1,6 +1,7 @@
 package net.chrisrichardson.ftgo.deliveryservice.messaging;
 
 import io.eventuate.tram.spring.events.subscriber.TramEventSubscriberConfiguration;
+import io.eventuate.tram.spring.flyway.EventuateTramFlywayMigrationConfiguration;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcher;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcherFactory;
 import net.chrisrichardson.ftgo.deliveryservice.domain.DeliveryService;
@@ -10,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({DeliveryServiceDomainConfiguration.class, TramEventSubscriberConfiguration.class})
+@Import({DeliveryServiceDomainConfiguration.class, TramEventSubscriberConfiguration.class, EventuateTramFlywayMigrationConfiguration.class})
 public class DeliveryServiceMessagingConfiguration {
 
   @Bean
