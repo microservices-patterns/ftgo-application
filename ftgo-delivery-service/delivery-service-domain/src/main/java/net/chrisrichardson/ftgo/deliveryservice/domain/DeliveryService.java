@@ -24,15 +24,18 @@ public class DeliveryService {
     this.courierRepository = courierRepository;
   }
 
+  @Transactional
   public void createRestaurant(long restaurantId, String restaurantName, Address address) {
     restaurantRepository.save(Restaurant.create(restaurantId, restaurantName, address));
   }
 
+  @Transactional
   public void createDelivery(long orderId, long restaurantId, Address deliveryAddress) {
     Restaurant restaurant = restaurantRepository.findById(restaurantId).get();
     deliveryRepository.save(Delivery.create(orderId, restaurantId, restaurant.getAddress(), deliveryAddress));
   }
 
+  @Transactional
   public void scheduleDelivery(long orderId, LocalDateTime readyBy) {
     Delivery delivery = deliveryRepository.findById(orderId).get();
 
@@ -47,6 +50,7 @@ public class DeliveryService {
 
   }
 
+  @Transactional
   public void cancelDelivery(long orderId) {
     Delivery delivery = deliveryRepository.findById(orderId).get();
     Long assignedCourierId = delivery.getAssignedCourier();

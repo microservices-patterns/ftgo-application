@@ -82,3 +82,12 @@ echo ""
 echo "========================================"
 echo "All ${#MIGRATED_SERVICES[@]} service(s) built successfully!"
 echo "========================================"
+
+echo ""
+echo "Running end-to-end tests..."
+"$SCRIPT_DIR/run-end-to-end-tests-using-test-containers.sh"
+
+echo ""
+echo "========================================"
+echo "All builds and end-to-end tests completed successfully!"
+echo "========================================"

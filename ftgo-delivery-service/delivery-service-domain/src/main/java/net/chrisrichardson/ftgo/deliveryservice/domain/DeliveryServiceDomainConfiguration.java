@@ -1,5 +1,6 @@
 package net.chrisrichardson.ftgo.deliveryservice.domain;
 
+import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,5 +16,10 @@ public class DeliveryServiceDomainConfiguration {
   @Bean
   public DeliveryService deliveryService(RestaurantRepository restaurantRepository, DeliveryRepository deliveryRepository, CourierRepository courierRepository) {
     return new DeliveryService(restaurantRepository, deliveryRepository, courierRepository);
+  }
+
+  @Bean
+  public CommonJsonMapperInitializer commonJsonMapperInitializer() {
+    return new CommonJsonMapperInitializer();
   }
 }
