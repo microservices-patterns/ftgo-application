@@ -4,7 +4,6 @@ import io.eventuate.common.json.mapper.JSonMapper;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
-import net.chrisrichardson.ftgo.orderservice.domain.OrderRepository;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderService;
 import net.chrisrichardson.ftgo.orderservice.web.OrderController;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,11 +28,10 @@ public abstract class HttpBase {
     @BeforeEach
     public void setup() {
         OrderService orderService = mock(OrderService.class);
-        OrderRepository orderRepository = mock(OrderRepository.class);
-        OrderController orderController = new OrderController(orderService, orderRepository);
+        OrderController orderController = new OrderController(orderService);
 
-        when(orderRepository.findById(OrderDetailsMother.ORDER_ID)).thenReturn(Optional.of(OrderDetailsMother.CHICKEN_VINDALOO_ORDER));
-        when(orderRepository.findById(555L)).thenReturn(empty());
+        when(orderService.findById(OrderDetailsMother.ORDER_ID)).thenReturn(Optional.of(OrderDetailsMother.CHICKEN_VINDALOO_ORDER));
+        when(orderService.findById(555L)).thenReturn(empty());
         RestAssuredMockMvc.standaloneSetup(controllers(orderController));
     }
 }

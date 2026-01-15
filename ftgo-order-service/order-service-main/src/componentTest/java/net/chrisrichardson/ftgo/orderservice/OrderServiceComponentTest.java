@@ -1,5 +1,7 @@
 package net.chrisrichardson.ftgo.orderservice;
 
+import io.eventuate.common.testcontainers.EventuateDatabaseContainer;
+import io.eventuate.common.testcontainers.EventuateVanillaPostgresContainer;
 import io.eventuate.messaging.kafka.testcontainers.EventuateKafkaNativeCluster;
 import io.eventuate.messaging.kafka.testcontainers.EventuateKafkaNativeContainer;
 import io.restassured.RestAssured;
@@ -14,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.lifecycle.Startables;
 
 import java.util.Collections;
@@ -27,14 +28,14 @@ public class OrderServiceComponentTest {
 
     private static final EventuateKafkaNativeCluster eventuateKafkaCluster;
     private static final EventuateKafkaNativeContainer kafka;
-    private static final PostgreSQLContainer<?> database;
+    private static final EventuateDatabaseContainer<?> database;
 
     static {
         eventuateKafkaCluster = new EventuateKafkaNativeCluster("order-service-component-test");
         kafka = eventuateKafkaCluster.kafka
                 .withNetworkAliases("kafka")
                 .withReuse(true);
-        database = new PostgreSQLContainer<>("postgres:16")
+        database = new EventuateVanillaPostgresContainer()
                 .withNetwork(eventuateKafkaCluster.network)
                 .withNetworkAliases("database")
                 .withReuse(true);
@@ -45,10 +46,7 @@ public class OrderServiceComponentTest {
         Startables.deepStart(kafka, database).join();
 
         kafka.registerProperties(registry::add);
-        registry.add("spring.datasource.url", database::getJdbcUrl);
-        registry.add("spring.datasource.username", database::getUsername);
-        registry.add("spring.datasource.password", database::getPassword);
-        registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
+        database.registerProperties(registry::add);
 
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
     }

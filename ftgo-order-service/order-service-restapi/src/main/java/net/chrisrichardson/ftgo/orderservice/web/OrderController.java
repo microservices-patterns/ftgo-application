@@ -7,7 +7,6 @@ import net.chrisrichardson.ftgo.orderservice.domain.DeliveryInformation;
 import net.chrisrichardson.ftgo.orderservice.domain.MenuItemIdAndQuantity;
 import net.chrisrichardson.ftgo.orderservice.domain.Order;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderNotFoundException;
-import net.chrisrichardson.ftgo.orderservice.domain.OrderRepository;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderRevision;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderService;
 import org.springframework.http.HttpStatus;
@@ -28,12 +27,8 @@ public class OrderController {
 
   private OrderService orderService;
 
-  private OrderRepository orderRepository;
-
-
-  public OrderController(OrderService orderService, OrderRepository orderRepository) {
+  public OrderController(OrderService orderService) {
     this.orderService = orderService;
-    this.orderRepository = orderRepository;
   }
 
   @RequestMapping(method = RequestMethod.POST)
@@ -49,7 +44,7 @@ public class OrderController {
 
   @RequestMapping(path = "/{orderId}", method = RequestMethod.GET)
   public ResponseEntity<GetOrderResponse> getOrder(@PathVariable long orderId) {
-    Optional<Order> order = orderRepository.findById(orderId);
+    Optional<Order> order = orderService.findById(orderId);
     return order.map(o -> new ResponseEntity<>(makeGetOrderResponse(o), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 

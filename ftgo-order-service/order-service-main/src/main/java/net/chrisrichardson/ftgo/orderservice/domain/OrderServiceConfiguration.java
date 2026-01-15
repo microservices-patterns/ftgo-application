@@ -2,6 +2,7 @@ package net.chrisrichardson.ftgo.orderservice.domain;
 
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.spring.events.publisher.TramEventsPublisherConfiguration;
+import io.eventuate.tram.spring.flyway.EventuateTramFlywayMigrationConfiguration;
 import io.eventuate.tram.sagas.orchestration.*;
 import io.eventuate.tram.sagas.spring.orchestration.SagaOrchestratorConfiguration;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -22,7 +23,7 @@ import org.springframework.context.annotation.Import;
 import java.util.Optional;
 
 @Configuration
-@Import({TramEventsPublisherConfiguration.class, SagaOrchestratorConfiguration.class, CommonConfiguration.class})
+@Import({TramEventsPublisherConfiguration.class, SagaOrchestratorConfiguration.class, CommonConfiguration.class, EventuateTramFlywayMigrationConfiguration.class})
 public class OrderServiceConfiguration {
 
   @Bean

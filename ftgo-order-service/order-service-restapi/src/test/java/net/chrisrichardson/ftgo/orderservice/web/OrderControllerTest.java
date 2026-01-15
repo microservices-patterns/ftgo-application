@@ -3,7 +3,6 @@ package net.chrisrichardson.ftgo.orderservice.web;
 import io.eventuate.common.json.mapper.JSonMapper;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
-import net.chrisrichardson.ftgo.orderservice.domain.OrderRepository;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,21 +22,19 @@ import static org.mockito.Mockito.when;
 public class OrderControllerTest {
 
   private OrderService orderService;
-  private OrderRepository orderRepository;
   private OrderController orderController;
 
   @BeforeEach
   public void setUp() {
     orderService = mock(OrderService.class);
-    orderRepository = mock(OrderRepository.class);
-    orderController = new OrderController(orderService, orderRepository);
+    orderController = new OrderController(orderService);
   }
 
 
   @Test
   public void shouldFindOrder() {
 
-    when(orderRepository.findById(1L)).thenReturn(Optional.of(CHICKEN_VINDALOO_ORDER));
+    when(orderService.findById(1L)).thenReturn(Optional.of(CHICKEN_VINDALOO_ORDER));
 
     given().
             standaloneSetup(configureControllers(orderController)).
@@ -53,10 +50,10 @@ public class OrderControllerTest {
 
   @Test
   public void shouldFindNotOrder() {
-    when(orderRepository.findById(1L)).thenReturn(Optional.empty());
+    when(orderService.findById(1L)).thenReturn(Optional.empty());
 
     given().
-            standaloneSetup(configureControllers(new OrderController(orderService, orderRepository))).
+            standaloneSetup(configureControllers(orderController)).
     when().
             get("/orders/1").
     then().

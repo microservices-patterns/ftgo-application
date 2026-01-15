@@ -90,6 +90,15 @@ public class OrderServiceImpl implements OrderService {
     return order;
   }
 
+  @Override
+  @Transactional(readOnly = true)
+  public Optional<Order> findById(long orderId) {
+    return orderRepository.findById(orderId).map(order -> {
+      // Access lazy-loaded collections within transaction to avoid LazyInitializationException
+      order.getOrderTotal();
+      return order;
+    });
+  }
 
   private List<OrderLineItem> makeOrderLineItems(List<MenuItemIdAndQuantity> lineItems, Restaurant restaurant) {
     return lineItems.stream().map(li -> {

@@ -13,6 +13,8 @@ public interface OrderService {
     Order createOrder(long consumerId, long restaurantId, DeliveryInformation deliveryInformation,
                       List<MenuItemIdAndQuantity> lineItems);
 
+    Optional<Order> findById(long orderId);
+
     Order cancel(Long orderId);
 
     Order reviseOrder(long orderId, OrderRevision orderRevision);
