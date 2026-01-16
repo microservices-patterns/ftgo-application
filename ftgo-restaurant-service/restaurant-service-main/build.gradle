@@ -10,6 +10,7 @@ dependencies {
     implementation project(':restaurant-service-persistence')
 
     implementation 'io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka'
+    implementation 'io.eventuate.tram.core:eventuate-tram-spring-logging'
     implementation 'io.eventuate.tram.core:eventuate-tram-spring-events-publisher-starter'
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'

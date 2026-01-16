@@ -20,6 +20,7 @@ dependencies {
     implementation 'io.eventuate.local.java:eventuate-local-java-spring-jdbc'
 
     implementation 'io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka'
+    implementation 'io.eventuate.tram.core:eventuate-tram-spring-logging'
     implementation 'io.eventuate.tram.core:eventuate-tram-spring-events'
     implementation 'io.eventuate.tram.core:eventuate-tram-spring-messaging'
     implementation 'org.flywaydb:flyway-core'

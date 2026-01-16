@@ -10,6 +10,7 @@ dependencies {
     implementation project(':order-history-service-dynamodb')
 
     implementation 'io.eventuate.tram.core:eventuate-tram-spring-consumer-kafka'
+    implementation 'io.eventuate.tram.core:eventuate-tram-spring-logging'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
