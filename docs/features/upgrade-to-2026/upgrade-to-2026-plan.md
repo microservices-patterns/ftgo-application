@@ -691,11 +691,12 @@ Remove legacy modules and validate the complete system.
 
 ### Task 9.1: Remove legacy API modules
 
-- [ ] Delete `ftgo-order-service-api/` directory
-- [ ] Delete `ftgo-consumer-service-api/` directory
-- [ ] Delete `ftgo-kitchen-service-api/` directory
-- [ ] Delete `ftgo-accounting-service-api/` directory
-- [ ] Delete `ftgo-restaurant-service-api/` directory
+- [x] Delete `ftgo-order-service-api/` directory
+- [x] Delete `ftgo-consumer-service-api/` directory
+- [x] Delete `ftgo-kitchen-service-api/` directory
+- [x] Delete `ftgo-accounting-service-api/` directory
+- [x] Delete `ftgo-restaurant-service-api/` directory
+- [x] Delete `ftgo-delivery-service-api/` directory
 
 ### Task 9.2: Remove legacy contract modules
 
@@ -709,29 +710,32 @@ Remove legacy modules and validate the complete system.
 
 ### Task 9.3: Remove legacy API spec modules
 
-- [ ] Delete `ftgo-consumer-service-api-spec/` directory
-- [ ] Delete `ftgo-accounting-service-api-spec/` directory
-- [ ] Delete `ftgo-restaurant-service-api-spec/` directory
+- [x] Delete `ftgo-consumer-service-api-spec/` directory
+- [x] Delete `ftgo-accounting-service-api-spec/` directory
+- [x] Delete `ftgo-restaurant-service-api-spec/` directory
 
 ### Task 9.4: Remove legacy shared modules
 
-- [ ] Delete `ftgo-common/` directory
-- [ ] Delete `ftgo-common-jpa/` directory
-- [ ] Delete `common-swagger/` directory
-- [ ] Delete `ftgo-test-util/` directory
+- [x] Delete `ftgo-common/` directory
+- [x] Delete `ftgo-common-jpa/` directory
+- [x] Delete `common-swagger/` directory
+- [x] Delete `ftgo-test-util/` directory
+- [x] Delete `ftgo-test-util-json-schema/` directory
 
 ### Task 9.5: Remove legacy build infrastructure
 
-- [ ] Delete root-level `settings.gradle`
-- [ ] Delete root-level `build.gradle`
-- [ ] Delete `buildSrc/` directory
-- [ ] Verify no root-level Gradle files remain
+- [x] Delete root-level `settings.gradle`
+- [x] Delete root-level `build.gradle`
+- [x] Delete root-level `gradle.properties`
+- [x] Delete root-level `gradlew`, `gradlew.bat`, and `gradle/` directory
+- [x] Delete `buildSrc/` directory
+- [x] Verify no root-level Gradle files remain
 
 ### Task 9.6: Final system validation
 
-- [ ] Run `./build-and-test-all.sh` and verify all services build and test
+- [x] Run `./build-and-test-all.sh` and verify all services build and test
 - [ ] Run `docker-compose up` and verify all services start and are healthy
-- [ ] Verify end-to-end tests pass (see Steel Thread 10 for full e2e test implementation)
+- [x] Verify end-to-end tests pass (see Steel Thread 10 for full e2e test implementation)
 - [ ] Commit final cleanup changes
 
 ### Task 9.7: Reorganize integration tests from *-main to adapter subprojects

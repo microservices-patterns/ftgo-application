@@ -1,5 +1,0 @@
-
-dependencies {
-    compile "io.eventuate.tram.core:eventuate-tram-spring-events"
-    compile project(":ftgo-common")
-}
