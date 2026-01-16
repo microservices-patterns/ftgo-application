@@ -736,7 +736,7 @@ Remove legacy modules and validate the complete system.
 - [x] Run `./build-and-test-all.sh` and verify all services build and test
 - [ ] Run `docker-compose up` and verify all services start and are healthy
 - [x] Verify end-to-end tests pass (see Steel Thread 10 for full e2e test implementation)
-- [ ] Commit final cleanup changes
+- [x] Commit final cleanup changes
 
 ### Task 9.7: Reorganize integration tests from *-main to adapter subprojects
 
