@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 public class OrderSagaService {
 
     private final OrderRepository orderRepository;
@@ -23,7 +24,6 @@ public class OrderSagaService {
         this.createOrderSaga = createOrderSaga;
     }
 
-    @Transactional
     public Order createOrder(long consumerId, long restaurantId,
                              DeliveryInformation deliveryInformation,
                              List<MenuItemIdAndQuantity> lineItems) {

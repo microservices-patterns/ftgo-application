@@ -1,5 +1,6 @@
 package net.chrisrichardson.ftgo.orderservice.sagas.createorder;
 
+import io.eventuate.tram.commands.consumer.CommandWithDestination;
 import io.eventuate.tram.sagas.orchestration.SagaDefinition;
 import io.eventuate.tram.sagas.simpledsl.SimpleSaga;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDetails;
@@ -8,6 +9,8 @@ import net.chrisrichardson.ftgo.orderservice.domain.Order;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderService;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.*;
 import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicketReply;
+import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;
+import net.chrisrichardson.ftgo.kitchenservice.api.TicketLineItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,15 +39,15 @@ public class CreateOrderSaga implements SimpleSaga<CreateOrderSagaState> {
               .invokeLocal(this::create)
               .withCompensation(this::reject)
             .step()
-              .invokeParticipant(consumerService.validateOrder, CreateOrderSagaState::makeValidateOrderByConsumerCommand)
+              .invokeParticipant(this::validateConsumer)
             .step()
-              .invokeParticipant(kitchenService.create, CreateOrderSagaState::makeCreateTicketCommand)
+              .invokeParticipant(this::createTicket)
               .onReply(CreateTicketReply.class, CreateOrderSagaState::handleCreateTicketReply)
-              .withCompensation(kitchenService.cancel, CreateOrderSagaState::makeCancelCreateTicketCommand)
+              .withCompensation(this::cancelTicket)
             .step()
-                .invokeParticipant(accountingService.authorize, CreateOrderSagaState::makeAuthorizeCommand)
+              .invokeParticipant(this::authorizePayment)
             .step()
-              .invokeParticipant(kitchenService.confirmCreate, CreateOrderSagaState::makeConfirmCreateTicketCommand)
+              .invokeParticipant(this::confirmTicket)
             .step()
               .invokeLocal(this::approve)
             .build();
@@ -87,5 +90,45 @@ public class CreateOrderSaga implements SimpleSaga<CreateOrderSagaState> {
 
   private void reject(CreateOrderSagaState data) {
     orderService.rejectOrder(data.getOrderId());
+  }
+
+  private CommandWithDestination validateConsumer(CreateOrderSagaState data) {
+    OrderDetails orderDetails = data.getOrderDetails();
+    return consumerService.validateOrder(
+            orderDetails.getConsumerId(),
+            data.getOrderId(),
+            orderDetails.getOrderTotal());
+  }
+
+  private CommandWithDestination createTicket(CreateOrderSagaState data) {
+    OrderDetails orderDetails = data.getOrderDetails();
+    TicketDetails ticketDetails = makeTicketDetails(orderDetails);
+    return kitchenService.createTicket(
+            orderDetails.getRestaurantId(),
+            data.getOrderId(),
+            ticketDetails);
+  }
+
+  private TicketDetails makeTicketDetails(OrderDetails orderDetails) {
+    List<TicketLineItem> ticketLineItems = orderDetails.getLineItems().stream()
+            .map(li -> new TicketLineItem(li.getMenuItemId(), li.getName(), li.getQuantity()))
+            .toList();
+    return new TicketDetails(ticketLineItems);
+  }
+
+  private CommandWithDestination cancelTicket(CreateOrderSagaState data) {
+    return kitchenService.cancelCreateTicket(data.getOrderId());
+  }
+
+  private CommandWithDestination authorizePayment(CreateOrderSagaState data) {
+    OrderDetails orderDetails = data.getOrderDetails();
+    return accountingService.authorize(
+            orderDetails.getConsumerId(),
+            data.getOrderId(),
+            orderDetails.getOrderTotal());
+  }
+
+  private CommandWithDestination confirmTicket(CreateOrderSagaState data) {
+    return kitchenService.confirmCreateTicket(data.getTicketId());
   }
 }
