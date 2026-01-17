@@ -18,6 +18,7 @@ sourceSets {
 dependencies {
     implementation project(':order-service-domain')
     implementation project(':order-service-persistence')
+    implementation project(':order-service-sagas')
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

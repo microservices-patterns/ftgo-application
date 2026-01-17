@@ -4,6 +4,8 @@ plugins {
 
 dependencies {
     api project(':order-service-domain')
+    api project(':order-service-persistence')
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     api project(':order-service-proxies-kitchen-service')
     api project(':order-service-proxies-accounting-service')
     api project(':order-service-proxies-consumer-service')

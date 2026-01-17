@@ -6,8 +6,6 @@ import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
 import net.chrisrichardson.ftgo.orderservice.RestaurantMother;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderCreatedEvent;
 import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSaga;
-import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSaga;
-import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSagaState;
 import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSaga;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +23,7 @@ import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 public class OrderServiceTest {
@@ -34,7 +33,6 @@ public class OrderServiceTest {
   private DomainEventPublisher eventPublisher;
   private RestaurantRepository restaurantRepository;
   private SagaInstanceFactory sagaInstanceFactory;
-  private CreateOrderSaga createOrderSaga;
   private CancelOrderSaga cancelOrderSaga;
   private ReviseOrderSaga reviseOrderSaga;
   private OrderDomainEventPublisher orderAggregateEventPublisher;
@@ -45,21 +43,18 @@ public class OrderServiceTest {
     orderRepository = mock(OrderRepository.class);
     eventPublisher = mock(DomainEventPublisher.class);
     restaurantRepository = mock(RestaurantRepository.class);
-    createOrderSaga = mock(CreateOrderSaga.class);
     cancelOrderSaga = mock(CancelOrderSaga.class);
     reviseOrderSaga = mock(ReviseOrderSaga.class);
-
-    // Mock DomainEventPublisher AND use the real OrderDomainEventPublisher
 
     orderAggregateEventPublisher = mock(OrderDomainEventPublisher.class);
 
     orderService = new OrderServiceImpl(sagaInstanceFactory, orderRepository, eventPublisher, restaurantRepository,
-            createOrderSaga, cancelOrderSaga, reviseOrderSaga, orderAggregateEventPublisher, Optional.empty());
+            cancelOrderSaga, reviseOrderSaga, orderAggregateEventPublisher, Optional.empty());
   }
 
 
   @Test
-  public void shouldCreateOrder() {
+  public void shouldCreateOrderWithoutStartingSaga() {
     when(restaurantRepository.findById(AJANTA_ID)).thenReturn(Optional.of(AJANTA_RESTAURANT));
     when(orderRepository.save(any(Order.class))).then(invocation -> {
       Order order = (Order) invocation.getArguments()[0];
@@ -74,9 +69,8 @@ public class OrderServiceTest {
     verify(orderAggregateEventPublisher).publish(order,
             Collections.singletonList(new OrderCreatedEvent(CHICKEN_VINDALOO_ORDER_DETAILS, OrderDetailsMother.DELIVERY_ADDRESS, RestaurantMother.AJANTA_RESTAURANT_NAME)));
 
-    verify(sagaInstanceFactory).create(createOrderSaga, new CreateOrderSagaState(ORDER_ID, CHICKEN_VINDALOO_ORDER_DETAILS));
+    // Verify saga is NOT started - saga orchestration is now handled by OrderSagaService
+    verifyNoInteractions(sagaInstanceFactory);
   }
-
-  // TODO write tests for other methods
 
 }

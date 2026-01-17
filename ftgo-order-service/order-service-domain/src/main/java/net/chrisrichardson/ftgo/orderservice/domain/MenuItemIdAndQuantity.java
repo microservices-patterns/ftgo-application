@@ -9,6 +9,9 @@ public class MenuItemIdAndQuantity {
   private String menuItemId;
   private int quantity;
 
+  private MenuItemIdAndQuantity() {
+  }
+
   public String getMenuItemId() {
     return menuItemId;
   }

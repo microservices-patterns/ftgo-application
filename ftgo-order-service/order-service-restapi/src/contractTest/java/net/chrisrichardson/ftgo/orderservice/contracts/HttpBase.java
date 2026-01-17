@@ -5,6 +5,7 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderService;
+import net.chrisrichardson.ftgo.orderservice.sagas.createorder.OrderSagaService;
 import net.chrisrichardson.ftgo.orderservice.web.OrderController;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -27,8 +28,9 @@ public abstract class HttpBase {
 
     @BeforeEach
     public void setup() {
+        OrderSagaService orderSagaService = mock(OrderSagaService.class);
         OrderService orderService = mock(OrderService.class);
-        OrderController orderController = new OrderController(orderService);
+        OrderController orderController = new OrderController(orderSagaService, orderService);
 
         when(orderService.findById(OrderDetailsMother.ORDER_ID)).thenReturn(Optional.of(OrderDetailsMother.CHICKEN_VINDALOO_ORDER));
         when(orderService.findById(555L)).thenReturn(empty());

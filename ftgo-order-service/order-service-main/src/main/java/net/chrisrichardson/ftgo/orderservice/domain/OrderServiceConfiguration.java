@@ -10,15 +10,17 @@ import net.chrisrichardson.ftgo.common.CommonConfiguration;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.AccountingServiceProxy;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.ConsumerServiceProxy;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.KitchenServiceProxy;
-import net.chrisrichardson.ftgo.orderservice.sagaparticipants.OrderServiceProxy;
 import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSaga;
 import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSaga;
+import net.chrisrichardson.ftgo.orderservice.sagas.createorder.OrderSagaService;
 import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSaga;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import org.springframework.context.annotation.Lazy;
 
 import java.util.Optional;
 
@@ -27,22 +29,28 @@ import java.util.Optional;
 public class OrderServiceConfiguration {
 
   @Bean
-  public OrderService orderService(SagaInstanceFactory sagaInstanceFactory,
+  public OrderService orderService(@Lazy SagaInstanceFactory sagaInstanceFactory,
                                    RestaurantRepository restaurantRepository,
                                    OrderRepository orderRepository,
                                    DomainEventPublisher eventPublisher,
-                                   CreateOrderSaga createOrderSaga,
                                    CancelOrderSaga cancelOrderSaga,
                                    ReviseOrderSaga reviseOrderSaga,
                                    OrderDomainEventPublisher orderAggregateEventPublisher,
                                    Optional<MeterRegistry> meterRegistry) {
 
     return new OrderServiceImpl(sagaInstanceFactory, orderRepository, eventPublisher, restaurantRepository,
-            createOrderSaga, cancelOrderSaga, reviseOrderSaga, orderAggregateEventPublisher, meterRegistry);
+            cancelOrderSaga, reviseOrderSaga, orderAggregateEventPublisher, meterRegistry);
   }
 
   @Bean
-  public CreateOrderSaga createOrderSaga(OrderServiceProxy orderService, ConsumerServiceProxy consumerService, KitchenServiceProxy kitchenServiceProxy, AccountingServiceProxy accountingService) {
+  public OrderSagaService orderSagaService(OrderRepository orderRepository,
+                                           SagaInstanceFactory sagaInstanceFactory,
+                                           CreateOrderSaga createOrderSaga) {
+    return new OrderSagaService(orderRepository, sagaInstanceFactory, createOrderSaga);
+  }
+
+  @Bean
+  public CreateOrderSaga createOrderSaga(OrderService orderService, ConsumerServiceProxy consumerService, KitchenServiceProxy kitchenServiceProxy, AccountingServiceProxy accountingService) {
     return new CreateOrderSaga(orderService, consumerService, kitchenServiceProxy, accountingService);
   }
 
@@ -60,11 +68,6 @@ public class OrderServiceConfiguration {
   @Bean
   public KitchenServiceProxy kitchenServiceProxy() {
     return new KitchenServiceProxy();
-  }
-
-  @Bean
-  public OrderServiceProxy orderServiceProxy() {
-    return new OrderServiceProxy();
   }
 
   @Bean

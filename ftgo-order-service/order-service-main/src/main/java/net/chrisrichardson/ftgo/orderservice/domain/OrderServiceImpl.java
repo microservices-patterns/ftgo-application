@@ -9,13 +9,10 @@ import net.chrisrichardson.ftgo.orderservice.api.events.OrderDomainEvent;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderLineItem;
 import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSaga;
 import net.chrisrichardson.ftgo.orderservice.sagas.cancelorder.CancelOrderSagaData;
-import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSaga;
-import net.chrisrichardson.ftgo.orderservice.sagas.createorder.CreateOrderSagaState;
 import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSaga;
 import net.chrisrichardson.ftgo.orderservice.sagas.reviseorder.ReviseOrderSagaData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -34,8 +31,6 @@ public class OrderServiceImpl implements OrderService {
 
   private RestaurantRepository restaurantRepository;
 
-  private CreateOrderSaga createOrderSaga;
-
   private CancelOrderSaga cancelOrderSaga;
 
   private ReviseOrderSaga reviseOrderSaga;
@@ -48,7 +43,6 @@ public class OrderServiceImpl implements OrderService {
                       OrderRepository orderRepository,
                       DomainEventPublisher eventPublisher,
                       RestaurantRepository restaurantRepository,
-                      CreateOrderSaga createOrderSaga,
                       CancelOrderSaga cancelOrderSaga,
                       ReviseOrderSaga reviseOrderSaga,
                       OrderDomainEventPublisher orderAggregateEventPublisher,
@@ -57,7 +51,6 @@ public class OrderServiceImpl implements OrderService {
     this.sagaInstanceFactory = sagaInstanceFactory;
     this.orderRepository = orderRepository;
     this.restaurantRepository = restaurantRepository;
-    this.createOrderSaga = createOrderSaga;
     this.cancelOrderSaga = cancelOrderSaga;
     this.reviseOrderSaga = reviseOrderSaga;
     this.orderAggregateEventPublisher = orderAggregateEventPublisher;
@@ -79,11 +72,6 @@ public class OrderServiceImpl implements OrderService {
     orderRepository.save(order);
 
     orderAggregateEventPublisher.publish(order, orderAndEvents.events);
-
-    OrderDetails orderDetails = new OrderDetails(consumerId, restaurantId, orderLineItems, order.getOrderTotal());
-
-    CreateOrderSagaState data = new CreateOrderSagaState(order.getId(), orderDetails);
-    sagaInstanceFactory.create(createOrderSaga, data);
 
     meterRegistry.ifPresent(mr -> mr.counter("placed_orders").increment());
 

@@ -4,11 +4,9 @@ import net.chrisrichardson.ftgo.accountservice.api.AuthorizeCommand;
 import net.chrisrichardson.ftgo.consumerservice.api.ValidateOrderByConsumer;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderDetails;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderLineItem;
-import net.chrisrichardson.ftgo.orderservice.sagaparticipants.ApproveOrderCommand;
-import net.chrisrichardson.ftgo.orderservice.sagaparticipants.RejectOrderCommand;
+import net.chrisrichardson.ftgo.orderservice.domain.DeliveryInformation;
+import net.chrisrichardson.ftgo.orderservice.domain.MenuItemIdAndQuantity;
 import net.chrisrichardson.ftgo.kitchenservice.api.*;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +19,14 @@ public class CreateOrderSagaState {
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   private Long orderId;
-
   private OrderDetails orderDetails;
   private long ticketId;
+
+  // Order creation parameters (used before Order is created)
+  private long consumerId;
+  private long restaurantId;
+  private DeliveryInformation deliveryInformation;
+  private List<MenuItemIdAndQuantity> lineItems;
 
   public Long getOrderId() {
     return orderId;
@@ -32,19 +35,29 @@ public class CreateOrderSagaState {
   private CreateOrderSagaState() {
   }
 
-  public CreateOrderSagaState(Long orderId, OrderDetails orderDetails) {
-    this.orderId = orderId;
-    this.orderDetails = orderDetails;
+  public CreateOrderSagaState(long consumerId, long restaurantId,
+                              DeliveryInformation deliveryInformation,
+                              List<MenuItemIdAndQuantity> lineItems) {
+    this.consumerId = consumerId;
+    this.restaurantId = restaurantId;
+    this.deliveryInformation = deliveryInformation;
+    this.lineItems = lineItems;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    return EqualsBuilder.reflectionEquals(this, o);
+  public long getConsumerId() {
+    return consumerId;
   }
 
-  @Override
-  public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this);
+  public long getRestaurantId() {
+    return restaurantId;
+  }
+
+  public DeliveryInformation getDeliveryInformation() {
+    return deliveryInformation;
+  }
+
+  public List<MenuItemIdAndQuantity> getLineItems() {
+    return lineItems;
   }
 
   public OrderDetails getOrderDetails() {
@@ -53,6 +66,10 @@ public class CreateOrderSagaState {
 
   public void setOrderId(Long orderId) {
     this.orderId = orderId;
+  }
+
+  public void setOrderDetails(OrderDetails orderDetails) {
+    this.orderDetails = orderDetails;
   }
 
   public void setTicketId(long ticketId) {
@@ -68,7 +85,6 @@ public class CreateOrderSagaState {
   }
 
   private TicketDetails makeTicketDetails(OrderDetails orderDetails) {
-    // TODO FIXME
     return new TicketDetails(makeTicketLineItems(orderDetails.getLineItems()));
   }
 
@@ -89,10 +105,6 @@ public class CreateOrderSagaState {
     return new CancelCreateTicket(getOrderId());
   }
 
-  RejectOrderCommand makeRejectOrderCommand() {
-    return new RejectOrderCommand(getOrderId());
-  }
-
   ValidateOrderByConsumer makeValidateOrderByConsumerCommand() {
     return new ValidateOrderByConsumer(
             getOrderDetails().getConsumerId(),
@@ -107,12 +119,7 @@ public class CreateOrderSagaState {
             getOrderDetails().getOrderTotal());
   }
 
-  ApproveOrderCommand makeApproveOrderCommand() {
-    return new ApproveOrderCommand(getOrderId());
-  }
-
   ConfirmCreateTicket makeConfirmCreateTicketCommand() {
     return new ConfirmCreateTicket(getTicketId());
-
   }
 }

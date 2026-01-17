@@ -4,6 +4,7 @@ import io.eventuate.common.json.mapper.JSonMapper;
 import net.chrisrichardson.ftgo.common.CommonJsonMapperInitializer;
 import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderService;
+import net.chrisrichardson.ftgo.orderservice.sagas.createorder.OrderSagaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -21,13 +22,15 @@ import static org.mockito.Mockito.when;
 
 public class OrderControllerTest {
 
+  private OrderSagaService orderSagaService;
   private OrderService orderService;
   private OrderController orderController;
 
   @BeforeEach
   public void setUp() {
+    orderSagaService = mock(OrderSagaService.class);
     orderService = mock(OrderService.class);
-    orderController = new OrderController(orderService);
+    orderController = new OrderController(orderSagaService, orderService);
   }
 
 

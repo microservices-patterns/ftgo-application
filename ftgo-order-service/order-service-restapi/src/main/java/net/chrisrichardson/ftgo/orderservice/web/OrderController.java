@@ -9,6 +9,7 @@ import net.chrisrichardson.ftgo.orderservice.domain.Order;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderNotFoundException;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderRevision;
 import net.chrisrichardson.ftgo.orderservice.domain.OrderService;
+import net.chrisrichardson.ftgo.orderservice.sagas.createorder.OrderSagaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,15 +26,17 @@ import static java.util.stream.Collectors.toList;
 @RequestMapping(path = "/orders")
 public class OrderController {
 
-  private OrderService orderService;
+  private final OrderSagaService orderSagaService;
+  private final OrderService orderService;
 
-  public OrderController(OrderService orderService) {
+  public OrderController(OrderSagaService orderSagaService, OrderService orderService) {
+    this.orderSagaService = orderSagaService;
     this.orderService = orderService;
   }
 
   @RequestMapping(method = RequestMethod.POST)
   public CreateOrderResponse create(@RequestBody CreateOrderRequest request) {
-    Order order = orderService.createOrder(request.getConsumerId(),
+    Order order = orderSagaService.createOrder(request.getConsumerId(),
             request.getRestaurantId(),
             new DeliveryInformation(request.getDeliveryTime(), request.getDeliveryAddress()),
             request.getLineItems().stream().map(x -> new MenuItemIdAndQuantity(x.getMenuItemId(), x.getQuantity())).collect(toList())
