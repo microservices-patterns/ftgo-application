@@ -4,11 +4,9 @@ import io.eventuate.tram.spring.events.subscriber.TramEventSubscriberConfigurati
 import io.eventuate.tram.spring.flyway.EventuateTramFlywayMigrationConfiguration;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcher;
 import io.eventuate.tram.events.subscriber.DomainEventDispatcherFactory;
-import io.eventuate.tram.sagas.participant.SagaCommandDispatcher;
-import io.eventuate.tram.sagas.participant.SagaCommandDispatcherFactory;
-import io.eventuate.tram.sagas.spring.participant.SagaParticipantConfiguration;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
 import net.chrisrichardson.ftgo.kitchenservice.domain.KitchenDomainConfiguration;
+import net.chrisrichardson.ftgo.kitchenservice.domain.KitchenService;
 import net.chrisrichardson.ftgo.kitchenservice.messagehandlers.KitchenServiceEventConsumer;
 import net.chrisrichardson.ftgo.kitchenservice.messagehandlers.KitchenServiceCommandHandler;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({KitchenDomainConfiguration.class, SagaParticipantConfiguration.class, CommonConfiguration.class, TramEventSubscriberConfiguration.class, EventuateTramFlywayMigrationConfiguration.class})
+@Import({KitchenDomainConfiguration.class, CommonConfiguration.class, TramEventSubscriberConfiguration.class, EventuateTramFlywayMigrationConfiguration.class})
 public class KitchenServiceMessageHandlersConfiguration {
 
   @Bean
@@ -25,13 +23,8 @@ public class KitchenServiceMessageHandlersConfiguration {
   }
 
   @Bean
-  public KitchenServiceCommandHandler kitchenServiceCommandHandler() {
-    return new KitchenServiceCommandHandler();
-  }
-
-  @Bean
-  public SagaCommandDispatcher kitchenServiceSagaCommandDispatcher(KitchenServiceCommandHandler kitchenServiceCommandHandler, SagaCommandDispatcherFactory sagaCommandDispatcherFactory) {
-    return sagaCommandDispatcherFactory.make("kitchenServiceCommands", kitchenServiceCommandHandler.commandHandlers());
+  public KitchenServiceCommandHandler kitchenServiceCommandHandler(KitchenService kitchenService) {
+    return new KitchenServiceCommandHandler(kitchenService);
   }
 
   @Bean

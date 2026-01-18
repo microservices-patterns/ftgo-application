@@ -18,7 +18,7 @@ dependencies {
     implementation 'io.eventuate.tram.core:eventuate-tram-spring-jdbc-kafka'
     implementation 'io.eventuate.tram.core:eventuate-tram-spring-logging'
     implementation 'io.eventuate.tram.core:eventuate-tram-spring-events-publisher-starter'
-    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant'
+    implementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant-starter'
 
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-database-postgresql'

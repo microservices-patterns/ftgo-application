@@ -1,9 +1,11 @@
 package net.chrisrichardson.ftgo.kitchenservice.api;
 
+import io.eventuate.tram.commands.consumer.annotations.SuccessReply;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+@SuccessReply
 public class CreateTicketReply {
   private long ticketId;
 
