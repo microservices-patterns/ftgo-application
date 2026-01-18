@@ -15,10 +15,6 @@ public interface OrderService {
 
     Optional<Order> findById(long orderId);
 
-    Order cancel(Long orderId);
-
-    Order reviseOrder(long orderId, OrderRevision orderRevision);
-
     // Saga command handler methods
     void approveOrder(long orderId);
 

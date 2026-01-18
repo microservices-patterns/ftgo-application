@@ -3,7 +3,7 @@ package net.chrisrichardson.ftgo.orderservice.domain;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.spring.events.publisher.TramEventsPublisherConfiguration;
 import io.eventuate.tram.spring.flyway.EventuateTramFlywayMigrationConfiguration;
-import io.eventuate.tram.sagas.orchestration.*;
+import io.eventuate.tram.sagas.orchestration.SagaInstanceFactory;
 import io.eventuate.tram.sagas.spring.orchestration.SagaOrchestratorConfiguration;
 import io.micrometer.core.instrument.MeterRegistry;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
@@ -20,8 +20,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import org.springframework.context.annotation.Lazy;
-
 import java.util.Optional;
 
 @Configuration
@@ -29,24 +27,22 @@ import java.util.Optional;
 public class OrderServiceConfiguration {
 
   @Bean
-  public OrderService orderService(@Lazy SagaInstanceFactory sagaInstanceFactory,
-                                   RestaurantRepository restaurantRepository,
+  public OrderService orderService(RestaurantRepository restaurantRepository,
                                    OrderRepository orderRepository,
-                                   DomainEventPublisher eventPublisher,
-                                   CancelOrderSaga cancelOrderSaga,
-                                   ReviseOrderSaga reviseOrderSaga,
                                    OrderDomainEventPublisher orderAggregateEventPublisher,
                                    Optional<MeterRegistry> meterRegistry) {
 
-    return new OrderServiceImpl(sagaInstanceFactory, orderRepository, eventPublisher, restaurantRepository,
-            cancelOrderSaga, reviseOrderSaga, orderAggregateEventPublisher, meterRegistry);
+    return new OrderServiceImpl(orderRepository, restaurantRepository,
+            orderAggregateEventPublisher, meterRegistry);
   }
 
   @Bean
   public OrderSagaService orderSagaService(OrderRepository orderRepository,
                                            SagaInstanceFactory sagaInstanceFactory,
-                                           CreateOrderSaga createOrderSaga) {
-    return new OrderSagaService(orderRepository, sagaInstanceFactory, createOrderSaga);
+                                           CreateOrderSaga createOrderSaga,
+                                           CancelOrderSaga cancelOrderSaga,
+                                           ReviseOrderSaga reviseOrderSaga) {
+    return new OrderSagaService(orderRepository, sagaInstanceFactory, createOrderSaga, cancelOrderSaga, reviseOrderSaga);
   }
 
   @Bean
