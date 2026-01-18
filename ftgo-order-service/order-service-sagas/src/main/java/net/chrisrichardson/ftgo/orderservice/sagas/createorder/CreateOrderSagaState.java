@@ -13,19 +13,15 @@ public class CreateOrderSagaState {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-  private Long orderId;
-  private OrderDetails orderDetails;
-  private long ticketId;
-
-  // Order creation parameters (used before Order is created)
   private long consumerId;
   private long restaurantId;
   private DeliveryInformation deliveryInformation;
   private List<MenuItemIdAndQuantity> lineItems;
 
-  public Long getOrderId() {
-    return orderId;
-  }
+  private Long orderId;
+  private OrderDetails orderDetails;
+  private long ticketId;
+
 
   private CreateOrderSagaState() {
   }
@@ -37,6 +33,10 @@ public class CreateOrderSagaState {
     this.restaurantId = restaurantId;
     this.deliveryInformation = deliveryInformation;
     this.lineItems = lineItems;
+  }
+
+  public Long getOrderId() {
+    return orderId;
   }
 
   public long getConsumerId() {
@@ -59,6 +59,10 @@ public class CreateOrderSagaState {
     return orderDetails;
   }
 
+  public long getTicketId() {
+    return ticketId;
+  }
+
   public void setOrderId(Long orderId) {
     this.orderId = orderId;
   }
@@ -69,10 +73,6 @@ public class CreateOrderSagaState {
 
   public void setTicketId(long ticketId) {
     this.ticketId = ticketId;
-  }
-
-  public long getTicketId() {
-    return ticketId;
   }
 
   void handleCreateTicketReply(CreateTicketReply reply) {
