@@ -8,6 +8,7 @@ import io.eventuate.tram.sagas.spring.inmemory.TramSagaInMemoryConfiguration;
 import io.eventuate.tram.testutil.TestMessageConsumer;
 import io.eventuate.tram.testutil.TestMessageConsumerFactory;
 import net.chrisrichardson.ftgo.common.Money;
+import net.chrisrichardson.ftgo.kitchenservice.api.ConfirmCreateTicket;
 import net.chrisrichardson.ftgo.kitchenservice.api.CreateTicket;
 import net.chrisrichardson.ftgo.kitchenservice.api.TicketDetails;
 import net.chrisrichardson.ftgo.kitchenservice.main.KitchenServiceMessageHandlersConfiguration;
@@ -84,6 +85,32 @@ class KitchenServiceInMemoryIntegrationTest {
             testMessageConsumer.getReplyChannel(), withSagaCommandHeaders());
 
     testMessageConsumer.assertHasReplyTo(messageId);
+
+  }
+
+  @Test
+  void shouldConfirmCreateTicket() {
+
+    long restaurantId = System.currentTimeMillis();
+    Restaurant restaurant = new Restaurant(restaurantId, Collections.emptyList());
+    restaurantRepository.save(restaurant);
+
+    TestMessageConsumer testMessageConsumer = testMessageConsumerFactory.make();
+
+    long orderId = 998;
+    TicketDetails orderDetails = new TicketDetails();
+
+    // First create a ticket
+    String createMessageId = commandProducer.send("kitchenService", null,
+            new CreateTicket(restaurantId, orderId, orderDetails),
+            testMessageConsumer.getReplyChannel(), withSagaCommandHeaders());
+    testMessageConsumer.assertHasReplyTo(createMessageId);
+
+    // Then confirm the ticket creation
+    String confirmMessageId = commandProducer.send("kitchenService", null,
+            new ConfirmCreateTicket(orderId),
+            testMessageConsumer.getReplyChannel(), withSagaCommandHeaders());
+    testMessageConsumer.assertHasReplyTo(confirmMessageId);
 
   }
 

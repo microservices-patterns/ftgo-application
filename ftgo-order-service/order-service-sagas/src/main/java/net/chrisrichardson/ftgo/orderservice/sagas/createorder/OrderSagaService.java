@@ -57,6 +57,7 @@ public class OrderSagaService {
                 .orElseThrow(() -> new OrderNotFoundException(orderId));
         ReviseOrderSagaData sagaData = new ReviseOrderSagaData(order.getConsumerId(), orderId, null, orderRevision);
         sagaInstanceFactory.create(reviseOrderSaga, sagaData);
+        order.getOrderTotal(); // Initialize lazy-loaded lineItems collection
         return order;
     }
 }

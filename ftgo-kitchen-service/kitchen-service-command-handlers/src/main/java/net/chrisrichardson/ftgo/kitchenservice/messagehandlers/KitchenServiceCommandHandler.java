@@ -22,42 +22,50 @@ public class KitchenServiceCommandHandler {
   }
 
   @EventuateCommandHandler(subscriberId = "kitchenServiceCommands", channel = KitchenServiceChannels.COMMAND_CHANNEL)
-  public void confirmCreateTicket(CommandMessage<ConfirmCreateTicket> cm) {
+  public Success confirmCreateTicket(CommandMessage<ConfirmCreateTicket> cm) {
     kitchenService.confirmCreateTicket(cm.getCommand().getTicketId());
+    return new Success();
   }
 
   @EventuateCommandHandler(subscriberId = "kitchenServiceCommands", channel = KitchenServiceChannels.COMMAND_CHANNEL)
-  public void cancelCreateTicket(CommandMessage<CancelCreateTicket> cm) {
+  public Success cancelCreateTicket(CommandMessage<CancelCreateTicket> cm) {
     kitchenService.cancelCreateTicket(cm.getCommand().getTicketId());
+    return new Success();
   }
 
   @EventuateCommandHandler(subscriberId = "kitchenServiceCommands", channel = KitchenServiceChannels.COMMAND_CHANNEL)
-  public void beginCancelTicket(CommandMessage<BeginCancelTicketCommand> cm) {
+  public Success beginCancelTicket(CommandMessage<BeginCancelTicketCommand> cm) {
     kitchenService.cancelTicket(cm.getCommand().getRestaurantId(), cm.getCommand().getOrderId());
+    return new Success();
   }
 
   @EventuateCommandHandler(subscriberId = "kitchenServiceCommands", channel = KitchenServiceChannels.COMMAND_CHANNEL)
-  public void confirmCancelTicket(CommandMessage<ConfirmCancelTicketCommand> cm) {
+  public Success confirmCancelTicket(CommandMessage<ConfirmCancelTicketCommand> cm) {
     kitchenService.confirmCancelTicket(cm.getCommand().getRestaurantId(), cm.getCommand().getOrderId());
+    return new Success();
   }
 
   @EventuateCommandHandler(subscriberId = "kitchenServiceCommands", channel = KitchenServiceChannels.COMMAND_CHANNEL)
-  public void undoBeginCancelTicket(CommandMessage<UndoBeginCancelTicketCommand> cm) {
+  public Success undoBeginCancelTicket(CommandMessage<UndoBeginCancelTicketCommand> cm) {
     kitchenService.undoCancel(cm.getCommand().getRestaurantId(), cm.getCommand().getOrderId());
+    return new Success();
   }
 
   @EventuateCommandHandler(subscriberId = "kitchenServiceCommands", channel = KitchenServiceChannels.COMMAND_CHANNEL)
-  public void beginReviseTicket(CommandMessage<BeginReviseTicketCommand> cm) {
+  public Success beginReviseTicket(CommandMessage<BeginReviseTicketCommand> cm) {
     kitchenService.beginReviseOrder(cm.getCommand().getRestaurantId(), cm.getCommand().getOrderId(), cm.getCommand().getRevisedOrderLineItems());
+    return new Success();
   }
 
   @EventuateCommandHandler(subscriberId = "kitchenServiceCommands", channel = KitchenServiceChannels.COMMAND_CHANNEL)
-  public void undoBeginReviseTicket(CommandMessage<UndoBeginReviseTicketCommand> cm) {
+  public Success undoBeginReviseTicket(CommandMessage<UndoBeginReviseTicketCommand> cm) {
     kitchenService.undoBeginReviseOrder(cm.getCommand().getRestaurantId(), cm.getCommand().getOrderId());
+    return new Success();
   }
 
   @EventuateCommandHandler(subscriberId = "kitchenServiceCommands", channel = KitchenServiceChannels.COMMAND_CHANNEL)
-  public void confirmReviseTicket(CommandMessage<ConfirmReviseTicketCommand> cm) {
+  public Success confirmReviseTicket(CommandMessage<ConfirmReviseTicketCommand> cm) {
     kitchenService.confirmReviseTicket(cm.getCommand().getRestaurantId(), cm.getCommand().getOrderId(), cm.getCommand().getRevisedOrderLineItems());
+    return new Success();
   }
 }
