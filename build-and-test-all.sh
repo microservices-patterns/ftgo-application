@@ -44,7 +44,8 @@ for service in "${STUB_PUBLISHERS[@]}"; do
   if [ -d "$service" ] && [ -f "$service/gradlew" ]; then
     (cd "$service" && ./gradlew publishStubsPublicationToLocalRepository $GRADLE_ARGS)
   else
-    echo "WARNING: Service '$service' not found or missing gradlew"
+    echo "ERROR: Service '$service' not found or missing gradlew"
+    exit 1
   fi
 done
 echo "Contract stubs published."
