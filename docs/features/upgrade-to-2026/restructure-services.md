@@ -137,10 +137,10 @@ Integration tests should live in the module containing the code they test:
 **Integration tests - [x] OK:**
 - `RestaurantServiceIntegrationTest` in `restaurant-service-main/src/integrationTest/` - correctly placed (full service test)
 
-### 6. ftgo-order-history-service - [ ]
+### 6. ftgo-order-history-service - [x] DONE
 
-**Starters/Auto-config - [ ]:**
-- `OrderHistoryServiceMain.java`: Review consumer configuration imports
+**Starters/Auto-config - [x] OK (no changes needed):**
+- `OrderHistoryServiceMain.java`: Uses DynamoDB (not JPA), has specific Kafka consumer config that is required
 
 **Move @Configuration classes - [x] OK:**
 - `OrderHistoryDynamoDBConfiguration` correctly in `order-history-service-dynamodb/`
@@ -164,4 +164,4 @@ After each service change:
 3. ftgo-accounting-service - [x] DONE (starters partial - no starter for command-handlers due to contract tests)
 4. ftgo-delivery-service - [x] DONE (starters)
 5. ftgo-restaurant-service - [x] DONE (starters)
-6. ftgo-order-history-service - [ ] (starters only)
+6. ftgo-order-history-service - [x] DONE (no changes needed - uses DynamoDB)
