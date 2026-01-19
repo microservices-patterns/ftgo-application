@@ -1,10 +1,12 @@
-# Restructure Services: Use Eventuate Starters for Auto-Configuration
+# Restructure Services: Apply ftgo-order-service Patterns
 
 This plan applies the patterns established in ftgo-order-service to other services.
 
-## Goal
+## Goals
 
-Replace explicit Eventuate configuration imports with Spring Boot starters that provide auto-configuration, following the example set by `eventuate-tram-sagas-examples-customers-and-orders`.
+1. Replace explicit Eventuate configuration imports with Spring Boot starters that provide auto-configuration
+2. Move @Configuration classes to the same module as the bean classes they create
+3. Reorganize integration tests from *-main to adapter subprojects (Task 9.7)
 
 ## Pattern Summary (from ftgo-order-service)
 
@@ -30,79 +32,122 @@ These configurations are auto-configured when using starters:
 - `CommonConfiguration` - application-specific
 - Test-specific configurations (TramInMemoryConfiguration, etc.)
 
+### 4. Move @Configuration Classes to Bean Modules
+
+A @Configuration class that creates beans should be in the same module as the bean classes. This:
+- Keeps related code together
+- Makes the module self-contained
+- Follows the pattern from ftgo-order-service where `OrderDomainConfiguration` is in `order-service-domain`
+
+Example pattern:
+- `*ServiceConfiguration` creating domain beans → move to `*-domain` module
+- `*SagasConfiguration` creating saga beans → move to `*-sagas` module
+- Proxy configurations → move to respective proxy modules
+
+### 5. Reorganize Integration Tests (Task 9.7)
+
+Integration tests should live in the module containing the code they test:
+
+| Test Type | Location |
+|-----------|----------|
+| Domain unit tests | `*-domain/src/test/` |
+| JPA/Repository tests | `*-persistence/src/integrationTest/` |
+| Command handler tests | `*-command-handlers/src/test/` |
+| Event handler tests | `*-event-handling/src/test/` |
+| REST controller tests | `*-restapi/src/test/` |
+| Full service integration tests | `*-main/src/integrationTest/` |
+| Component tests (out-of-process) | `*-main/src/componentTest/` |
+
+**Principle**: A test should be in the same module as the code it exercises.
+
 ## Services to Update
 
-### 1. ftgo-consumer-service - [x] DONE
+### 1. ftgo-consumer-service
 
-**Files to modify:**
+**Starters/Auto-config - [x] DONE:**
+- `consumer-service-command-handlers/build.gradle`: Changed to participant-starter
+- `consumer-service-main/build.gradle`: Removed redundant dependencies
+- `ConsumerServiceConfiguration.java`: Removed redundant Eventuate imports
+- `ConsumerServiceMain.java`: Removed `TramJdbcKafkaConfiguration` import
 
-- `consumer-service-command-handlers/build.gradle`:
-  - Change `eventuate-tram-sagas-spring-participant` → `eventuate-tram-sagas-spring-participant-starter`
+**Move @Configuration classes - [ ]:**
+- Move `ConsumerServiceConfiguration` from `consumer-service-main/src/main/java/.../domain/` to `consumer-service-domain/src/main/java/.../domain/`
+  - Creates domain beans: `ConsumerService`, `ConsumerServiceCommandHandlers`, `CommandDispatcher`
+  - Should be with the domain classes it configures
 
-- `consumer-service-main/build.gradle`:
-  - Remove redundant `eventuate-tram-sagas-spring-participant` (comes transitively)
-  - Remove redundant `eventuate-tram-spring-events-publisher-starter` if in event-publishing module
+**Integration tests - [x] OK:**
+- `ConsumerServiceIntegrationTest` in `consumer-service-main/src/integrationTest/` - correctly placed (full service test)
 
-- `consumer-service-main/.../ConsumerServiceConfiguration.java`:
-  - Remove `TramEventsPublisherConfiguration` import
-  - Remove `SagaParticipantConfiguration` import
+### 2. ftgo-kitchen-service
 
-- `consumer-service-main/.../ConsumerServiceMain.java`:
-  - Remove `TramJdbcKafkaConfiguration` import
+**Starters/Auto-config - [x] DONE:**
+- `KitchenServiceMain.java`: Removed `TramJdbcKafkaConfiguration` import
+- `KitchenServiceMessageHandlersConfiguration.java`: Removed `TramEventSubscriberConfiguration` import
 
-### 2. ftgo-kitchen-service - [x] DONE
+**Move @Configuration classes - [x] OK:**
+- Configuration classes already properly placed in their respective modules
 
-**Already using starters** - verify and clean up if needed:
-
-- `kitchen-service-main/.../KitchenServiceMain.java`:
-  - Remove `TramJdbcKafkaConfiguration` import
-
-- `kitchen-service-main/.../KitchenServiceMessageHandlersConfiguration.java`:
-  - Remove `TramEventSubscriberConfiguration` import (has subscriber-starter)
+**Integration tests - [x] OK:**
+- Tests correctly placed in their respective modules
 
 ### 3. ftgo-accounting-service - [ ]
 
-**Files to modify:**
+**Starters/Auto-config - [ ]:**
+- `accounting-service-command-handlers/build.gradle`: Change to participant-starter
+- `AccountingMessagingConfiguration.java`: Remove `TramEventSubscriberConfiguration` import
+- `AccountingServiceMain.java`: Remove `TramJdbcKafkaConfiguration` import
+- `AccountServiceConfiguration.java`: Review `TramCommandProducerConfiguration` import
 
-- `accounting-service-command-handlers/build.gradle`:
-  - Change `eventuate-tram-sagas-spring-participant` → `eventuate-tram-sagas-spring-participant-starter`
+**Move @Configuration classes - [ ]:**
+- Move `AccountingMessagingConfiguration` from `accounting-service-main/src/main/java/.../messaging/` to `accounting-service-command-handlers/src/main/java/.../messaging/`
+  - Creates: `AccountingEventConsumer`, `DomainEventDispatcher`, `AccountingServiceCommandHandler`, `CommandDispatcher`, `SagaReplyRequestedEventSubscriber`
+  - Should be with the command/event handlers it configures
 
-- `accounting-service-main/.../AccountingMessagingConfiguration.java`:
-  - Remove `TramEventSubscriberConfiguration` import (has subscriber-starter)
-  - Remove `TramCommandConsumerConfiguration` if auto-configured
-
-- `accounting-service-main/.../AccountingServiceMain.java`:
-  - Remove `TramJdbcKafkaConfiguration` import
-
-- `accounting-service-domain/.../AccountServiceConfiguration.java`:
-  - Review `TramCommandProducerConfiguration` import
+**Integration tests - [ ]:**
+- Move `AccountingServiceCommandHandlerTest` from `accounting-service-main/src/integrationTest/` to `accounting-service-command-handlers/src/integrationTest/`
+  - Tests command handler behavior
+  - Should be in the module containing the code it tests
 
 ### 4. ftgo-delivery-service - [ ]
 
-**Files to modify:**
+**Starters/Auto-config - [ ]:**
+- `DeliveryServiceMessagingConfiguration.java`: Remove `TramEventSubscriberConfiguration` import (has subscriber-starter)
+- `DeliveryServiceMain.java`: Remove `TramJdbcKafkaConfiguration` import
 
-- `delivery-service-event-handling/.../DeliveryServiceMessagingConfiguration.java`:
-  - Remove `TramEventSubscriberConfiguration` import (has subscriber-starter)
+**Move @Configuration classes - [x] OK:**
+- `DeliveryServiceDomainConfiguration` correctly in `delivery-service-domain/`
+- `DeliveryServiceMessagingConfiguration` correctly in `delivery-service-event-handling/`
+- `DeliveryServiceWebConfiguration` correctly in `delivery-service-restapi/`
 
-- `delivery-service-main/.../DeliveryServiceMain.java`:
-  - Remove `TramJdbcKafkaConfiguration` import
+**Integration tests - [x] OK:**
+- `DeliveryJpaTest`, `RestaurantJpaTest`, `CourierJpaTest` correctly in `delivery-service-persistence/src/integrationTest/`
 
 ### 5. ftgo-restaurant-service - [ ]
 
-**Files to modify:**
+**Starters/Auto-config - [ ]:**
+- `RestaurantServiceMain.java`: Remove `TramJdbcKafkaConfiguration` import
+- `RestaurantServiceDomainConfiguration.java`: Remove `TramEventsPublisherConfiguration` import (has publisher-starter)
 
-- `restaurant-service-main/.../RestaurantServiceMain.java`:
-  - Remove `TramJdbcKafkaConfiguration` import
+**Move @Configuration classes - [x] OK:**
+- `RestaurantServiceDomainConfiguration` correctly in `restaurant-service-domain/`
+- `RestaurantWebConfiguration` correctly in `restaurant-service-restapi/`
+- `CommonConfiguration` correctly in `restaurant-service-domain/`
 
-- `restaurant-service-domain/.../RestaurantServiceDomainConfiguration.java`:
-  - Remove `TramEventsPublisherConfiguration` import (has publisher-starter)
+**Integration tests - [x] OK:**
+- `RestaurantServiceIntegrationTest` in `restaurant-service-main/src/integrationTest/` - correctly placed (full service test)
 
 ### 6. ftgo-order-history-service - [ ]
 
-**Files to modify:**
+**Starters/Auto-config - [ ]:**
+- `OrderHistoryServiceMain.java`: Review consumer configuration imports
 
-- `order-history-service-main/.../OrderHistoryServiceMain.java`:
-  - Review consumer configuration imports
+**Move @Configuration classes - [x] OK:**
+- `OrderHistoryDynamoDBConfiguration` correctly in `order-history-service-dynamodb/`
+- `OrderHistoryWebConfiguration` correctly in `order-history-service-restapi/`
+- `OrderHistoryServiceMessagingConfiguration` correctly in `order-history-service-event-handling/`
+
+**Integration tests - [x] OK:**
+- `OrderHistoryDaoDynamoDbTest` correctly in `order-history-service-dynamodb/src/integrationTest/`
 
 ## Verification
 
@@ -113,9 +158,9 @@ After each service change:
 
 ## Implementation Order
 
-1. ftgo-kitchen-service (already mostly done, quick cleanup)
-2. ftgo-consumer-service
-3. ftgo-accounting-service
-4. ftgo-delivery-service
-5. ftgo-restaurant-service
-6. ftgo-order-history-service
+1. ftgo-kitchen-service - [x] DONE (starters)
+2. ftgo-consumer-service - [x] DONE (starters), [ ] pending (move config)
+3. ftgo-accounting-service - [ ] (starters, move config, move test)
+4. ftgo-delivery-service - [ ] (starters only)
+5. ftgo-restaurant-service - [ ] (starters only)
+6. ftgo-order-history-service - [ ] (starters only)
