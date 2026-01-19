@@ -5,6 +5,7 @@ import io.eventuate.tram.spring.flyway.EventuateTramFlywayMigrationConfiguration
 import io.eventuate.tram.sagas.spring.orchestration.SagaOrchestratorConfiguration;
 import io.micrometer.core.instrument.MeterRegistry;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
+import net.chrisrichardson.ftgo.orderservice.persistence.OrderPersistenceConfiguration;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.AccountingServiceProxyConfiguration;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.ConsumerServiceProxyConfiguration;
 import net.chrisrichardson.ftgo.orderservice.sagaparticipants.KitchenServiceProxyConfiguration;
@@ -23,6 +24,7 @@ import org.springframework.context.annotation.Import;
         SagaOrchestratorConfiguration.class,
         CommonConfiguration.class,
         EventuateTramFlywayMigrationConfiguration.class,
+        OrderPersistenceConfiguration.class,
         OrderDomainConfiguration.class,
         OrderSagasConfiguration.class,
         KitchenServiceProxyConfiguration.class,
