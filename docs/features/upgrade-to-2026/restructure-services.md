@@ -123,11 +123,11 @@ Integration tests should live in the module containing the code they test:
 **Integration tests - [x] OK:**
 - `DeliveryJpaTest`, `RestaurantJpaTest`, `CourierJpaTest` correctly in `delivery-service-persistence/src/integrationTest/`
 
-### 5. ftgo-restaurant-service - [ ]
+### 5. ftgo-restaurant-service - [x] DONE
 
-**Starters/Auto-config - [ ]:**
-- `RestaurantServiceMain.java`: Remove `TramJdbcKafkaConfiguration` import
-- `RestaurantServiceDomainConfiguration.java`: Remove `TramEventsPublisherConfiguration` import (has publisher-starter)
+**Starters/Auto-config - [x] DONE:**
+- `RestaurantServiceMain.java`: Removed `TramJdbcKafkaConfiguration` import
+- `RestaurantServiceDomainConfiguration.java`: No changes needed (no redundant imports)
 
 **Move @Configuration classes - [x] OK:**
 - `RestaurantServiceDomainConfiguration` correctly in `restaurant-service-domain/`
@@ -163,5 +163,5 @@ After each service change:
 2. ftgo-consumer-service - [x] DONE (starters, move config)
 3. ftgo-accounting-service - [x] DONE (starters partial - no starter for command-handlers due to contract tests)
 4. ftgo-delivery-service - [x] DONE (starters)
-5. ftgo-restaurant-service - [ ] (starters only)
+5. ftgo-restaurant-service - [x] DONE (starters)
 6. ftgo-order-history-service - [ ] (starters only)
