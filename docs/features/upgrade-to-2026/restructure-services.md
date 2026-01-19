@@ -91,20 +91,20 @@ Integration tests should live in the module containing the code they test:
 **Integration tests - [x] OK:**
 - Tests correctly placed in their respective modules
 
-### 3. ftgo-accounting-service - [ ]
+### 3. ftgo-accounting-service - [x] DONE (partial)
 
-**Starters/Auto-config - [ ]:**
-- `accounting-service-command-handlers/build.gradle`: Change to participant-starter
-- `AccountingMessagingConfiguration.java`: Remove `TramEventSubscriberConfiguration` import
-- `AccountingServiceMain.java`: Remove `TramJdbcKafkaConfiguration` import
-- `AccountServiceConfiguration.java`: Review `TramCommandProducerConfiguration` import
+**Starters/Auto-config - [x] DONE:**
+- `accounting-service-command-handlers/build.gradle`: Keep non-starter (starter breaks contract tests due to JDBC auto-config)
+- `AccountingMessagingConfiguration.java`: Removed `TramEventSubscriberConfiguration` import
+- `AccountingServiceMain.java`: Removed `TramJdbcKafkaConfiguration` import
+- `AccountServiceConfiguration.java`: `TramCommandProducerConfiguration` kept (still needed)
 
-**Move @Configuration classes - [ ]:**
+**Move @Configuration classes - [ ] TODO:**
 - Move `AccountingMessagingConfiguration` from `accounting-service-main/src/main/java/.../messaging/` to `accounting-service-command-handlers/src/main/java/.../messaging/`
   - Creates: `AccountingEventConsumer`, `DomainEventDispatcher`, `AccountingServiceCommandHandler`, `CommandDispatcher`, `SagaReplyRequestedEventSubscriber`
   - Should be with the command/event handlers it configures
 
-**Integration tests - [ ]:**
+**Integration tests - [ ] TODO:**
 - Move `AccountingServiceCommandHandlerTest` from `accounting-service-main/src/integrationTest/` to `accounting-service-command-handlers/src/integrationTest/`
   - Tests command handler behavior
   - Should be in the module containing the code it tests
@@ -161,7 +161,7 @@ After each service change:
 
 1. ftgo-kitchen-service - [x] DONE (starters)
 2. ftgo-consumer-service - [x] DONE (starters, move config)
-3. ftgo-accounting-service - [ ] (starters, move config, move test)
+3. ftgo-accounting-service - [x] DONE (starters partial - no starter for command-handlers due to contract tests)
 4. ftgo-delivery-service - [ ] (starters only)
 5. ftgo-restaurant-service - [ ] (starters only)
 6. ftgo-order-history-service - [ ] (starters only)
