@@ -1,8 +1,6 @@
 package net.chrisrichardson.ftgo.orderservice.domain;
 
-import io.eventuate.tram.spring.events.publisher.TramEventsPublisherConfiguration;
 import io.eventuate.tram.spring.flyway.EventuateTramFlywayMigrationConfiguration;
-import io.eventuate.tram.sagas.spring.orchestration.SagaOrchestratorConfiguration;
 import io.micrometer.core.instrument.MeterRegistry;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
 import net.chrisrichardson.ftgo.orderservice.persistence.OrderPersistenceConfiguration;
@@ -20,8 +18,6 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({
-        TramEventsPublisherConfiguration.class,
-        SagaOrchestratorConfiguration.class,
         CommonConfiguration.class,
         EventuateTramFlywayMigrationConfiguration.class,
         OrderPersistenceConfiguration.class,

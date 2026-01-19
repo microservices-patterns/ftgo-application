@@ -10,8 +10,8 @@ dependencies {
     api project(':order-service-proxies-accounting-service')
     api project(':order-service-proxies-consumer-service')
 
-    api 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl'
-    api 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant'
+    api 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl-starter'
+    api 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-participant-starter'
 
     testImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support'
     testImplementation 'io.eventuate.tram.sagas:eventuate-tram-sagas-spring-in-memory'
