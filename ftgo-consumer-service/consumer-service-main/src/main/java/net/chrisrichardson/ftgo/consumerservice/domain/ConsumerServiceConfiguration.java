@@ -1,39 +1,17 @@
 package net.chrisrichardson.ftgo.consumerservice.domain;
 
-import io.eventuate.tram.commands.consumer.CommandDispatcher;
 import io.eventuate.tram.spring.flyway.EventuateTramFlywayMigrationConfiguration;
-import io.eventuate.tram.sagas.participant.SagaCommandDispatcherFactory;
 import net.chrisrichardson.ftgo.common.CommonConfiguration;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
+import net.chrisrichardson.ftgo.consumerservice.persistence.ConsumerPersistenceConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableJpaRepositories
-@EnableAutoConfiguration
-@Import({CommonConfiguration.class, EventuateTramFlywayMigrationConfiguration.class})
-@EnableTransactionManagement
-@ComponentScan
+@Import({
+        CommonConfiguration.class,
+        EventuateTramFlywayMigrationConfiguration.class,
+        ConsumerPersistenceConfiguration.class,
+        ConsumerCommandHandlersConfiguration.class
+})
 public class ConsumerServiceConfiguration {
-
-  @Bean
-  public ConsumerServiceCommandHandlers consumerServiceCommandHandlers() {
-    return new ConsumerServiceCommandHandlers();
-  }
-
-  @Bean
-  public ConsumerService consumerService() {
-    return new ConsumerService();
-  }
-
-  @Bean
-  public CommandDispatcher commandDispatcher(ConsumerServiceCommandHandlers consumerServiceCommandHandlers, SagaCommandDispatcherFactory sagaCommandDispatcherFactory) {
-    return sagaCommandDispatcherFactory.make("consumerServiceDispatcher", consumerServiceCommandHandlers.commandHandlers());
-  }
-
-
 }

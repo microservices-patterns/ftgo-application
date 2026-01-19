@@ -70,10 +70,11 @@ Integration tests should live in the module containing the code they test:
 - `ConsumerServiceConfiguration.java`: Removed redundant Eventuate imports
 - `ConsumerServiceMain.java`: Removed `TramJdbcKafkaConfiguration` import
 
-**Move @Configuration classes - [ ]:**
-- Move `ConsumerServiceConfiguration` from `consumer-service-main/src/main/java/.../domain/` to `consumer-service-domain/src/main/java/.../domain/`
-  - Creates domain beans: `ConsumerService`, `ConsumerServiceCommandHandlers`, `CommandDispatcher`
-  - Should be with the domain classes it configures
+**Move @Configuration classes - [x] DONE:**
+- Created `ConsumerDomainConfiguration` in `consumer-service-domain` (creates ConsumerService)
+- Created `ConsumerCommandHandlersConfiguration` in `consumer-service-command-handlers` (creates CommandHandlers, CommandDispatcher)
+- Created `ConsumerPersistenceConfiguration` in `consumer-service-persistence` (JPA entity/repository scanning)
+- Slimmed down `ConsumerServiceConfiguration` in main to import these configurations
 
 **Integration tests - [x] OK:**
 - `ConsumerServiceIntegrationTest` in `consumer-service-main/src/integrationTest/` - correctly placed (full service test)
@@ -159,7 +160,7 @@ After each service change:
 ## Implementation Order
 
 1. ftgo-kitchen-service - [x] DONE (starters)
-2. ftgo-consumer-service - [x] DONE (starters), [ ] pending (move config)
+2. ftgo-consumer-service - [x] DONE (starters, move config)
 3. ftgo-accounting-service - [ ] (starters, move config, move test)
 4. ftgo-delivery-service - [ ] (starters only)
 5. ftgo-restaurant-service - [ ] (starters only)
