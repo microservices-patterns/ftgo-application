@@ -109,11 +109,11 @@ Integration tests should live in the module containing the code they test:
   - Tests command handler behavior
   - Should be in the module containing the code it tests
 
-### 4. ftgo-delivery-service - [ ]
+### 4. ftgo-delivery-service - [x] DONE
 
-**Starters/Auto-config - [ ]:**
-- `DeliveryServiceMessagingConfiguration.java`: Remove `TramEventSubscriberConfiguration` import (has subscriber-starter)
-- `DeliveryServiceMain.java`: Remove `TramJdbcKafkaConfiguration` import
+**Starters/Auto-config - [x] DONE:**
+- `DeliveryServiceMessagingConfiguration.java`: Removed `TramEventSubscriberConfiguration` import
+- `DeliveryServiceMain.java`: Removed `TramJdbcKafkaConfiguration` import
 
 **Move @Configuration classes - [x] OK:**
 - `DeliveryServiceDomainConfiguration` correctly in `delivery-service-domain/`
@@ -162,6 +162,6 @@ After each service change:
 1. ftgo-kitchen-service - [x] DONE (starters)
 2. ftgo-consumer-service - [x] DONE (starters, move config)
 3. ftgo-accounting-service - [x] DONE (starters partial - no starter for command-handlers due to contract tests)
-4. ftgo-delivery-service - [ ] (starters only)
+4. ftgo-delivery-service - [x] DONE (starters)
 5. ftgo-restaurant-service - [ ] (starters only)
 6. ftgo-order-history-service - [ ] (starters only)
