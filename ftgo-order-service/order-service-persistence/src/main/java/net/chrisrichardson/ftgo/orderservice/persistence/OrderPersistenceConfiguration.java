@@ -11,5 +11,5 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 @EnableJpaRepositories(basePackageClasses = {OrderRepository.class, RestaurantRepository.class})
 @EntityScan(basePackageClasses = {Order.class, Restaurant.class})
-public class PersistenceIntegrationTestConfiguration {
+public class OrderPersistenceConfiguration {
 }

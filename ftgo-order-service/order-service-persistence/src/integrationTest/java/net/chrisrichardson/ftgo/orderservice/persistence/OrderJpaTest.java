@@ -1,7 +1,9 @@
-package net.chrisrichardson.ftgo.orderservice.domain;
+package net.chrisrichardson.ftgo.orderservice.persistence;
 
 import net.chrisrichardson.ftgo.orderservice.OrderDetailsMother;
 import net.chrisrichardson.ftgo.orderservice.api.events.OrderState;
+import net.chrisrichardson.ftgo.orderservice.domain.Order;
+import net.chrisrichardson.ftgo.orderservice.domain.OrderRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -23,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DataJpaTest
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = OrderJpaTestConfiguration.class)
+@ContextConfiguration(classes = OrderPersistenceConfiguration.class)
 public class OrderJpaTest {
 
   @Container

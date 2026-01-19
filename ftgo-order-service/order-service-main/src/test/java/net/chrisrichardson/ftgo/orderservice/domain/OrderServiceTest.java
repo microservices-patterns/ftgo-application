@@ -34,8 +34,8 @@ public class OrderServiceTest {
     restaurantRepository = mock(RestaurantRepository.class);
     orderAggregateEventPublisher = mock(OrderDomainEventPublisher.class);
 
-    orderService = new OrderServiceImpl(orderRepository, restaurantRepository,
-            orderAggregateEventPublisher, Optional.empty());
+    orderService = new OrderService(orderRepository, restaurantRepository,
+            orderAggregateEventPublisher, new NoOpOrderServiceInstrumentation());
   }
 
 

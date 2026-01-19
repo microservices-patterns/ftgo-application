@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = PersistenceIntegrationTestConfiguration.class)
+@ContextConfiguration(classes = OrderPersistenceConfiguration.class)
 class OrderRepositoryIntegrationTest {
 
     private static final Logger logger = LoggerFactory.getLogger(OrderRepositoryIntegrationTest.class);

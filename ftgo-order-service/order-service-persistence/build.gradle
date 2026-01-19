@@ -14,5 +14,4 @@ dependencies {
     integrationTestImplementation 'org.testcontainers:postgresql'
     integrationTestImplementation 'org.testcontainers:junit-jupiter'
     integrationTestImplementation 'org.postgresql:postgresql'
-    integrationTestImplementation 'io.eventuate.tram.core:eventuate-tram-spring-consumer-jdbc'
 }

@@ -1,5 +1,7 @@
-package net.chrisrichardson.ftgo.orderservice.domain;
+package net.chrisrichardson.ftgo.orderservice.persistence;
 
+import net.chrisrichardson.ftgo.orderservice.domain.Restaurant;
+import net.chrisrichardson.ftgo.orderservice.domain.RestaurantRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -18,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DataJpaTest
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = OrderJpaTestConfiguration.class)
+@ContextConfiguration(classes = OrderPersistenceConfiguration.class)
 public class RestaurantJpaTest {
 
   @Container
