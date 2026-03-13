@@ -2,10 +2,10 @@
 
 set -e
 
+cd "$(dirname "$0")/ftgo-end-to-end-tests"
+
 echo "Running end-to-end tests using TestContainers..."
 echo ""
-
-cd ftgo-end-to-end-tests
 
 ./gradlew cleanEndToEndTest
 ./gradlew endToEndTest -PendToEndTestMode=TestContainers "$@"

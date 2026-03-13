@@ -1,3 +1,5 @@
 #! /bin/bash -e
 
-./gradlew :ftgo-end-to-end-tests:cleanTest :ftgo-end-to-end-tests:test
+cd "$(dirname "$0")/ftgo-end-to-end-tests"
+
+./gradlew cleanTest test

@@ -90,26 +90,19 @@ public class ApplicationUnderTestUsingTestContainers implements ApplicationUnder
         apiGateway = createApiGatewayContainer();
 
         // CDC service
-        // Note: Accounting service needs BOTH pipelines:
-        // - Tram pipeline (message table) for sending saga replies
-        // - EventuateLocal pipeline (events table) for publishing domain events
-        // Both pipelines share the same reader (reader5)
         cdc = new EventuateCdcContainer()
                 .withKafka(kafka)
                 .withKafkaLeadership()
-                .withTramPipeline(consumerDatabase)   // reader1, pipeline1
-                .withTramPipeline(orderDatabase)      // reader2, pipeline2
-                .withTramPipeline(kitchenDatabase)    // reader3, pipeline3
-                .withTramPipeline(restaurantDatabase) // reader4, pipeline4
-                .withTramPipeline(accountingDatabase) // reader5, pipeline5 (Tram for saga replies)
-                .withTramPipeline(deliveryDatabase)   // reader6, pipeline6
+                .withTramPipeline(consumerDatabase)
+                .withTramPipeline(orderDatabase)
+                .withTramPipeline(kitchenDatabase)
+                .withTramPipeline(restaurantDatabase)
+                .withTramAndLocalPipeline(accountingDatabase)
+                .withTramPipeline(deliveryDatabase)
                 .withReuse(false)
                 .withExposedPorts(8080)
                 .dependsOn(consumerService, orderService, kitchenService, restaurantService, accountingService, deliveryService)
                 .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("cdc:"));
-
-        // Add EventuateLocal pipeline for accounting service (reuses reader5, new pipeline7)
-        addEventuateLocalPipelineUsingExistingReader(cdc, 5, 7);
     }
 
     private EventuateDatabaseContainer<?> createDatabase(String alias) {
@@ -169,20 +162,6 @@ public class ApplicationUnderTestUsingTestContainers implements ApplicationUnder
                 .withReuse(false)
                 .dependsOn(consumerService, orderService, orderHistoryService)
                 .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("api-gateway:"));
-    }
-
-    /**
-     * Adds an EventuateLocal pipeline that reuses an existing reader.
-     * This allows the same database to have both Tram and EventuateLocal pipelines.
-     */
-    private void addEventuateLocalPipelineUsingExistingReader(EventuateCdcContainer cdc, int readerIdx, int pipelineIdx) {
-        String pipelinePrefix = "EVENTUATE_CDC_PIPELINE_PIPELINE" + pipelineIdx + "_";
-
-        // Pipeline configuration - uses eventuate-local type and existing reader
-        // Note: accounting-service uses schema=public (per its application.properties)
-        cdc.withEnv(pipelinePrefix + "TYPE", "eventuate-local");
-        cdc.withEnv(pipelinePrefix + "READER", "reader" + readerIdx);
-        cdc.withEnv(pipelinePrefix + "EVENTUATEDATABASESCHEMA", "public");
     }
 
     @Override
