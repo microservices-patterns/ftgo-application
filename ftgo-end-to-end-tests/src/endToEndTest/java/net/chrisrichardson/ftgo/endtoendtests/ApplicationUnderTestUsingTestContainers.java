@@ -23,7 +23,7 @@ public class ApplicationUnderTestUsingTestContainers implements ApplicationUnder
 
     private static final Logger logger = LoggerFactory.getLogger(ApplicationUnderTestUsingTestContainers.class);
     private static final String NETWORK_NAME = "ftgo-e2e-test";
-    private static final String BASE_IMAGE_VERSION = "BUILD-15";
+    private static final String BASE_IMAGE_VERSION = "0.1.0.RELEASE";
 
     private final EventuateKafkaNativeCluster eventuateKafkaCluster;
     private final EventuateKafkaNativeContainer kafka;

@@ -46,7 +46,7 @@ public class ConsumerServiceOutOfProcessComponentTest {
             new ServiceContainer(new ImageFromDockerfile()
                     .withFileFromPath(".", Paths.get(".").toAbsolutePath())
                     .withDockerfilePath("Dockerfile")
-                    .withBuildArg("baseImageVersion", "BUILD-15"))
+                    .withBuildArg("baseImageVersion", "0.1.0.RELEASE"))
                     .withNetwork(eventuateKafkaCluster.network)
                     .withDatabase(database)
                     .withKafka(kafka)

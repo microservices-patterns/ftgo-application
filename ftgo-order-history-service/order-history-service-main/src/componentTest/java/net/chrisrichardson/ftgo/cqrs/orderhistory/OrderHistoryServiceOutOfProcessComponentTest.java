@@ -42,7 +42,7 @@ public class OrderHistoryServiceOutOfProcessComponentTest {
             new ServiceContainer(new ImageFromDockerfile()
                     .withFileFromPath(".", Paths.get(".").toAbsolutePath())
                     .withDockerfilePath("Dockerfile")
-                    .withBuildArg("baseImageVersion", "BUILD-15"))
+                    .withBuildArg("baseImageVersion", "0.1.0.RELEASE"))
                     .withNetwork(eventuateKafkaCluster.network)
                     .withKafka(kafka)
                     .withEnv("AWS_DYNAMODB_ENDPOINT_URL", "http://dynamodb:4566")
