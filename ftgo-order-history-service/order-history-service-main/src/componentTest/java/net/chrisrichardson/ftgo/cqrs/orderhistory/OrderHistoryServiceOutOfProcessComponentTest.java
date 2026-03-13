@@ -51,7 +51,7 @@ public class OrderHistoryServiceOutOfProcessComponentTest {
                     .withEnv("AWS_REGION", "us-east-1")
                     .withReuse(false)
                     .dependsOn(dynamodb)
-                    .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("SVC order-history-service:"));
+                    .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("SVC order-history-service"));
 
     @BeforeAll
     static void startContainers() {

@@ -53,7 +53,7 @@ public class ConsumerServiceOutOfProcessComponentTest {
                     .withEnv("SPRING_PROFILES_ACTIVE", "postgres")
                     .withEnv("SPRING_JPA_HIBERNATE_DDL_AUTO", "update")
                     .withReuse(false)
-                    .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("SVC consumer-service:"));
+                    .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("SVC consumer-service"));
 
     @BeforeAll
     static void startContainers() {

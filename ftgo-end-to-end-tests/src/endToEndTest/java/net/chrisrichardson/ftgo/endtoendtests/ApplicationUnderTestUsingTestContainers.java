@@ -102,7 +102,7 @@ public class ApplicationUnderTestUsingTestContainers implements ApplicationUnder
                 .withReuse(false)
                 .withExposedPorts(8080)
                 .dependsOn(consumerService, orderService, kitchenService, restaurantService, accountingService, deliveryService)
-                .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("cdc:"));
+                .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("SVC cdc"));
     }
 
     private EventuateDatabaseContainer<?> createDatabase(String alias) {
@@ -125,7 +125,7 @@ public class ApplicationUnderTestUsingTestContainers implements ApplicationUnder
                 .withEnv("SPRING_JPA_HIBERNATE_DDL_AUTO", "update")
                 .withExposedPorts(port)
                 .withReuse(false)
-                .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix(serviceDir + ":"));
+                .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("SVC " + serviceDir));
     }
 
     private GenericContainer<?> createOrderHistoryServiceContainer() {
@@ -144,7 +144,7 @@ public class ApplicationUnderTestUsingTestContainers implements ApplicationUnder
                 .withExposedPorts(8080)
                 .withReuse(false)
                 .dependsOn(dynamoDb)
-                .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("order-history:"));
+                .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("SVC order-history"));
     }
 
     private GenericContainer<?> createApiGatewayContainer() {
@@ -161,12 +161,12 @@ public class ApplicationUnderTestUsingTestContainers implements ApplicationUnder
                 .withExposedPorts(8080)
                 .withReuse(false)
                 .dependsOn(consumerService, orderService, orderHistoryService)
-                .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("api-gateway:"));
+                .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("SVC api-gateway"));
     }
 
     @Override
     public void start() {
-        kafka.withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("kafka:"));
+        kafka.withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("SVC kafka"));
         Startables.deepStart(
                 kafka,
                 dynamoDb,

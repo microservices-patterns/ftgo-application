@@ -69,7 +69,7 @@ public class OrderServiceOutOfProcessComponentTest {
                     .withEnv("SPRING_PROFILES_ACTIVE", "postgres")
                     .withEnv("SPRING_JPA_HIBERNATE_DDL_AUTO", "update")
                     .withReuse(false)
-                    .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("SVC order-service:"));
+                    .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("SVC order-service"));
 
     @Autowired
     private DirectToKafkaCommandProducer commandProducer;

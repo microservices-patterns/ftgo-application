@@ -33,7 +33,7 @@ public class ApiGatewayOutOfProcessComponentTest {
                     .withEnv("ORDER_DESTINATIONS_ORDERHISTORYSERVICEURL", "http://localhost:8080")
                     .withEnv("CONSUMER_DESTINATIONS_CONSUMERSERVICEURL", "http://localhost:8080")
                     .withReuse(false)
-                    .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("SVC api-gateway:"));
+                    .withLogConsumer(new Slf4jLogConsumer(logger).withPrefix("SVC api-gateway"));
 
     @BeforeAll
     static void startContainers() {
