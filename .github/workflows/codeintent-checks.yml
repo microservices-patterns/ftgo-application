@@ -9,10 +9,11 @@ name: CodeIntent Checks
 # through the API (never executed), so the Lambda can judge whole methods.
 #
 # Rule exceptions: a GitHub-verified Yes on a coding-standards finding, on the
-# review page, commits an exception to .codeintent/rule-exceptions.yaml on the PR
-# branch (codeintent-review-sync.yml) and starts this workflow for the PR. Its file at the base and at the head is sent as text; the
-# Lambda applies an exception the PR adds only when the governance ledger
-# records that decision.
+# review page, records the exception in the governance ledger and starts this
+# workflow for the PR. The Lambda applies it to this PR at once, and to every PR
+# once this one merges (codeintent-rule-exceptions.yml). The repository's own
+# .codeintent/rule-exceptions.yaml still applies: its text at the base and at the
+# head is sent, and an entry the PR adds counts only with a recorded decision.
 on:
   pull_request_target:
     types: [opened, synchronize, reopened]

@@ -1,0 +1,63 @@
+name: CodeIntent rule exceptions
+
+# When a pull request closes, settle the rule exceptions its reviewers recorded
+# (a Yes on a coding-standards finding, on the CodeIntent review page). Until
+# then they apply only to that pull request. If it merged, they become the
+# repository's accepted rule exceptions in the governance ledger and apply to
+# every later pull request; if it closed unmerged, they are discarded.
+#
+# Nothing is committed anywhere. The request names only the repository and the
+# pull request: the CodeIntent API reads whether it merged from GitHub itself.
+# Runs from the default branch and never checks out pull request code.
+on:
+  pull_request_target:
+    types: [closed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: codeintent-rule-exceptions-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  settle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Settle this pull request's rule exceptions
+        env:
+          API_URL: ${{ vars.CODEINTENT_DECISIONS_URL || 'https://qgd63ljozc.execute-api.us-east-1.amazonaws.com/demo/disputes' }}
+          API_KEY: ${{ secrets.DRIFT_GATE_API_KEY }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, time, urllib.error, urllib.request
+          env = os.environ
+          if not env['API_KEY']:
+              raise SystemExit('::error::Configure the DRIFT_GATE_API_KEY repository secret.')
+          payload = {'action': 'settle_rule_changes', 'repository': env['REPOSITORY'],
+                     'pull_request': int(env['PR_NUMBER'])}
+          for attempt in range(4):
+              request = urllib.request.Request(env['API_URL'], data=json.dumps(payload).encode(), method='POST',
+                  headers={'x-api-key': env['API_KEY'], 'Content-Type': 'application/json'})
+              try:
+                  with urllib.request.urlopen(request, timeout=60) as response:
+                      result = json.load(response)
+                  break
+              except urllib.error.HTTPError as exc:
+                  detail = exc.read().decode(errors='replace')[:500]
+                  if exc.code < 500 or attempt == 3:
+                      raise SystemExit(f'::error::CodeIntent API returned HTTP {exc.code}: {detail}')
+              time.sleep(5 * (attempt + 1))
+          print(json.dumps(result))
+          summary = (f"Accepted {result.get('accepted', 0)} rule exception(s) for the repository."
+                     if result.get('outcome') == 'merged' else
+                     f"Discarded {result.get('discarded', 0)} rule exception(s); the pull request closed unmerged."
+                     if result.get('outcome') == 'closed' else result.get('reason') or 'Nothing to settle.')
+          with open(env['GITHUB_STEP_SUMMARY'], 'a') as out:
+              out.write('### CodeIntent rule exceptions\n\n' + summary + '\n')
+          PY
