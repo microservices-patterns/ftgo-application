@@ -1,16 +1,11 @@
 name: CodeIntent violations
 
-# Decide a rule violation on a PR, by one person with write access:
-#   /reject -- reason                          the violation is real: the PR is closed
-#   /false-positive F-xxxxxxxx -- reason       the rule fired wrongly: the rule is fixed in this PR
-#   /false-positive F-xxxxxxxx match="text" -- reason
+# Findings are decided on the CodeIntent review page (Yes / No), not by comment.
+# `/reject` and `/false-positive` are retired: this workflow only relays them so
+# the API can reply with where to answer instead; nothing is recorded and the PR
+# is never closed. `/codeintent-review` confirmations are still recorded.
 # Runs from the default branch: it never checks out PR code, and the comment text
 # reaches the script only through an environment variable (it is untrusted input).
-# The CodeIntent API records the decision in the governance ledger; this workflow
-# posts its reply and closes the PR when it was rejected. For a false positive it
-# commits the rule exception to .codeintent/rule-exceptions.yaml on the PR branch
-# (a separate commit) and starts codeintent-checks.yml for the PR: a commit made
-# with GITHUB_TOKEN does not start workflows by itself. No GitHub App needed.
 on:
   issue_comment:
     types: [created]
@@ -18,10 +13,9 @@ on:
     types: [created]
 
 permissions:
-  contents: write        # commit a rule exception to the PR branch
-  actions: write         # start the checks on that commit
+  contents: read
   issues: write          # reply in the PR conversation
-  pull-requests: write   # reply in a review thread, and close a rejected PR
+  pull-requests: write   # reply in a review thread
 
 concurrency:
   group: codeintent-violations-${{ github.event.issue.number || github.event.pull_request.number }}
@@ -42,7 +36,6 @@ jobs:
           API_KEY: ${{ secrets.DRIFT_GATE_API_KEY }}
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
-          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           EVENT_NAME: ${{ github.event_name }}
           PR_NUMBER: ${{ github.event.issue.number || github.event.pull_request.number }}
           REVIEW_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
@@ -54,8 +47,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import base64, json, os, subprocess, urllib.error, urllib.request
-          from urllib.parse import quote
+          import json, os, subprocess, urllib.error, urllib.request
           env = os.environ
           repo, number, actor = env['REPOSITORY'], env['PR_NUMBER'], env['ACTOR']
 
@@ -65,45 +57,11 @@ jobs:
                                    capture_output=True, text=True)
               return run.stdout if run.returncode == 0 else None
 
-          def commit_exceptions(result):
-              """Commit the recorded rule exceptions to the PR branch and start the checks; a note for the reply."""
-              pr = json.loads(gh(f'repos/{repo}/pulls/{number}') or '{}')
-              path, entries = result['exceptions_file'], result['exceptions']
-              text = ''.join(entry['yaml'] for entry in entries)
-              if pr.get('state') != 'open':
-                  return None
-              if (pr.get('head', {}).get('repo') or {}).get('full_name') != repo:
-                  return (f'This PR comes from a fork, which this workflow cannot push to. Add this to `{path}` '
-                          f'on the PR branch:\n\n```yaml\n{text}```')
-              branch = pr['head']['ref']
-              current = gh(f'repos/{repo}/contents/{quote(path)}?ref={quote(branch, safe="")}')
-              current = json.loads(current) if current else None
-              content = base64.b64decode(current['content']).decode() if current else result['exceptions_header']
-              if not content.endswith('\n'):
-                  content += '\n'
-              added = [entry for entry in entries if entry['yaml'] not in content]
-              if added:
-                  content += ''.join(entry['yaml'] for entry in added)
-                  message = '; '.join(f"{e['rule']}: allow false positive {e['finding']}" for e in added)
-                  update = {'message': f'{message} (@{actor})', 'branch': branch,
-                            'content': base64.b64encode(content.encode()).decode()}
-                  if current:
-                      update['sha'] = current['sha']
-                  if gh('--method', 'PUT', f'repos/{repo}/contents/{quote(path)}', payload=update) is None:
-                      return (f'Could not commit the rule exception to `{branch}`. Add this to `{path}` on the '
-                              f'PR branch:\n\n```yaml\n{text}```')
-              started = gh('--method', 'POST', f'repos/{repo}/actions/workflows/codeintent-checks.yml/dispatches',
-                           payload={'ref': env['DEFAULT_BRANCH'], 'inputs': {'pull_request': str(number)}})
-              note = (f'Committed the rule exception to `{path}` on `{branch}`; pull before pushing again.'
-                      if added else f'`{path}` on `{branch}` already has this rule exception.')
-              return note + (' The checks are re-running.' if started is not None else
-                             ' Could not start the checks; re-run the CodeIntent Checks workflow for this PR.')
-
           current_pr = json.loads(gh(f'repos/{repo}/pulls/{number}') or '{}')
           if current_pr.get('state') != 'open':
               raise SystemExit('::warning::Review commands require an open PR.')
           head = current_pr['head']['sha']
-          # Only someone with write access decides a violation.
+          # The API decides what the commenter's permission allows.
           permission = (gh(f'repos/{repo}/collaborators/{actor}/permission', '--jq', '.permission') or 'none').strip()
           if permission not in {'admin', 'maintain', 'write', 'triage', 'read', 'none'}:
               permission = 'none'
@@ -133,10 +91,6 @@ jobs:
                   raise SystemExit('::error::Decision recorded, but the bot comment was not updated. Retry this Actions run.')
           if not result.get('reply'):
               raise SystemExit(0)   # an ordinary comment that only mentions a command
-          if result.get('exceptions') and not result.get('close'):
-              note = commit_exceptions(result)
-              if note:
-                  result['reply'] += '\n\n' + note
 
           if env['EVENT_NAME'] == 'pull_request_review_comment':
               target = f'repos/{repo}/pulls/{number}/comments/{env["COMMENT_ID"]}/replies'
@@ -144,6 +98,4 @@ jobs:
               target = f'repos/{repo}/issues/{number}/comments'
           if gh('--method', 'POST', target, '-f', 'body=' + result['reply']) is None:
               print('::warning::Could not post the reply:\n' + result['reply'])
-          if result.get('close') and gh('--method', 'PATCH', f'repos/{repo}/pulls/{number}', '-f', 'state=closed') is None:
-              raise SystemExit('::error::The rejection was recorded, but the pull request could not be closed.')
           PY

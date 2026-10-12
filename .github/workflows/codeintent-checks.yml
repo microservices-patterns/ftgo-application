@@ -8,9 +8,9 @@ name: CodeIntent Checks
 # workflow only sends the changed Java files, fetched as text at the head SHA
 # through the API (never executed), so the Lambda can judge whole methods.
 #
-# Rule exceptions: `/false-positive` (codeintent-violations.yml) commits an
-# exception to .codeintent/rule-exceptions.yaml on the PR branch and starts this
-# workflow for the PR. Its file at the base and at the head is sent as text; the
+# Rule exceptions: a GitHub-verified Yes on a coding-standards finding, on the
+# review page, commits an exception to .codeintent/rule-exceptions.yaml on the PR
+# branch (codeintent-review-sync.yml) and starts this workflow for the PR. Its file at the base and at the head is sent as text; the
 # Lambda applies an exception the PR adds only when the governance ledger
 # records that decision.
 on:
@@ -285,7 +285,7 @@ jobs:
               findings=$(jq -r '.checks[]? | select(.id == "coding_standards") | .findings[]? |
                 "- **\(if .band == "finding" then "Finding" else "FYI" end)** [\(.severity)\(if (.category // "") == "" then "" elif (.category_parent // "") == "" then " · \(.category)" else " · \(.category_parent) › \(.category)" end)] \(.rule_id) v\(.rule_version) \(.name): `\(.file):\(.line)` \(.unit)" +
                 (if .guidance != "" then "\n  Suggested fix: \(.guidance)" else "" end) +
-                (if .ref and $recorded then "\n  False detection? Someone with write access comments `/false-positive \(.ref) -- reason`; a real violation: `/reject -- reason` closes the PR." else "" end)' \
+                (if .ref and $recorded then "\n  Intended? Answer Yes or No on the CodeIntent review page (`\(.ref)`)." else "" end)' \
                 --argjson recorded "$(jq '(.governance_run_id // "") != ""' <<<"$document")" <<<"$document")
               if [ -n "$findings" ]; then
                 printf '%s\n' "$findings"
@@ -300,12 +300,12 @@ jobs:
               fi
               # Other failed checks' violations are decided the same way.
               others=$(jq -r 'select((.governance_run_id // "") != "") | .checks[]? | select(.id != "coding_standards" and .state == "failed") | . as $check | .findings[]? | select(.ref) |
-                "- **\($check.label // $check.id)**: \(.name // .title // .observation // "finding") — false detection: `/false-positive \(.ref) -- reason`"' <<<"$document")
+                "- **\($check.label // $check.id)**: \(.name // .title // .observation // "finding") (`\(.ref)`)"' <<<"$document")
               if [ -n "$others" ]; then
                 {
                   echo "### Rule violations"
                   echo
-                  echo "Someone with write access decides each: \`/reject -- reason\` closes the PR; \`/false-positive F-… -- reason\` adds a rule exception to this PR."
+                  echo "Answer each on the CodeIntent review page: Yes if the change was intended, No to keep this PR blocked."
                   echo
                   printf '%s\n' "$others"
                   echo
@@ -339,7 +339,7 @@ jobs:
 
 
           def finding_lines(check, limit=10):
-              """One line per published finding, with the reference used to decide it (`/false-positive F-…`)."""
+              """One line per published finding, with its reference (`F-…`)."""
               lines=[]
               findings=[f for f in check.get('findings') or [] if isinstance(f,dict) and f.get('ref')]
               for finding in findings[:limit]:
