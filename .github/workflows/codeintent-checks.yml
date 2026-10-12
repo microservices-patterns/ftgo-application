@@ -164,6 +164,11 @@ jobs:
               f"repos/{repo}/pulls/{os.environ['PR_NUMBER']}/files?per_page=100",
           ))
           changed_rows = [row for page in raw_pages for row in page]
+          pr_stats = json.loads(gh(f"repos/{repo}/pulls/{os.environ['PR_NUMBER']}"))
+          change_stats = {key: pr_stats[key] for key in ('additions', 'deletions', 'changed_files')}
+          change_stats['files'] = [{'path': row['filename'], 'additions': row['additions'],
+                                   'deletions': row['deletions'], 'status': row['status']}
+                                  for row in changed_rows]
           semantic_java = []
           for row in changed_rows:
               path = row["filename"]
@@ -208,6 +213,7 @@ jobs:
               json.dump({
                   "standards": {"files_omitted": omitted, "exceptions": exceptions},
                   "semantic_changes": {"java": semantic_java, "files_omitted": omitted},
+                  "pr_change_stats": change_stats,
                   "files": files,
               }, stream)
           print(f"Standards input: {len(files)} changed Java file(s) sent, {len(omitted)} omitted.")
@@ -234,6 +240,16 @@ jobs:
               "pull_request_title": os.environ["PR_TITLE"],
               **standards_input,
           }
+          if len(json.dumps(payload).encode('utf-8')) > 240000:
+              # Keep complete size metadata; do not pretend a clipped diff was analyzed.
+              excerpt = payload.get('diff', '')[:24000]
+              while len(json.dumps(excerpt).encode('utf-8')) > 24000:
+                  excerpt = excerpt[:len(excerpt) // 2]
+              payload['fallback_diff'] = excerpt
+              payload.update(diff='', files={}, reviewability_only=True,
+                             standards={}, semantic_changes={})
+              if len(json.dumps(payload).encode('utf-8')) > 240000:
+                  payload['pr_change_stats']['files'] = []
           with open("/tmp/codeintent-payload.json", "w", encoding="utf-8") as stream:
               json.dump(payload, stream)
           PY
@@ -437,11 +453,26 @@ jobs:
               rows=[MARKER,'### CodeIntent checks -- '+label,'']
               if document.get('violation_status')=='rejected':
                   rows+=['**Rejected:** a rule violation was confirmed, so this pull request was closed.','']
+              fallback = document.get('llm_review') or {}
+              if fallback:
+                  rows += ['**LLM analysis · not deterministically verified**',
+                           'Advisory only; deterministic checks and approval requirements are unchanged.', '']
+                  for issue in fallback.get('issues', []):
+                      rows += ['- Potential issue: ' + escape(str(issue.get('title', ''))),
+                               '  ' + escape(str(issue.get('explanation', ''))),
+                               '  Uncertainty: ' + escape(str(issue.get('uncertainty', '')))]
+                  if not fallback.get('issues'):
+                      rows += [inline(fallback.get('reason') or 'No potential issues returned; this does not establish that the PR is safe.')]
+                  rows += ['']
               accepted=[]
               passed=[]
               failed=[]
               failed_count=0
               for check in checks:
+                  notice=check.get('reviewability') or {}
+                  if notice and notice.get('band')!='normal':
+                      rows += [f"🟡 **PR reviewability:** {inline(notice.get('message'))}",
+                               f"Counted size: {inline(notice.get('analysis_lines'))} lines across {inline(notice.get('changed_files'))} files; {inline(notice.get('mode'))} policy.", '']
                   if check.get('id')=='governance_decision':
                       continue
                   state=check.get('state','pending')
