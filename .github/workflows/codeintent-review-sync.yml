@@ -10,14 +10,8 @@ on:
         description: Reviewed source commit
         required: true
         type: string
-      exceptions:
-        description: Rule exceptions a GitHub-verified Yes recorded (JSON from the review API)
-        required: false
-        type: string
-        default: ''
 permissions:
-  contents: write        # commit a rule exception to the PR branch
-  actions: write         # re-run CodeIntent Checks on that commit
+  contents: read
   issues: write
   pull-requests: write
   statuses: write
@@ -118,75 +112,4 @@ jobs:
                       github(f'/repos/{repo}/issues/comments/{bot["id"]}', 'PATCH', {'body': failed})
               raise
           print('CodeIntent bot message updated from recorded review decisions.')
-          PY
-      # A Yes on a coding-standards finding: the API has recorded the false positive in the
-      # governance ledger. Commit its exception to the PR branch as a separate commit and
-      # re-run the checks; they trust the entry only because the ledger holds that decision.
-      - name: Commit rule exceptions to the PR branch
-        if: inputs.exceptions != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPOSITORY: ${{ github.repository }}
-          PR_NUMBER: ${{ inputs.pull_request }}
-          HEAD_SHA: ${{ inputs.head_sha }}
-          EXCEPTIONS: ${{ inputs.exceptions }}
-          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          import base64, json, os, re, urllib.error, urllib.request
-          from urllib.parse import quote
-          repo, number, sha = os.environ['REPOSITORY'], os.environ['PR_NUMBER'], os.environ['HEAD_SHA']
-          if not number.isdigit() or int(number) < 1 or not re.fullmatch(r'[0-9a-f]{40}', sha):
-              raise SystemExit('Invalid PR or commit identity')
-          request = json.loads(os.environ['EXCEPTIONS'])
-          path, header, entries = request['file'], request['header'], request['entries']
-          if path != '.codeintent/rule-exceptions.yaml' or not isinstance(entries, list) or not 0 < len(entries) <= 20:
-              raise SystemExit('Unexpected rule exception request')
-          for entry in entries:
-              if not (isinstance(entry.get('yaml'), str) and entry['yaml'].startswith('  - rule: ') and len(entry['yaml']) <= 4000
-                      and re.fullmatch(r'F-[0-9a-f]{8}', str(entry.get('finding'))) and re.fullmatch(r'[A-Z0-9-]{1,40}', str(entry.get('rule')))):
-                  raise SystemExit('Unexpected rule exception entry')
-          def github(path, method='GET', body=None):
-              request = urllib.request.Request('https://api.github.com' + path, method=method,
-                  headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json',
-                           'Content-Type': 'application/json', 'X-GitHub-Api-Version': '2022-11-28'},
-                  data=json.dumps(body).encode() if body is not None else None)
-              with urllib.request.urlopen(request, timeout=20) as response:
-                  raw = response.read()
-                  return json.loads(raw) if raw else {}
-          text = ''.join(entry['yaml'] for entry in entries)
-          pr = github(f'/repos/{repo}/pulls/{number}')
-          if pr['state'] != 'open' or pr['head']['sha'] != sha:
-              raise SystemExit('The PR changed or closed after the answer; the rule exception was not committed. '
-                               'Answer Yes again on the current review.')
-          if (pr['head'].get('repo') or {}).get('full_name') != repo:
-              raise SystemExit(f'This PR comes from a fork, which this workflow cannot push to. Add this to `{path}` '
-                               f'on the PR branch:\n{text}')
-          branch = pr['head']['ref']
-          try:
-              current = github(f'/repos/{repo}/contents/{quote(path)}?ref={quote(branch, safe="")}')
-          except urllib.error.HTTPError as exc:
-              if exc.code != 404:
-                  raise
-              current = None
-          content = base64.b64decode(current['content']).decode() if current else header
-          if not content.endswith('\n'):
-              content += '\n'
-          added = [entry for entry in entries if entry['yaml'] not in content]
-          if added:
-              update = {'message': '; '.join(f"{e['rule']}: allow intended finding {e['finding']}" for e in added)
-                                   + ' (confirmed on the CodeIntent review page)',
-                        'branch': branch, 'content': base64.b64encode((content + ''.join(e['yaml'] for e in added)).encode()).decode()}
-              if current:
-                  update['sha'] = current['sha']
-              github(f'/repos/{repo}/contents/{quote(path)}', 'PUT', update)
-              print(f'Committed {len(added)} rule exception(s) to {path} on {branch}.')
-          else:
-              print(f'{path} on {branch} already has these rule exceptions.')
-          # A commit made with GITHUB_TOKEN does not start workflows by itself.
-          github(f'/repos/{repo}/actions/workflows/codeintent-checks.yml/dispatches', 'POST',
-                 {'ref': os.environ['DEFAULT_BRANCH'], 'inputs': {'pull_request': number}})
-          print('CodeIntent Checks re-run requested for the PR.')
           PY
