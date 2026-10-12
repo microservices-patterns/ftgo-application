@@ -240,6 +240,12 @@ jobs:
               "pull_request_title": os.environ["PR_TITLE"],
               **standards_input,
           }
+          import hashlib
+          payload['fallback_diff_ref'] = {
+              'repository': os.environ['PR_FULL_REPO'], 'base_sha': payload['base_sha'],
+              'head_sha': payload['sha'], 'sha256': hashlib.sha256(diff.encode('utf-8')).hexdigest(),
+              'bytes': len(diff.encode('utf-8')), 'files': payload['pr_change_stats']['changed_files'],
+          }
           if len(json.dumps(payload).encode('utf-8')) > 240000:
               # Keep complete size metadata; do not pretend a clipped diff was analyzed.
               excerpt = payload.get('diff', '')[:24000]
@@ -337,24 +343,24 @@ jobs:
           import os
           from html import escape
           from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
-
+          
           MARKER = '<!-- codeintent-checks -->'
           ICONS = {'passed':'✅','failed':'❌','error':'⚠️','stopped':'➖','blocked':'➖','pending':'⏳','running':'⏳'}
           DEFAULT_FTGO_REPOSITORIES = ('scottswindell-hub/ftgo-application',
                                        'Holonic-Technologies/ftgo-application')
-
-
+          
+          
           def ftgo_repository(repository):
               configured = os.environ.get('FTGO_DEMO_REPOSITORIES')
               allowed = DEFAULT_FTGO_REPOSITORIES if configured is None else tuple(
                   value.strip() for value in configured.split(',') if value.strip())
               return repository in allowed
-
-
+          
+          
           def inline(value):
               return str(value or '').replace('\n',' ').replace('|','\\|').replace('<','&lt;').replace('>','&gt;')[:300]
-
-
+          
+          
           def finding_lines(check, limit=10):
               """One line per published finding, with its reference (`F-…`)."""
               lines=[]
@@ -367,8 +373,8 @@ jobs:
               if len(findings)>limit:
                   lines.append(f"  - …and {len(findings)-limit} more on the report")
               return lines
-
-
+          
+          
           def review_lines(check, report_url, accepted=None):
               lines=[]
               for finding in check.get('findings') or []:
@@ -398,19 +404,19 @@ jobs:
                   if decision in {'accepted','unresolved'}:
                       lines.append(f"  <!-- codeintent-review:{review['scope']}:{decision}:{review['record']} -->")
               return lines
-
-
+          
+          
           def review_pending(check):
               findings=check.get('findings') or []
               return any(f.get('review') for f in findings) and not reviewed(check)
-
-
+          
+          
           def reviewed(check):
               findings=check.get('findings') or []
               return bool(findings) and check.get('state') in {'passed','failed'} and all(
                   (f.get('review') or {}).get('decision')=='accepted' for f in findings)
-
-
+          
+          
           def boundary_summary(check):
               """Failed boundary questions need review, not a list: the count here, the findings in the review."""
               findings=[f for f in check.get('findings') or [] if isinstance(f,dict) and (f.get('review') or {}).get('decision')!='accepted']
@@ -419,13 +425,13 @@ jobs:
               boundaries=len({f['title'] for f in findings if f.get('title')})
               across=f" across {boundaries} governed boundar{'y' if boundaries==1 else 'ies'}" if boundaries else ''
               return f"needs review — {len(findings)} finding{'' if len(findings)==1 else 's'}{across}"
-
-
+          
+          
           def demo_evidence_gap(check):
               return (check.get('id') == 'connected_evidence' and check.get('state') == 'error'
                       and 'required evidence gap(s)' in check.get('detail', ''))
-
-
+          
+          
           def render_run_comment(document, report_url):
               if urlsplit(report_url).scheme not in {'http','https'}:
                   raise ValueError('Report URL must be HTTP(S)')
@@ -457,6 +463,10 @@ jobs:
               if fallback:
                   rows += ['**LLM analysis · not deterministically verified**',
                            'Advisory only; deterministic checks and approval requirements are unchanged.', '']
+                  coverage = fallback.get('coverage') or {}
+                  if coverage:
+                      rows += [inline(fallback.get('evidence_scope', '')),
+                               f"Diff coverage: {inline(coverage.get('input_files'))} files; {inline(coverage.get('submitted_bytes'))} bytes submitted; {inline(fallback.get('status'))}.", '']
                   for issue in fallback.get('issues', []):
                       rows += ['- Potential issue: ' + escape(str(issue.get('title', ''))),
                                '  ' + escape(str(issue.get('explanation', ''))),
