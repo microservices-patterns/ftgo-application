@@ -4,6 +4,9 @@ name: CodeIntent violations
 # `/reject` and `/false-positive` are retired: this workflow only relays them so
 # the API can reply with where to answer instead; nothing is recorded and the PR
 # is never closed. `/codeintent-review` confirmations are still recorded.
+# A writer's `/codeintent-review yes` on a failed coding-standards finding also
+# returns its rule exception; codeintent-review-sync.yml commits it to the PR
+# branch and re-runs the checks.
 # Runs from the default branch: it never checks out PR code, and the comment text
 # reaches the script only through an environment variable (it is untrusted input).
 on:
@@ -16,6 +19,7 @@ permissions:
   contents: read
   issues: write          # reply in the PR conversation
   pull-requests: write   # reply in a review thread
+  actions: write         # start review sync to commit a confirmed rule exception
 
 concurrency:
   group: codeintent-violations-${{ github.event.issue.number || github.event.pull_request.number }}
@@ -98,4 +102,12 @@ jobs:
               target = f'repos/{repo}/issues/{number}/comments'
           if gh('--method', 'POST', target, '-f', 'body=' + result['reply']) is None:
               print('::warning::Could not post the reply:\n' + result['reply'])
+          if result.get('exceptions'):
+              default = json.loads(gh(f'repos/{repo}') or '{}').get('default_branch', 'master')
+              started = gh('--method', 'POST', f'repos/{repo}/actions/workflows/codeintent-review-sync.yml/dispatches',
+                           payload={'ref': default, 'inputs': {'pull_request': number, 'head_sha': result['head_sha'],
+                                                               'exceptions': json.dumps(result['exceptions'])}})
+              if started is None:
+                  raise SystemExit('::error::The answer was recorded, but committing its rule exception could not start. '
+                                   'Retry this Actions run.')
           PY
