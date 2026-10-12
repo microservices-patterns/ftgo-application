@@ -7,9 +7,21 @@ name: CodeIntent Checks
 # the Lambda image, so a PR cannot change the rules it is checked against. This
 # workflow only sends the changed Java files, fetched as text at the head SHA
 # through the API (never executed), so the Lambda can judge whole methods.
+#
+# Rule exceptions: a GitHub-verified Yes on a coding-standards finding, on the
+# review page, commits an exception to .codeintent/rule-exceptions.yaml on the PR
+# branch (codeintent-review-sync.yml) and starts this workflow for the PR. Its file at the base and at the head is sent as text; the
+# Lambda applies an exception the PR adds only when the governance ledger
+# records that decision.
 on:
   pull_request_target:
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      pull_request:
+        description: Pull request number to check
+        required: true
+        type: number
 
 permissions:
   contents: read
@@ -18,7 +30,7 @@ permissions:
   statuses: write
 
 concurrency:
-  group: codeintent-${{ github.event.pull_request.number }}
+  group: codeintent-${{ github.event.pull_request.number || inputs.pull_request }}
   cancel-in-progress: true
 
 jobs:
@@ -35,14 +47,23 @@ jobs:
       PR_OWNER: ${{ github.repository_owner }}
       PR_REPO: ${{ github.event.repository.name }}
       PR_FULL_REPO: ${{ github.repository }}
-      PR_SHA: ${{ github.event.pull_request.head.sha }}
-      PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-      PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
-      PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
-      PR_TITLE: ${{ github.event.pull_request.title }}
 
     steps:
+      # The PR's details come from the API, for a PR event and a manual run alike.
+      - name: Resolve the pull request
+        env:
+          REQUESTED_PR: ${{ github.event.pull_request.number || inputs.pull_request }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$PR_FULL_REPO/pulls/$REQUESTED_PR" > /tmp/pull-request.json
+          if [ "$(jq -r .state /tmp/pull-request.json)" != open ]; then
+            echo "::error::Pull request #$REQUESTED_PR is not open."
+            exit 1
+          fi
+          jq -r '"PR_SHA=\(.head.sha)", "PR_BASE_SHA=\(.base.sha)", "PR_BASE_REF=\(.base.ref)",
+                 "PR_HEAD_REF=\(.head.ref)", "PR_NUMBER=\(.number)"' /tmp/pull-request.json >> "$GITHUB_ENV"
+          { echo 'PR_TITLE<<CODEINTENT_TITLE_EOF'; jq -r .title /tmp/pull-request.json; echo 'CODEINTENT_TITLE_EOF'; } >> "$GITHUB_ENV"
+
       - name: Publish analysis progress
         run: |
           set -euo pipefail
@@ -171,9 +192,20 @@ jobs:
               files[path] = text
               total += size
 
+          def optional(path, ref):
+              try:
+                  return raw(path, ref)
+              except NotFound:
+                  return None
+
+          # The repository's own rule exceptions, at the base and at the head.
+          exceptions_path = ".codeintent/rule-exceptions.yaml"
+          exceptions = {"base": optional(exceptions_path, os.environ["PR_BASE_SHA"]),
+                        "head": optional(exceptions_path, sha)}
+
           with open("/tmp/standards-input.json", "w", encoding="utf-8") as stream:
               json.dump({
-                  "standards": {"files_omitted": omitted},
+                  "standards": {"files_omitted": omitted, "exceptions": exceptions},
                   "semantic_changes": {"java": semantic_java, "files_omitted": omitted},
                   "files": files,
               }, stream)
@@ -253,7 +285,7 @@ jobs:
               findings=$(jq -r '.checks[]? | select(.id == "coding_standards") | .findings[]? |
                 "- **\(if .band == "finding" then "Finding" else "FYI" end)** [\(.severity)\(if (.category // "") == "" then "" elif (.category_parent // "") == "" then " · \(.category)" else " · \(.category_parent) › \(.category)" end)] \(.rule_id) v\(.rule_version) \(.name): `\(.file):\(.line)` \(.unit)" +
                 (if .guidance != "" then "\n  Suggested fix: \(.guidance)" else "" end) +
-                (if .ref and $recorded then "\n  False detection? Someone with write access comments `/false-positive \(.ref) -- reason`; a real violation: `/reject -- reason` closes the PR." else "" end)' \
+                (if .ref and $recorded then "\n  Intended? Answer Yes or No on the CodeIntent review page (`\(.ref)`)." else "" end)' \
                 --argjson recorded "$(jq '(.governance_run_id // "") != ""' <<<"$document")" <<<"$document")
               if [ -n "$findings" ]; then
                 printf '%s\n' "$findings"
@@ -268,12 +300,12 @@ jobs:
               fi
               # Other failed checks' violations are decided the same way.
               others=$(jq -r 'select((.governance_run_id // "") != "") | .checks[]? | select(.id != "coding_standards" and .state == "failed") | . as $check | .findings[]? | select(.ref) |
-                "- **\($check.label // $check.id)**: \(.name // .title // .observation // "finding") — false detection: `/false-positive \(.ref) -- reason`"' <<<"$document")
+                "- **\($check.label // $check.id)**: \(.name // .title // .observation // "finding") (`\(.ref)`)"' <<<"$document")
               if [ -n "$others" ]; then
                 {
                   echo "### Rule violations"
                   echo
-                  echo "Someone with write access decides each: \`/reject -- reason\` closes the PR; \`/false-positive F-… -- reason\` requests a rule fix."
+                  echo "Answer each on the CodeIntent review page: Yes if the change was intended, No to keep this PR blocked."
                   echo
                   printf '%s\n' "$others"
                   echo
@@ -307,7 +339,7 @@ jobs:
 
 
           def finding_lines(check, limit=10):
-              """One line per published finding, with the reference used to decide it (`/false-positive F-…`)."""
+              """One line per published finding, with its reference (`F-…`)."""
               lines=[]
               findings=[f for f in check.get('findings') or [] if isinstance(f,dict) and f.get('ref')]
               for finding in findings[:limit]:
