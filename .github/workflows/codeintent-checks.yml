@@ -16,6 +16,7 @@ name: CodeIntent Checks
 # head is sent, and an entry the PR adds counts only with a recorded decision.
 on:
   pull_request_target:
+    branches: [master]
     types: [opened, synchronize, reopened]
   workflow_dispatch:
     inputs:
@@ -136,7 +137,8 @@ jobs:
           sha = os.environ["PR_SHA"]
           max_file = int(os.environ.get("STANDARDS_MAX_FILE_BYTES", "60000"))
           # API Gateway invokes the Lambda asynchronously, so the whole request
-          # (diff included) must fit the much smaller async payload limit.
+          # (diff included) must fit Lambda's 1 MiB async invocation limit.
+          # This source cap is separate from the serialized request budget.
           max_total = int(os.environ.get("STANDARDS_MAX_TOTAL_BYTES", "200000"))
 
 
@@ -164,11 +166,6 @@ jobs:
               f"repos/{repo}/pulls/{os.environ['PR_NUMBER']}/files?per_page=100",
           ))
           changed_rows = [row for page in raw_pages for row in page]
-          pr_stats = json.loads(gh(f"repos/{repo}/pulls/{os.environ['PR_NUMBER']}"))
-          change_stats = {key: pr_stats[key] for key in ('additions', 'deletions', 'changed_files')}
-          change_stats['files'] = [{'path': row['filename'], 'additions': row['additions'],
-                                   'deletions': row['deletions'], 'status': row['status']}
-                                  for row in changed_rows]
           semantic_java = []
           for row in changed_rows:
               path = row["filename"]
@@ -213,7 +210,6 @@ jobs:
               json.dump({
                   "standards": {"files_omitted": omitted, "exceptions": exceptions},
                   "semantic_changes": {"java": semantic_java, "files_omitted": omitted},
-                  "pr_change_stats": change_stats,
                   "files": files,
               }, stream)
           print(f"Standards input: {len(files)} changed Java file(s) sent, {len(omitted)} omitted.")
@@ -240,24 +236,19 @@ jobs:
               "pull_request_title": os.environ["PR_TITLE"],
               **standards_input,
           }
-          import hashlib
-          payload['fallback_diff_ref'] = {
-              'repository': os.environ['PR_FULL_REPO'], 'base_sha': payload['base_sha'],
-              'head_sha': payload['sha'], 'sha256': hashlib.sha256(diff.encode('utf-8')).hexdigest(),
-              'bytes': len(diff.encode('utf-8')), 'files': payload['pr_change_stats']['changed_files'],
-          }
-          if len(json.dumps(payload).encode('utf-8')) > 240000:
-              # Keep complete size metadata; do not pretend a clipped diff was analyzed.
-              excerpt = payload.get('diff', '')[:24000]
-              while len(json.dumps(excerpt).encode('utf-8')) > 24000:
-                  excerpt = excerpt[:len(excerpt) // 2]
-              payload['fallback_diff'] = excerpt
-              payload.update(diff='', files={}, reviewability_only=True,
-                             standards={}, semantic_changes={})
-              if len(json.dumps(payload).encode('utf-8')) > 240000:
-                  payload['pr_change_stats']['files'] = []
-          with open("/tmp/codeintent-payload.json", "w", encoding="utf-8") as stream:
-              json.dump(payload, stream)
+          # Lambda Invoke supports 1 MiB asynchronous events. Leave headroom for
+          # transport metadata, but retain source for requests above the old
+          # 240 KB cutoff. Reviewability recommendations do not set this budget.
+          MAX_ANALYSIS_PAYLOAD_BYTES = 1_000_000
+          encoded_payload = json.dumps(payload).encode("utf-8")
+          if len(encoded_payload) > MAX_ANALYSIS_PAYLOAD_BYTES:
+              raise SystemExit(
+                  f"Full PR analysis input is {len(encoded_payload)} bytes; "
+                  f"the transport budget is {MAX_ANALYSIS_PAYLOAD_BYTES}. "
+                  "Split the PR or use an external-source transport; "
+                  "no partial analysis request was submitted.")
+          with open("/tmp/codeintent-payload.json", "wb") as stream:
+              stream.write(encoded_payload)
           PY
 
           for attempt in 1 2 3 4 5; do
@@ -343,24 +334,24 @@ jobs:
           import os
           from html import escape
           from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
-          
+
           MARKER = '<!-- codeintent-checks -->'
           ICONS = {'passed':'✅','failed':'❌','error':'⚠️','stopped':'➖','blocked':'➖','pending':'⏳','running':'⏳'}
           DEFAULT_FTGO_REPOSITORIES = ('scottswindell-hub/ftgo-application',
                                        'Holonic-Technologies/ftgo-application')
-          
-          
+
+
           def ftgo_repository(repository):
               configured = os.environ.get('FTGO_DEMO_REPOSITORIES')
               allowed = DEFAULT_FTGO_REPOSITORIES if configured is None else tuple(
                   value.strip() for value in configured.split(',') if value.strip())
               return repository in allowed
-          
-          
+
+
           def inline(value):
               return str(value or '').replace('\n',' ').replace('|','\\|').replace('<','&lt;').replace('>','&gt;')[:300]
-          
-          
+
+
           def finding_lines(check, limit=10):
               """One line per published finding, with its reference (`F-…`)."""
               lines=[]
@@ -373,8 +364,8 @@ jobs:
               if len(findings)>limit:
                   lines.append(f"  - …and {len(findings)-limit} more on the report")
               return lines
-          
-          
+
+
           def review_lines(check, report_url, accepted=None):
               lines=[]
               for finding in check.get('findings') or []:
@@ -389,7 +380,7 @@ jobs:
                   query=[(k,v) for k,v in parse_qsl(url.query,keep_blank_values=True) if k not in {'view','check','issue','item'}]
                   query.extend([('view','desc'),('check',check['id']),('issue',issue or '')])
                   target=urlunsplit((url.scheme,url.netloc,url.path,urlencode(query),''))
-                  suffix=(' — intended; governance violation remains' if finding.get('category')=='governed_boundary_violation' else ' — intended, recorded') if decision=='accepted' else ' — unresolved' if decision=='unresolved' else ' — needs review'
+                  suffix=(' — intended; governance violation remains' if finding.get('category')=='governed_boundary_violation' else ' — intended, recorded') if decision=='accepted' else ' — reported incorrect, sent to Holonic' if decision=='unresolved' else ' — needs review'
                   if finding.get('sema_id'):
                       description = ' '.join(str(finding.get('sema_description') or
                           ((finding.get('title') or finding.get('name') or 'Finding') + ' — English description unavailable')).split())
@@ -404,19 +395,19 @@ jobs:
                   if decision in {'accepted','unresolved'}:
                       lines.append(f"  <!-- codeintent-review:{review['scope']}:{decision}:{review['record']} -->")
               return lines
-          
-          
+
+
           def review_pending(check):
               findings=check.get('findings') or []
               return any(f.get('review') for f in findings) and not reviewed(check)
-          
-          
+
+
           def reviewed(check):
               findings=check.get('findings') or []
               return bool(findings) and check.get('state') in {'passed','failed'} and all(
                   (f.get('review') or {}).get('decision')=='accepted' for f in findings)
-          
-          
+
+
           def boundary_summary(check):
               """Failed boundary questions need review, not a list: the count here, the findings in the review."""
               findings=[f for f in check.get('findings') or [] if isinstance(f,dict) and (f.get('review') or {}).get('decision')!='accepted']
@@ -425,13 +416,13 @@ jobs:
               boundaries=len({f['title'] for f in findings if f.get('title')})
               across=f" across {boundaries} governed boundar{'y' if boundaries==1 else 'ies'}" if boundaries else ''
               return f"needs review — {len(findings)} finding{'' if len(findings)==1 else 's'}{across}"
-          
-          
+
+
           def demo_evidence_gap(check):
               return (check.get('id') == 'connected_evidence' and check.get('state') == 'error'
                       and 'required evidence gap(s)' in check.get('detail', ''))
-          
-          
+
+
           def render_run_comment(document, report_url):
               if urlsplit(report_url).scheme not in {'http','https'}:
                   raise ValueError('Report URL must be HTTP(S)')
@@ -459,30 +450,11 @@ jobs:
               rows=[MARKER,'### CodeIntent checks -- '+label,'']
               if document.get('violation_status')=='rejected':
                   rows+=['**Rejected:** a rule violation was confirmed, so this pull request was closed.','']
-              fallback = document.get('llm_review') or {}
-              if fallback:
-                  rows += ['**LLM analysis · not deterministically verified**',
-                           'Advisory only; deterministic checks and approval requirements are unchanged.', '']
-                  coverage = fallback.get('coverage') or {}
-                  if coverage:
-                      rows += [inline(fallback.get('evidence_scope', '')),
-                               f"Diff coverage: {inline(coverage.get('input_files'))} files; {inline(coverage.get('submitted_bytes'))} bytes submitted; {inline(fallback.get('status'))}.", '']
-                  for issue in fallback.get('issues', []):
-                      rows += ['- Potential issue: ' + escape(str(issue.get('title', ''))),
-                               '  ' + escape(str(issue.get('explanation', ''))),
-                               '  Uncertainty: ' + escape(str(issue.get('uncertainty', '')))]
-                  if not fallback.get('issues'):
-                      rows += [inline(fallback.get('reason') or 'No potential issues returned; this does not establish that the PR is safe.')]
-                  rows += ['']
               accepted=[]
               passed=[]
               failed=[]
               failed_count=0
               for check in checks:
-                  notice=check.get('reviewability') or {}
-                  if notice and notice.get('band')!='normal':
-                      rows += [f"🟡 **PR reviewability:** {inline(notice.get('message'))}",
-                               f"Counted size: {inline(notice.get('analysis_lines'))} lines across {inline(notice.get('changed_files'))} files; {inline(notice.get('mode'))} policy.", '']
                   if check.get('id')=='governance_decision':
                       continue
                   state=check.get('state','pending')
@@ -527,7 +499,6 @@ jobs:
               if risks:
                   rows+=['',f"🟡 Intent outside governed objectives: {len(risks)} change(s); {len(acceptance.get('required_reviews',[]))} awaiting risk review."]
               return '\n'.join(rows)+'\n'
-
           import json, os
           with open('/tmp/codeintent-status.json') as stream:
               doc=json.load(stream)
@@ -556,17 +527,13 @@ jobs:
                 -f description="$review_description" -f target_url="$DASHBOARD_URL" >/dev/null
               acceptance=$(jq -r '.acceptance.status // "legacy"' <<<"$document")
               mode=$(jq -r '.acceptance.mode // "shadow"' <<<"$document")
-              # A completed run cannot gain evidence by keeping a runner alive.
-              # Finish now; after the missing evidence or review is supplied, rerun.
+              if [ "$mode" = "enforce" ] && { [ "$acceptance" = "incomplete" ] || [ "$acceptance" = "review_required" ]; }; then
+                echo "Waiting for required intent assessment or authorized review..."
+                sleep 5
+                continue
+              fi
               if [ "$mode" = "enforce" ] && [ "$acceptance" != "ready" ]; then
-                reason=$(jq -r '.acceptance.reason // "Required governance acceptance is not ready"' <<<"$document")
-                printf 'Analysis finished with %s. Governance acceptance is %s.\n%s\n' "$verdict" "$acceptance" "$reason"
-                if [ "$acceptance" = "review_required" ]; then
-                  echo "Complete the authorized review, then rerun this check."
-                else
-                  echo "Resolve the missing governance evidence or authorization, then rerun this check."
-                fi
-                echo "::error::Governance acceptance is not ready. See the reason above and the live report."
+                echo "::error::Governance acceptance is $acceptance; review the report."
                 exit 1
               fi
               [ "$verdict" = "PASS" ] && exit 0
