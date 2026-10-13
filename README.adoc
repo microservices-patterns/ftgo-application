@@ -1,224 +1,180 @@
-= FTGO example application
+HOLONIC SEMANTIC CHANGE REVIEW
+Customer and AI-assisted evaluation guide
+
+PURPOSE
 
-This is the example code for my book https://microservices.io/book[Microservice patterns].
+One tool reviews a code change in context: what it preserves, what it changes,
+what impact it may have, and whether it conflicts with accepted expectations
+or introduces a potential defect.
 
-image::http://microservices.io/i/Microservices-Patterns-Cover.png[width=50%]
+It is a governor and review aid, not a replacement for testing or human judgment.
+In this evaluation it is advisory: it records findings and decisions but does not
+block a merge.
+Intentional changes can still conflict with project expectations. A clean result
+does not prove that the entire application is correct.
+
+WHAT TO EXPECT
+
+Focused changes with clear project expectations are the best starting point.
+The review can identify supported behavior-preserving changes, unexpected
+consequences, compatibility concerns, and potential programming defects.
 
-== Please note
+Findings, investigation items, and requests for an owner decision are parts of
+the same assessment. Read them alongside the evidence and reported coverage.
+An investigation item is a reason to review, not a declaration that code is broken.
 
-* The code is still a work in progress
-* It primarily illustrates the technical aspects of the microservice architecture and so the business logic is minimal
-* The documentation is sparse/non-existent and you will need to look in the book
-* The application consists of many services and so requires a lot of memory. It runs well, for example, on a 16GB Macbook pro.
-* The application's services and the infrastructure services, such as MySQL and Apache Kafka, are deployed using Docker containers using either Docker Compose or Kubernetes.
-
-== Got questions?
-
-Please create a https://github.com/microservices-patterns/ftgo-application/issues[github issue] and I'll do my best to help you.
-
-== Application architecture
-
-Not surprisingly, this application has a microservice architecture.
-There are the following services:
-
-* link:./ftgo-consumer-service[ftgo-consumer-service] - the `Consumer Service`
-* link:./ftgo-restaurant-service[ftgo-restaurant-service] - the `Restaurant Service`
-* link:./ftgo-order-service[ftgo-order-service] - the `Order Service`
-* link:./ftgo-kitchen-service[ftgo-kitchen-service] - the `Kitchen Service`
-* link:./ftgo-accounting-service[ftgo-accounting-service] - the `Accounting Service`
-* link:./ftgo-order-history-service[ftgo-order-history-service] - a `Order History Service`, which is a CQRS view
-* link:./ftgo-api-gateway[ftgo-api-gateway] - the API gateway
-
-== Service design
-
-Key points:
-
-* A service consists of a single Gradle module.
-For example, `ftgo-order-service` implements the `Order Service`
-* A service is a Spring Boot application
-* A service has a Swagger UI `http://.../swagger-ui.html`. See `open-swagger-uis.sh`
-* A service typically consists of the following packages:
-** domain - domain logic including aggregates
-** messaging - messaging adapters
-** web - Spring MVC controllers (HTTP adapters)
-** main - the main application
-* The services use the following other frameworks
-** https://github.com/eventuate-tram/eventuate-tram-core[`Eventuate Tram framework`] - implements transactional messaging
-** https://github.com/eventuate-tram/eventuate-tram-sagas[`Eventuate Tram Saga framework`] - implements sagas
-** https://github.com/eventuate-clients/eventuate-client-java[`Eventuate Client framework`] - implements event sourcing
-
-== Chapter by chapter
-
-This section maps the chapters to the code.
-
-=== Chapter 3 Inter-process communication in a microservice architecture
-
-* The services have a REST API
-* The services also communicate using the Apache Kafka message broker via the `Eventuate Tram` framework
-
-=== Chapter 4 Managing transactions with sagas
-
-The link:./ftgo-order-service[ftgo-order-service] uses sagas to maintain data consistency:
-
-* link:./ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/sagas/createorder/CreateOrderSaga.java[CreateOrderSaga]
-* link:./ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/sagas/cancelorder/CancelOrderSaga.java[CancelOrderSaga]
-* link:./ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/sagas/reviseorder/ReviseOrderSaga.java[ReviseOrderSaga]
-
-The services that participate in these sagas define the following command handlers:
-
-* `Accounting Service` link:./ftgo-accounting-service/src/main/java/net/chrisrichardson/ftgo/accountingservice/messaging/AccountingServiceCommandHandler.java[AccountingServiceCommandHandler]
-* `Consumer Service` link:./ftgo-consumer-service/src/main/java/net/chrisrichardson/ftgo/consumerservice/domain/ConsumerServiceCommandHandlers.java[ConsumerServiceCommandHandlers]
-* `Kitchen Service` link:./ftgo-kitchen-service/src/main/java/net/chrisrichardson/ftgo/kitchenservice/messagehandlers/KitchenServiceCommandHandler.java[KitchenServiceCommandHandler]
-* `Order Service` link:./ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/service/OrderCommandHandlers.java[OrderCommandHandlers]
-
-
-
-=== Chapter 5 Designing business logic in a microservice architecture
-
-All the services' business logic is implemented using Domain-Driven design aggregates.
-
-* `Accounting Service`
-** link:./ftgo-accounting-service/src/main/java/net/chrisrichardson/ftgo/accountingservice/domain/Account.java[`Account`] aggregate in the link:./ftgo-accounting-service[ftgo-accounting-service]
-* `Consumer Service`
-**  link:./ftgo-consumer-service/src/main/java/net/chrisrichardson/ftgo/consumerservice/domain/Consumer.java[Consumer]
-* `Order Service`
-** link:./ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/domain/Order.java[Order]
-** link:./ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/domain/Restaurant.java[Restaurant]
-* `Kitchen Service`
-**  link:./ftgo-kitchen-service/src/main/java/net/chrisrichardson/ftgo/kitchenservice/domain/Restaurant.java[Restaurant]
-** link:./ftgo-kitchen-service/src/main/java/net/chrisrichardson/ftgo/kitchenservice/domain/Ticket.java[Ticket]
-* `Restaurant Service`
-** link:./ftgo-restaurant-service/src/main/java/net/chrisrichardson/ftgo/restaurantservice/domain/Restaurant.java[Restaurant]
-
-
-=== Chapter 6 Developing business logic with event sourcing
-
-* The link:./ftgo-accounting-service/src/main/java/net/chrisrichardson/ftgo/accountingservice/domain/Account.java[`Account`] aggregate in the link:./ftgo-accounting-service[ftgo-accounting-service] is implemented using event sourcing
-
-=== Chapter 7 Implementing queries in a microservice architecture
-
-* link:./ftgo-order-history-service[ftgo-order-history-service] is an example of a CQRS view
-* link:./ftgo-api-gateway[ftgo-api-gateway] uses API composition to implement the REST endpoint for retrieving the order history
-
-=== Chapter 8 External API patterns
-
-* link:./ftgo-api-gateway[ftgo-api-gateway] is the API gateway
-
-
-== Building and running the application
-
-=== Pre-requisites
-
-* Java 8+
-* Docker and Docker Compose
-* Internet access so that Gradle and Docker can download dependencies and container images
-
-=== Building
-
-Run the following commands from the repository root.
-
-Temporary: Build the Spring Cloud Contracts using this command:
-
-```
-./gradlew buildContracts
-```
-
-Build the services using this command:
-
-```
-./gradlew assemble
-```
-
-=== Running the application
-
-Run the application using this command:
-
-```
-./gradlew :composeUp
-```
-
-Note: the ':'
-
-This can take a while.
-
-=== Using the application
-
-Use the services Swagger UIs to invoke the services.
-
-* Create consumer - `http://localhost:8081/swagger-ui/index.html`
-* Create a restaurant - `http://localhost:8084/swagger-ui/index.html`
-* Create an order - `http://localhost:8082/swagger-ui/index.html`
-* View the order - `http://localhost:8082/swagger-ui/index.html`
-* View the order history -  `http://localhost:8086/swagger-ui/index.html`
-
-You can also access the application via the `API Gateway` at `http://localhost:8087`.
-However, currently it  doesn't have a Swagger UI so you will have to use `curl`, for example.
-
-Note: if the containers aren't accessible via `localhost` - e.g. you are using Docker Toolbox, you will have to use `${DOCKER_HOST_IP}` as described below.
-
-=== Stopping the application
-
-Stop the application using this command:
-
-```
-./gradlew :composeDown
-```
-
-== Deploying the application on Kubernetes
-
-You can find Kubernetes YAML files in the following directories: `deployment/kubernetes` and `*/src/deployment/kubernetes`.
-There are also some helpful shell scripts.
-
-=== Deploying services
-
-You can run this command
-
-```
-./deployment/kubernetes/scripts/kubernetes-deploy-all.sh
-```
-
-=== Undeploying the services
-
-You can run the script to undeploy the services:
-
-```
-./deployment/kubernetes/scripts/kubernetes-delete-all.sh
-```
-
-If you want to delete the persistent volumes for Apache Kafka, Zookeeper and MySQL please run the command:
-
-```
-./deployment/kubernetes/scripts/kubernetes-delete-volumes.sh
-```
-
-== Setting environment variables to do development
-
-You should not need to set any environment variables.
-To run the application, you certainly do not.
-Similarly, to do development (e.g. run tests), you typically do not need to set any environment variables.
-That's because Docker containers are generally accessible (e.g. Docker for Windows/Mac) on the host via `localhost`.
-However, if Docker is running elsewhere (e.g. you are using Docker Toolbox) you will need to set `DOCKER_HOST_IP`.
-
-=== Quick way
-
-A quick way to set the environment variables is to run the script `./set-env.sh`.
-
-=== Long way
-
-The value of `DOCKER_HOST_IP` must be meaningful to both Java services/tests running on your desktop/laptop and to Docker containers.
-Please do NOT set it to the unresolvable hostname of your machine, `localhost` or `127.0.0.1` since the Docker containers will probably not work correctly.
-
-=== Verifying that DOCKER_HOST_IP is set correctly
-
-You can verify that `DOCKER_HOST_IP` is set correctly by running this command:
-
-----
-docker run -p 8889:8888 -e DOCKER_DIAGNOSTICS_PORT=8889 -e DOCKER_HOST_IP \
-     --rm eventuateio/eventuateio-docker-networking-diagnostics:0.2.0.RELEASE
-----
-
-=== Setting the environment variable in your IDE
-
-If you want to run Java services/tests within your IDE on your desktop/laptop AND  the Docker containers are not accessible via `localhost` THEN you will need to set `DOCKER_HOST_IP` within your IDE.
-How to do this depends on your operating system and IDE.
-For example, I find it convenient to launch my IDE from the command line and after setting this environment variable.
+The project's accepted expectations determine what can be treated as a governed
+violation. Other potential defects can also be surfaced within the review's scope.
+Do not assume that every behavior or every repository file has been assessed.
+
+Findings fall into two broad kinds: a change in behavior relative to the accepted
+baseline, and a conflict with an accepted constraint, including in code the PR
+did not touch. The review can also point out questionable tests, such as tests
+that only assert their own expected answer.
+
+The accepted expectations for this evaluation were prepared in advance. Authoring
+or editing them directly is not part of this evaluation.
+
+KNOWN LIMITS
+
+Do not expect every bug to be found or every refactor to be recognized.
+Complex interactions, missing context, unfamiliar environments, and large
+rewrites may require human review or produce an incomplete assessment.
+
+The tool does not prove arbitrary program equivalence or fully predict production
+behavior. It reviews code without observing production execution. It can flag
+code defects that would cause runtime failures, but cannot establish failures
+that depend on unavailable production data, configuration, or external behavior.
+Keep normal tests and security review. Confirm the release and review
+configuration before comparing results or running a customer demonstration.
+
+This evaluation focuses on one repository. Do not assume that dependent
+repositories are also covered. The review can assess integration code and
+available contract information, but cannot verify the behavior of an external
+service whose implementation or runtime evidence is unavailable. Such limits
+should be reported rather than guessed. Confirm the accepted baseline used for
+the comparison; changes that reach main outside the reviewed process can leave
+it out of step.
+
+ROUGH PERFORMANCE GUIDANCE
+
+These rounded figures describe small Java-focused development evaluations used
+during improvement. They are orientation, not independent customer certification,
+confidence intervals, or guarantees for another project or the deployed service.
+
+Known bugs flagged for review, approximately:
+
+  Loops                  85%
+  Recursion              90%
+  Memory retention       75%
+  Resource leaks         95%
+  Null safety            85%
+  Value equality         90%
+  Deadlocks              40%
+  Races                  90%
+  Cache correctness      90-95%
+
+Overall, roughly 80-85% of known bugs were flagged in those evaluations.
+A flag includes either a finding or an investigation item; it does not necessarily
+mean a blocking result or a confirmed runtime failure.
+
+Roughly 10-15% of known-safe changes also received a review flag. That is a
+safe-change flag rate, not overall accuracy. Noise varies by category: cache
+examples approached one safe change flagged in three. Deadlock coverage was
+comparatively weak, and difficult loop behavior remains challenging.
+
+Some cases were not fully assessed. Unflagged and incomplete cases must not be
+treated as verified safe. Small samples and variation between runs mean these
+numbers should not be read as precise forecasts.
+
+CHANGE SIZE
+
+Start with focused PRs. A few hundred changed lines can make a useful demonstration,
+but line count alone does not determine review quality. Split unrelated changes
+and significant rewrites where practical. Check reported coverage before drawing
+conclusions from a large PR; successful submission does not guarantee full analysis.
+
+READING THE ASSESSMENT
+
+  No finding: No issue was identified within the assessed scope, not a safety
+  certificate for the change or the application.
+
+  Investigation: A specific potential issue needs review and may be a false alarm.
+
+  Owner decision: The change affects an accepted expectation or needs an explicit
+  decision about newly introduced behavior.
+
+  Incomplete: The available evidence does not support a conclusion. This is
+  neither a confirmed defect nor a pass.
+
+Recording a decision on a PR does not establish correctness. An accepted change
+can become part of the baseline after the PR merges to main and the configured
+acceptance and baseline-update process succeeds. Recording approval alone does
+not guarantee that update; confirm the resulting baseline before expecting
+later reviews to use it. Declining leaves the item recorded as unresolved.
+False-alarm feedback can inform later reviews, but does not guarantee that
+similar findings will never recur or that an exception has been applied.
+
+Plain-language summaries are generated from the underlying evidence. Check them
+against the before and after evidence and the code change.
+
+GUIDANCE FOR AN AI ASSISTANT
+
+- Read the project's expectations and the assessment before asking broad questions.
+- Compare results using the same release, configuration, and accepted baseline.
+- Use realistic changes and include safe controls, not only deliberately broken code.
+- Keep expected verdicts outside the inputs being reviewed; do not plant test hints.
+- Check whether a finding matches the actual change, not merely a nearby issue.
+- Report catches, misses, safe-code flags, and incomplete cases distinctly.
+- Count each test case once, even if the assessment contains several messages.
+- Ask specific questions only when the supplied information cannot answer them.
+- Do not automatically approve findings, merge PRs, change accepted expectations,
+  or rewrite intentional behavior.
+- Do not claim product-wide success or failure from one example.
+- Do not record decisions or merge on the owner's behalf. Confirm completion
+  of the accepted baseline-update process before treating a decision as the
+  basis for later PR comparisons.
+
+SUGGESTED SEMANTIC PR TYPES
+
+Use the same unified review for each scenario. These are evaluation targets,
+not promises that every example will produce a particular result.
+
+1. SAME BEHAVIOR
+   Reorganize a real workflow without changing its outcomes or obligations.
+   Look for preserved behavior without an invented violation. Include a cosmetic
+   change as a simple control; use a substantive refactor for the main example.
+
+2. UNINTENDED CONSEQUENCE
+   Make a plausible change that causes an unexpected effect elsewhere.
+   Look for a relevant impact or investigation item, not an unrelated warning.
+
+3. INTENTIONAL BEHAVIOR CHANGE
+   Deliberately alter an existing business policy while keeping implementation
+   internally consistent. Look for the changed expectation and any owner decision.
+   Intentional does not mean automatically accepted.
+
+4. COMPATIBILITY CHANGE
+   Change an interaction between components. Compare an incompatible change
+   with a coordinated update, using the project's actual expectations.
+
+5. RELIABILITY REGRESSION
+   Introduce a realistic failure in an existing workflow. Pair it with a similar
+   safe change. Look for the correct issue and measure unnecessary review flags.
+
+6. LARGER REFACTOR
+   Compare one larger behavior-preserving change with the same work split into
+   focused PRs. Look for honest coverage reporting, not blanket approval.
+
+7. NEW FEATURE
+   Add a new capability or API alongside existing workflows. Look for the new
+   behavior to be surfaced for an owner decision, and for any effect on existing
+   expectations to be reported separately.
+
+Keep one main hypothesis per PR. Maintain a private evaluator answer sheet with
+the expected behavior and a concrete explanation of each defect. Preserve the
+evaluated commits until review is complete, and do not merge deliberately broken
+demonstrations into the accepted baseline.
+
+This guide describes customer-visible expectations and limitations. Proprietary
+implementation details are intentionally omitted.
