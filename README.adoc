@@ -1,180 +1,223 @@
-HOLONIC SEMANTIC CHANGE REVIEW
-Customer and AI-assisted evaluation guide
+= FTGO: Workflow-Based Semantic Change Review
+:toc:
+:toclevels: 2
 
-PURPOSE
+FTGO is a food-ordering application built from collaborating services.
+Holonic reviews its pull requests against accepted expectations for those
+services and the workflows they implement.
 
-One tool reviews a code change in context: what it preserves, what it changes,
-what impact it may have, and whether it conflicts with accepted expectations
-or introduces a potential defect.
+The review connects a code change to a business question: does this order still
+carry the right identity and amount, can a cancellation still be undone, and do
+the participating services still follow the agreed sequence?
 
-It is a governor and review aid, not a replacement for testing or human judgment.
-In this evaluation it is advisory: it records findings and decisions but does not
-block a merge.
-Intentional changes can still conflict with project expectations. A clean result
-does not prove that the entire application is correct.
+== How a pull request is gated
 
-WHAT TO EXPECT
+Opening or updating a pull request to `master` starts
+CodeIntent Checks.
+The workflow submits the change to the review service, which compares it with
+the application's accepted baseline and publishes a result on the PR.
 
-Focused changes with clear project expectations are the best starting point.
-The review can identify supported behavior-preserving changes, unexpected
-consequences, compatibility concerns, and potential programming defects.
+The review brings together:
 
-Findings, investigation items, and requests for an owner decision are parts of
-the same assessment. Read them alongside the evidence and reported coverage.
-An investigation item is a reason to review, not a declaration that code is broken.
+* *Source evidence:* changes to calls, values, state transitions, endpoints,
+  and service coordination.
+* *Workflow expectations:* accepted obligations bound to the affected code.
+* *Assessment:* whether the evidence supports preservation, a conflict with an
+  obligation, an owner decision about changed behavior, or further investigation.
+* *Explanation:* a plain-language account of the recorded evidence and its
+  relationship to the workflow.
 
-The project's accepted expectations determine what can be treated as a governed
-violation. Other potential defects can also be surfaced within the review's scope.
-Do not assume that every behavior or every repository file has been assessed.
+A behavior-preserving change is assessed against the same obligations as a
+behavior-changing one. Changes to an accepted obligation are brought forward
+for review; new or unbound behavior is presented for an owner decision.
+When evidence is incomplete, the report keeps that state explicit and can
+include a separately labeled advisory LLM review.
 
-Findings fall into two broad kinds: a change in behavior relative to the accepted
-baseline, and a conflict with an accepted constraint, including in code the PR
-did not touch. The review can also point out questionable tests, such as tests
-that only assert their own expected answer.
+The gate publishes check and review status. GitHub's configured branch rules
+control merge enforcement. Reviewers use the PR's live report to inspect the
+before-and-after evidence and record the appropriate decision. An accepted
+change becomes the comparison baseline through the configured post-merge
+baseline-update process.
 
-The accepted expectations for this evaluation were prepared in advance. Authoring
-or editing them directly is not part of this evaluation.
+== Customer order lifecycle
 
-KNOWN LIMITS
+=== Place an order
 
-Do not expect every bug to be found or every refactor to be recognized.
-Complex interactions, missing context, unfamiliar environments, and large
-rewrites may require human review or produce an incomplete assessment.
+*Business purpose:* carry a customer's order through validation, kitchen ticket
+creation, payment authorization, and approval.
 
-The tool does not prove arbitrary program equivalence or fully predict production
-behavior. It reviews code without observing production execution. It can flag
-code defects that would cause runtime failures, but cannot establish failures
-that depend on unavailable production data, configuration, or external behavior.
-Keep normal tests and security review. Confirm the release and review
-configuration before comparing results or running a customer demonstration.
+*Accepted gate check:* the authorization command takes its consumer identity
+and total from the order details, and its order identity from the active
+order-creation workflow.
+This connects the payment request to the order being processed.
 
-This evaluation focuses on one repository. Do not assume that dependent
-repositories are also covered. The review can assess integration code and
-available contract information, but cannot verify the behavior of an external
-service whose implementation or runtime evidence is unavailable. Such limits
-should be reported rather than guessed. Confirm the accepted baseline used for
-the comparison; changes that reach main outside the reviewed process can leave
-it out of step.
+*Changes brought to review:* substituting another consumer, using a different
+order ID, or changing the amount supplied to authorization.
 
-ROUGH PERFORMANCE GUIDANCE
+The participant sequence is governed separately under <<create-coordination>>.
 
-These rounded figures describe small Java-focused development evaluations used
-during improvement. They are orientation, not independent customer certification,
-confidence intervals, or guarantees for another project or the deployed service.
+=== Cancel an order
 
-Known bugs flagged for review, approximately:
+*Business purpose:* coordinate cancellation across the order, kitchen, and
+accounting services, including recovery when a forward step is undone.
 
-  Loops                  85%
-  Recursion              90%
-  Memory retention       75%
-  Resource leaks         95%
-  Null safety            85%
-  Value equality         90%
-  Deadlocks              40%
-  Races                  90%
-  Cache correctness      90-95%
+*Accepted gate checks:*
 
-Overall, roughly 80-85% of known bugs were flagged in those evaluations.
-A flag includes either a finding or an investigation item; it does not necessarily
-mean a blocking result or a confirmed runtime failure.
+* The cancellation request passes the requested order identity unchanged to
+  the order cancellation operation.
+* Kitchen cancellation accepts tickets that are accepted or awaiting acceptance,
+  saves their prior state, and marks cancellation as pending.
+* Undoing order cancellation restores a pending cancellation to the approved state.
+* Undoing ticket cancellation restores the ticket's saved previous state.
+* The ordered confirmation phase marks the kitchen ticket and order as cancelled
+  through their respective operations.
+* The request to reverse authorization reaches accounting and is routed to
+  its account-update operation.
 
-Roughly 10-15% of known-safe changes also received a review flag. That is a
-safe-change flag rate, not overall accuracy. Noise varies by category: cache
-examples approached one safe change flagged in three. Deadlock coverage was
-comparatively weak, and difficult loop behavior remains challenging.
+*Changes brought to review:* changing the cancellation target, accepting a
+new ticket state, dropping a saved state or undo step, redirecting reversal,
+or changing the confirmation transitions.
 
-Some cases were not fully assessed. Unflagged and incomplete cases must not be
-treated as verified safe. Small samples and variation between runs mean these
-numbers should not be read as precise forecasts.
+=== Revise an order
 
-CHANGE SIZE
+*Business purpose:* start a coordinated update to an existing approved order.
 
-Start with focused PRs. A few hundred changed lines can make a useful demonstration,
-but line count alone does not determine review quality. Split unrelated changes
-and significant rewrites where practical. Check reported coverage before drawing
-conclusions from a large PR; successful submission does not guarantee full analysis.
+*Accepted gate check:* beginning a revision accepts an approved order,
+marks the revision as pending, and emits a revision proposal carrying the
+calculated totals.
 
-READING THE ASSESSMENT
+*Changes brought to review:* allowing revision from another state, changing
+the pending state, or changing the totals carried by the proposal event.
 
-  No finding: No issue was identified within the assessed scope, not a safety
-  certificate for the change or the application.
+The participant sequence is governed separately under <<revise-coordination>>.
 
-  Investigation: A specific potential issue needs review and may be a false alarm.
+=== View an order
 
-  Owner decision: The change affects an accepted expectation or needs an explicit
-  decision about newly introduced behavior.
+*Business purpose:* retrieve the order requested by a customer.
 
-  Incomplete: The available evidence does not support a conclusion. This is
-  neither a confirmed defect nor a pass.
+*Accepted gate check:* the query endpoint looks up the requested identity and
+distinguishes a successful response from an order-not-found response.
 
-Recording a decision on a PR does not establish correctness. An accepted change
-can become part of the baseline after the PR merges to main and the configured
-acceptance and baseline-update process succeeds. Recording approval alone does
-not guarantee that update; confirm the resulting baseline before expecting
-later reviews to use it. Declining leaves the item recorded as unresolved.
-False-alarm feedback can inform later reviews, but does not guarantee that
-similar findings will never recur or that an exception has been applied.
+*Changes brought to review:* looking up another identity or changing how a
+missing order is represented to the caller.
 
-Plain-language summaries are generated from the underlying evidence. Check them
-against the before and after evidence and the code change.
+== Fulfillment operations
 
-GUIDANCE FOR AN AI ASSISTANT
+=== Fulfill a kitchen ticket
 
-- Read the project's expectations and the assessment before asking broad questions.
-- Compare results using the same release, configuration, and accepted baseline.
-- Use realistic changes and include safe controls, not only deliberately broken code.
-- Keep expected verdicts outside the inputs being reviewed; do not plant test hints.
-- Check whether a finding matches the actual change, not merely a nearby issue.
-- Report catches, misses, safe-code flags, and incomplete cases distinctly.
-- Count each test case once, even if the assessment contains several messages.
-- Ask specific questions only when the supplied information cannot answer them.
-- Do not automatically approve findings, merge PRs, change accepted expectations,
-  or rewrite intentional behavior.
-- Do not claim product-wide success or failure from one example.
-- Do not record decisions or merge on the owner's behalf. Confirm completion
-  of the accepted baseline-update process before treating a decision as the
-  basis for later PR comparisons.
+*Business purpose:* move kitchen work from acceptance through preparation and pickup.
 
-SUGGESTED SEMANTIC PR TYPES
+*Accepted gate checks:* an accepted ticket can enter preparation, and a ready
+ticket can record pickup.
 
-Use the same unified review for each scenario. These are evaluation targets,
-not promises that every example will produce a particular result.
+*Changes brought to review:* changing the states that permit preparation or
+pickup, or changing the resulting transitions.
 
-1. SAME BEHAVIOR
-   Reorganize a real workflow without changing its outcomes or obligations.
-   Look for preserved behavior without an invented violation. Include a cosmetic
-   change as a simple control; use a substantive refactor for the main example.
+=== Fulfill a delivery
 
-2. UNINTENDED CONSEQUENCE
-   Make a plausible change that causes an unexpected effect elsewhere.
-   Look for a relevant impact or investigation item, not an unrelated warning.
+*Business purpose:* schedule the pickup and drop-off work for an order.
 
-3. INTENTIONAL BEHAVIOR CHANGE
-   Deliberately alter an existing business policy while keeping implementation
-   internally consistent. Look for the changed expectation and any owner decision.
-   Intentional does not mean automatically accepted.
+*Accepted gate check:* scheduling loads the requested delivery and available
+couriers before appending pickup and drop-off actions.
 
-4. COMPATIBILITY CHANGE
-   Change an interaction between components. Compare an incompatible change
-   with a coordinated update, using the project's actual expectations.
+*Changes brought to review:* loading the wrong delivery, changing courier
+selection inputs, or removing or reordering the scheduling actions.
 
-5. RELIABILITY REGRESSION
-   Introduce a realistic failure in an existing workflow. Pair it with a similar
-   safe change. Look for the correct issue and measure unnecessary review flags.
+== Participant operations
 
-6. LARGER REFACTOR
-   Compare one larger behavior-preserving change with the same work split into
-   focused PRs. Look for honest coverage reporting, not blanket approval.
+=== Manage a consumer
 
-7. NEW FEATURE
-   Add a new capability or API alongside existing workflows. Look for the new
-   behavior to be surfaced for an owner decision, and for any effect on existing
-   expectations to be reported separately.
+*Business purpose:* create a consumer from the submitted registration details.
 
-Keep one main hypothesis per PR. Maintain a private evaluator answer sheet with
-the expected behavior and a concrete explanation of each defect. Preserve the
-evaluated commits until review is complete, and do not merge deliberately broken
-demonstrations into the accepted baseline.
+*Accepted gate check:* the consumer-registration request passes the supplied
+name to the consumer-creation operation.
 
-This guide describes customer-visible expectations and limitations. Proprietary
-implementation details are intentionally omitted.
+*Changes brought to review:* dropping, replacing, or transforming the name
+passed from the request into consumer creation.
+
+=== Manage a restaurant and menu
+
+*Business purpose:* make restaurant information available to the services
+participating in fulfillment.
+
+*Accepted gate check:* a restaurant-created event supplies its restaurant
+identity, name, and address to the delivery service's restaurant-creation
+operation.
+
+*Changes brought to review:* changing which event values supply the restaurant
+identity, name, or address used by delivery.
+
+=== Manage order authorization
+
+*Business purpose:* process the accounting participant's authorization request.
+
+*Accepted gate check:* authorization updates account data using the consumer
+identity supplied in the request. If the account is disabled, it returns the
+corresponding disabled-account response.
+
+*Changes brought to review:* using another consumer identity, redirecting the
+account-update operation, or changing the disabled-account response.
+
+== Read models and propagation
+
+=== Project order history
+
+*Business purpose:* reflect order progress in the order-history read model.
+
+*Accepted gate check:* an order-authorized event updates the matching history
+record to the approved state and retains source-event evidence.
+
+*Changes brought to review:* updating the wrong history record, selecting another
+state, or dropping the association with the source event.
+
+== Saga coordination
+
+The saga gates review the declared order of cross-service participants.
+They connect the individual service operations into the accepted workflow.
+
+[[create-coordination]]
+=== Coordinate order creation
+
+*Accepted sequence:* consumer validation -> ticket creation -> accounting
+authorization -> ticket confirmation -> order approval.
+
+*Changes brought to review:* removing, replacing, or reordering these forward
+participants.
+
+=== Coordinate order cancellation
+
+*Accepted sequence:* order cancellation -> ticket cancellation -> authorization
+reversal -> ticket confirmation -> order confirmation.
+
+*Changes brought to review:* removing, replacing, or reordering these forward
+participants. The cancellation workflow above also describes its compensation
+and confirmation obligations.
+
+[[revise-coordination]]
+=== Coordinate order revision
+
+*Accepted sequence:* order revision -> ticket revision -> authorization
+revision -> ticket confirmation -> order confirmation.
+
+*Changes brought to review:* removing, replacing, or reordering these forward
+participants.
+
+== Working with the review
+
+. Make a focused change to an existing workflow and open a PR to `master`.
+. Follow the CodeIntent PR comment to the live report.
+. Inspect the affected workflow, its accepted obligation, the source evidence,
+  and the explanation together.
+. Correct unintended changes, or use the review controls to record an intentional
+  change for the appropriate owner decision.
+. After an approved merge, confirm the accepted baseline update before comparing
+  subsequent changes against it.
+
+For evaluation, pair a behavior-changing PR with a behavior-preserving version
+of the same work. Keep expected results outside the submitted PR, including
+its branch name, and compare the actual finding with the specific change.
+
+The workflow map above describes the 13 workflows and 19 accepted obligations
+reported by the live review on 2026-10-13. Each run identifies its own accepted
+baseline and obligations. The business purpose introduces the workflow;
+the accepted gate checks state the specific behavior governed in this release.
