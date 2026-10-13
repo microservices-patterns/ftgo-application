@@ -13,7 +13,7 @@ the participating services still follow the agreed sequence?
 == How a pull request is gated
 
 Opening or updating a pull request to `master` starts
-link:.github/workflows/codeintent-checks.yml[CodeIntent Checks].
+CodeIntent Checks.
 The workflow submits the change to the review service, which compares it with
 the application's accepted baseline and publishes a result on the PR.
 
