@@ -17,6 +17,7 @@ on:
         default: '[]'
   # Opened or updated PRs prepare a candidate automatically; a merged PR publishes it.
   pull_request_target:
+    branches: [master]
     types: [opened, synchronize, reopened, closed]
 permissions:
   contents: read
