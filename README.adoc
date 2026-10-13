@@ -47,14 +47,13 @@ baseline-update process.
 creation, payment authorization, and approval.
 
 *Accepted gate check:* the authorization command takes its consumer identity
-and total from the order details, and its order identity from the saga state.
+and total from the order details, and its order identity from the active
+order-creation workflow.
 This connects the payment request to the order being processed.
 
 *Changes brought to review:* substituting another consumer, using a different
 order ID, or changing the amount supplied to authorization.
 
-Binding: `place.authorize_order`.
-Source: link:ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/sagas/createorder/CreateOrderSagaState.java[CreateOrderSagaState].
 The participant sequence is governed separately under <<create-coordination>>.
 
 === Cancel an order
@@ -64,43 +63,32 @@ accounting services, including recovery when a forward step is undone.
 
 *Accepted gate checks:*
 
-* The cancellation endpoint passes the requested `orderId` unchanged to
-  `orderService.cancel` (`cancel.accept_request`).
-* Kitchen cancellation accepts `ACCEPTED` or `AWAITING_ACCEPTANCE` tickets,
-  saves the prior state, and enters `CANCEL_PENDING` (`cancel.begin_ticket`).
-* Order compensation returns an order from `CANCEL_PENDING` to `APPROVED`
-  (`cancel.compensate_order`).
-* Ticket compensation restores the ticket's saved previous state
-  (`cancel.compensate_ticket`).
-* The ordered confirmation phase routes ticket and order confirmation to
-  their respective `CANCELLED` transitions (`cancel.confirm`).
-* Authorization reversal is dispatched to accounting and routed to
-  `accountRepository.update` (`cancel.request_authorization_reversal`).
+* The cancellation request passes the requested order identity unchanged to
+  the order cancellation operation.
+* Kitchen cancellation accepts tickets that are accepted or awaiting acceptance,
+  saves their prior state, and marks cancellation as pending.
+* Undoing order cancellation restores a pending cancellation to the approved state.
+* Undoing ticket cancellation restores the ticket's saved previous state.
+* The ordered confirmation phase marks the kitchen ticket and order as cancelled
+  through their respective operations.
+* The request to reverse authorization reaches accounting and is routed to
+  its account-update operation.
 
 *Changes brought to review:* changing the cancellation target, accepting a
 new ticket state, dropping a saved state or undo step, redirecting reversal,
 or changing the confirmation transitions.
 
-Sources:
-link:ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/web/OrderController.java[OrderController],
-link:ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/sagas/cancelorder/CancelOrderSaga.java[CancelOrderSaga],
-link:ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/domain/Order.java[Order],
-link:ftgo-kitchen-service/src/main/java/net/chrisrichardson/ftgo/kitchenservice/domain/Ticket.java[Ticket],
-and link:ftgo-accounting-service/src/main/java/net/chrisrichardson/ftgo/accountingservice/messaging/AccountingServiceCommandHandler.java[AccountingServiceCommandHandler].
-
 === Revise an order
 
 *Business purpose:* start a coordinated update to an existing approved order.
 
-*Accepted gate check:* beginning a revision accepts an `APPROVED` order,
-changes it to `REVISION_PENDING`, and returns an `OrderRevisionProposed` event
-carrying the calculated totals.
+*Accepted gate check:* beginning a revision accepts an approved order,
+marks the revision as pending, and emits a revision proposal carrying the
+calculated totals.
 
 *Changes brought to review:* allowing revision from another state, changing
 the pending state, or changing the totals carried by the proposal event.
 
-Binding: `revise.begin_order`.
-Source: link:ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/domain/Order.java[Order].
 The participant sequence is governed separately under <<revise-coordination>>.
 
 === View an order
@@ -113,23 +101,17 @@ distinguishes a successful response from an order-not-found response.
 *Changes brought to review:* looking up another identity or changing how a
 missing order is represented to the caller.
 
-Binding: `view.read_order`.
-Source: link:ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/web/OrderController.java[OrderController].
-
 == Fulfillment operations
 
 === Fulfill a kitchen ticket
 
 *Business purpose:* move kitchen work from acceptance through preparation and pickup.
 
-*Accepted gate checks:* an accepted ticket can enter preparation
-(`kitchen.prepare_ticket`), and a ready ticket can record pickup
-(`kitchen.pickup_ticket`).
+*Accepted gate checks:* an accepted ticket can enter preparation, and a ready
+ticket can record pickup.
 
 *Changes brought to review:* changing the states that permit preparation or
 pickup, or changing the resulting transitions.
-
-Source: link:ftgo-kitchen-service/src/main/java/net/chrisrichardson/ftgo/kitchenservice/domain/Ticket.java[Ticket].
 
 === Fulfill a delivery
 
@@ -141,52 +123,40 @@ couriers before appending pickup and drop-off actions.
 *Changes brought to review:* loading the wrong delivery, changing courier
 selection inputs, or removing or reordering the scheduling actions.
 
-Binding: `delivery.schedule`.
-Source: link:ftgo-delivery-service/src/main/java/net/chrisrichardson/ftgo/deliveryservice/domain/DeliveryService.java[DeliveryService].
-
 == Participant operations
 
 === Manage a consumer
 
 *Business purpose:* create a consumer from the submitted registration details.
 
-*Accepted gate check:* `POST /consumers` passes the supplied request name to
-`consumerService.create`.
+*Accepted gate check:* the consumer-registration request passes the supplied
+name to the consumer-creation operation.
 
 *Changes brought to review:* dropping, replacing, or transforming the name
 passed from the request into consumer creation.
-
-Binding: `consumer.create`.
-Source: link:ftgo-consumer-service/src/main/java/net/chrisrichardson/ftgo/consumerservice/web/ConsumerController.java[ConsumerController].
 
 === Manage a restaurant and menu
 
 *Business purpose:* make restaurant information available to the services
 participating in fulfillment.
 
-*Accepted gate check:* a restaurant-created event calls
-`deliveryService.createRestaurant` with the event's aggregate identity,
-restaurant name, and address.
+*Accepted gate check:* a restaurant-created event supplies its restaurant
+identity, name, and address to the delivery service's restaurant-creation
+operation.
 
 *Changes brought to review:* changing which event values supply the restaurant
 identity, name, or address used by delivery.
-
-Binding: `restaurant.propagate`.
-Source: link:ftgo-delivery-service/src/main/java/net/chrisrichardson/ftgo/deliveryservice/messaging/DeliveryMessageHandlers.java[DeliveryMessageHandlers].
 
 === Manage order authorization
 
 *Business purpose:* process the accounting participant's authorization request.
 
-*Accepted gate check:* authorization updates the account repository using the
-command's consumer identity and maps `AccountDisabledException` to
-`AccountDisabledReply`.
+*Accepted gate check:* authorization updates account data using the consumer
+identity supplied in the request. If the account is disabled, it returns the
+corresponding disabled-account response.
 
 *Changes brought to review:* using another consumer identity, redirecting the
-repository operation, or changing the disabled-account reply.
-
-Binding: `accounting.authorize`.
-Source: link:ftgo-accounting-service/src/main/java/net/chrisrichardson/ftgo/accountingservice/messaging/AccountingServiceCommandHandler.java[AccountingServiceCommandHandler].
+account-update operation, or changing the disabled-account response.
 
 == Read models and propagation
 
@@ -195,13 +165,10 @@ Source: link:ftgo-accounting-service/src/main/java/net/chrisrichardson/ftgo/acco
 *Business purpose:* reflect order progress in the order-history read model.
 
 *Accepted gate check:* an order-authorized event updates the matching history
-aggregate to `APPROVED` and retains source-event evidence.
+record to the approved state and retains source-event evidence.
 
-*Changes brought to review:* updating the wrong aggregate, selecting another
+*Changes brought to review:* updating the wrong history record, selecting another
 state, or dropping the association with the source event.
-
-Binding: `history.update_state`.
-Source: link:ftgo-order-history-service/src/main/java/net/chrisrichardson/ftgo/cqrs/orderhistory/messaging/OrderHistoryEventHandlers.java[OrderHistoryEventHandlers].
 
 == Saga coordination
 
@@ -217,9 +184,6 @@ authorization -> ticket confirmation -> order approval.
 *Changes brought to review:* removing, replacing, or reordering these forward
 participants.
 
-Binding: `create_saga.forward`.
-Source: link:ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/sagas/createorder/CreateOrderSaga.java[CreateOrderSaga].
-
 === Coordinate order cancellation
 
 *Accepted sequence:* order cancellation -> ticket cancellation -> authorization
@@ -229,9 +193,6 @@ reversal -> ticket confirmation -> order confirmation.
 participants. The cancellation workflow above also describes its compensation
 and confirmation obligations.
 
-Binding: `cancel_saga.forward`.
-Source: link:ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/sagas/cancelorder/CancelOrderSaga.java[CancelOrderSaga].
-
 [[revise-coordination]]
 === Coordinate order revision
 
@@ -240,9 +201,6 @@ revision -> ticket confirmation -> order confirmation.
 
 *Changes brought to review:* removing, replacing, or reordering these forward
 participants.
-
-Binding: `revise_saga.forward`.
-Source: link:ftgo-order-service/src/main/java/net/chrisrichardson/ftgo/orderservice/sagas/reviseorder/ReviseOrderSaga.java[ReviseOrderSaga].
 
 == Working with the review
 
@@ -260,7 +218,6 @@ of the same work. Keep expected results outside the submitted PR, including
 its branch name, and compare the actual finding with the specific change.
 
 The workflow map above describes the 13 workflows and 19 accepted obligations
-reported by the live review on 2026-10-13 at baseline
-`9991bc8593224af0562587423767e31989a00b8c`. Each run identifies its own accepted
+reported by the live review on 2026-10-13. Each run identifies its own accepted
 baseline and obligations. The business purpose introduces the workflow;
 the accepted gate checks state the specific behavior governed in this release.
