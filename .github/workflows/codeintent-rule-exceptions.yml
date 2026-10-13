@@ -11,6 +11,7 @@ name: CodeIntent rule exceptions
 # Runs from the default branch and never checks out pull request code.
 on:
   pull_request_target:
+    branches: [master]
     types: [closed]
 
 permissions:

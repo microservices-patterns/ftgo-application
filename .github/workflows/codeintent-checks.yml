@@ -16,6 +16,7 @@ name: CodeIntent Checks
 # head is sent, and an entry the PR adds counts only with a recorded decision.
 on:
   pull_request_target:
+    branches: [master]
     types: [opened, synchronize, reopened]
   workflow_dispatch:
     inputs:
