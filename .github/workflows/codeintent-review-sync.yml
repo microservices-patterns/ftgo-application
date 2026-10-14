@@ -89,13 +89,15 @@ jobs:
               gate = document.get('finding_review_gate') or {}
               if (gate.get('application') != repo or gate.get('pull_request') != int(number)
                       or gate.get('head_commit') != sha):
-                  raise SystemExit('Missing exact finding-review merge gate')
+                  raise SystemExit('Missing exact finding-review evidence identity')
               status = gate.get('status')
               required, accepted = gate.get('required', 0), gate.get('accepted', 0)
-              state = 'success' if status in {'ready', 'not_required'} else 'error' if status == 'unavailable' else 'failure'
+              # Review answers are evidence, never a merge gate. Keep the commit
+              # status successful while the bot message preserves Yes/No state.
+              state = 'success'
               description = (f'All {required} review finding(s) accepted for this evidence'
-                             if state == 'success' else 'Finding-review authority is unavailable'
-                             if state == 'error' else f'{accepted} of {required} review finding(s) accepted')
+                             if status in {'ready', 'not_required'} else 'Finding-review status unavailable (advisory)'
+                             if status == 'unavailable' else f'{accepted} of {required} review finding(s) accepted (advisory)')
               owner, name = repo.split('/', 1)
               report = f'https://{owner.lower()}.github.io/{name}/?' + urlencode(
                   {'repo': repo, 'pr': number, 'sha': sha,

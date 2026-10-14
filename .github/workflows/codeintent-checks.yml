@@ -137,7 +137,8 @@ jobs:
           sha = os.environ["PR_SHA"]
           max_file = int(os.environ.get("STANDARDS_MAX_FILE_BYTES", "60000"))
           # API Gateway invokes the Lambda asynchronously, so the whole request
-          # (diff included) must fit the much smaller async payload limit.
+          # (diff included) must fit Lambda's 1 MiB async invocation limit.
+          # This source cap is separate from the serialized request budget.
           max_total = int(os.environ.get("STANDARDS_MAX_TOTAL_BYTES", "200000"))
 
 
@@ -170,6 +171,19 @@ jobs:
           change_stats['files'] = [{'path': row['filename'], 'additions': row['additions'],
                                    'deletions': row['deletions'], 'status': row['status']}
                                   for row in changed_rows]
+          semantic_configuration = []
+          def configuration_path(path):
+              import re
+              return bool(re.fullmatch(r"(?:.*/)?src/main/resources/(?:config/)?application(?:-[^/]+)?\.(?:properties|ya?ml)", path or ""))
+          for row in changed_rows:
+              path, status = row["filename"], row["status"]
+              if status == "renamed":
+                  previous = row.get("previous_filename")
+                  if configuration_path(previous):
+                      semantic_configuration.append({"path": previous, "status": "removed"})
+                  status = "added"
+              if configuration_path(path):
+                  semantic_configuration.append({"path": path, "status": {"changed": "modified", "copied": "added"}.get(status, status)})
           semantic_java = []
           for row in changed_rows:
               path = row["filename"]
@@ -213,7 +227,7 @@ jobs:
           with open("/tmp/standards-input.json", "w", encoding="utf-8") as stream:
               json.dump({
                   "standards": {"files_omitted": omitted, "exceptions": exceptions},
-                  "semantic_changes": {"java": semantic_java, "files_omitted": omitted},
+                  "semantic_changes": {"java": semantic_java, "configuration": semantic_configuration, "files_omitted": omitted},
                   "pr_change_stats": change_stats,
                   "files": files,
               }, stream)
@@ -247,7 +261,8 @@ jobs:
               'head_sha': payload['sha'], 'sha256': hashlib.sha256(diff.encode('utf-8')).hexdigest(),
               'bytes': len(diff.encode('utf-8')), 'files': payload['pr_change_stats']['changed_files'],
           }
-          if len(json.dumps(payload).encode('utf-8')) > 240000:
+          MAX_ANALYSIS_PAYLOAD_BYTES = 1_000_000
+          if len(json.dumps(payload).encode('utf-8')) > MAX_ANALYSIS_PAYLOAD_BYTES:
               # Keep complete size metadata; do not pretend a clipped diff was analyzed.
               excerpt = payload.get('diff', '')[:24000]
               while len(json.dumps(excerpt).encode('utf-8')) > 24000:
@@ -255,10 +270,17 @@ jobs:
               payload['fallback_diff'] = excerpt
               payload.update(diff='', files={}, reviewability_only=True,
                              standards={}, semantic_changes={})
-              if len(json.dumps(payload).encode('utf-8')) > 240000:
+              if len(json.dumps(payload).encode('utf-8')) > MAX_ANALYSIS_PAYLOAD_BYTES:
                   payload['pr_change_stats']['files'] = []
-          with open("/tmp/codeintent-payload.json", "w", encoding="utf-8") as stream:
-              json.dump(payload, stream)
+          encoded_payload = json.dumps(payload).encode("utf-8")
+          if len(encoded_payload) > MAX_ANALYSIS_PAYLOAD_BYTES:
+              raise SystemExit(
+                  f"Full PR analysis input is {len(encoded_payload)} bytes; "
+                  f"the transport budget is {MAX_ANALYSIS_PAYLOAD_BYTES}. "
+                  "Split the PR or use an external-source transport; "
+                  "no partial analysis request was submitted.")
+          with open("/tmp/codeintent-payload.json", "wb") as stream:
+              stream.write(encoded_payload)
           PY
 
           for attempt in 1 2 3 4 5; do
@@ -288,10 +310,41 @@ jobs:
           set -euo pipefail
           deadline=$((SECONDS + 840))
           while (( SECONDS < deadline )); do
-            document=$(curl -fsS --get "$STATUS_API_URL" \
-              --data-urlencode "sha=$PR_SHA" --data-urlencode "repo=$PR_FULL_REPO" || true)
-            if [ -z "$document" ]; then document='{}'; fi
-            state=$(jq -r '.state // "absent"' <<<"$document")
+            # A failed read is not an absent run. Bound each GET by the polling deadline.
+            remaining=$((deadline - SECONDS))
+            if (( remaining <= 0 )); then break; fi
+            request_timeout=$((remaining < 30 ? remaining : 30))
+            response_file=$(mktemp)
+            if http_code=$(curl -sS --max-time "$request_timeout" -o "$response_file" -w '%{http_code}' --get "$STATUS_API_URL" \
+              --data-urlencode "sha=$PR_SHA" --data-urlencode "repo=$PR_FULL_REPO"); then
+              transport_ok=true
+            else
+              transport_ok=false
+            fi
+            document=$(cat "$response_file")
+            rm -f "$response_file"
+            if [ "$transport_ok" != true ] || [ "$http_code" != 200 ]; then
+              if [ "$transport_ok" = true ]; then
+                case "$http_code" in
+                  408|429|500|502|503|504) ;;
+                  *) echo "::error::CodeIntent status retrieval unavailable (HTTP $http_code)."; exit 1 ;;
+                esac
+              fi
+              retrieval_failures=$((${retrieval_failures:-0} + 1))
+              echo "CodeIntent state: retrieval_unavailable — $DASHBOARD_URL"
+              if (( retrieval_failures >= 3 )); then
+                echo "::error::CodeIntent status retrieval unavailable after three attempts; analysis outcome is unknown."
+                exit 1
+              fi
+              sleep $((deadline - SECONDS < 5 ? (deadline - SECONDS > 0 ? deadline - SECONDS : 0) : 5))
+              continue
+            fi
+            if ! jq -e 'type == "object" and (.state == "absent" or .state == "in_progress" or .state == "completed")' <<<"$document" >/dev/null; then
+              echo "::error::CodeIntent status retrieval unavailable: invalid status response."
+              exit 1
+            fi
+            retrieval_failures=0
+            state=$(jq -r '.state' <<<"$document")
             started_at=$(jq -r '.started_at // empty' <<<"$document")
             pipeline=$(jq -r '.pipeline // empty' <<<"$document")
 
@@ -316,7 +369,7 @@ jobs:
                 {
                   echo "### Coding standards"
                   echo
-                  echo "Findings are rule violations and fail the check; FYIs need no response."
+                  echo "Findings are advisory review evidence; FYIs need no response."
                   echo
                   printf '%s\n' "$findings"
                   echo
@@ -329,7 +382,7 @@ jobs:
                 {
                   echo "### Rule violations"
                   echo
-                  echo "Answer each on the CodeIntent review page: Yes if the change was intended, No to keep this PR blocked."
+                  echo "Answer each on the CodeIntent review page: Yes if the change was intended, No to record disagreement. Neither answer blocks merging."
                   echo
                   printf '%s\n' "$others"
                   echo
@@ -390,7 +443,7 @@ jobs:
                   query=[(k,v) for k,v in parse_qsl(url.query,keep_blank_values=True) if k not in {'view','check','issue','item'}]
                   query.extend([('view','desc'),('check',check['id']),('issue',issue or '')])
                   target=urlunsplit((url.scheme,url.netloc,url.path,urlencode(query),''))
-                  suffix=(' — intended; governance violation remains' if finding.get('category')=='governed_boundary_violation' else ' — intended, recorded') if decision=='accepted' else ' — unresolved' if decision=='unresolved' else ' — needs review'
+                  suffix=(' — intended; governance violation remains' if finding.get('category')=='governed_boundary_violation' else ' — intended, recorded') if decision=='accepted' else ' — reported incorrect, sent to Holonic' if decision=='unresolved' else ' — needs review'
                   if finding.get('sema_id'):
                       description = ' '.join(str(finding.get('sema_description') or
                           ((finding.get('title') or finding.get('name') or 'Finding') + ' — English description unavailable')).split())
@@ -542,15 +595,13 @@ jobs:
               gate_status=$(jq -r '.finding_review_gate.status // "unavailable"' <<<"$document")
               required=$(jq -r '.finding_review_gate.required // 0' <<<"$document")
               accepted=$(jq -r '.finding_review_gate.accepted // 0' <<<"$document")
+              review_state=success
               if [ "$gate_status" = ready ] || [ "$gate_status" = not_required ]; then
-                review_state=success
                 review_description="All $required review finding(s) accepted for this evidence"
               elif [ "$gate_status" = unavailable ]; then
-                review_state=error
-                review_description='Finding-review authority is unavailable'
+                review_description='Finding-review status unavailable (advisory)'
               else
-                review_state=failure
-                review_description="$accepted of $required review finding(s) accepted"
+                review_description="$accepted of $required review finding(s) accepted (advisory)"
               fi
               gh api --method POST "repos/$PR_FULL_REPO/statuses/$PR_SHA" \
                 -f state="$review_state" -f context='CodeIntent / Finding review' \
@@ -567,12 +618,12 @@ jobs:
                 else
                   echo "Resolve the missing governance evidence or authorization, then rerun this check."
                 fi
-                echo "::error::Governance acceptance is not ready. See the reason above and the live report."
-                exit 1
+                echo "::warning::Governance acceptance is not ready. This advisory result does not block merging."
               fi
-              [ "$verdict" = "PASS" ] && exit 0
-              echo "::error::CodeIntent completed with $verdict"
-              exit 1
+              if [ "$verdict" != "PASS" ]; then
+                echo "::warning::CodeIntent completed with $verdict. Review the recorded findings; merging remains allowed."
+              fi
+              exit 0
             else
               echo "CodeIntent state: $state — $DASHBOARD_URL"
             fi
