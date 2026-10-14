@@ -8,7 +8,7 @@ name: CodeIntent Checks
 # workflow only sends the changed Java files, fetched as text at the head SHA
 # through the API (never executed), so the Lambda can judge whole methods.
 #
-# Rule exceptions: a GitHub-verified Yes on a coding-standards finding, on the
+# Rule exceptions: an anonymous Yes on a coding-standards finding, on the
 # review page, records the exception in the governance ledger and starts this
 # workflow for the PR. The Lambda applies it to this PR at once, and to every PR
 # once this one merges (codeintent-rule-exceptions.yml). The repository's own
