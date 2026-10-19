@@ -118,7 +118,7 @@ public class Order {
     switch (state) {
       case APPROVAL_PENDING:
         this.state = APPROVED;
-        return singletonList(new OrderAuthorized());
+        return emptyList();
       default:
         throw new UnsupportedStateTransitionException(state);
     }
